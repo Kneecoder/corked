@@ -1,0 +1,7 @@
+node_modules/
+package-lock.json
+package.json
+screenshot.js
+screenshot.ps1
+*.png
+.claude/
