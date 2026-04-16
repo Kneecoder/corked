@@ -611,8 +611,8 @@ body {
         <g id="spark-group">
           <!-- spark-mover is translated via SVG attribute in JS — no CSS transform conflict -->
           <g id="spark-mover" transform="translate(0,0)">
-            <circle id="spark-outer" cx="-15" cy="36" r="5"   fill="#C9A55A" filter="url(#spark-glow)"/>
-            <circle id="spark-core"  cx="-15" cy="36" r="2.2" fill="#EDE0C4"/>
+            <circle id="spark-outer" cx="-28" cy="36" r="5"   fill="#C9A55A" filter="url(#spark-glow)"/>
+            <circle id="spark-core"  cx="-28" cy="36" r="2.2" fill="#EDE0C4"/>
           </g>
         </g>
       </svg>
@@ -1306,7 +1306,7 @@ function triggerCork() {
   void sparkOuter.offsetWidth;
 
   // Spark travels from cx=-15 (hover orbit centre) to body centre = 170 SVG units
-  const TRAVEL_PX  = 170;
+  const TRAVEL_PX  = 183;
   const TRAVEL_MS  = 1800; // slow, deliberate fairy float
   let sparkStart   = null;
   let corkReleased = false;
