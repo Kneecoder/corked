@@ -229,8 +229,8 @@ body {
 #cta-cork { opacity:0; transform:translateX(-60px); }
 
 /* Bloom elements */
-#bloom-ring { opacity:0; transform-origin:center; transform-box:fill-box; }
-#bloom-core-el { opacity:0; transform-origin:center; transform-box:fill-box; }
+#bloom-ring { opacity:0; }
+#bloom-core-el { opacity:0; }
 #cta-fill-glow { opacity:0; }
 
 .bottle-cta-label {
@@ -549,6 +549,13 @@ body {
             <stop offset="100%" stop-color="#7A2E3C" stop-opacity="0"/>
           </radialGradient>
 
+          <!-- Bloom core — warm glow filling bottle interior from within -->
+          <radialGradient id="bloom-core-grad" cx="60%" cy="50%" r="45%">
+            <stop offset="0%"   stop-color="#EDE0C4" stop-opacity="1"/>
+            <stop offset="35%"  stop-color="#F5D88A" stop-opacity="0.7"/>
+            <stop offset="100%" stop-color="#7A2E3C" stop-opacity="0"/>
+          </radialGradient>
+
           <!-- Glass specular highlight gradient -->
           <linearGradient id="glass-shine" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.09"/>
@@ -587,8 +594,10 @@ body {
 
 
         <!-- ── BLOOM (fires on click, centred in body) ── -->
-        <circle id="bloom-ring"  cx="155" cy="36" r="14" fill="url(#bloom-grad)" opacity="0"/>
-        <circle id="bloom-core-el" cx="155" cy="36" r="12" fill="#EDE0C4"          opacity="0" filter="url(#bloom-core-blur)"/>
+        <g clip-path="url(#bottle-clip)">
+          <rect id="bloom-ring"    x="0" y="0" width="260" height="72" fill="url(#bloom-grad)"      opacity="0"/>
+          <rect id="bloom-core-el" x="0" y="0" width="260" height="72" fill="url(#bloom-core-grad)" opacity="0"/>
+        </g>
 
         <!-- ── CORK (slides in from left on click) ── -->
         <g id="cta-cork" style="opacity:0;transform:translateX(-60px)">
@@ -1377,15 +1386,15 @@ function triggerCork() {
         setTimeout(() => { sparkGroup.style.opacity = '0'; }, 90);
 
         bloomRing.animate([
-          { opacity: 0,   transform: 'scale(0.4)' },
-          { opacity: 0.9, transform: 'scale(1.5)', offset: 0.3 },
-          { opacity: 0,   transform: 'scale(3.5)' }
+          { opacity: 0 },
+          { opacity: 0.7, offset: 0.3 },
+          { opacity: 0 }
         ], { duration: 1100, easing: 'ease-out', fill: 'forwards' });
 
         bloomCore.animate([
-          { opacity: 0, transform: 'scale(0)'   },
-          { opacity: 1, transform: 'scale(1.8)', offset: 0.22 },
-          { opacity: 0, transform: 'scale(2.4)' }
+          { opacity: 0 },
+          { opacity: 0.95, offset: 0.22 },
+          { opacity: 0.15 }
         ], { duration: 900, easing: 'ease-out', fill: 'forwards' });
       }, 1300);
 
