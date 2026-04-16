@@ -555,6 +555,11 @@ body {
             <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
           </linearGradient>
 
+          <!-- Bloom core softening — makes it read as light, not a disc -->
+          <filter id="bloom-core-blur" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="3"/>
+          </filter>
+
           <!-- SVG glow filter for bottle outline on hover -->
           <filter id="bottle-glow" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="2.5" result="blur"/>
@@ -583,7 +588,7 @@ body {
 
         <!-- ── BLOOM (fires on click, centred in body) ── -->
         <circle id="bloom-ring"  cx="155" cy="36" r="14" fill="url(#bloom-grad)" opacity="0"/>
-        <circle id="bloom-core-el" cx="155" cy="36" r="5"  fill="#EDE0C4"          opacity="0"/>
+        <circle id="bloom-core-el" cx="155" cy="36" r="12" fill="#EDE0C4"          opacity="0" filter="url(#bloom-core-blur)"/>
 
         <!-- ── CORK (slides in from left on click) ── -->
         <g id="cta-cork" style="opacity:0;transform:translateX(-60px)">
@@ -1373,14 +1378,14 @@ function triggerCork() {
 
         bloomRing.animate([
           { opacity: 0,   transform: 'scale(0.4)' },
-          { opacity: 0.9, transform: 'scale(1.2)', offset: 0.3 },
-          { opacity: 0,   transform: 'scale(2.8)' }
+          { opacity: 0.9, transform: 'scale(1.5)', offset: 0.3 },
+          { opacity: 0,   transform: 'scale(3.5)' }
         ], { duration: 1100, easing: 'ease-out', fill: 'forwards' });
 
         bloomCore.animate([
           { opacity: 0, transform: 'scale(0)'   },
-          { opacity: 1, transform: 'scale(1.4)', offset: 0.22 },
-          { opacity: 0, transform: 'scale(1.8)' }
+          { opacity: 1, transform: 'scale(1.8)', offset: 0.22 },
+          { opacity: 0, transform: 'scale(2.4)' }
         ], { duration: 900, easing: 'ease-out', fill: 'forwards' });
       }, 1300);
 
