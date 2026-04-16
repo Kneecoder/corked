@@ -20,7 +20,7 @@
   --gold: #C9A55A;
   --cream: #EDE0C4;
   --cream-dim: #B8A88A;
-  --muted: #6E5E48;
+  --muted: #8C7A64;
   --turbid-col: #8B7A70;
   --clearing-col: #C9A040;
   --settled-col: #5DA876;
@@ -87,8 +87,7 @@ body {
 .rule               { animation:landing-fade .9s ease both; animation-delay:.25s; }
 .tagline            { animation:landing-fade .9s ease both; animation-delay:.35s; }
 .landing-body       { animation:landing-fade .9s ease both; animation-delay:.5s; }
-.continue-row,
-#new-row            { animation:landing-fade .9s ease both; animation-delay:.65s; }
+.continue-row       { animation:landing-fade .9s ease both; animation-delay:.65s; }
 
 .logo {
   font-family:'Playfair Display',serif;
@@ -186,6 +185,20 @@ body {
   0%   { opacity:0; transform:scale(0); }
   20%  { opacity:1; transform:scale(1); }
   100% { opacity:0; transform:scale(1.6); }
+}
+
+/* Rack hint — ghost bottles above the active one suggest the cellar holds more */
+.bottle-cellar-stack {
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+}
+.ghost-bottle {
+  display:block; pointer-events:none;
+  opacity:.20;
+  animation:landing-fade .9s ease both; animation-delay:.58s;
+}
+.ghost-bottle--far {
+  opacity:.11;
+  animation-delay:.50s;
 }
 
 /* Sideways bottle CTA */
@@ -503,6 +516,14 @@ body {
   </div>
 
   <div id="new-row">
+    <div class="bottle-cellar-stack">
+      <!-- Two faint ghost bottles — the cellar holds more than one idea -->
+      <svg aria-hidden="true" class="ghost-bottle ghost-bottle--far" width="260" height="72" viewBox="0 0 260 72" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 2,30 L 46,30 C 56,30 68,10 78,10 L 240,10 Q 257,10 257,36 Q 257,62 240,62 L 78,62 C 68,62 56,42 46,42 L 2,42 Z" fill="#0A0608" stroke="#2A1F18" stroke-width="1.2"/>
+      </svg>
+      <svg aria-hidden="true" class="ghost-bottle" width="260" height="72" viewBox="0 0 260 72" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 2,30 L 46,30 C 56,30 68,10 78,10 L 240,10 Q 257,10 257,36 Q 257,62 240,62 L 78,62 C 68,62 56,42 46,42 L 2,42 Z" fill="#0A0608" stroke="#2A1F18" stroke-width="1.2"/>
+      </svg>
     <div class="bottle-cta-wrap" id="bottle-cta" onclick="triggerCork()" role="button" tabindex="0" aria-label="Cork an idea">
       <!--
         Wine bottle on its side: neck points LEFT, base points RIGHT.
@@ -516,7 +537,7 @@ body {
         <defs>
           <!-- Clip to bottle interior -->
           <clipPath id="bottle-clip">
-            <path d="M 2,31 L 65,31 C 75,31 82,15 90,10 L 240,10 Q 257,10 257,36 Q 257,62 240,62 L 90,62 C 82,57 75,41 65,41 L 2,41 Z"/>
+            <path d="M 2,30 L 46,30 C 56,30 68,10 78,10 L 240,10 Q 257,10 257,36 Q 257,62 240,62 L 78,62 C 68,62 56,42 46,42 L 2,42 Z"/>
           </clipPath>
 
           <!-- Spark ember glow filter -->
@@ -558,15 +579,15 @@ body {
           <!-- Subtle inner warmth -->
           <rect x="0" y="0" width="260" height="72" fill="url(#inner-glow)"/>
           <!-- Fill glow on click -->
-          <rect id="cta-fill-glow" x="0" y="0" width="260" height="72" fill="#4A1C25" opacity="0"/>
+          <rect id="cta-fill-glow" x="0" y="0" width="260" height="72" fill="#3D2510" opacity="0"/>
           <!-- Specular highlight — top 20% of body only, felt not seen -->
-          <rect x="90" y="10" width="155" height="11" fill="url(#glass-shine)"/>
+          <rect x="78" y="10" width="162" height="11" fill="url(#glass-shine)"/>
         </g>
 
         <!-- ── BOTTLE OUTLINE ── -->
         <!-- Full silhouette stroke — proper wine bottle profile -->
         <path vector-effect="non-scaling-stroke"
-          d="M 2,31 L 65,31 C 75,31 82,15 90,10 L 240,10 Q 257,10 257,36 Q 257,62 240,62 L 90,62 C 82,57 75,41 65,41 L 2,41 Z"
+          d="M 2,30 L 46,30 C 56,30 68,10 78,10 L 240,10 Q 257,10 257,36 Q 257,62 240,62 L 78,62 C 68,62 56,42 46,42 L 2,42 Z"
           fill="none" stroke="#3D2820" stroke-width="1.2"/>
 
 
@@ -576,24 +597,25 @@ body {
 
         <!-- ── CORK (slides in from left on click) ── -->
         <g id="cta-cork" style="opacity:0;transform:translateX(-60px)">
-          <rect x="5" y="32" width="22" height="8" rx="1.5" fill="#7A5E38"/>
-          <rect x="6" y="33.5" width="20" height="1.5" rx="0.75" fill="#8B6B40" opacity=".45"/>
-          <rect x="6" y="36"   width="20" height="1.5" rx="0.75" fill="#6A5030" opacity=".4"/>
-          <rect x="6" y="38.5" width="20" height="1.5" rx="0.75" fill="#5A4428" opacity=".3"/>
+          <rect x="0" y="31" width="22" height="10" rx="1.5" fill="#7A5E38"/>
+          <rect x="1" y="33"   width="20" height="1.5" rx="0.75" fill="#8B6B40" opacity=".45"/>
+          <rect x="1" y="36"   width="20" height="1.5" rx="0.75" fill="#6A5030" opacity=".4"/>
+          <rect x="1" y="38.5" width="20" height="1.5" rx="0.75" fill="#5A4428" opacity=".3"/>
         </g>
 
         <!-- ── SPARK EMBER (flickers outside neck opening on hover) ── -->
         <g id="spark-group">
           <!-- spark-mover is translated via SVG attribute in JS — no CSS transform conflict -->
           <g id="spark-mover" transform="translate(0,0)">
-            <circle id="spark-outer" cx="-12" cy="36" r="5"   fill="#C9A55A" filter="url(#spark-glow)"/>
-            <circle id="spark-core"  cx="-12" cy="36" r="2.2" fill="#EDE0C4"/>
+            <circle id="spark-outer" cx="-15" cy="36" r="5"   fill="#C9A55A" filter="url(#spark-glow)"/>
+            <circle id="spark-core"  cx="-15" cy="36" r="2.2" fill="#EDE0C4"/>
           </g>
         </g>
       </svg>
 
       <div class="bottle-cta-label">Cork an idea</div>
     </div>
+    </div><!-- /.bottle-cellar-stack -->
   </div>
 
   <div class="landing-foot">Phase 1 · Observation</div>
@@ -1251,10 +1273,15 @@ function continueSession() {
 }
 
 // ── BOTTLE CTA ANIMATION ──
-let corkFired = false;
+let corkFired    = false;
+let hoverOrbitId = null;
+
 function triggerCork() {
   if (corkFired) return;
   corkFired = true;
+  // Stop hover orbit before enter animation takes over
+  cancelAnimationFrame(hoverOrbitId);
+  hoverOrbitId = null;
 
   const cork       = document.getElementById('cta-cork');
   const bloomRing  = document.getElementById('bloom-ring');
@@ -1265,78 +1292,109 @@ function triggerCork() {
   const sparkOuter = document.getElementById('spark-outer');
   const sparkCore  = document.getElementById('spark-core');
   const wrap       = document.getElementById('bottle-cta');
+  const svg        = document.getElementById('bottle-cta-svg');
 
   wrap.style.pointerEvents = 'none';
 
-  // Stop CSS hover flicker — keep group visible, mover stays at translate(0,0)
+  // Stop CSS hover flicker — keep group visible
   sparkOuter.style.animation  = 'none';
   sparkCore.style.animation   = 'none';
   sparkGroup.style.transition = 'none';
   sparkGroup.style.opacity    = '1';
-  void sparkOuter.offsetWidth; // flush
+  void sparkOuter.offsetWidth;
 
-  // ── SPARK TRAVEL via rAF on the SVG transform attribute ──
-  // Travels from x=-12 to x≈153 (centre of body), then fades out.
-  // Cork is gated: fires only once spark crosses the midpoint.
-  const TRAVEL_PX = 165;  // total SVG units to travel
-  const TRAVEL_MS = 1100; // duration — slow float
-  let   sparkStart    = null;
-  let   corkReleased  = false;
+  // Spark travels from cx=-15 (hover orbit centre) to body centre = 170 SVG units
+  const TRAVEL_PX  = 170;
+  const TRAVEL_MS  = 1800; // slow, deliberate fairy float
+  let sparkStart   = null;
+  let corkReleased = false;
+  let fillStarted  = false;
 
-  function easeInOutCubic(t) {
-    return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
-  }
+  // easeInOutSine: gentle entry into neck, smooth arc through body, soft landing
+  function easeInOutSine(t) { return -(Math.cos(Math.PI * t) - 1) / 2; }
 
   function stepSpark(ts) {
     if (!sparkStart) sparkStart = ts;
     const raw = Math.min((ts - sparkStart) / TRAVEL_MS, 1);
-    const e   = easeInOutCubic(raw);
+    const e   = easeInOutSine(raw);
 
-    // Move the SVG group — pure attribute, no CSS transform
-    sparkMover.setAttribute('transform', `translate(${e * TRAVEL_PX}, 0)`);
+    // Fairy y-drift: zero while in the narrow neck, oscillates freely in body, returns to centre
+    // yEnv is a sin envelope — 0 at raw=0.38 (neck exit), peaks at mid-body, 0 again at raw=1.0
+    const yEnv = Math.sin(Math.max(0, (raw - 0.38) / 0.62) * Math.PI);
+    const yOff = Math.sin(raw * Math.PI * 3.5) * yEnv * 7;
+    sparkMover.setAttribute('transform', `translate(${e * TRAVEL_PX}, ${yOff})`);
 
-    // Stays fully bright until 80% through — then fades quickly at the end
-    if (raw > 0.8) {
-      sparkGroup.style.opacity = String(Math.max(0, 1 - (raw - 0.8) * 5));
+    // Spark crosses shoulder (~38%): bottle begins to fill with warm preservation glow
+    if (raw >= 0.38 && !fillStarted) {
+      fillStarted = true;
+      fillGlow.animate([
+        { opacity: 0 },
+        { opacity: 0.22, offset: 0.45 },
+        { opacity: 0.14 }               // stays — the idea is preserved inside
+      ], { duration: 1600, easing: 'ease-in-out', fill: 'forwards' });
     }
 
-    // Cork fires a beat after spark reaches centre (65% through travel)
+    // Spark fades to a dim ember — does NOT go dark (prevents light gap before bloom)
+    if (raw > 0.72) {
+      sparkGroup.style.opacity = String(Math.max(0.25, 1 - (raw - 0.72) * 3.6));
+    }
+
+    // Cork fires once spark is past centre
     if (raw >= 0.65 && !corkReleased) {
       corkReleased = true;
 
-      cork.style.transition = 'transform 900ms cubic-bezier(0.33,0,0.2,1), opacity 200ms ease';
-      cork.style.opacity    = '1';
-      cork.style.transform  = 'translateX(-10px)';
+      // Cork seats with overshoot → spring-back → settle (thud physics)
+      // Cork rect is at x=0; bottle mouth is at x=2; settle at translateX(0) = flush/barely proud
+      cork.animate([
+        { transform: 'translateX(-60px)', opacity: 0,   offset: 0    },
+        { transform: 'translateX(-60px)', opacity: 1,   offset: 0.05 },  // fade in quickly
+        { transform: 'translateX(3px)',   opacity: 1,   offset: 0.78 },  // overshoot: 3px past flush
+        { transform: 'translateX(-1px)',  opacity: 1,   offset: 0.91 },  // spring back: briefly proud
+        { transform: 'translateX(0px)',   opacity: 1,   offset: 1.0  }   // settle: flush with mouth
+      ], { duration: 880, easing: 'linear', fill: 'forwards' });
 
-      // Bloom fires half a second after cork is fully seated (900ms travel + 500ms pause)
+      // Bottle micro-shake when cork thuds in
+      setTimeout(() => {
+        svg.animate([
+          { transform: 'translateX(0px)' },
+          { transform: 'translateX(2px)',  offset: 0.28 },
+          { transform: 'translateX(-1px)', offset: 0.62 },
+          { transform: 'translateX(0px)' }
+        ], { duration: 210, easing: 'ease-out' });
+
+        // Warm pulse as glow "breathes" on impact — idea settling in
+        fillGlow.animate([
+          { opacity: 0.14 },
+          { opacity: 0.30, offset: 0.18 },
+          { opacity: 0.16 }
+        ], { duration: 520, easing: 'ease-out', fill: 'forwards' });
+      }, 880);
+
+      // Soft preservation bloom — warm sigh outward, not an explosion
       setTimeout(() => {
         bloomRing.animate([
-          { opacity:0,    transform:'scale(0)'   },
-          { opacity:0.75, transform:'scale(1)',   offset:0.2 },
-          { opacity:0,    transform:'scale(2.4)'  }
-        ], { duration:680, easing:'ease-out', fill:'forwards' });
+          { opacity: 0,    transform: 'scale(0.4)'  },
+          { opacity: 0.45, transform: 'scale(1)',    offset: 0.3 },
+          { opacity: 0,    transform: 'scale(1.9)'  }
+        ], { duration: 950, easing: 'ease-out', fill: 'forwards' });
 
         bloomCore.animate([
-          { opacity:0, transform:'scale(0)'   },
-          { opacity:1, transform:'scale(1)',   offset:0.18 },
-          { opacity:0, transform:'scale(1.5)' }
-        ], { duration:500, easing:'ease-out', fill:'forwards' });
+          { opacity: 0,   transform: 'scale(0)'   },
+          { opacity: 0.7, transform: 'scale(1)',   offset: 0.22 },
+          { opacity: 0,   transform: 'scale(1.2)' }
+        ], { duration: 750, easing: 'ease-out', fill: 'forwards' });
+      }, 1300);
 
-        fillGlow.animate([
-          { opacity:0    },
-          { opacity:0.38, offset:0.3 },
-          { opacity:0    }
-        ], { duration:750, easing:'ease-in-out', fill:'forwards' });
-      }, 1400);
-
-      // Transition to intake — after cork is fully settled
+      // Transition to intake
       setTimeout(() => {
         showIntake();
         // Reset for returning users
         corkFired = false;
-        cork.style.transition = 'none';
-        cork.style.opacity    = '0';
-        cork.style.transform  = 'translateX(-60px)';
+        cork.getAnimations().forEach(a => a.cancel());
+        fillGlow.getAnimations().forEach(a => a.cancel());
+        cork.style.opacity     = '0';
+        cork.style.transform   = 'translateX(-60px)';
+        fillGlow.style.opacity = '0';
         sparkMover.setAttribute('transform', 'translate(0,0)');
         sparkOuter.style.animation  = '';
         sparkCore.style.animation   = '';
@@ -1361,6 +1419,31 @@ function triggerCork() {
     document.getElementById('continue-note').textContent = `"${ideaPreview}"`;
   }
   showScreen('landing');
+
+  // Hover orbit: spark drifts in a slow Lissajous figure around the bottle opening.
+  // Two sin waves at different frequencies so the path never repeats quickly.
+  const cta   = document.getElementById('bottle-cta');
+  const mover = document.getElementById('spark-mover');
+  if (cta && mover) {
+    cta.addEventListener('mouseenter', () => {
+      if (corkFired) return;
+      let t0 = null;
+      const step = ts => {
+        if (!t0) t0 = ts;
+        const t = (ts - t0) / 4500;               // 4.5 s per x-cycle
+        const x = Math.sin(t * Math.PI * 2) * 7;  // ±7 px side-to-side
+        const y = Math.sin(t * Math.PI * 2 * 1.6 + 0.8) * 5; // ±5 px up-down, offset phase
+        mover.setAttribute('transform', `translate(${x}, ${y})`);
+        hoverOrbitId = requestAnimationFrame(step);
+      };
+      hoverOrbitId = requestAnimationFrame(step);
+    });
+    cta.addEventListener('mouseleave', () => {
+      cancelAnimationFrame(hoverOrbitId);
+      hoverOrbitId = null;
+      mover.setAttribute('transform', 'translate(0, 0)');
+    });
+  }
 })();
 </script>
 </body>
