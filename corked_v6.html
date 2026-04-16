@@ -544,9 +544,6 @@ body {
       <svg aria-hidden="true" class="ghost-bottle ghost-bottle--far" width="180" height="50" viewBox="0 0 260 72" xmlns="http://www.w3.org/2000/svg">
         <path d="M 2,30 L 46,30 C 56,30 68,10 78,10 L 240,10 Q 257,10 257,36 Q 257,62 240,62 L 78,62 C 68,62 56,42 46,42 L 2,42 Z" fill="#0A0608" stroke="#2A1F18" stroke-width="1.2"/>
       </svg>
-      <svg aria-hidden="true" class="ghost-bottle" width="180" height="50" viewBox="0 0 260 72" xmlns="http://www.w3.org/2000/svg">
-        <path d="M 2,30 L 46,30 C 56,30 68,10 78,10 L 240,10 Q 257,10 257,36 Q 257,62 240,62 L 78,62 C 68,62 56,42 46,42 L 2,42 Z" fill="#0A0608" stroke="#2A1F18" stroke-width="1.2"/>
-      </svg>
     <div class="bottle-cta-wrap" id="bottle-cta" onclick="triggerCork()" role="button" tabindex="0" aria-label="Cork an idea">
       <!--
         Wine bottle on its side: neck points LEFT, base points RIGHT.
@@ -555,7 +552,7 @@ body {
         Proper silhouette: tapered neck → curved shoulder → wide body → flat base.
       -->
       <svg class="bottle-cta-svg" id="bottle-cta-svg"
-           width="260" height="72" viewBox="0 0 260 72"
+           width="280" height="78" viewBox="0 0 260 72"
            xmlns="http://www.w3.org/2000/svg" overflow="visible">
         <defs>
           <!-- Clip to bottle interior -->
@@ -638,6 +635,9 @@ body {
 
       <div class="bottle-cta-label">Cork an idea</div>
     </div>
+      <svg aria-hidden="true" class="ghost-bottle" width="180" height="50" viewBox="0 0 260 72" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 2,30 L 46,30 C 56,30 68,10 78,10 L 240,10 Q 257,10 257,36 Q 257,62 240,62 L 78,62 C 68,62 56,42 46,42 L 2,42 Z" fill="#0A0608" stroke="#2A1F18" stroke-width="1.2"/>
+      </svg>
     </div><!-- /.bottle-cellar-stack -->
   </div>
 
@@ -1395,21 +1395,22 @@ function triggerCork() {
         ], { duration: 520, easing: 'ease-out', fill: 'forwards' });
       }, 880);
 
-      // Soft preservation bloom — warm sigh outward, not an explosion
+      // Bloom — spark flares back at full brightness before dissolving into the bottle
       setTimeout(() => {
-        sparkGroup.style.opacity = '0';
+        sparkGroup.style.opacity = '1';
+        setTimeout(() => { sparkGroup.style.opacity = '0'; }, 90);
 
         bloomRing.animate([
-          { opacity: 0,   transform: 'scale(0.4)'  },
-          { opacity: 0.7, transform: 'scale(1)',    offset: 0.3 },
-          { opacity: 0,   transform: 'scale(1.9)'  }
+          { opacity: 0,   transform: 'scale(0.3)'  },
+          { opacity: 1.0, transform: 'scale(1)',    offset: 0.25 },
+          { opacity: 0,   transform: 'scale(2.4)'  }
         ], { duration: 950, easing: 'ease-out', fill: 'forwards' });
 
         bloomCore.animate([
           { opacity: 0,   transform: 'scale(0)'   },
-          { opacity: 0.9, transform: 'scale(1)',   offset: 0.22 },
-          { opacity: 0,   transform: 'scale(1.2)' }
-        ], { duration: 750, easing: 'ease-out', fill: 'forwards' });
+          { opacity: 1.0, transform: 'scale(1)',   offset: 0.2 },
+          { opacity: 0,   transform: 'scale(1.4)' }
+        ], { duration: 700, easing: 'ease-out', fill: 'forwards' });
       }, 1300);
 
       // Transition to intake
