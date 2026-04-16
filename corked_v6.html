@@ -113,7 +113,7 @@ body {
 }
 
 .landing-body {
-  max-width:400px;
+  max-width:440px;
   color:#9A8A74;
   font-size:.875rem;
   line-height:2;
@@ -121,9 +121,25 @@ body {
   letter-spacing:.01em;
 }
 
-.landing-foot {
-  position:absolute; bottom:2rem; font-size:.68rem; color:var(--muted);
-  letter-spacing:.18em; text-transform:uppercase; opacity:.4;
+.landing-turn {
+  font-family:'Playfair Display',serif; font-style:italic;
+  font-size:1.05rem; text-align:center; color:var(--cream);
+  margin:2rem auto; max-width:440px;
+  animation:landing-fade .9s ease both; animation-delay:.58s;
+}
+
+.landing-cellar-line {
+  font-family:'Playfair Display',serif; font-style:italic;
+  font-size:1rem; text-align:center; color:var(--cream-dim);
+  margin-bottom:2.5rem;
+  animation:landing-fade .9s ease both; animation-delay:.63s;
+}
+
+.landing-mechanic {
+  font-family:'Inter',sans-serif; font-size:.82rem;
+  color:var(--cream-dim); text-align:center;
+  letter-spacing:.04em; margin-bottom:2rem;
+  animation:landing-fade .9s ease both; animation-delay:.68s;
 }
 .continue-row { display:flex; flex-direction:column; align-items:center; gap:.75rem; margin-bottom:1rem; }
 .continue-note { font-size:.72rem; color:var(--muted); letter-spacing:.08em; }
@@ -187,9 +203,9 @@ body {
   100% { opacity:0; transform:scale(1.6); }
 }
 
-/* Rack hint — ghost bottles above the active one suggest the cellar holds more */
+/* Rack hint — ghost bottles to the left of the active one suggest the cellar holds more */
 .bottle-cellar-stack {
-  display:flex; flex-direction:column; align-items:center; gap:8px;
+  display:flex; flex-direction:row; align-items:center; gap:24px;
 }
 .ghost-bottle {
   display:block; pointer-events:none;
@@ -488,6 +504,10 @@ body {
   .el-list{ flex-direction:row; flex-wrap:wrap; gap:.4rem; }
   .el-row{ border-bottom:none; padding:.2rem .5rem; background:var(--card); border:1px solid var(--border); }
   .phase-main{ padding:2rem 1.25rem; }
+  .bottle-cellar-stack{ flex-wrap:wrap; justify-content:center; }
+}
+@media(max-width:520px){
+  .ghost-bottle--far{ display:none; }
 }
 </style>
 </head>
@@ -503,11 +523,13 @@ body {
 
   <div class="logo">Corked</div>
   <div class="rule"></div>
-  <div class="tagline">You had an idea. Corked finds the truth in it.</div>
+  <div class="tagline">You had an idea. Corked helps you find out if it's real.</div>
   <div class="landing-body">
-    A spark left in a notes app doesn't age. It rots. No questions reach it. Nothing tests it.<br><br>
-    Some ideas have something real underneath. Aging is how you find out which ones — and what they need isn't time, it's the right questions.
+    A spark hits and for a moment it feels like everything. Then a day passes. A week. You find it again in your notes app, between two other things you never did anything with either. Not because the idea was bad. Because nothing happened to it.<br><br>
+    A spark left in a notes app doesn't age, it rots. No questions reach it. No pressure tests it. It just sits there, fading, taking up the same space as something real.
   </div>
+  <div class="landing-turn">The loudest idea is rarely the one worth keeping.</div>
+  <div class="landing-cellar-line">The cellar is the most honest picture of how you think.</div>
 
   <div id="continue-row" class="continue-row" style="display:none">
     <button class="btn" onclick="continueSession()">Continue where you left off →</button>
@@ -516,12 +538,13 @@ body {
   </div>
 
   <div id="new-row">
+    <div class="landing-mechanic">You cork an idea. It ages. You find out if there's something real behind it.</div>
     <div class="bottle-cellar-stack">
       <!-- Two faint ghost bottles — the cellar holds more than one idea -->
-      <svg aria-hidden="true" class="ghost-bottle ghost-bottle--far" width="260" height="72" viewBox="0 0 260 72" xmlns="http://www.w3.org/2000/svg">
+      <svg aria-hidden="true" class="ghost-bottle ghost-bottle--far" width="180" height="50" viewBox="0 0 260 72" xmlns="http://www.w3.org/2000/svg">
         <path d="M 2,30 L 46,30 C 56,30 68,10 78,10 L 240,10 Q 257,10 257,36 Q 257,62 240,62 L 78,62 C 68,62 56,42 46,42 L 2,42 Z" fill="#0A0608" stroke="#2A1F18" stroke-width="1.2"/>
       </svg>
-      <svg aria-hidden="true" class="ghost-bottle" width="260" height="72" viewBox="0 0 260 72" xmlns="http://www.w3.org/2000/svg">
+      <svg aria-hidden="true" class="ghost-bottle" width="180" height="50" viewBox="0 0 260 72" xmlns="http://www.w3.org/2000/svg">
         <path d="M 2,30 L 46,30 C 56,30 68,10 78,10 L 240,10 Q 257,10 257,36 Q 257,62 240,62 L 78,62 C 68,62 56,42 46,42 L 2,42 Z" fill="#0A0608" stroke="#2A1F18" stroke-width="1.2"/>
       </svg>
     <div class="bottle-cta-wrap" id="bottle-cta" onclick="triggerCork()" role="button" tabindex="0" aria-label="Cork an idea">
@@ -618,7 +641,6 @@ body {
     </div><!-- /.bottle-cellar-stack -->
   </div>
 
-  <div class="landing-foot">Phase 1 · Observation</div>
 </div>
 
 <!-- INTAKE -->
@@ -1334,9 +1356,12 @@ function triggerCork() {
       ], { duration: 1600, easing: 'ease-in-out', fill: 'forwards' });
     }
 
-    // Spark fades to a dim ember — does NOT go dark (prevents light gap before bloom)
-    if (raw > 0.72) {
-      sparkGroup.style.opacity = String(Math.max(0.25, 1 - (raw - 0.72) * 3.6));
+    // Spark dims sharply as cork approaches — brief near-dark beat before bloom answers
+    if (raw > 0.72 && raw <= 0.88) {
+      const t = (raw - 0.72) / 0.16;
+      sparkGroup.style.opacity = String(1 - t * 0.95);
+    } else if (raw > 0.88) {
+      sparkGroup.style.opacity = '0.05';
     }
 
     // Cork fires once spark is past centre
@@ -1372,15 +1397,17 @@ function triggerCork() {
 
       // Soft preservation bloom — warm sigh outward, not an explosion
       setTimeout(() => {
+        sparkGroup.style.opacity = '0';
+
         bloomRing.animate([
-          { opacity: 0,    transform: 'scale(0.4)'  },
-          { opacity: 0.45, transform: 'scale(1)',    offset: 0.3 },
-          { opacity: 0,    transform: 'scale(1.9)'  }
+          { opacity: 0,   transform: 'scale(0.4)'  },
+          { opacity: 0.7, transform: 'scale(1)',    offset: 0.3 },
+          { opacity: 0,   transform: 'scale(1.9)'  }
         ], { duration: 950, easing: 'ease-out', fill: 'forwards' });
 
         bloomCore.animate([
           { opacity: 0,   transform: 'scale(0)'   },
-          { opacity: 0.7, transform: 'scale(1)',   offset: 0.22 },
+          { opacity: 0.9, transform: 'scale(1)',   offset: 0.22 },
           { opacity: 0,   transform: 'scale(1.2)' }
         ], { duration: 750, easing: 'ease-out', fill: 'forwards' });
       }, 1300);
