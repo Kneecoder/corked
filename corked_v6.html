@@ -171,8 +171,18 @@ body {
 }
 .wm-intake-content { opacity:0; transition:opacity .55s ease; }
 .wm-intake-content.visible { opacity:1; }
-.field::placeholder { transition:opacity .3s ease; }
-.field.ph-hidden::placeholder { opacity:0; }
+.ph-overlay {
+  position:absolute; inset:0;
+  padding:1rem 1.1rem;
+  font-family:'Inter',sans-serif; font-size:.95rem; font-weight:300;
+  color:var(--muted); pointer-events:none;
+  overflow:hidden; display:flex; align-items:flex-start;
+}
+.ph-text {
+  display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  max-width:100%; transform:translateX(0); opacity:1;
+  transition:transform .4s ease, opacity .4s ease;
+}
 
 /* ── BUTTONS ── */
 .btn {
@@ -285,13 +295,15 @@ body {
 
 /* ── INTAKE PROGRESS ── */
 .intake-prog-bar {
-  width:100%; height:1px; background:var(--border);
+  width:100%; display:flex; gap:3px;
   margin-bottom:2rem;
 }
-.intake-prog-fill {
-  height:1px; background:var(--wine);
-  transition:width .4s ease;
+.intake-prog-seg {
+  flex:1; height:1px;
+  background:var(--border);
+  transition:background .3s ease;
 }
+.intake-prog-seg.done { background:var(--wine); }
 .step-q {
   font-family:'Playfair Display',serif; font-size:clamp(1.3rem,4vw,1.75rem);
   line-height:1.35; color:var(--cream); margin-bottom:.5rem;
@@ -989,11 +1001,11 @@ function renderIntake() {
   const step = INTAKE[intakeStep];
   const first = intakeStep === 0;
   const last  = intakeStep === INTAKE.length - 1;
-  const pct   = Math.round((intakeStep / (INTAKE.length - 1)) * 100);
 
-  let h = `<div class="intake-prog-bar">
-              <div class="intake-prog-fill" style="width:${pct}%"></div>
-            </div>`;
+  const segs = Array.from({length: INTAKE.length}, (_,i) =>
+    `<div class="intake-prog-seg${i <= intakeStep ? ' done' : ''}"></div>`
+  ).join('');
+  let h = `<div class="intake-prog-bar">${segs}</div>`;
 
   if (first) {
     h += `<div class="wm-section">
@@ -1484,7 +1496,11 @@ function triggerCork() {
 }
 
 // ── PLACEHOLDER CYCLE ──
+let phInterval = null;
+
 function cyclePlaceholder() {
+  clearInterval(phInterval);
+
   const field = document.getElementById('f-inp');
   if (!field) return;
 
@@ -1495,21 +1511,46 @@ function cyclePlaceholder() {
   ];
 
   let idx = 0;
-  field.placeholder = phrases[0];
 
-  const interval = setInterval(() => {
-    field.classList.add('ph-hidden');
+  // Wrap field so overlay can be positioned against it
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:relative';
+  field.parentNode.insertBefore(wrap, field);
+  wrap.appendChild(field);
+
+  const overlay = document.createElement('div');
+  overlay.className = 'ph-overlay';
+  const span = document.createElement('span');
+  span.className = 'ph-text';
+  span.textContent = phrases[0];
+  overlay.appendChild(span);
+  wrap.appendChild(overlay);
+
+  function swapPhrase() {
+    // Slide out to the right
+    span.style.transform = 'translateX(32px)';
+    span.style.opacity = '0';
     setTimeout(() => {
       idx = (idx + 1) % phrases.length;
-      field.placeholder = phrases[idx];
-      field.classList.remove('ph-hidden');
-    }, 300);
-  }, 3000);
+      span.textContent = phrases[idx];
+      // Snap to left without transition, then animate into position
+      span.style.transition = 'none';
+      span.style.transform = 'translateX(-32px)';
+      span.style.opacity = '0';
+      void span.offsetWidth;
+      span.style.transition = '';
+      span.style.transform = 'translateX(0)';
+      span.style.opacity = '1';
+    }, 400);
+  }
+
+  phInterval = setInterval(swapPhrase, 5000);
 
   field.addEventListener('focus', () => {
-    clearInterval(interval);
-    field.classList.remove('ph-hidden');
-    field.placeholder = '';
+    clearInterval(phInterval);
+    overlay.remove();
+    wrap.parentNode.insertBefore(field, wrap);
+    wrap.remove();
   }, { once: true });
 }
 
