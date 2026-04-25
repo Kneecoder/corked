@@ -175,7 +175,7 @@ body {
   position:absolute; inset:0;
   padding:1rem 1.1rem;
   font-family:'Inter',sans-serif; font-size:.95rem; font-weight:300;
-  color:var(--muted); pointer-events:none;
+  font-style:italic; color:var(--muted); opacity:.45; pointer-events:none;
   overflow:hidden; display:flex; align-items:flex-start;
 }
 .ph-text {
@@ -1507,9 +1507,29 @@ function cyclePlaceholder() {
   const phrases = [
     'An app that helps freelancers send invoices without chasing clients.',
     'A way for landlords to screen tenants without running credit checks.',
-    'A tool that lets musicians log practice notes alongside their recordings.'
+    'A tool that lets musicians log practice notes alongside their recordings.',
+    'A service that reminds patients to take medication without family nagging them.',
+    'A way for small cafés to manage restock orders without a spreadsheet.',
+    'A tool that lets teachers share lesson plans without emailing attachments.',
+    'A service that helps new parents find childcare that matches their hours.',
+    'A way for independent bookshops to recommend books the way a friend would.',
+    'A tool that helps remote workers know when teammates are actually available.',
+    'A service that lets renters document their flat condition before moving in.',
+    'A way for small restaurants to manage staff shifts without a WhatsApp group.',
+    'A service that tells freelancers which clients are slow to pay before they sign.',
+    'A tool that helps hiring managers screen candidates without sitting through 40 identical CVs.',
+    'A service that lets clinics fill last-minute cancellations without calling down a waitlist.',
+    'A way for small manufacturers to find backup suppliers before their main one fails them.',
+    'A tool that helps B2B salespeople know when a prospect is actually ready to buy.',
+    'A service that lets landlords manage maintenance requests without a property manager.',
+    'A way for patients to describe symptoms before the appointment, not during it.'
   ];
 
+  // Shuffle so cycle starts at a random phrase each load
+  for (let i = phrases.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [phrases[i], phrases[j]] = [phrases[j], phrases[i]];
+  }
   let idx = 0;
 
   // Wrap field so overlay can be positioned against it
