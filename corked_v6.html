@@ -138,6 +138,42 @@ body {
 .continue-row { display:flex; flex-direction:column; align-items:center; gap:.75rem; margin-bottom:1rem; }
 .continue-note { font-size:.72rem; color:var(--muted); letter-spacing:.08em; }
 
+/* ── WINEMASTER ── */
+.wm-section {
+  display:flex; gap:1.2rem; align-items:flex-start;
+  margin-bottom:2rem;
+}
+.wm-avatar {
+  display:flex; flex-direction:column; align-items:center; gap:.45rem; flex-shrink:0;
+}
+.wm-circle {
+  width:36px; height:36px; border-radius:50%;
+  border:1px solid var(--border-hi); background:none;
+}
+.wm-label {
+  font-size:.58rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted); white-space:nowrap;
+  -webkit-font-smoothing:antialiased;
+}
+.wm-bubble {
+  background:var(--card); border:1px solid var(--border);
+  padding:.85rem 1rem; font-size:.85rem; color:var(--cream-dim);
+  line-height:1.75; min-height:2.8rem; flex:1;
+}
+.wm-cursor {
+  display:inline-block; width:1px; height:.85em;
+  background:var(--muted); margin-left:2px; vertical-align:text-bottom;
+  animation:wm-blink .72s step-end infinite;
+}
+@keyframes wm-blink {
+  0%,100% { opacity:1; }
+  50%      { opacity:0; }
+}
+.wm-intake-content { opacity:0; transition:opacity .55s ease; }
+.wm-intake-content.visible { opacity:1; }
+.field::placeholder { transition:opacity .3s ease; }
+.field.ph-hidden::placeholder { opacity:0; }
+
 /* ── BUTTONS ── */
 .btn {
   display:inline-block; background:var(--wine); color:var(--cream);
@@ -246,9 +282,15 @@ body {
   padding:2.5rem 1.5rem;
 }
 .intake-wrap { width:100%; max-width:540px; }
-.step-eyebrow {
-  font-size:.68rem; letter-spacing:.22em; text-transform:uppercase;
-  color:var(--wine-hi); margin-bottom:.85rem;
+
+/* ── INTAKE PROGRESS ── */
+.intake-prog-bar {
+  width:100%; height:1px; background:var(--border);
+  margin-bottom:2rem;
+}
+.intake-prog-fill {
+  height:1px; background:var(--wine);
+  transition:width .4s ease;
 }
 .step-q {
   font-family:'Playfair Display',serif; font-size:clamp(1.3rem,4vw,1.75rem);
@@ -947,14 +989,29 @@ function renderIntake() {
   const step = INTAKE[intakeStep];
   const first = intakeStep === 0;
   const last  = intakeStep === INTAKE.length - 1;
+  const pct   = Math.round((intakeStep / (INTAKE.length - 1)) * 100);
 
-  let h = `<div class="step-eyebrow">${step.eyebrow}</div>
-            <div class="step-q">${step.q}</div>
-            ${step.note ? `<div class="step-note">${step.note}</div>` : '<div style="margin-bottom:2rem"></div>'}`;
+  let h = `<div class="intake-prog-bar">
+              <div class="intake-prog-fill" style="width:${pct}%"></div>
+            </div>`;
+
+  if (first) {
+    h += `<div class="wm-section">
+            <div class="wm-avatar">
+              <div class="wm-circle"></div>
+              <div class="wm-label">The Winemaster</div>
+            </div>
+            <div class="wm-bubble" id="wm-bubble"></div>
+          </div>
+          <div class="wm-intake-content" id="wm-content">`;
+  }
+
+  h += `<div class="step-q">${step.q}</div>
+        ${step.note ? `<div class="step-note">${step.note}</div>` : '<div style="margin-bottom:2rem"></div>'}`;
 
   if (step.type === 'text') {
     const v = intakeSel[step.id] || '';
-    h += `<textarea class="field" id="f-inp" rows="3" placeholder="${step.ph}">${v}</textarea>`;
+    h += `<textarea class="field" id="f-inp" rows="3" placeholder="">${v}</textarea>`;
   } else {
     h += `<div class="options">`;
     step.opts.forEach((o,i) => {
@@ -975,7 +1032,11 @@ function renderIntake() {
           <button class="btn" onclick="intakeNext()">${last?'Enter the cellar →':'Continue →'}</button>
         </div>`;
 
+  if (first) h += `</div>`; // close .wm-intake-content
+
   document.getElementById('intake-body').innerHTML = h;
+
+  if (first) typewriterWM('Every bottle starts here. Tell me what you brought.', cyclePlaceholder);
 }
 
 function pickOpt(i) {
@@ -1420,6 +1481,80 @@ function triggerCork() {
   }
 
   requestAnimationFrame(stepSpark);
+}
+
+// ── PLACEHOLDER CYCLE ──
+function cyclePlaceholder() {
+  const field = document.getElementById('f-inp');
+  if (!field) return;
+
+  const phrases = [
+    'An app that helps freelancers send invoices without chasing clients.',
+    'A way for landlords to screen tenants without running credit checks.',
+    'A tool that lets musicians log practice notes alongside their recordings.'
+  ];
+
+  let idx = 0;
+  field.placeholder = phrases[0];
+
+  const interval = setInterval(() => {
+    field.classList.add('ph-hidden');
+    setTimeout(() => {
+      idx = (idx + 1) % phrases.length;
+      field.placeholder = phrases[idx];
+      field.classList.remove('ph-hidden');
+    }, 300);
+  }, 3000);
+
+  field.addEventListener('focus', () => {
+    clearInterval(interval);
+    field.classList.remove('ph-hidden');
+    field.placeholder = '';
+  }, { once: true });
+}
+
+// ── WINEMASTER TYPEWRITER ──
+function typewriterWM(text, onComplete) {
+  const bubble  = document.getElementById('wm-bubble');
+  const content = document.getElementById('wm-content');
+  if (!bubble || !content) return;
+
+  let i = 0;
+  let skipped = false;
+
+  const cursor = document.createElement('span');
+  cursor.className = 'wm-cursor';
+
+  function finish() {
+    bubble.textContent = text;
+    cursor.remove();
+    content.classList.add('visible');
+    if (onComplete) onComplete();
+  }
+
+  function skipHandler() {
+    if (skipped) return;
+    skipped = true;
+    document.removeEventListener('click', skipHandler);
+    finish();
+  }
+
+  document.addEventListener('click', skipHandler);
+
+  function tick() {
+    if (skipped) return;
+    if (i <= text.length) {
+      bubble.textContent = text.slice(0, i);
+      bubble.appendChild(cursor);
+      i++;
+      setTimeout(tick, 28);
+    } else {
+      document.removeEventListener('click', skipHandler);
+      finish();
+    }
+  }
+
+  tick();
 }
 
 // ── INIT ──
