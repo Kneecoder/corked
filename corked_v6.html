@@ -777,7 +777,7 @@ let S = freshState();
 
 function freshState() {
   return {
-    idea:'', grape:'', maturity:-1, progress:-1, pace:-1,
+    idea:'', grape:'', maturity:-1, progress:-1, pace:-1, notifTiming:-1,
     elements:{ grape:'inert', tell:'inert', vintage:'inert', gap:'inert', echo:'inert', limit:'inert' },
     answers:{},
     label:{ grape:'', tell:'', vintage:'', gap:'', echo:'', limit:'' },
@@ -940,7 +940,7 @@ function buildMechs() {
 // ── INTAKE ──
 const INTAKE = [
   {
-    id:'idea', eyebrow:'The Idea · 1 of 4',
+    id:'idea', eyebrow:'The Idea · 1 of 5',
     q:'What is the idea?',
     note:'One sentence. What it is, not why it is good. Vague is fine.',
     type:'text', ph:'An app that...',
@@ -948,20 +948,20 @@ const INTAKE = [
     save: v => { S.idea = v.trim(); }
   },
   {
-    id:'maturity', eyebrow:'The Person · 2 of 4',
-    q:'Have you spoken to a real person who has this problem?',
+    id:'maturity', eyebrow:'The Person · 2 of 5',
+    q:'Is there a specific person behind this idea?',
     note:'The cellar works best when you arrive as you are.',
     type:'opts',
     opts:[
-      { l:'A', t:'Yes — I have a specific person in mind and have witnessed the problem firsthand.', s:'You have material. The mechanisms will draw it out.' },
-      { l:'B', t:'Yes — but I described my idea to them rather than observed the problem.', s:'You have a conversation. Whether it produced evidence is what Phase 1 finds out.' },
-      { l:'C', t:'No — but I am the person with this problem.', s:'You are the grape. Phase 1 will use that honestly.' },
-      { l:'D', t:'No — I have no one yet.', s:'That is honest. The mechanisms will tell you exactly what to go find.' }
+      { l:'A', t:'Yes — I have someone specific in mind and have watched this firsthand.', s:'You have a person and a scene. The mechanisms will draw from both.' },
+      { l:'B', t:'Yes — I have spoken to someone, but led with my idea rather than their situation.', s:'You have a conversation. Whether it surfaces evidence is what Phase 1 finds out.' },
+      { l:'C', t:'No — but I am the person this applies to.', s:'You are the grape. Phase 1 will use that honestly.' },
+      { l:'D', t:'No — I do not have a person yet.', s:'That is honest. The mechanisms will tell you exactly what to go find.' }
     ],
     save: v => { S.maturity = v; }
   },
   {
-    id:'progress', eyebrow:'Maturity · 3 of 4',
+    id:'progress', eyebrow:'Maturity · 3 of 5',
     q:'How far along is this idea?',
     note:null,
     type:'opts',
@@ -974,7 +974,7 @@ const INTAKE = [
     save: v => { S.progress = v; }
   },
   {
-    id:'pace', eyebrow:'Pace · 4 of 4',
+    id:'pace', eyebrow:'Pace · 4 of 5',
     q:'How often do you want to engage with this idea?',
     note:'Not a commitment. It calibrates the cellar.',
     type:'opts',
@@ -985,6 +985,19 @@ const INTAKE = [
       { l:'D', t:'Monthly',              s:'Back-burner. Alive but not urgent.' }
     ],
     save: v => { S.pace = v; }
+  },
+  {
+    id:'notifTiming', eyebrow:'Timing · 5 of 5',
+    q:'When does your head work best on something like this?',
+    note:'The cellar will reach you when you\'re already in the right place.',
+    type:'opts',
+    opts:[
+      { l:'A', t:'Morning — before the day gets in the way.', s:'Questions arrive when the day is still open.' },
+      { l:'B', t:'Midday — during a break.', s:'A thinking window between things.' },
+      { l:'C', t:'Evening — once the day is done.', s:'Settled, fewer interruptions.' },
+      { l:'D', t:'Late — after the house is quiet.', s:'Fewer interruptions. Long thoughts welcome.' }
+    ],
+    save: v => { S.notifTiming = v; }
   }
 ];
 
