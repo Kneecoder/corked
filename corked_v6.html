@@ -115,8 +115,8 @@ body {
 .landing-body {
   max-width:440px;
   color:#9A8A74;
-  font-size:.875rem;
-  line-height:2;
+  font-size:.9rem;
+  line-height:1.9;
   margin-bottom:3.2rem;
   letter-spacing:.01em;
 }
@@ -135,6 +135,20 @@ body {
   letter-spacing:.04em; margin-bottom:2rem;
   animation:landing-fade .9s ease both; animation-delay:.68s;
 }
+
+.landing-four {
+  display:flex; flex-direction:column; align-items:center;
+  gap:.62rem; margin:.55rem auto 2.8rem; max-width:440px;
+  animation:landing-fade .9s ease both; animation-delay:.35s;
+}
+.four-line {
+  font-family:'Playfair Display',serif; font-weight:400;
+  font-size:clamp(.9rem,2.3vw,1.05rem);
+  color:var(--cream-dim); text-align:center; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.four-line-gap { margin-top:.55rem; }
 .continue-row { display:flex; flex-direction:column; align-items:center; gap:.75rem; margin-bottom:1rem; }
 .continue-note { font-size:.72rem; color:var(--muted); letter-spacing:.08em; }
 
@@ -553,12 +567,16 @@ body {
 
   <div class="logo">Corked</div>
   <div class="rule"></div>
-  <div class="tagline">You had an idea. Corked helps you find out if it's real.</div>
-  <div class="landing-body">
-    A spark hits and for a moment it feels like everything. Then a day passes. A week. You find it again in your notes app, between two other things you never did anything with either. Not because the idea was bad. Because nothing happened to it.<br><br>
-    A spark left in a notes app doesn't age, it rots. No questions reach it. No pressure tests it. It just sits there, fading, taking up the same space as something real.
+  <div class="landing-four">
+    <div class="four-line">The note stays still.</div>
+    <div class="four-line">The idea in your head keeps moving.</div>
+    <div class="four-line four-line-gap">So do the others.</div>
+    <div class="four-line">The notes app is heavier than it looks.</div>
   </div>
-  <div class="landing-turn">The loudest idea is rarely the one that survives.</div>
+  <div class="landing-body">
+    Corked asks one hard question at a time. The first version stays visible. Your answers show what still holds, what changes, and what no longer fits.
+  </div>
+  <div class="landing-turn">The first version is not the verdict.</div>
 
   <div id="continue-row" class="continue-row" style="display:none">
     <button class="btn" onclick="continueSession()">Continue where you left off →</button>
@@ -567,7 +585,6 @@ body {
   </div>
 
   <div id="new-row">
-    <div class="landing-mechanic">Corked asks one hard question at a time until your idea either sharpens or fades.</div>
     <div class="bottle-cta-wrap" id="bottle-cta" onclick="triggerCork()" role="button" tabindex="0" aria-label="Cork an idea">
       <!--
         Wine bottle on its side: neck points LEFT, base points RIGHT.
