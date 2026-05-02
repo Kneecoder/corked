@@ -540,6 +540,52 @@ body {
 .label-actions { text-align:center; display:flex; flex-direction:column; align-items:center; gap:1.25rem; }
 .label-note { font-size:.8rem; color:var(--muted); max-width:420px; line-height:1.85; }
 
+/* ── LANDING SECTIONS ── */
+#landing-copy-container {
+  display:grid; width:100%; max-width:520px;
+  margin-bottom:2rem;
+}
+.landing-section {
+  grid-area:1/1; opacity:0; pointer-events:none;
+  text-align:center; padding:0 .5rem;
+}
+.landing-section.ls-active { opacity:1; pointer-events:auto; }
+.ls-transitions-active .landing-section { transition:opacity 800ms ease; }
+.ls-logo {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.8rem,8vw,4.5rem);
+  font-weight:300; letter-spacing:.22em; color:var(--cream);
+  margin-bottom:1.2rem; -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.ls-header {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.3rem,3.5vw,2rem);
+  font-weight:400; color:var(--cream);
+  margin-bottom:1.2rem; line-height:1.25;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.ls-rule { width:40px; height:1px; background:var(--border-hi); margin:0 auto 1.3rem; }
+.ls-body {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(.82rem,2vw,.92rem);
+  color:var(--cream-dim); line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+.ls-body p { margin-bottom:.8rem; }
+.ls-body p:last-child { margin-bottom:0; }
+#nav-dots {
+  display:flex; gap:.55rem; justify-content:center;
+  margin:.9rem 0 .5rem;
+}
+.dot {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--cream); opacity:.25;
+  cursor:pointer; transition:opacity .3s; flex-shrink:0;
+}
+.dot.dot-active { opacity:1; }
+
 /* ── RESPONSIVE ── */
 @media(max-width:700px){
   #screen-phase1{ flex-direction:column; }
@@ -553,6 +599,20 @@ body {
   .el-row{ border-bottom:none; padding:.2rem .5rem; background:var(--card); border:1px solid var(--border); }
   .phase-main{ padding:2rem 1.25rem; }
 }
+@media(max-width:767px){
+  #screen-landing{ overflow-y:auto; justify-content:flex-start; padding-top:3rem; }
+  #landing-copy-container{ display:contents; }
+  #ls-1{ order:1; }
+  #new-row{ order:2; }
+  #ls-2{ order:3; }
+  #ls-3{ order:4; }
+  .landing-section{
+    opacity:1 !important; pointer-events:auto !important;
+    grid-area:unset; margin-bottom:2.2rem;
+    width:100%; max-width:480px;
+  }
+  #nav-dots{ display:none; }
+}
 </style>
 </head>
 <body>
@@ -563,20 +623,57 @@ body {
 <!-- LANDING -->
 <div id="screen-landing" class="screen active">
 
-  <div class="landing-bottle-wrap" style="display:none"></div>
+  <div id="landing-copy-container" style="animation:landing-fade .9s ease both">
 
-  <div class="logo">Corked</div>
-  <div class="rule"></div>
-  <div class="landing-four">
-    <div class="four-line">The note stays still.</div>
-    <div class="four-line">The idea in your head keeps moving.</div>
-    <div class="four-line four-line-gap">So do the others.</div>
-    <div class="four-line">The notes app is heavier than it looks.</div>
+    <!-- Section 1: Hero -->
+    <div class="landing-section ls-active" id="ls-1">
+      <div class="ls-logo">Corked</div>
+      <div class="ls-rule"></div>
+      <div class="ls-body">
+        <p>You had an idea.<br>
+        A week later, it is in your notes app,<br>
+        between two others you never did anything with either.</p>
+        <p>A spark left in a notes app does not age.<br>
+        It rots.</p>
+        <p>You cork an idea.<br>
+        It ages.<br>
+        You find out if there is something real behind it.</p>
+      </div>
+    </div>
+
+    <!-- Section 2: What it does -->
+    <div class="landing-section" id="ls-2">
+      <div class="ls-header">The cellar knows what to ask.</div>
+      <div class="ls-rule"></div>
+      <div class="ls-body">
+        <p>Corked does not give you a blank page.<br>
+        It asks one question at a time, shaped around the idea you corked.</p>
+        <p>If your answer is vague, the next question narrows.<br>
+        If the idea starts changing, the cellar follows the change.<br>
+        If the idea has nothing underneath it, that becomes visible too.</p>
+        <p>You do not have to plan the process.<br>
+        You just answer the next question.</p>
+      </div>
+    </div>
+
+    <!-- Section 3: The record -->
+    <div class="landing-section" id="ls-3">
+      <div class="ls-header">The cellar becomes a record.</div>
+      <div class="ls-rule"></div>
+      <div class="ls-body">
+        <p>Every corked idea leaves a trace:<br>
+        what it was when it arrived,<br>
+        what the questions revealed,<br>
+        what changed,<br>
+        and whether anything survived.</p>
+        <p>Some become real.<br>
+        Some are archived.<br>
+        Some keep aging.</p>
+        <p>Together, they show the shape of your thinking better than a notes app ever could.</p>
+      </div>
+    </div>
+
   </div>
-  <div class="landing-body">
-    Corked asks one hard question at a time. The first version stays visible. Your answers show what still holds, what changes, and what no longer fits.
-  </div>
-  <div class="landing-turn">The first version is not the verdict.</div>
 
   <div id="continue-row" class="continue-row" style="display:none">
     <button class="btn" onclick="continueSession()">Continue where you left off →</button>
@@ -584,7 +681,7 @@ body {
     <button class="btn-ghost" onclick="newSession()">Start a new idea instead</button>
   </div>
 
-  <div id="new-row">
+  <div id="new-row" style="animation:landing-fade .9s ease both;animation-delay:.3s">
     <div class="bottle-cta-wrap" id="bottle-cta" onclick="triggerCork()" role="button" tabindex="0" aria-label="Cork an idea">
       <!--
         Wine bottle on its side: neck points LEFT, base points RIGHT.
@@ -687,6 +784,12 @@ body {
           </g>
         </g>
       </svg>
+
+      <div id="nav-dots" onclick="event.stopPropagation()">
+        <span class="dot dot-active" data-idx="0"></span>
+        <span class="dot" data-idx="1"></span>
+        <span class="dot" data-idx="2"></span>
+      </div>
 
       <div class="bottle-cta-label">Cork an idea</div>
     </div>
@@ -1648,6 +1751,83 @@ function typewriterWM(text, onComplete) {
   tick();
 }
 
+// ── LANDING SECTION FADER ──
+let lsIndex = 0;
+let lsTimer = null;
+let lsInTransit = false;
+let lsPausedUntil = 0;
+let lsMouseOnPage = false;
+
+function lsGoTo(next) {
+  if (lsInTransit) return;
+  const sections = document.querySelectorAll('.landing-section');
+  const dots     = document.querySelectorAll('.dot');
+  if (!sections.length) return;
+
+  const nextIdx = ((next % sections.length) + sections.length) % sections.length;
+  if (nextIdx === lsIndex && !lsInTransit) {
+    lsMaybeSchedule(); return;
+  }
+
+  lsInTransit = true;
+  clearTimeout(lsTimer);
+  sections[lsIndex].classList.remove('ls-active');
+
+  setTimeout(() => {
+    lsIndex = nextIdx;
+    sections[lsIndex].classList.add('ls-active');
+    dots.forEach((d, i) => d.classList.toggle('dot-active', i === lsIndex));
+    lsInTransit = false;
+    lsMaybeSchedule();
+  }, 1200); // 800ms fade-out + 400ms gap; fade-in handled by CSS
+}
+
+function lsMaybeSchedule() {
+  clearTimeout(lsTimer);
+  if (lsMouseOnPage) return;
+  const now = Date.now();
+  if (now < lsPausedUntil) {
+    lsTimer = setTimeout(lsMaybeSchedule, lsPausedUntil - now);
+    return;
+  }
+  lsTimer = setTimeout(() => {
+    lsGoTo((lsIndex + 1) % document.querySelectorAll('.landing-section').length);
+  }, 9000);
+}
+
+function lsInit() {
+  const newRow = document.getElementById('new-row');
+  if (!newRow || newRow.style.display === 'none') return;
+  if (window.matchMedia('(max-width:767px)').matches) return;
+
+  // Enable CSS transitions after initial render so section 1 appears instantly
+  setTimeout(() => {
+    const c = document.getElementById('landing-copy-container');
+    if (c) c.classList.add('ls-transitions-active');
+    lsMaybeSchedule();
+  }, 200);
+
+  document.querySelectorAll('.dot').forEach((d, i) => {
+    d.addEventListener('click', e => {
+      e.stopPropagation();
+      lsPausedUntil = Date.now() + 30000;
+      lsGoTo(i);
+    });
+  });
+
+  document.addEventListener('mousemove', () => {
+    if (!lsMouseOnPage) {
+      lsMouseOnPage = true;
+      clearTimeout(lsTimer);
+    }
+  });
+
+  document.addEventListener('mouseleave', () => {
+    lsMouseOnPage = false;
+    lsMaybeSchedule();
+  });
+}
+
 // ── INIT ──
 (function init() {
   const saved = loadSaved();
@@ -1683,6 +1863,8 @@ function typewriterWM(text, onComplete) {
       mover.setAttribute('transform', 'translate(0, 0)');
     });
   }
+
+  lsInit();
 })();
 </script>
 </body>
