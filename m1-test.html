@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Corked · M1 Grape Test</title>
+<style>
+  * { box-sizing: border-box; }
+
+  :root {
+    --bg: #0C0906;
+    --surface: #141009;
+    --card: #1C1410;
+    --border: #2A1F18;
+    --wine: #7A2E3C;
+    --wine-hi: #9B3D4F;
+    --cream: #EDE0C4;
+    --cream-dim: #B8A88A;
+    --muted: #8C7A64;
+    --green: #5DA876;
+    --yellow: #C9A040;
+    --red: #B85C5C;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--cream);
+    font-family: Inter, system-ui, sans-serif;
+    line-height: 1.55;
+  }
+
+  .wrap {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 48px 20px 80px;
+  }
+
+  h1 {
+    font-family: Georgia, serif;
+    font-weight: 400;
+    font-size: 34px;
+    margin: 0 0 8px;
+  }
+
+  .sub {
+    color: var(--muted);
+    max-width: 680px;
+    margin-bottom: 32px;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+
+  label {
+    display: block;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    font-size: 12px;
+    margin: 20px 0 8px;
+  }
+
+  select, textarea {
+    width: 100%;
+    background: var(--card);
+    color: var(--cream);
+    border: 1px solid var(--border);
+    padding: 13px;
+    font: inherit;
+    outline: none;
+  }
+
+  textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  select:focus, textarea:focus {
+    border-color: var(--wine);
+  }
+
+  button {
+    background: var(--wine);
+    color: var(--cream);
+    border: 0;
+    padding: 13px 20px;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  button:hover { background: var(--wine-hi); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+
+  .row {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 18px;
+  }
+
+  .status {
+    color: var(--muted);
+    font-size: 13px;
+    margin-right: auto;
+  }
+
+  .eyebrow {
+    color: var(--wine-hi);
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+
+  .result-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-top: 18px;
+    display: none;
+  }
+
+  .result-box.visible {
+    display: block;
+  }
+
+  .result-field {
+    margin-bottom: 16px;
+  }
+
+  .result-label {
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--wine-hi);
+    margin-bottom: 4px;
+  }
+
+  .result-value {
+    font-size: 14px;
+    color: var(--cream);
+    line-height: 1.5;
+  }
+
+  .pill {
+    display: inline-block;
+    border: 1px solid currentColor;
+    padding: 2px 8px;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  .settled { color: var(--green); }
+  .clearing { color: var(--yellow); }
+  .turbid { color: var(--red); }
+
+  pre {
+    background: #080604;
+    border: 1px solid var(--border);
+    color: var(--cream-dim);
+    padding: 14px;
+    overflow: auto;
+    white-space: pre-wrap;
+    max-height: 420px;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Corked · M1 Grape Test</h1>
+  <div class="sub">
+    Tests M1 across three maturity classes: extraction (someone specific in mind), self (user is the grape), direction (no person yet).
+  </div>
+
+  <div class="panel">
+    <label for="workerUrl">Worker endpoint</label>
+    <textarea id="workerUrl" style="min-height: 40px;" placeholder="https://your-worker.your-subdomain.workers.dev"></textarea>
+
+    <label for="spark">Spark (for M1 context)</label>
+    <textarea id="spark" placeholder="A tool that helps freelancers spot payment uncertainty before invoices become overdue."></textarea>
+
+    <label for="maturity">Maturity class</label>
+    <select id="maturity">
+      <option value="">—</option>
+      <option value="0">Extraction: someone specific in mind, observed firsthand</option>
+      <option value="1">Extraction: someone specific in mind, but led with idea</option>
+      <option value="2">Self: I am the person with this problem</option>
+      <option value="3">Direction: I do not have a person yet</option>
+    </select>
+
+    <label for="answer">M1 Answer</label>
+    <textarea id="answer" placeholder="My friend Sarah, a freelance designer who..."></textarea>
+
+    <div class="row">
+      <div class="status" id="status">Ready.</div>
+      <button onclick="runM1()" id="runBtn">Test M1</button>
+    </div>
+  </div>
+
+  <div class="result-box" id="resultBox">
+    <div class="eyebrow">M1 Result</div>
+
+    <div class="result-field">
+      <div class="result-label">Grape State</div>
+      <div class="result-value">
+        <span id="grapeState" class="pill">—</span>
+      </div>
+    </div>
+
+    <div class="result-field">
+      <div class="result-label">Named Person</div>
+      <div class="result-value" id="namedPerson">—</div>
+    </div>
+
+    <div class="result-field">
+      <div class="result-label">Person Kind</div>
+      <div class="result-value" id="personKind">—</div>
+    </div>
+
+    <div class="result-field">
+      <div class="result-label">Should Advance</div>
+      <div class="result-value" id="shouldAdvance">—</div>
+    </div>
+
+    <div class="result-field">
+      <div class="result-label">Observation</div>
+      <div class="result-value" id="observation">—</div>
+    </div>
+
+    <div class="result-field">
+      <div class="result-label">Next Instruction</div>
+      <div class="result-value" id="nextInstruction">—</div>
+    </div>
+
+    <div class="result-field">
+      <div class="result-label">Anchor Span</div>
+      <div class="result-value" id="anchorSpan" style="font-size: 12px; font-style: italic; color: var(--cream-dim);">—</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="eyebrow">Raw JSON</div>
+    <pre id="rawJson">—</pre>
+  </div>
+</div>
+
+<script>
+const els = {
+  workerUrl: document.getElementById('workerUrl'),
+  spark: document.getElementById('spark'),
+  maturity: document.getElementById('maturity'),
+  answer: document.getElementById('answer'),
+  status: document.getElementById('status'),
+  runBtn: document.getElementById('runBtn'),
+  resultBox: document.getElementById('resultBox'),
+  grapeState: document.getElementById('grapeState'),
+  namedPerson: document.getElementById('namedPerson'),
+  personKind: document.getElementById('personKind'),
+  shouldAdvance: document.getElementById('shouldAdvance'),
+  observation: document.getElementById('observation'),
+  nextInstruction: document.getElementById('nextInstruction'),
+  anchorSpan: document.getElementById('anchorSpan'),
+  rawJson: document.getElementById('rawJson')
+};
+
+const savedUrl = localStorage.getItem('corked_worker_url');
+if (savedUrl) els.workerUrl.value = savedUrl;
+
+async function runM1() {
+  const workerUrl = els.workerUrl.value.trim();
+  const spark = els.spark.value.trim();
+  const maturity = els.maturity.value;
+  const answer = els.answer.value.trim();
+
+  if (!workerUrl) {
+    els.status.textContent = 'Add your Worker endpoint first.';
+    return;
+  }
+
+  if (!spark) {
+    els.status.textContent = 'Provide a Spark for context.';
+    return;
+  }
+
+  if (maturity === '') {
+    els.status.textContent = 'Select a maturity class.';
+    return;
+  }
+
+  if (answer.length < 5) {
+    els.status.textContent = 'Write an M1 answer.';
+    return;
+  }
+
+  localStorage.setItem('corked_worker_url', workerUrl);
+
+  els.status.textContent = 'Testing M1...';
+  els.runBtn.disabled = true;
+  els.resultBox.classList.remove('visible');
+
+  try {
+    const res = await fetch(workerUrl + '/m1', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        spark_summary: spark,
+        maturity_class: parseInt(maturity),
+        question_text: 'Who is the one person behind this? Describe who they are.',
+        user_answer: answer,
+        schema_version: 'm1.v1'
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || data.error) {
+      throw new Error(data.error || 'Worker error');
+    }
+
+    renderM1(data);
+    els.status.textContent = 'M1 tested.';
+  } catch (err) {
+    els.status.textContent = 'Error: ' + err.message;
+    els.rawJson.textContent = err.stack || err.message;
+  } finally {
+    els.runBtn.disabled = false;
+  }
+}
+
+function renderM1(data) {
+  els.resultBox.classList.add('visible');
+
+  const grapeState = data.grape?.state || '—';
+  els.grapeState.textContent = grapeState;
+  els.grapeState.className = 'pill ' + grapeState;
+
+  els.namedPerson.textContent = data.grape?.named_person || '(none)';
+  els.personKind.textContent = data.grape?.person_kind || '—';
+  els.shouldAdvance.textContent = data.next_question?.should_advance ? 'YES' : 'NO';
+  els.observation.textContent = data.observation?.surface_text || '—';
+  els.nextInstruction.textContent = data.next_question?.framing || '(none)';
+  els.anchorSpan.textContent = data.observation?.anchor_span ? `"${data.observation.anchor_span}"` : '(not anchored)';
+
+  els.rawJson.textContent = JSON.stringify(data, null, 2);
+}
+</script>
+</body>
+</html>

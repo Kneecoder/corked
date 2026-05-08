@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Corked · M0 Spark Bottling Test</title>
+<style>
+  * { box-sizing: border-box; }
+
+  :root {
+    --bg: #0C0906;
+    --surface: #141009;
+    --card: #1C1410;
+    --border: #2A1F18;
+    --wine: #7A2E3C;
+    --wine-hi: #9B3D4F;
+    --cream: #EDE0C4;
+    --cream-dim: #B8A88A;
+    --muted: #8C7A64;
+    --green: #5DA876;
+    --yellow: #C9A040;
+    --red: #B85C5C;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--cream);
+    font-family: Inter, system-ui, sans-serif;
+    line-height: 1.55;
+  }
+
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 20px 80px;
+  }
+
+  h1 {
+    font-family: Georgia, serif;
+    font-weight: 400;
+    font-size: 34px;
+    margin: 0 0 8px;
+  }
+
+  .sub {
+    color: var(--muted);
+    max-width: 680px;
+    margin-bottom: 32px;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+
+  label {
+    display: block;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    font-size: 12px;
+    margin: 20px 0 8px;
+  }
+
+  input, textarea {
+    width: 100%;
+    background: var(--card);
+    color: var(--cream);
+    border: 1px solid var(--border);
+    padding: 13px;
+    font: inherit;
+    outline: none;
+  }
+
+  textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  input:focus, textarea:focus {
+    border-color: var(--wine);
+  }
+
+  button {
+    background: var(--wine);
+    color: var(--cream);
+    border: 0;
+    padding: 13px 20px;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  button:hover { background: var(--wine-hi); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+
+  .ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .row {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 18px;
+  }
+
+  .status {
+    color: var(--muted);
+    font-size: 13px;
+    margin-right: auto;
+  }
+
+  .bottled {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin-top: 18px;
+  }
+
+  .eyebrow {
+    color: var(--wine-hi);
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+
+  .line {
+    font-family: Georgia, serif;
+    font-size: 24px;
+    color: var(--cream);
+    line-height: 1.35;
+    margin-bottom: 18px;
+  }
+
+  .small {
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .pill {
+    display: inline-block;
+    border: 1px solid currentColor;
+    padding: 2px 8px;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  .digestible { color: var(--green); }
+  .thin { color: var(--yellow); }
+  .unusable { color: var(--red); }
+
+  .edit-area {
+    display: none;
+    margin-top: 16px;
+  }
+
+  pre {
+    background: #080604;
+    border: 1px solid var(--border);
+    color: var(--cream-dim);
+    padding: 14px;
+    overflow: auto;
+    white-space: pre-wrap;
+    max-height: 420px;
+    font-size: 12px;
+  }
+
+  .saved {
+    border-left: 2px solid var(--green);
+    padding-left: 14px;
+    color: var(--cream-dim);
+    display: none;
+    margin-top: 18px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Corked · M0 Spark Bottling</h1>
+  <div class="sub">
+    Raw Spark → Corked bottles it as User Line v1 → user keeps/edits. Tests whether M0 compresses without upgrading.
+  </div>
+
+  <div class="panel">
+    <label for="workerUrl">Worker endpoint</label>
+    <input id="workerUrl" placeholder="https://your-worker.your-subdomain.workers.dev" />
+
+    <label for="spark">Raw Spark</label>
+    <textarea id="spark" placeholder="Something for freelancers where they can see if a client is going to become annoying with payments."></textarea>
+
+    <div class="row">
+      <div class="status" id="status">Ready.</div>
+      <button onclick="runM0()" id="runBtn">Bottle Spark</button>
+    </div>
+  </div>
+
+  <div class="panel" id="resultPanel" style="display:none;">
+    <div class="eyebrow">This enters the cellar as</div>
+    <div class="line" id="entryLine">—</div>
+
+    <div class="small">
+      Digestibility:
+      <span class="pill" id="digestibility">—</span>
+    </div>
+
+    <div class="small" id="followup" style="margin-top:12px;"></div>
+
+    <div class="row">
+      <button class="ghost" onclick="showEdit()">Edit line</button>
+      <button onclick="keepLine()">Keep line</button>
+    </div>
+
+    <div class="edit-area" id="editArea">
+      <label for="editLine">Edit User Line</label>
+      <textarea id="editLine"></textarea>
+      <div class="small">Keep it as one sentence. Record what the idea does, not why it matters.</div>
+      <div class="row">
+        <button class="ghost" onclick="hideEdit()">Use Corked line</button>
+        <button onclick="saveEditedLine()">Save line</button>
+      </div>
+    </div>
+
+    <div class="saved" id="savedBox"></div>
+  </div>
+
+  <div class="panel">
+    <div class="eyebrow">Raw JSON</div>
+    <pre id="rawJson">—</pre>
+  </div>
+</div>
+
+<script>
+const els = {
+  workerUrl: document.getElementById('workerUrl'),
+  spark: document.getElementById('spark'),
+  status: document.getElementById('status'),
+  runBtn: document.getElementById('runBtn'),
+  resultPanel: document.getElementById('resultPanel'),
+  entryLine: document.getElementById('entryLine'),
+  digestibility: document.getElementById('digestibility'),
+  followup: document.getElementById('followup'),
+  editArea: document.getElementById('editArea'),
+  editLine: document.getElementById('editLine'),
+  savedBox: document.getElementById('savedBox'),
+  rawJson: document.getElementById('rawJson')
+};
+
+let lastM0 = null;
+
+const savedUrl = localStorage.getItem('corked_worker_url');
+if (savedUrl) els.workerUrl.value = savedUrl;
+
+async function runM0() {
+  const workerUrl = els.workerUrl.value.trim();
+  const rawSpark = els.spark.value.trim();
+
+  if (!workerUrl) {
+    els.status.textContent = 'Add your Worker endpoint first.';
+    return;
+  }
+
+  if (rawSpark.length < 5) {
+    els.status.textContent = 'Write a Spark first.';
+    return;
+  }
+
+  localStorage.setItem('corked_worker_url', workerUrl);
+
+  els.status.textContent = 'Bottling Spark...';
+  els.runBtn.disabled = true;
+  els.resultPanel.style.display = 'none';
+  els.savedBox.style.display = 'none';
+
+  try {
+    const res = await fetch(workerUrl + '/m0', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ raw_spark: rawSpark })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || data.error) {
+      throw new Error(data.error || 'Worker error');
+    }
+
+    lastM0 = data;
+    renderM0(data);
+    els.status.textContent = 'Spark bottled.';
+  } catch (err) {
+    els.status.textContent = 'Error: ' + err.message;
+    els.rawJson.textContent = err.stack || err.message;
+  } finally {
+    els.runBtn.disabled = false;
+  }
+}
+
+function renderM0(data) {
+  els.resultPanel.style.display = 'block';
+  els.entryLine.textContent = data.user_line_candidate || '—';
+
+  const state = data.digestibility?.state || '—';
+  els.digestibility.textContent = state;
+  els.digestibility.className = 'pill ' + state;
+
+  if (data.followup?.needed && data.followup?.question) {
+    els.followup.textContent = data.followup.question;
+  } else {
+    els.followup.textContent = '';
+  }
+
+  els.editLine.value = data.user_line_candidate || '';
+  els.rawJson.textContent = JSON.stringify(data, null, 2);
+}
+
+function showEdit() {
+  els.editArea.style.display = 'block';
+  els.editLine.focus();
+}
+
+function hideEdit() {
+  els.editArea.style.display = 'none';
+  els.editLine.value = lastM0?.user_line_candidate || '';
+}
+
+function keepLine() {
+  if (!lastM0) return;
+
+  const saved = {
+    spark: lastM0.raw_spark,
+    user_line: lastM0.user_line_candidate,
+    m0: lastM0
+  };
+
+  localStorage.setItem('corked_m0_saved', JSON.stringify(saved));
+  els.savedBox.style.display = 'block';
+  els.savedBox.textContent = 'Saved User Line: ' + saved.user_line;
+}
+
+function saveEditedLine() {
+  if (!lastM0) return;
+
+  const edited = els.editLine.value.trim();
+
+  if (edited.length < 8) {
+    els.status.textContent = 'Edited line is too thin.';
+    return;
+  }
+
+  const saved = {
+    spark: lastM0.raw_spark,
+    user_line: edited,
+    m0: lastM0,
+    user_edited: true
+  };
+
+  localStorage.setItem('corked_m0_saved', JSON.stringify(saved));
+  els.entryLine.textContent = edited;
+  els.editArea.style.display = 'none';
+  els.savedBox.style.display = 'block';
+  els.savedBox.textContent = 'Saved edited User Line: ' + edited;
+}
+</script>
+</body>
+</html>
