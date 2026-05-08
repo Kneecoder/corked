@@ -99,12 +99,6 @@
   button:hover { background: var(--wine-hi); }
   button:disabled { opacity: .45; cursor: not-allowed; }
 
-  .ghost {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-  }
-
   .row {
     display: flex;
     gap: 12px;
@@ -160,11 +154,6 @@
   .thin { color: var(--yellow); }
   .unusable { color: var(--red); }
 
-  .edit-area {
-    display: none;
-    margin-top: 16px;
-  }
-
   pre {
     background: #080604;
     border: 1px solid var(--border);
@@ -189,7 +178,7 @@
 <div class="wrap">
   <h1>Corked · M0 Spark Bottling</h1>
   <div class="sub">
-    Raw Spark → Corked bottles it as User Line v1 → user keeps/edits. Tests whether M0 compresses without upgrading.
+    Raw Spark → Corked bottles it as User Line v1 → user keeps or re-sparks. Tests whether M0 compresses without upgrading.
   </div>
 
   <div class="panel">
@@ -217,18 +206,7 @@
     <div class="small" id="followup" style="margin-top:12px;"></div>
 
     <div class="row">
-      <button class="ghost" onclick="showEdit()">Edit line</button>
       <button onclick="keepLine()">Keep line</button>
-    </div>
-
-    <div class="edit-area" id="editArea">
-      <label for="editLine">Edit User Line</label>
-      <textarea id="editLine"></textarea>
-      <div class="small">Keep it as one sentence. Record what the idea does, not why it matters.</div>
-      <div class="row">
-        <button class="ghost" onclick="hideEdit()">Use Corked line</button>
-        <button onclick="saveEditedLine()">Save line</button>
-      </div>
     </div>
 
     <div class="saved" id="savedBox"></div>
@@ -250,8 +228,6 @@ const els = {
   entryLine: document.getElementById('entryLine'),
   digestibility: document.getElementById('digestibility'),
   followup: document.getElementById('followup'),
-  editArea: document.getElementById('editArea'),
-  editLine: document.getElementById('editLine'),
   savedBox: document.getElementById('savedBox'),
   rawJson: document.getElementById('rawJson')
 };
@@ -320,18 +296,7 @@ function renderM0(data) {
     els.followup.textContent = '';
   }
 
-  els.editLine.value = data.user_line_candidate || '';
   els.rawJson.textContent = JSON.stringify(data, null, 2);
-}
-
-function showEdit() {
-  els.editArea.style.display = 'block';
-  els.editLine.focus();
-}
-
-function hideEdit() {
-  els.editArea.style.display = 'none';
-  els.editLine.value = lastM0?.user_line_candidate || '';
 }
 
 function keepLine() {
@@ -348,29 +313,7 @@ function keepLine() {
   els.savedBox.textContent = 'Saved User Line: ' + saved.user_line;
 }
 
-function saveEditedLine() {
-  if (!lastM0) return;
 
-  const edited = els.editLine.value.trim();
-
-  if (edited.length < 8) {
-    els.status.textContent = 'Edited line is too thin.';
-    return;
-  }
-
-  const saved = {
-    spark: lastM0.raw_spark,
-    user_line: edited,
-    m0: lastM0,
-    user_edited: true
-  };
-
-  localStorage.setItem('corked_m0_saved', JSON.stringify(saved));
-  els.entryLine.textContent = edited;
-  els.editArea.style.display = 'none';
-  els.savedBox.style.display = 'block';
-  els.savedBox.textContent = 'Saved edited User Line: ' + edited;
-}
 </script>
 </body>
 </html>
