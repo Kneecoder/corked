@@ -99,6 +99,18 @@
   button:hover { background: var(--wine-hi); }
   button:disabled { opacity: .45; cursor: not-allowed; }
 
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  button.btn-ghost:hover {
+    background: transparent;
+    color: var(--cream);
+    border-color: var(--muted);
+  }
+
   .row {
     display: flex;
     gap: 12px;
@@ -111,13 +123,6 @@
     color: var(--muted);
     font-size: 13px;
     margin-right: auto;
-  }
-
-  .bottled {
-    background: var(--card);
-    border: 1px solid var(--border);
-    padding: 24px;
-    margin-top: 18px;
   }
 
   .eyebrow {
@@ -133,26 +138,46 @@
     font-size: 24px;
     color: var(--cream);
     line-height: 1.35;
-    margin-bottom: 18px;
+    margin-bottom: 0;
   }
 
-  .small {
-    color: var(--muted);
-    font-size: 13px;
+  .wm-block {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
   }
 
-  .pill {
-    display: inline-block;
-    border: 1px solid currentColor;
-    padding: 2px 8px;
-    font-size: 11px;
-    letter-spacing: .1em;
+  .wm-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .wm-body {
+    flex: 1;
+  }
+
+  .wm-label {
+    color: var(--wine-hi);
     text-transform: uppercase;
+    letter-spacing: .18em;
+    font-size: 10px;
+    margin-bottom: 7px;
   }
 
-  .digestible { color: var(--green); }
-  .thin { color: var(--yellow); }
-  .unusable { color: var(--red); }
+  .wm-text {
+    color: var(--cream-dim);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 1.4em;
+    white-space: pre-wrap;
+  }
 
   pre {
     background: #080604;
@@ -195,18 +220,20 @@
   </div>
 
   <div class="panel" id="resultPanel" style="display:none;">
-    <div class="eyebrow">This enters the cellar as</div>
+    <div class="eyebrow" id="eyebrow">THIS ENTERS THE CELLAR AS</div>
     <div class="line" id="entryLine">—</div>
 
-    <div class="small">
-      Digestibility:
-      <span class="pill" id="digestibility">—</span>
+    <div class="wm-block">
+      <div class="wm-avatar"></div>
+      <div class="wm-body">
+        <div class="wm-label">Winemaster</div>
+        <div class="wm-text" id="wmText"></div>
+      </div>
     </div>
 
-    <div class="small" id="followup" style="margin-top:12px;"></div>
-
     <div class="row">
-      <button onclick="keepLine()">Keep line</button>
+      <button class="btn-ghost" id="resparkBtn" onclick="respark()" style="display:none;">Re-spark</button>
+      <button onclick="keepLine()" id="keepBtn">Keep line</button>
     </div>
 
     <div class="saved" id="savedBox"></div>
@@ -225,9 +252,11 @@ const els = {
   status: document.getElementById('status'),
   runBtn: document.getElementById('runBtn'),
   resultPanel: document.getElementById('resultPanel'),
+  eyebrow: document.getElementById('eyebrow'),
   entryLine: document.getElementById('entryLine'),
-  digestibility: document.getElementById('digestibility'),
-  followup: document.getElementById('followup'),
+  wmText: document.getElementById('wmText'),
+  resparkBtn: document.getElementById('resparkBtn'),
+  keepBtn: document.getElementById('keepBtn'),
   savedBox: document.getElementById('savedBox'),
   rawJson: document.getElementById('rawJson')
 };
@@ -237,19 +266,24 @@ let lastM0 = null;
 const savedUrl = localStorage.getItem('corked_worker_url');
 if (savedUrl) els.workerUrl.value = savedUrl;
 
+function typeOut(el, text, speed = 18) {
+  el.textContent = '';
+  let i = 0;
+  function tick() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      setTimeout(tick, speed);
+    }
+  }
+  tick();
+}
+
 async function runM0() {
   const workerUrl = els.workerUrl.value.trim();
   const rawSpark = els.spark.value.trim();
 
-  if (!workerUrl) {
-    els.status.textContent = 'Add your Worker endpoint first.';
-    return;
-  }
-
-  if (rawSpark.length < 5) {
-    els.status.textContent = 'Write a Spark first.';
-    return;
-  }
+  if (!workerUrl) { els.status.textContent = 'Add your Worker endpoint first.'; return; }
+  if (rawSpark.length < 5) { els.status.textContent = 'Write a Spark first.'; return; }
 
   localStorage.setItem('corked_worker_url', workerUrl);
 
@@ -266,10 +300,7 @@ async function runM0() {
     });
 
     const data = await res.json();
-
-    if (!res.ok || data.error) {
-      throw new Error(data.error || 'Worker error');
-    }
+    if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
 
     lastM0 = data;
     renderM0(data);
@@ -283,37 +314,39 @@ async function runM0() {
 }
 
 function renderM0(data) {
+  const state = data.digestibility?.state || 'unusable';
+  const unusable = state === 'unusable';
+
   els.resultPanel.style.display = 'block';
   els.entryLine.textContent = data.user_line_candidate || '—';
+  els.eyebrow.textContent = unusable ? 'CANNOT BE BOTTLED' : 'THIS ENTERS THE CELLAR AS';
 
-  const state = data.digestibility?.state || '—';
-  els.digestibility.textContent = state;
-  els.digestibility.className = 'pill ' + state;
+  const reason = data.digestibility?.reason || '';
+  const question = (data.followup?.needed && data.followup?.question) ? data.followup.question : '';
+  const wmContent = question ? `${reason}\n\n${question}` : reason;
+  typeOut(els.wmText, wmContent);
 
-  if (data.followup?.needed && data.followup?.question) {
-    els.followup.textContent = data.followup.question;
-  } else {
-    els.followup.textContent = '';
-  }
+  els.keepBtn.style.display = unusable ? 'none' : '';
+  els.resparkBtn.style.display = unusable ? '' : 'none';
 
   els.rawJson.textContent = JSON.stringify(data, null, 2);
 }
 
 function keepLine() {
   if (!lastM0) return;
-
-  const saved = {
-    spark: lastM0.raw_spark,
-    user_line: lastM0.user_line_candidate,
-    m0: lastM0
-  };
-
+  const saved = { spark: lastM0.raw_spark, user_line: lastM0.user_line_candidate, m0: lastM0 };
   localStorage.setItem('corked_m0_saved', JSON.stringify(saved));
   els.savedBox.style.display = 'block';
   els.savedBox.textContent = 'Saved User Line: ' + saved.user_line;
 }
 
-
+function respark() {
+  els.resultPanel.style.display = 'none';
+  els.spark.value = '';
+  els.spark.focus();
+  els.status.textContent = 'Ready.';
+  lastM0 = null;
+}
 </script>
 </body>
 </html>
