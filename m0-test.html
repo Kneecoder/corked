@@ -262,6 +262,7 @@ const els = {
 };
 
 let lastM0 = null;
+let lastState = null;
 
 const savedUrl = localStorage.getItem('corked_worker_url');
 if (savedUrl) els.workerUrl.value = savedUrl;
@@ -326,8 +327,10 @@ function renderM0(data) {
   const wmContent = question ? `${reason}\n\n${question}` : reason;
   typeOut(els.wmText, wmContent);
 
+  lastState = state;
+  const thinWithQuestion = state === 'thin' && data.followup?.needed;
   els.keepBtn.style.display = unusable ? 'none' : '';
-  els.resparkBtn.style.display = unusable ? '' : 'none';
+  els.resparkBtn.style.display = (unusable || thinWithQuestion) ? '' : 'none';
 
   els.rawJson.textContent = JSON.stringify(data, null, 2);
 }
@@ -341,10 +344,10 @@ function keepLine() {
 }
 
 function respark() {
-  els.spark.value = '';
+  if (lastState === 'unusable') { els.spark.value = ''; lastM0 = null; }
   els.spark.focus();
+  els.spark.setSelectionRange(els.spark.value.length, els.spark.value.length);
   els.status.textContent = 'Ready.';
-  lastM0 = null;
 }
 </script>
 </body>
