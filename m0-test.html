@@ -328,9 +328,9 @@ function renderM0(data) {
   typeOut(els.wmText, wmContent);
 
   lastState = state;
-  const thinWithQuestion = state === 'thin' && data.followup?.needed;
   els.keepBtn.style.display = unusable ? 'none' : '';
-  els.resparkBtn.style.display = (unusable || thinWithQuestion) ? '' : 'none';
+  els.keepBtn.textContent = state === 'thin' ? 'Bottle as is' : 'Keep line';
+  els.resparkBtn.style.display = '';
 
   els.rawJson.textContent = JSON.stringify(data, null, 2);
 }
