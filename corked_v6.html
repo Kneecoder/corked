@@ -1060,9 +1060,9 @@ function buildMechs() {
 // ── INTAKE ──
 const INTAKE = [
   {
-    id:'idea', eyebrow:'The Idea · 1 of 5',
-    q:'What is the idea?',
-    note:'One sentence. What it is, not why it is good. Vague is fine.',
+    id:'idea', eyebrow:'The Spark · 1 of 5',
+    q:'What did you bring to the cellar?',
+    note:'Do not polish the spark. Corked only needs enough shape to bottle it.',
     type:'text', ph:'An app that...',
     ok: v => v.trim().length > 4,
     save: v => { S.idea = v.trim(); }
@@ -1157,6 +1157,40 @@ function renderIntake() {
   if (step.type === 'text') {
     const v = intakeSel[step.id] || '';
     h += `<textarea class="field" id="f-inp" rows="3" placeholder="">${v}</textarea>`;
+    if (intakeStep === 0) {
+      h += `
+      <div id="m0-config" style="display:none;margin-top:14px">
+        <label style="display:block;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;font-size:.67rem;margin-bottom:6px">Worker endpoint</label>
+        <input id="v6-worker-url" class="field"
+               placeholder="https://your-worker.workers.dev"
+               style="font-size:.8rem"
+               value="${localStorage.getItem('corked_worker_url') || ''}"
+               oninput="v6SaveWorkerUrl()" onblur="v6SaveWorkerUrl()">
+      </div>
+      <div id="m0-result" style="display:none;margin-top:16px;background:var(--card);border:1px solid var(--border);padding:18px 20px">
+        <div class="mech-eyebrow" id="m0-eyebrow">THIS ENTERS THE CELLAR AS</div>
+        <div id="m0-entry-line" style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--cream);line-height:1.35"></div>
+        <div class="wm-section" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);margin-bottom:0">
+          <div class="wm-avatar">
+            <div class="wm-circle"></div>
+            <div class="wm-label">The Winemaster</div>
+          </div>
+          <div class="wm-bubble" id="m0-wm-text" style="min-height:1.5rem;font-size:.82rem;white-space:pre-wrap"></div>
+        </div>
+        <div id="m0-followup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+          <div id="m0-followup-q" style="font-size:.82rem;color:var(--cream-dim);line-height:1.65;margin-bottom:10px"></div>
+          <textarea id="m0-followup-ans" class="field" rows="2" placeholder="Your answer…" oninput="v6FollowupChange()" style="font-size:.85rem"></textarea>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <div></div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-ghost" id="m0-rewrite-btn" onclick="v6Rewrite()" style="display:none">Rewrite</button>
+            <button class="btn-sm" id="m0-bottle-btn" onclick="v6BottleThis()" style="display:none">Bottle this</button>
+          </div>
+        </div>
+      </div>
+      `;
+    }
   } else {
     h += `<div class="options">`;
     step.opts.forEach((o,i) => {
@@ -1172,16 +1206,23 @@ function renderIntake() {
     h += `</div>`;
   }
 
-  h += `<div class="row">
-          <button class="btn-ghost" onclick="intakeBack()" style="opacity:${first?0:1};pointer-events:${first?'none':'auto'}">← Back</button>
-          <button class="btn" onclick="intakeNext()">${last?'Enter the cellar →':'Continue →'}</button>
-        </div>`;
+  if (first) {
+    h += `<div id="v6-bottom-bar" class="row" style="margin-top:2rem">
+            <span id="v6-bottle-status" style="font-size:.72rem;color:var(--muted)"></span>
+            <button class="btn" id="v6-bottle-btn" onclick="v6BottleSpark()">Bottle spark →</button>
+          </div>`;
+  } else {
+    h += `<div class="row">
+            <button class="btn-ghost" onclick="intakeBack()" style="opacity:${first?0:1};pointer-events:${first?'none':'auto'}">← Back</button>
+            <button class="btn" onclick="intakeNext()">${last?'Enter the cellar →':'Continue →'}</button>
+          </div>`;
+  }
 
   if (first) h += `</div>`; // close .wm-intake-content
 
   document.getElementById('intake-body').innerHTML = h;
 
-  if (first) typewriterWM('Every bottle starts here. Tell me what you brought.', cyclePlaceholder);
+  if (first) typewriterWM('Every bottle starts here.', cyclePlaceholder);
 }
 
 function pickOpt(i) {
@@ -1635,7 +1676,7 @@ function cyclePlaceholder() {
   clearInterval(phInterval);
 
   const field = document.getElementById('f-inp');
-  if (!field) return;
+  if (!field || field.value.trim() || document.activeElement === field) return;
 
   const phrases = [
     'An app that helps freelancers send invoices without chasing clients.',
@@ -1866,6 +1907,159 @@ function lsInit() {
 
   lsInit();
 })();
+
+// ── M0 INTEGRATION ──
+window._v6M0 = { data: null, state: null };
+
+function v6GetWorkerUrl() {
+  const inp = document.getElementById('v6-worker-url');
+  if (inp && inp.value.trim()) return inp.value.trim();
+  return localStorage.getItem('corked_worker_url') || '';
+}
+
+function v6SaveWorkerUrl() {
+  const inp = document.getElementById('v6-worker-url');
+  if (!inp) return;
+  const url = inp.value.trim();
+  if (url) localStorage.setItem('corked_worker_url', url);
+}
+
+async function v6BottleSpark() {
+  const inp = document.getElementById('f-inp');
+  const spark = (inp || {}).value || '';
+  const status = document.getElementById('v6-bottle-status');
+
+  if (spark.trim().length < 5) {
+    if (status) status.textContent = 'Write an idea first.';
+    return;
+  }
+
+  const workerUrl = v6GetWorkerUrl();
+  if (!workerUrl) {
+    const cfg = document.getElementById('m0-config');
+    if (cfg) { cfg.style.display = 'block'; document.getElementById('v6-worker-url').focus(); }
+    if (status) status.textContent = 'Enter Worker URL above.';
+    return;
+  }
+
+  const btn = document.getElementById('v6-bottle-btn');
+  if (btn) btn.disabled = true;
+  if (status) status.textContent = 'Bottling…';
+
+  try {
+    const res = await fetch(workerUrl + '/m0', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ raw_spark: spark.trim() })
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
+    window._v6M0.data = data;
+    if (status) status.textContent = '';
+    v6RenderM0(data);
+  } catch (err) {
+    if (btn) btn.disabled = false;
+    if (status) status.textContent = 'Error: ' + err.message;
+  }
+}
+
+function v6RenderM0(data) {
+  const state = data.digestibility?.state || 'unusable';
+  const needsFollowup = !!(data.followup?.needed && data.followup?.question);
+  window._v6M0.state = state;
+
+  // Lock the spark field
+  const inp = document.getElementById('f-inp');
+  if (inp) { inp.setAttribute('readonly', ''); inp.style.opacity = '0.45'; }
+
+  // Hide bottom action bar — panel is now the only action zone
+  const bar = document.getElementById('v6-bottom-bar');
+  if (bar) bar.style.display = 'none';
+
+  // Populate result panel
+  document.getElementById('m0-eyebrow').textContent = state === 'unusable' ? 'CANNOT BE BOTTLED' : 'THIS ENTERS THE CELLAR AS';
+  document.getElementById('m0-entry-line').textContent = data.user_line_candidate || '—';
+  v6TypeOut(document.getElementById('m0-wm-text'), data.digestibility?.reason || '');
+
+  // Followup block — shown for thin/unusable when followup present
+  const followupBlock = document.getElementById('m0-followup');
+  const followupQ = document.getElementById('m0-followup-q');
+  const followupAns = document.getElementById('m0-followup-ans');
+  if (needsFollowup) {
+    if (followupQ) followupQ.textContent = data.followup.question;
+    if (followupAns) followupAns.value = '';
+    if (followupBlock) followupBlock.style.display = 'block';
+  } else {
+    if (followupBlock) followupBlock.style.display = 'none';
+  }
+
+  // Show panel, show action buttons
+  document.getElementById('m0-result').style.display = 'block';
+  const rewriteBtn = document.getElementById('m0-rewrite-btn');
+  const bottleBtn = document.getElementById('m0-bottle-btn');
+  if (rewriteBtn) rewriteBtn.style.display = '';
+  if (bottleBtn) {
+    bottleBtn.style.display = '';
+    bottleBtn.disabled = needsFollowup; // disabled until followup answered
+  }
+}
+
+function v6FollowupChange() {
+  const ans = document.getElementById('m0-followup-ans');
+  const btn = document.getElementById('m0-bottle-btn');
+  if (btn) btn.disabled = !(ans && ans.value.trim());
+}
+
+function v6TypeOut(el, text, speed) {
+  if (!el) return;
+  speed = speed || 18;
+  el.textContent = '';
+  let i = 0;
+  function tick() { if (i < text.length) { el.textContent += text[i++]; setTimeout(tick, speed); } }
+  tick();
+}
+
+function v6BottleThis() {
+  const data = window._v6M0.data;
+  if (!data) return;
+
+  const followupAns = document.getElementById('m0-followup-ans');
+  const followupAnswer = followupAns ? followupAns.value.trim() : '';
+
+  const inp = document.getElementById('f-inp');
+  if (inp) { inp.value = data.user_line_candidate || ''; inp.removeAttribute('readonly'); inp.style.opacity = ''; }
+
+  localStorage.setItem('corked_m0_saved', JSON.stringify({
+    spark: data.raw_spark,
+    user_line: data.user_line_candidate,
+    followup_answer: followupAnswer || null,
+    m0: data
+  }));
+
+  intakeNext();
+}
+
+function v6Rewrite() {
+  const inp = document.getElementById('f-inp');
+  if (inp) {
+    inp.removeAttribute('readonly');
+    inp.style.opacity = '';
+    if (window._v6M0.state === 'unusable') inp.value = '';
+    inp.focus();
+    inp.setSelectionRange(inp.value.length, inp.value.length);
+  }
+
+  document.getElementById('m0-result').style.display = 'none';
+
+  const bar = document.getElementById('v6-bottom-bar');
+  if (bar) bar.style.display = '';
+
+  const btn = document.getElementById('v6-bottle-btn');
+  if (btn) btn.disabled = false;
+
+  const status = document.getElementById('v6-bottle-status');
+  if (status) status.textContent = '';
+}
 </script>
 </body>
 </html>
