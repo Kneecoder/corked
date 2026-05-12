@@ -613,6 +613,60 @@ body {
   }
   #nav-dots{ display:none; }
 }
+
+/* ── M0 RESULT PANEL ── */
+.m0-stamp {
+  position:relative;
+  background:var(--surface);
+  border-bottom:1px solid var(--border-hi);
+  padding:22px 24px 20px;
+}
+.m0-stamp::before {
+  content:'';
+  position:absolute;
+  top:5px; left:5px; right:5px; bottom:5px;
+  border:1px solid var(--border);
+  pointer-events:none;
+}
+.m0-stamp-eyebrow {
+  font-size:.58rem;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:13px;
+  -webkit-font-smoothing:antialiased;
+}
+.m0-stamp-line {
+  font-family:'Playfair Display',serif;
+  font-size:1.45rem;
+  font-weight:400;
+  color:var(--cream);
+  line-height:1.4;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.m0-seal {
+  position:absolute;
+  top:13px; right:15px;
+  color:var(--gold);
+  opacity:.28;
+  pointer-events:none;
+}
+.m0-secondary { padding:14px 20px 20px; }
+.m0-obs-label {
+  font-size:.58rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:5px;
+  -webkit-font-smoothing:antialiased;
+}
+.m0-obs-text {
+  font-size:.78rem;
+  color:var(--muted);
+  line-height:1.65;
+  white-space:pre-wrap;
+}
 </style>
 </head>
 <body>
@@ -1167,25 +1221,28 @@ function renderIntake() {
                value="${localStorage.getItem('corked_worker_url') || ''}"
                oninput="v6SaveWorkerUrl()" onblur="v6SaveWorkerUrl()">
       </div>
-      <div id="m0-result" style="display:none;margin-top:16px;background:var(--card);border:1px solid var(--border);padding:18px 20px">
-        <div class="mech-eyebrow" id="m0-eyebrow">THIS ENTERS THE CELLAR AS</div>
-        <div id="m0-entry-line" style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--cream);line-height:1.35"></div>
-        <div class="wm-section" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);margin-bottom:0">
-          <div class="wm-avatar">
-            <div class="wm-circle"></div>
-            <div class="wm-label">The Winemaster</div>
+      <div id="m0-result" style="display:none;margin-top:16px;border:1px solid var(--border);overflow:hidden">
+        <div class="m0-stamp">
+          <svg class="m0-seal" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="12.5" stroke="currentColor" stroke-width=".75"/>
+            <circle cx="14" cy="14" r="8.5" stroke="currentColor" stroke-width=".5"/>
+          </svg>
+          <div class="m0-stamp-eyebrow" id="m0-eyebrow">THIS ENTERS THE CELLAR AS</div>
+          <div class="m0-stamp-line" id="m0-entry-line"></div>
+        </div>
+        <div class="m0-secondary">
+          <div class="m0-obs-label">Winemaster</div>
+          <div class="m0-obs-text" id="m0-wm-text"></div>
+          <div id="m0-followup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+            <div id="m0-followup-q" style="font-size:.82rem;color:var(--cream-dim);line-height:1.65;margin-bottom:10px"></div>
+            <textarea id="m0-followup-ans" class="field" rows="2" placeholder="Your answer…" oninput="v6FollowupChange()" style="font-size:.85rem"></textarea>
           </div>
-          <div class="wm-bubble" id="m0-wm-text" style="min-height:1.5rem;font-size:.82rem;white-space:pre-wrap"></div>
-        </div>
-        <div id="m0-followup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-          <div id="m0-followup-q" style="font-size:.82rem;color:var(--cream-dim);line-height:1.65;margin-bottom:10px"></div>
-          <textarea id="m0-followup-ans" class="field" rows="2" placeholder="Your answer…" oninput="v6FollowupChange()" style="font-size:.85rem"></textarea>
-        </div>
-        <div class="row" style="margin-top:14px">
-          <div></div>
-          <div style="display:flex;gap:10px">
-            <button class="btn-ghost" id="m0-rewrite-btn" onclick="v6Rewrite()" style="display:none">Rewrite</button>
-            <button class="btn-sm" id="m0-bottle-btn" onclick="v6BottleThis()" style="display:none">Bottle this</button>
+          <div class="row" style="margin-top:14px">
+            <div></div>
+            <div style="display:flex;gap:10px">
+              <button class="btn-ghost" id="m0-rewrite-btn" onclick="v6Rewrite()" style="display:none">Rewrite</button>
+              <button class="btn-sm" id="m0-bottle-btn" onclick="v6BottleThis()" style="display:none">Bottle this</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1964,7 +2021,7 @@ async function v6BottleSpark() {
 }
 
 function v6RenderM0(data) {
-  const state = data.digestibility?.state || 'unusable';
+  const state = data.digestibility?.state || 'unbottleable';
   const needsFollowup = !!(data.followup?.needed && data.followup?.question);
   window._v6M0.state = state;
 
@@ -1977,7 +2034,7 @@ function v6RenderM0(data) {
   if (bar) bar.style.display = 'none';
 
   // Populate result panel
-  document.getElementById('m0-eyebrow').textContent = state === 'unusable' ? 'CANNOT BE BOTTLED' : 'THIS ENTERS THE CELLAR AS';
+  document.getElementById('m0-eyebrow').textContent = state === 'unbottleable' ? 'CANNOT BE BOTTLED' : 'THIS ENTERS THE CELLAR AS';
   document.getElementById('m0-entry-line').textContent = data.user_line_candidate || '—';
   v6TypeOut(document.getElementById('m0-wm-text'), data.digestibility?.reason || '');
 
@@ -2044,7 +2101,7 @@ function v6Rewrite() {
   if (inp) {
     inp.removeAttribute('readonly');
     inp.style.opacity = '';
-    if (window._v6M0.state === 'unusable') inp.value = '';
+    if (window._v6M0.state === 'unbottleable') inp.value = '';
     inp.focus();
     inp.setSelectionRange(inp.value.length, inp.value.length);
   }

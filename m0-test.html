@@ -315,8 +315,8 @@ async function runM0() {
 }
 
 function renderM0(data) {
-  const state = data.digestibility?.state || 'unusable';
-  const unusable = state === 'unusable';
+  const state = data.digestibility?.state || 'unbottleable';
+  const unusable = state === 'unbottleable';
 
   els.resultPanel.style.display = 'block';
   els.entryLine.textContent = data.user_line_candidate || '—';
@@ -329,7 +329,7 @@ function renderM0(data) {
 
   lastState = state;
   els.keepBtn.style.display = unusable ? 'none' : '';
-  els.keepBtn.textContent = state === 'thin' ? 'Bottle as is' : 'Keep line';
+  els.keepBtn.textContent = state === 'bottleable_cloudy' ? 'Bottle as is' : 'Keep line';
   els.resparkBtn.style.display = '';
 
   els.rawJson.textContent = JSON.stringify(data, null, 2);
@@ -344,7 +344,7 @@ function keepLine() {
 }
 
 function respark() {
-  if (lastState === 'unusable') { els.spark.value = ''; lastM0 = null; }
+  if (lastState === 'unbottleable') { els.spark.value = ''; lastM0 = null; }
   els.spark.focus();
   els.spark.setSelectionRange(els.spark.value.length, els.spark.value.length);
   els.status.textContent = 'Ready.';
