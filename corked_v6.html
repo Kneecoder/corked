@@ -1214,6 +1214,8 @@ const EL_KEYS = Object.keys(EL_META);
 // ── MECHANISMS ──
 function buildMechs() {
   const g = S.grape || 'the person you named';
+  const m1Setup = S.m0?.m1_setup;
+  const sparkText = getSparkSummary();
   const selfMode = S.maturity === 2 && g === 'you';
   const m2q = selfMode
     ? `Stay inside the instance you just described.\n\nWhat did you actually do next? Write the observable steps. What could a camera capture?`
@@ -1226,13 +1228,6 @@ function buildMechs() {
   // maturity: 0=witnessed, 1=talked but described idea, 2=self, 3=no one
   let m1q, m1hint, m1obs;
 
-  // M1 framing: three tiers
-  // Tier 1 — M0 returned m1_setup: fully spark-aware question + labels + placeholders
-  // Tier 2 — M0 ran but no m1_setup: embed spark in question, clean generic fields
-  // Tier 3 — No M0: hardcoded fallback with pronoun fixed
-  const m1Setup = S.m0?.m1_setup;
-  const sparkText = getSparkSummary();
-
   if (S.maturity === 3) {
     m1q = `Before this moves forward, you need a real person.\n\nNot a type — a name. Someone in your life who actually has this problem right now. Go find them. Come back with a name and something about who they are.`;
     m1hint = 'The cellar will wait. This is not a blocker — it is an instruction.';
@@ -1241,14 +1236,11 @@ function buildMechs() {
       return "Something is here. Whether a real person exists behind it is what the next step will surface.";
     };
   } else if (S.maturity === 2) {
-    if (m1Setup?.question) {
-      // Tier 1: fully spark-aware
-      m1q = m1Setup.question;
-      m1hint = m1Setup.hint || 'Describe it like a camera was there.';
-    } else if (sparkText) {
+    const role = m1Setup?.person_label || 'person with the problem';
+    if (sparkText) {
       // Tier 2: embed spark, clean generic
-      m1q = `You're the evidence.\n\n"${sparkText}"\n\nGive us one specific time this was real for you — not the general sense that it's a problem. One moment you can name.`;
-      m1hint = 'When exactly. What you were doing. What you did about it.';
+      m1q = `You are the ${role.toLowerCase()} in this spark.\n\n"${sparkText}"\n\nGive us one specific time this was real for you. One moment you can name.`;
+      m1hint = m1Setup?.hint || 'When exactly. What you were trying to do. What happened next.';
     } else {
       // Tier 3: fallback
       m1q = `You're the evidence.\n\nWe need one specific moment — not the general pattern, not how it made you feel. One time this actually happened. Place it on record.`;
@@ -1796,10 +1788,23 @@ function configureM1Fields() {
   const whenLbl     = document.getElementById('m1-when-label');
   const tryingLbl   = document.getElementById('m1-trying-label');
   const happenedLbl = document.getElementById('m1-happened-label');
+  const setupLabel = (value) => String(value || '')
+    .replace(/\bor felt\b/ig, 'or did')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const perspectiveLabel = (value) => {
+    const cleaned = setupLabel(value);
+    if (!isSelf) return cleaned;
+    return cleaned
+      .replace(/\bthe founder was\b/ig, 'you were')
+      .replace(/\bthe founder\b/ig, 'you')
+      .replace(/\bthey were\b/ig, 'you were')
+      .replace(/\bthey\b/ig, 'you');
+  };
 
-  if (whenLbl)     whenLbl.textContent     = setup?.when_label     || 'When did it happen?';
-  if (tryingLbl)   tryingLbl.textContent   = setup?.trying_label   || (isSelf ? 'What were you trying to do?' : 'What were they trying to do?');
-  if (happenedLbl) happenedLbl.textContent = setup?.happened_label || 'What actually happened?';
+  if (whenLbl)     whenLbl.textContent     = setupLabel(setup?.when_label) || 'When did it happen?';
+  if (tryingLbl)   tryingLbl.textContent   = perspectiveLabel(setup?.trying_label) || (isSelf ? 'What were you trying to do?' : 'What were they trying to do?');
+  if (happenedLbl) happenedLbl.textContent = perspectiveLabel(setup?.happened_label) || 'What actually happened?';
 
   // ── Placeholders: Tier 1 spark-aware, else blank (no misleading hardcoded examples) ──
   const whenEl     = document.getElementById('m1-when');
