@@ -58,6 +58,9 @@ No praise.
 No validation.
 No coaching.
 No startup language.
+No generic AI/product language.
+No em dashes or en dashes in any returned string. Use short sentences or commas.
+No contrast formulas like "not X, but Y" or "not just X". Say the finding directly.
 No explanatory brackets.
 No "implied person (...)" phrasing.
 No "both present" phrasing.
@@ -109,6 +112,9 @@ No praise.
 No coaching.
 No questions.
 No warmth.
+No generic AI/product language.
+No em dashes or en dashes in any returned string. Use short sentences or commas.
+No contrast formulas like "not X, but Y" or "not just X". Say the finding directly.
 
 Return only JSON.`;
 
@@ -221,8 +227,108 @@ async function callClaude(env, system, content) {
   }
 }
 
+const M0_BANNED_USER_LINE_TERMS = [
+  'platform',
+  'revolutionary',
+  'optimize',
+  'transformation',
+  'seamless',
+  'empower',
+  'validate',
+  'validation',
+  'ICP',
+  'persona',
+  'target user',
+  'value proposition',
+  'pain point'
+];
+
+const GENERIC_AI_PATTERNS = [
+  { name: 'not_x_but_y', re: /\bnot\b[^.!?]{0,90}\bbut\b/i },
+  { name: 'not_just', re: /\bnot\s+just\b/i },
+  { name: 'this_is_not', re: /\bthis\s+is\s+not\b/i },
+  { name: 'more_than', re: /\bmore\s+than\s+(just\s+)?/i }
+];
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function cleanVisibleText(value) {
+  if (typeof value !== 'string') return value;
+
+  let out = value
+    .replace(/[—–]/g, ',')
+    .replace(/\bthis\s+is\s+not\s+[^,.!?]+,\s*but\s+/ig, '')
+    .replace(/\bnot\s+[^,.!?]+,\s*but\s+/ig, '')
+    .replace(/\bnot\s+just\s+/ig, '')
+    .replace(/\bmore\s+than\s+just\s+/ig, '')
+    .replace(/\bmore\s+than\s+/ig, '')
+    .replace(/\s+/g, ' ')
+    .replace(/\s+,/g, ',')
+    .replace(/,\s*,+/g, ',')
+    .trim();
+
+  return out
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+([.,?!])/g, '$1')
+    .replace(/,\s*([.!?])/g, '$1')
+    .replace(/\(\s*\)/g, '')
+    .replace(/\s+,/g, ',')
+    .replace(/,\s*,+/g, ',')
+    .trim();
+}
+
+function cleanVisibleFields(obj, paths) {
+  for (const path of paths) {
+    const parts = path.split('.');
+    let cur = obj;
+
+    for (let i = 0; i < parts.length - 1; i++) {
+      cur = cur?.[parts[i]];
+      if (!cur) break;
+    }
+
+    const key = parts[parts.length - 1];
+    if (cur && typeof cur[key] === 'string') {
+      cur[key] = cleanVisibleText(cur[key]);
+    }
+  }
+
+  return obj;
+}
+
+function findVisibleStyleViolations(obj, paths) {
+  const violations = [];
+
+  for (const path of paths) {
+    const parts = path.split('.');
+    let cur = obj;
+
+    for (let i = 0; i < parts.length - 1; i++) {
+      cur = cur?.[parts[i]];
+      if (!cur) break;
+    }
+
+    const value = cur?.[parts[parts.length - 1]];
+    if (typeof value !== 'string') continue;
+
+    if (/[—–]/.test(value)) violations.push(`${path}:dash`);
+    for (const pattern of GENERIC_AI_PATTERNS) {
+      if (pattern.re.test(value)) violations.push(`${path}:${pattern.name}`);
+    }
+  }
+
+  return violations;
+}
+
 function validateM0(parsed, rawSpark) {
   const allowedStates = ['cellar_ready', 'bottleable_cloudy', 'unbottleable'];
+  const visiblePaths = [
+    'user_line_candidate',
+    'digestibility.reason',
+    'followup.question'
+  ];
 
   if (!parsed || typeof parsed !== 'object') throw new Error('Invalid JSON object');
   if (parsed.mechanism !== 'M0') throw new Error('Invalid mechanism');
@@ -235,24 +341,9 @@ function validateM0(parsed, rawSpark) {
 
   parsed.raw_spark = rawSpark;
 
-  const banned = [
-    'platform',
-    'revolutionary',
-    'optimize',
-    'transformation',
-    'seamless',
-    'empower',
-    'validate',
-    'validation',
-    'ICP',
-    'persona',
-    'target user',
-    'value proposition',
-    'pain point'
-  ];
-
+  const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
   const lineLower = parsed.user_line_candidate.toLowerCase();
-  const foundBanned = banned.filter(w => lineLower.includes(w.toLowerCase()));
+  const foundBanned = M0_BANNED_USER_LINE_TERMS.filter(w => lineLower.includes(w.toLowerCase()));
 
   if (!parsed.followup || typeof parsed.followup !== 'object') {
     parsed.followup = { needed: false, question: null };
@@ -267,9 +358,12 @@ function validateM0(parsed, rawSpark) {
       : 'Write the idea again with a person, a problem, and the thing you imagine making.';
   }
 
+  cleanVisibleFields(parsed, visiblePaths);
+
   parsed.server_checks = {
     schema_valid: true,
-    banned_words_found: foundBanned
+    banned_words_found: foundBanned,
+    visible_style_violations_cleaned: styleViolations
   };
 
   return parsed;
@@ -277,6 +371,10 @@ function validateM0(parsed, rawSpark) {
 
 function validateM1(parsed, userAnswer) {
   const allowedStates = ['settled', 'clearing', 'turbid', 'none'];
+  const visiblePaths = [
+    'observation.surface_text',
+    'next_question.framing'
+  ];
 
   if (!parsed || typeof parsed !== 'object') throw new Error('Invalid JSON object');
   if (parsed.mechanism !== 'M1') throw new Error('Invalid mechanism');
@@ -292,9 +390,13 @@ function validateM1(parsed, userAnswer) {
     }
   }
 
+  const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
+  cleanVisibleFields(parsed, visiblePaths);
+
   parsed.server_checks = {
     schema_valid: true,
-    anchor_verified: !!parsed.observation?.anchor_span
+    anchor_verified: !!parsed.observation?.anchor_span,
+    visible_style_violations_cleaned: styleViolations
   };
 
   return parsed;

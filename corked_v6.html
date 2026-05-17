@@ -335,6 +335,16 @@ body {
   opacity:.38;
   border-color:var(--border);
 }
+.field-label {
+  display:none;
+  font-size:.58rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin:0 0 .45rem;
+  -webkit-font-smoothing:antialiased;
+}
+.field-label.visible { display:block; }
 .options { display:flex; flex-direction:column; gap:.65rem; }
 .opt {
   background:var(--card); border:1px solid var(--border); padding:.9rem 1.1rem;
@@ -1264,6 +1274,7 @@ function renderIntake() {
 
   if (step.type === 'text') {
     const v = intakeSel[step.id] || '';
+    h += `<div class="field-label" id="spark-field-label">Your original spark</div>`;
     h += `<textarea class="field" id="f-inp" rows="3" placeholder="">${v}</textarea>`;
     if (intakeStep === 0) {
       h += `
@@ -1281,7 +1292,7 @@ function renderIntake() {
             <circle cx="14" cy="14" r="12.5" stroke="currentColor" stroke-width=".75"/>
             <circle cx="14" cy="14" r="8.5" stroke="currentColor" stroke-width=".5"/>
           </svg>
-          <div class="m0-stamp-eyebrow" id="m0-eyebrow">THIS ENTERS THE CELLAR AS</div>
+          <div class="m0-stamp-eyebrow" id="m0-eyebrow">THE WINEMASTER BOTTLED THIS AS</div>
           <div class="m0-stamp-line" id="m0-entry-line"></div>
         </div>
         <div class="m0-secondary">
@@ -2201,13 +2212,15 @@ function v6RenderM0(data) {
     inp.setAttribute('readonly', '');
     inp.classList.add('spark-provenance');
   }
+  const sparkLabel = document.getElementById('spark-field-label');
+  if (sparkLabel) sparkLabel.classList.add('visible');
 
   // Hide bottom action bar — panel is now the only action zone
   const bar = document.getElementById('v6-bottom-bar');
   if (bar) bar.style.display = 'none';
 
   // Populate result panel
-  document.getElementById('m0-eyebrow').textContent = state === 'unbottleable' ? 'CANNOT BE BOTTLED' : 'THIS ENTERS THE CELLAR AS';
+  document.getElementById('m0-eyebrow').textContent = state === 'unbottleable' ? 'CANNOT BE BOTTLED' : 'THE WINEMASTER BOTTLED THIS AS';
   document.getElementById('m0-entry-line').textContent = data.user_line_candidate || '—';
   const stamp = document.querySelector('.m0-stamp');
   if (stamp) {
@@ -2361,6 +2374,8 @@ function v6Rewrite() {
 
   document.getElementById('m0-result').style.display = 'none';
   document.getElementById('m0-result').classList.remove('m0-result-sealing');
+  const sparkLabel = document.getElementById('spark-field-label');
+  if (sparkLabel) sparkLabel.classList.remove('visible');
   const note = document.getElementById('m0-process-note');
   if (note) {
     note.textContent = '';
