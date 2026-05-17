@@ -493,6 +493,43 @@ body {
 }
 .spark-reminder-text.plain { font-style:normal; }
 
+/* ── GRAPE JUDGMENT ── */
+.grape-judgment {
+  display:none; margin-top:1.5rem;
+  border:1px solid var(--border-hi); overflow:hidden;
+}
+.gj-accent { height:3px; }
+.grape-judgment.state-turbid   .gj-accent { background:var(--turbid-col); }
+.grape-judgment.state-clearing .gj-accent { background:var(--clearing-col); }
+.grape-judgment.state-settled  .gj-accent { background:var(--settled-col); }
+.gj-main { padding:1.1rem 1.25rem 1.15rem; }
+.gj-eyebrow {
+  font-size:.7rem; letter-spacing:.28em; text-transform:uppercase;
+  margin-bottom:.7rem; -webkit-font-smoothing:antialiased;
+}
+.grape-judgment.state-turbid   .gj-eyebrow { color:var(--turbid-col); }
+.grape-judgment.state-clearing .gj-eyebrow { color:var(--clearing-col); }
+.grape-judgment.state-settled  .gj-eyebrow { color:var(--settled-col); }
+.gj-body {
+  font-family:'Playfair Display',serif; font-size:1rem; line-height:1.65;
+  color:var(--cream); -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.gj-row {
+  border-top:1px solid var(--border); padding:.8rem 1.25rem;
+}
+.gj-row-label {
+  font-size:.7rem; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:.35rem; -webkit-font-smoothing:antialiased;
+}
+.gj-row-val {
+  font-size:.855rem; color:var(--cream-dim); line-height:1.7;
+}
+.gj-row-val.quote {
+  font-family:'Playfair Display',serif; font-style:italic; font-size:.9rem;
+}
+.gj-row-val.conclusion { color:var(--muted); font-size:.82rem; }
+
 /* M1 structured capture */
 .grape-input-row {
   display:none; margin-top:1.25rem;
@@ -1053,21 +1090,36 @@ body {
         </div>
         <div class="m1-field-pair">
           <div>
-            <div class="grape-input-label">When did it happen?</div>
-            <input type="text" class="m1-field" id="m1-when" placeholder="e.g. last month, after she left">
+            <div class="grape-input-label" id="m1-when-label">When did it happen?</div>
+            <input type="text" class="m1-field" id="m1-when">
           </div>
           <div>
-            <div class="grape-input-label">What were they trying to do?</div>
-            <input type="text" class="m1-field" id="m1-trying" placeholder="e.g. keep the team staffed">
+            <div class="grape-input-label" id="m1-trying-label">What were they trying to do?</div>
+            <input type="text" class="m1-field" id="m1-trying">
           </div>
         </div>
         <div>
-          <div class="grape-input-label">What actually happened?</div>
-          <textarea class="m1-field" id="m1-happened" rows="4" placeholder="Write the observable scene. What happened, and what did the person do?"></textarea>
+          <div class="grape-input-label" id="m1-happened-label">What actually happened?</div>
+          <textarea class="m1-field" id="m1-happened" rows="4"></textarea>
         </div>
       </div>
       <textarea class="answer-box" id="ans" placeholder="Write here. The more specific you are, the more Phase 1 can work with."></textarea>
       <div class="obs" id="obs-box"></div>
+      <div class="grape-judgment" id="grape-judgment">
+        <div class="gj-accent"></div>
+        <div class="gj-main">
+          <div class="gj-eyebrow" id="gj-eyebrow"></div>
+          <div class="gj-body" id="gj-body"></div>
+        </div>
+        <div class="gj-row">
+          <div class="gj-row-label">What you gave</div>
+          <div class="gj-row-val quote" id="gj-gave"></div>
+        </div>
+        <div class="gj-row">
+          <div class="gj-row-label">What this means</div>
+          <div class="gj-row-val conclusion" id="gj-means"></div>
+        </div>
+      </div>
       <div class="grape-input-row" id="grape-row">
         <div class="grape-input-label">Their first name</div>
         <input type="text" class="grape-field" id="grape-field" placeholder="e.g. Sarah" maxlength="40">
@@ -1174,8 +1226,14 @@ function buildMechs() {
   // maturity: 0=witnessed, 1=talked but described idea, 2=self, 3=no one
   let m1q, m1hint, m1obs;
 
+  // M1 framing: three tiers
+  // Tier 1 — M0 returned m1_setup: fully spark-aware question + labels + placeholders
+  // Tier 2 — M0 ran but no m1_setup: embed spark in question, clean generic fields
+  // Tier 3 — No M0: hardcoded fallback with pronoun fixed
+  const m1Setup = S.m0?.m1_setup;
+  const sparkText = getSparkSummary();
+
   if (S.maturity === 3) {
-    // Direction framing
     m1q = `Before this moves forward, you need a real person.\n\nNot a type — a name. Someone in your life who actually has this problem right now. Go find them. Come back with a name and something about who they are.`;
     m1hint = 'The cellar will wait. This is not a blocker — it is an instruction.';
     m1obs = a => {
@@ -1183,9 +1241,19 @@ function buildMechs() {
       return "Something is here. Whether a real person exists behind it is what the next step will surface.";
     };
   } else if (S.maturity === 2) {
-    // Self as grape
-    m1q = `You're the evidence.\n\nWe need one specific moment — not the general pattern, not how it made you feel. One time this actually happened. Place it on record.`;
-    m1hint = 'When exactly. What you were doing. What you did about it. Describe it like a camera was there.';
+    if (m1Setup?.question) {
+      // Tier 1: fully spark-aware
+      m1q = m1Setup.question;
+      m1hint = m1Setup.hint || 'Describe it like a camera was there.';
+    } else if (sparkText) {
+      // Tier 2: embed spark, clean generic
+      m1q = `You're the evidence.\n\n"${sparkText}"\n\nGive us one specific time this was real for you — not the general sense that it's a problem. One moment you can name.`;
+      m1hint = 'When exactly. What you were doing. What you did about it.';
+    } else {
+      // Tier 3: fallback
+      m1q = `You're the evidence.\n\nWe need one specific moment — not the general pattern, not how it made you feel. One time this actually happened. Place it on record.`;
+      m1hint = 'When exactly. What you were doing. What you did about it. Describe it like a camera was there.';
+    }
     m1obs = a => {
       const wc = a.trim().split(/\s+/).length;
       if (wc < 8) return "Too thin. We need a specific instance: when, what you were doing, what you actually did.";
@@ -1193,9 +1261,20 @@ function buildMechs() {
       return "A moment is on record. Everything that follows draws from this.";
     };
   } else {
-    // Extraction framing (maturity 0 or 1)
-    m1q = `The idea came from someone.\n\nName that person. Then give us one specific moment when this problem was actually real for them.`;
-    m1hint = 'A first name or handle is enough. A real moment matters more than a polished summary.';
+    // Maturity 0 or 1
+    if (m1Setup?.question) {
+      // Tier 1: fully spark-aware
+      m1q = m1Setup.question;
+      m1hint = m1Setup.hint || 'A first name or handle is enough. A real moment matters more than a polished summary.';
+    } else if (sparkText) {
+      // Tier 2: embed spark
+      m1q = `The idea came from someone.\n\n"${sparkText}"\n\nName that person. Then give us one specific moment when this problem was actually real for them.`;
+      m1hint = 'A first name or handle is enough. A real moment matters more than a polished summary.';
+    } else {
+      // Tier 3: fallback
+      m1q = `The idea came from someone.\n\nName that person. Then give us one specific moment when this problem was actually real for them.`;
+      m1hint = 'A first name or handle is enough. A real moment matters more than a polished summary.';
+    }
     m1obs = a => {
       const wc = a.trim().split(/\s+/).length;
       if (wc < 5) return "Not enough here. We need a real person and something about who they are.";
@@ -1580,6 +1659,7 @@ function renderMech() {
   }
 
   document.getElementById('obs-box').style.display = 'none';
+  hideGrapeJudgment();
   document.getElementById('grape-row').style.display = 'none';
   document.getElementById('assess-box').style.display = 'none';
   document.getElementById('p1-btn').textContent = 'Continue →';
@@ -1609,6 +1689,49 @@ function showPhaseObservation(text) {
 
 function getSparkSummary() {
   return S.m0?.user_line || S.m0?.user_line_candidate || S.idea;
+}
+
+function buildGaveText(fields) {
+  if (!fields) return '—';
+  const parts = [];
+  if (fields.person) parts.push(fields.person);
+  if (fields.when) parts.push(fields.when);
+  if (fields.trying) parts.push(fields.trying);
+  if (fields.happened) {
+    const h = fields.happened.trim();
+    parts.push(h.length > 120 ? h.slice(0, 120) + '…' : h);
+  }
+  return parts.join('  ·  ') || '—';
+}
+
+function grapeStateConclusion(state, shouldAdvance) {
+  if (state === 'settled') return 'The Grape is on record. Phase 1 continues from here.';
+  if (state === 'clearing') return 'The Spark can continue, but the person is still cloudy. Add more before this settles.';
+  return 'The Spark needs a real, named person before it can be examined. Come back when you have one.';
+}
+
+function showGrapeJudgment(data, fields) {
+  const el = document.getElementById('grape-judgment');
+  if (!el) return;
+
+  const state = data.grape?.state || 'turbid';
+  const observation = data.observation?.surface_text || '';
+  const framing = data.next_question?.framing || '';
+  const shouldAdvance = !!data.next_question?.should_advance;
+
+  el.className = 'grape-judgment state-' + state;
+  document.getElementById('gj-eyebrow').textContent = 'Grape  ·  ' + state.toUpperCase();
+  document.getElementById('gj-body').textContent = observation;
+  document.getElementById('gj-gave').textContent = buildGaveText(fields);
+  document.getElementById('gj-means').textContent = framing || grapeStateConclusion(state, shouldAdvance);
+
+  el.style.display = 'block';
+  document.getElementById('obs-box').style.display = 'none';
+}
+
+function hideGrapeJudgment() {
+  const el = document.getElementById('grape-judgment');
+  if (el) el.style.display = 'none';
 }
 
 function updateSparkReminder() {
@@ -1654,20 +1777,43 @@ function configureM1Fields() {
 
   if (!S.m1Fields) S.m1Fields = { person:'', when:'', trying:'', happened:'' };
 
-  if (S.maturity === 2) {
-    label.textContent = 'Person';
+  const setup   = S.m0?.m1_setup;
+  const isSelf  = S.maturity === 2;
+
+  // ── Person field ──
+  label.textContent = setup?.person_label || 'Person';
+  if (isSelf) {
     person.value = 'You';
     person.setAttribute('readonly', '');
   } else {
-    label.textContent = 'Person';
     person.removeAttribute('readonly');
-    person.placeholder = 'e.g. Sarah, my old employee';
+    person.placeholder = setup?.person_placeholder || 'e.g. Sarah, my old manager';
     person.value = S.m1Fields.person || '';
   }
 
-  document.getElementById('m1-when').value = S.m1Fields.when || '';
-  document.getElementById('m1-trying').value = S.m1Fields.trying || '';
-  document.getElementById('m1-happened').value = S.m1Fields.happened || '';
+  // ── Field labels: spark-aware (Tier 1) or pronoun-correct fallback ──
+  const whenLbl     = document.getElementById('m1-when-label');
+  const tryingLbl   = document.getElementById('m1-trying-label');
+  const happenedLbl = document.getElementById('m1-happened-label');
+
+  if (whenLbl)     whenLbl.textContent     = setup?.when_label     || 'When did it happen?';
+  if (tryingLbl)   tryingLbl.textContent   = setup?.trying_label   || (isSelf ? 'What were you trying to do?' : 'What were they trying to do?');
+  if (happenedLbl) happenedLbl.textContent = setup?.happened_label || 'What actually happened?';
+
+  // ── Placeholders: Tier 1 spark-aware, else blank (no misleading hardcoded examples) ──
+  const whenEl     = document.getElementById('m1-when');
+  const tryingEl   = document.getElementById('m1-trying');
+  const happenedEl = document.getElementById('m1-happened');
+
+  if (whenEl)     whenEl.placeholder     = setup?.when_placeholder     || '';
+  if (tryingEl)   tryingEl.placeholder   = setup?.trying_placeholder   || '';
+  if (happenedEl) happenedEl.placeholder = setup?.happened_placeholder || 'Write the observable scene — what happened, step by step.';
+
+  // ── Restore saved values ──
+  if (whenEl)     whenEl.value     = S.m1Fields.when     || '';
+  if (tryingEl)   tryingEl.value   = S.m1Fields.trying   || '';
+  if (happenedEl) happenedEl.value = S.m1Fields.happened || '';
+
   ['m1-person','m1-when','m1-trying','m1-happened'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.borderColor = '';
@@ -1775,10 +1921,7 @@ function applyM1Result(data, txt) {
   }
 
   const shouldAdvance = !!data.next_question?.should_advance && isSettled;
-  const observation = data.observation?.surface_text || 'M1 returned no observation.';
-  const framing = data.next_question?.framing;
-  showPhaseObservation(framing && !shouldAdvance ? `${observation}\n\n${framing}` : observation);
-
+  showGrapeJudgment(data, S.m1Fields);
   return shouldAdvance;
 }
 
