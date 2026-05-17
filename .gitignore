@@ -5,3 +5,6 @@ screenshot.js
 screenshot.ps1
 *.png
 .claude/
+.dev.vars
+.env
+.env.*

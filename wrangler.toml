@@ -1,0 +1,6 @@
+name = "orked-m1-proxy"
+main = "worker.js"
+compatibility_date = "2026-05-17"
+
+[vars]
+ANTHROPIC_MODEL = "claude-sonnet-4-6"

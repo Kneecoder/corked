@@ -955,6 +955,8 @@ function freshState() {
     elements:{ grape:'inert', tell:'inert', vintage:'inert', gap:'inert', echo:'inert', limit:'inert' },
     answers:{},
     label:{ grape:'', tell:'', vintage:'', gap:'', echo:'', limit:'' },
+    m0:null,
+    m1:null,
     mechIndex:0,
     grapeStep:false // whether M1's grape-name sub-step has been shown
   };
@@ -1240,7 +1242,7 @@ function renderIntake() {
           <div class="row" style="margin-top:14px">
             <div></div>
             <div style="display:flex;gap:10px">
-              <button class="btn-ghost" id="m0-rewrite-btn" onclick="v6Rewrite()" style="display:none">Rewrite</button>
+              <button class="btn-ghost" id="m0-rewrite-btn" onclick="v6Rewrite()" style="display:none">Edit spark</button>
               <button class="btn-sm" id="m0-bottle-btn" onclick="v6BottleThis()" style="display:none">Bottle this</button>
             </div>
           </div>
@@ -1401,7 +1403,105 @@ function renderMech() {
   saveState();
 }
 
-function p1Next() {
+function setPhaseBusy(isBusy, label) {
+  const btn = document.getElementById('p1-btn');
+  if (!btn) return;
+  btn.disabled = isBusy;
+  if (label) btn.textContent = label;
+}
+
+function showPhaseObservation(text) {
+  const ob = document.getElementById('obs-box');
+  ob.textContent = text || '';
+  ob.style.display = 'block';
+}
+
+function getSparkSummary() {
+  return S.m0?.user_line || S.m0?.user_line_candidate || S.idea;
+}
+
+function rankState(state) {
+  return ({ inert:0, turbid:1, clearing:2, settled:3 })[state] || 0;
+}
+
+function applyElementState(key, state, labelValue) {
+  const cur = S.elements[key];
+  if (rankState(state) > rankState(cur)) {
+    setEl(key, state);
+  } else if (cur === 'inert') {
+    setEl(key, 'turbid');
+  }
+  if (state !== 'turbid' && labelValue) {
+    S.label[key] = S.label[key] || labelValue.slice(0,150);
+  }
+}
+
+async function callM1Worker(m, txt) {
+  const workerUrl = v6GetWorkerUrl();
+  if (!workerUrl) {
+    throw new Error('Worker URL is missing. Bottle a Spark through M0 first, or add the Worker endpoint.');
+  }
+
+  const res = await fetch(workerUrl + '/m1', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      spark_summary: getSparkSummary(),
+      maturity_class: S.maturity,
+      question_text: m.q,
+      user_answer: txt
+    })
+  });
+
+  const data = await res.json();
+  if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
+  return data;
+}
+
+function applyM1Result(data, txt) {
+  S.m1 = data;
+  S.answers.M1 = txt;
+
+  const grape = data.grape || {};
+  const workerState = grape.state || 'none';
+  const personKind = grape.person_kind || 'none';
+  const named = grape.named_person || '';
+  const isSettled = workerState === 'settled';
+  const appGrapeState = isSettled ? 'settled' : 'turbid';
+
+  setEl('grape', appGrapeState);
+
+  if (isSettled) {
+    if (personKind === 'self') {
+      S.grape = 'you';
+      S.label.grape = 'You, grounded in a specific instance.';
+    } else {
+      S.grape = named || 'the person you named';
+      S.label.grape = named || txt.slice(0,150);
+    }
+  }
+
+  const shouldAdvance = !!data.next_question?.should_advance && isSettled;
+  const observation = data.observation?.surface_text || 'M1 returned no observation.';
+  const framing = data.next_question?.framing;
+  showPhaseObservation(framing && !shouldAdvance ? `${observation}\n\n${framing}` : observation);
+
+  return shouldAdvance;
+}
+
+function applyLocalMechanismResult(m, txt) {
+  const wc = txt.trim().split(/\s+/).length;
+  let systemState = 'turbid';
+  if (wc >= 20) systemState = 'clearing';
+  if (wc >= 35 && !/(feel|felt|frustrated|probably|i think|i imagine|i assume|nothing|don't know)/i.test(txt)) {
+    systemState = 'settled';
+  }
+
+  m.els.forEach(e => applyElementState(e, systemState, txt));
+  showPhaseObservation(m.obs(txt));
+}
+
+async function p1Next() {
   const m = M[mi];
   const ans = document.getElementById('ans');
   const txt = ans.value.trim();
@@ -1409,35 +1509,33 @@ function p1Next() {
   if (!obsShown) {
     // Step 1: submit answer → show observation, system sets element state
     if (txt.length < 8) { ans.style.borderColor='var(--wine)'; return; }
-    S.answers[m.id] = txt;
 
-    // System-driven state: assess quality from answer content
-    const wc = txt.trim().split(/\s+/).length;
-    let systemState = 'turbid';
-    if (wc >= 20) systemState = 'clearing';
-    if (wc >= 35 && !/(feel|felt|frustrated|probably|i think|i imagine|i assume|nothing|don't know)/i.test(txt)) systemState = 'settled';
+    try {
+      setPhaseBusy(true, m.id === 'M1' ? 'Reading…' : 'Reading…');
 
-    // Activate elements (inert → system state)
-    m.els.forEach(e => {
-      const cur = S.elements[e];
-      // Only upgrade, never downgrade
-      const rank = { inert:0, turbid:1, clearing:2, settled:3 };
-      if (rank[systemState] > rank[cur]) {
-        setEl(e, systemState);
-        if (systemState !== 'turbid') S.label[e] = S.label[e] || txt.slice(0,150);
-      } else if (cur === 'inert') {
-        setEl(e, 'turbid');
+      if (m.id === 'M1') {
+        const data = await callM1Worker(m, txt);
+        const shouldAdvance = applyM1Result(data, txt);
+
+        if (!shouldAdvance) {
+          ans.removeAttribute('readonly');
+          document.getElementById('p1-btn').textContent = 'Try again →';
+          obsShown = false;
+          saveState();
+          return;
+        }
+      } else {
+        S.answers[m.id] = txt;
+        applyLocalMechanismResult(m, txt);
       }
-    });
-
-    // Show observation
-    const ob = document.getElementById('obs-box');
-    ob.textContent = m.obs(txt);
-    ob.style.display = 'block';
-
-    // Show grape name input for M1 extraction framing
-    if (m.grapeStep) {
-      document.getElementById('grape-row').style.display = 'block';
+    } catch (err) {
+      showPhaseObservation('Worker error. ' + err.message);
+      ans.removeAttribute('readonly');
+      document.getElementById('p1-btn').textContent = 'Try again →';
+      obsShown = false;
+      return;
+    } finally {
+      setPhaseBusy(false);
     }
 
     ans.setAttribute('readonly','true');
@@ -1446,12 +1544,6 @@ function p1Next() {
 
   } else {
     // Step 2: advance to next mechanism
-    if (m.grapeStep) {
-      const gf = document.getElementById('grape-field');
-      if (gf.value.trim()) S.grape = gf.value.trim();
-    }
-    if (S.maturity === 2 && m.id === 'M1') S.grape = 'you';
-
     if (m.id === 'M1') M = buildMechs();
 
     ans.removeAttribute('readonly');
@@ -1966,7 +2058,7 @@ function lsInit() {
 })();
 
 // ── M0 INTEGRATION ──
-window._v6M0 = { data: null, state: null };
+window._v6M0 = { data: null, state: null, needsFollowup: false };
 
 function v6GetWorkerUrl() {
   const inp = document.getElementById('v6-worker-url');
@@ -1981,49 +2073,65 @@ function v6SaveWorkerUrl() {
   if (url) localStorage.setItem('corked_worker_url', url);
 }
 
-async function v6BottleSpark() {
-  const inp = document.getElementById('f-inp');
-  const spark = (inp || {}).value || '';
-  const status = document.getElementById('v6-bottle-status');
-
-  if (spark.trim().length < 5) {
-    if (status) status.textContent = 'Write an idea first.';
-    return;
-  }
-
+async function v6RunM0(payload, statusText) {
   const workerUrl = v6GetWorkerUrl();
+  const status = document.getElementById('v6-bottle-status');
+  const btn = document.getElementById('v6-bottle-btn');
+  const panelBtn = document.getElementById('m0-bottle-btn');
+  const rewriteBtn = document.getElementById('m0-rewrite-btn');
+
   if (!workerUrl) {
     const cfg = document.getElementById('m0-config');
     if (cfg) { cfg.style.display = 'block'; document.getElementById('v6-worker-url').focus(); }
     if (status) status.textContent = 'Enter Worker URL above.';
-    return;
+    return null;
   }
 
-  const btn = document.getElementById('v6-bottle-btn');
   if (btn) btn.disabled = true;
-  if (status) status.textContent = 'Bottling…';
+  if (panelBtn) panelBtn.disabled = true;
+  if (rewriteBtn) rewriteBtn.disabled = true;
+  if (status) status.textContent = statusText || 'Bottling…';
 
   try {
     const res = await fetch(workerUrl + '/m0', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ raw_spark: spark.trim() })
+      body: JSON.stringify(payload)
     });
     const data = await res.json();
     if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
     window._v6M0.data = data;
     if (status) status.textContent = '';
     v6RenderM0(data);
+    return data;
   } catch (err) {
-    if (btn) btn.disabled = false;
     if (status) status.textContent = 'Error: ' + err.message;
+    if (panelBtn) panelBtn.disabled = false;
+    return null;
+  } finally {
+    if (btn) btn.disabled = false;
+    if (rewriteBtn) rewriteBtn.disabled = false;
   }
+}
+
+async function v6BottleSpark() {
+  const inp = document.getElementById('f-inp');
+  const spark = (inp || {}).value || '';
+
+  if (spark.trim().length < 5) {
+    const status = document.getElementById('v6-bottle-status');
+    if (status) status.textContent = 'Write an idea first.';
+    return;
+  }
+
+  await v6RunM0({ raw_spark: spark.trim() }, 'Bottling…');
 }
 
 function v6RenderM0(data) {
   const state = data.digestibility?.state || 'unbottleable';
   const needsFollowup = !!(data.followup?.needed && data.followup?.question);
   window._v6M0.state = state;
+  window._v6M0.needsFollowup = needsFollowup;
 
   // Lock the spark field
   const inp = document.getElementById('f-inp');
@@ -2054,10 +2162,14 @@ function v6RenderM0(data) {
   document.getElementById('m0-result').style.display = 'block';
   const rewriteBtn = document.getElementById('m0-rewrite-btn');
   const bottleBtn = document.getElementById('m0-bottle-btn');
-  if (rewriteBtn) rewriteBtn.style.display = '';
+  if (rewriteBtn) {
+    rewriteBtn.style.display = '';
+    rewriteBtn.textContent = needsFollowup ? 'Edit spark' : 'Edit spark';
+  }
   if (bottleBtn) {
     bottleBtn.style.display = '';
-    bottleBtn.disabled = needsFollowup; // disabled until followup answered
+    bottleBtn.textContent = needsFollowup ? 'Re-bottle' : 'Bottle this';
+    bottleBtn.disabled = needsFollowup; // enabled when followup is answered
   }
 }
 
@@ -2076,7 +2188,27 @@ function v6TypeOut(el, text, speed) {
   tick();
 }
 
-function v6BottleThis() {
+async function v6RebottleFollowup() {
+  const data = window._v6M0.data;
+  if (!data) return;
+
+  const followupAns = document.getElementById('m0-followup-ans');
+  const followupAnswer = followupAns ? followupAns.value.trim() : '';
+  if (!followupAnswer) return;
+
+  await v6RunM0({
+    raw_spark: data.raw_spark,
+    followup_question: data.followup?.question || '',
+    followup_answer: followupAnswer
+  }, 'Re-bottling…');
+}
+
+async function v6BottleThis() {
+  if (window._v6M0.needsFollowup) {
+    await v6RebottleFollowup();
+    return;
+  }
+
   const data = window._v6M0.data;
   if (!data) return;
 
@@ -2085,6 +2217,8 @@ function v6BottleThis() {
 
   const inp = document.getElementById('f-inp');
   if (inp) { inp.value = data.user_line_candidate || ''; inp.removeAttribute('readonly'); inp.style.opacity = ''; }
+
+  S.m0 = data;
 
   localStorage.setItem('corked_m0_saved', JSON.stringify({
     spark: data.raw_spark,
