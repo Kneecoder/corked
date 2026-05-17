@@ -469,6 +469,30 @@ body {
   color:var(--muted); line-height:1.8;
 }
 
+/* ── SPARK REMINDER ── */
+.spark-reminder {
+  background:var(--surface); border-left:2px solid var(--wine-dim);
+  padding:.65rem 1rem; margin-bottom:2rem;
+  display:flex; flex-direction:column; gap:0;
+}
+.spark-reminder-row {
+  padding:.45rem 0;
+}
+.spark-reminder-row + .spark-reminder-row {
+  border-top:1px solid var(--border);
+}
+.spark-reminder-row:first-child { padding-top:0; }
+.spark-reminder-row:last-child  { padding-bottom:0; }
+.spark-reminder-label {
+  font-size:.7rem; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--wine-hi); margin-bottom:.25rem; -webkit-font-smoothing:antialiased;
+}
+.spark-reminder-text {
+  font-family:'Playfair Display',serif; font-size:.92rem;
+  color:var(--cream-dim); line-height:1.6; font-style:italic;
+}
+.spark-reminder-text.plain { font-style:normal; }
+
 /* M1 structured capture */
 .grape-input-row {
   display:none; margin-top:1.25rem;
@@ -1016,6 +1040,9 @@ body {
     <!-- Active question panel -->
     <div class="phase-wrap" id="question-panel">
       <div class="prog-bar"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+      <div class="spark-reminder" id="spark-reminder" style="display:none">
+        <div id="spark-reminder-body"></div>
+      </div>
       <div class="mech-eyebrow" id="m-label">—</div>
       <div class="mech-q" id="m-q"></div>
       <div class="mech-hint" id="m-hint"></div>
@@ -1149,30 +1176,30 @@ function buildMechs() {
 
   if (S.maturity === 3) {
     // Direction framing
-    m1q = `Before this question can be answered honestly, you need a real person.\n\nNot a type. A name. Someone in your life who actually has this problem right now. Go have that conversation with them. Come back when you have a name.\n\nWhen you are ready: who is it, and what do you know about them?`;
-    m1hint = 'This is not a blocker. It is an instruction. The cellar will wait.';
+    m1q = `Before this moves forward, you need a real person.\n\nNot a type — a name. Someone in your life who actually has this problem right now. Go find them. Come back with a name and something about who they are.`;
+    m1hint = 'The cellar will wait. This is not a blocker — it is an instruction.';
     m1obs = a => {
       if (a.trim().split(/\s+/).length < 5) return "Not enough here. When you have a real person in mind, come back with their name and something about who they are.";
-      return "Something is here. Whether a real person exists behind it is what M2 will find out.";
+      return "Something is here. Whether a real person exists behind it is what the next step will surface.";
     };
   } else if (S.maturity === 2) {
     // Self as grape
-    m1q = `You identified yourself as the person with this problem.\n\nCorked will use you as the person Phase 1 draws from. Now place one specific instance on the record.`;
-    m1hint = 'Treat yourself as the raw material. Phase 1 draws from the same evidence whether the person is you or someone else.';
+    m1q = `You're the evidence.\n\nWe need one specific moment — not the general pattern, not how it made you feel. One time this actually happened. Place it on record.`;
+    m1hint = 'When exactly. What you were doing. What you did about it. Describe it like a camera was there.';
     m1obs = a => {
       const wc = a.trim().split(/\s+/).length;
-      if (wc < 8) return "Too thin. Phase 1 needs a specific instance: when, what you were doing, what you actually did.";
-      if (/feel|felt|frustrated|annoyed|stressed/i.test(a) && wc < 20) return "A feeling was described more than a behaviour. The Tell needs what was done, the observable action.";
-      return "You are in the cellar. Phase 1 will draw from what you have written.";
+      if (wc < 8) return "Too thin. We need a specific instance: when, what you were doing, what you actually did.";
+      if (/feel|felt|frustrated|annoyed|stressed/i.test(a) && wc < 20) return "A feeling was described more than a behaviour. What was the observable action — what did you actually do?";
+      return "A moment is on record. Everything that follows draws from this.";
     };
   } else {
     // Extraction framing (maturity 0 or 1)
-    m1q = `Your idea: "${S.idea}"\n\nName the one specific person this starts from. Then place one concrete instance on the record.`;
-    m1hint = 'A first name, nickname, or plain handle is enough. Not a type. A real person.';
+    m1q = `The idea came from someone.\n\nName that person. Then give us one specific moment when this problem was actually real for them.`;
+    m1hint = 'A first name or handle is enough. A real moment matters more than a polished summary.';
     m1obs = a => {
       const wc = a.trim().split(/\s+/).length;
-      if (wc < 5) return "Not enough here. The question needs a real person and something about who they are.";
-      if (wc < 15) return "A person appears, but the picture is thin. Phase 1 works better with more: who they are, what their life looks like when this problem shows up.";
+      if (wc < 5) return "Not enough here. We need a real person and something about who they are.";
+      if (wc < 15) return "A person appears, but the picture is thin. The more concrete the moment, the more the rest of Phase 1 has to work with.";
       return "A person has been placed in the cellar. Everything that follows draws from this.";
     };
   }
@@ -1459,8 +1486,9 @@ let curAssess = {};
 function startPhase1() {
   M = buildMechs();
   mi = S.mechIndex || 0;
+  const _spark = getSparkSummary();
   document.getElementById('sb-idea').textContent =
-    S.idea.length > 38 ? S.idea.slice(0,38)+'…' : S.idea;
+    _spark.length > 42 ? _spark.slice(0,42)+'…' : _spark;
   renderElList();
   showScreen('phase1');
   renderMech();
@@ -1530,9 +1558,11 @@ function renderMech() {
 
   document.getElementById('prog').style.width = (mi/M.length*100)+'%';
   document.getElementById('m-count').textContent = `${mi+1} of ${M.length}`;
-  document.getElementById('m-label').textContent = `${m.id} · ${m.name}`;
+  document.getElementById('m-label').textContent = `${mi+1} of ${M.length}  ·  ${m.name}`;
   document.getElementById('m-q').textContent = m.q;
   document.getElementById('m-hint').textContent = m.hint || '';
+
+  updateSparkReminder();
 
   const ans = document.getElementById('ans');
   const m1Fields = document.getElementById('m1-fields');
@@ -1581,6 +1611,42 @@ function getSparkSummary() {
   return S.m0?.user_line || S.m0?.user_line_candidate || S.idea;
 }
 
+function updateSparkReminder() {
+  const rem = document.getElementById('spark-reminder');
+  const body = document.getElementById('spark-reminder-body');
+  if (!rem || !body) return;
+
+  const spark = getSparkSummary();
+  if (!spark) { rem.style.display = 'none'; return; }
+
+  body.innerHTML = '';
+
+  function makeRow(labelText, valueText, plain) {
+    const row = document.createElement('div');
+    row.className = 'spark-reminder-row';
+    const lbl = document.createElement('div');
+    lbl.className = 'spark-reminder-label';
+    lbl.textContent = labelText;
+    const val = document.createElement('div');
+    val.className = 'spark-reminder-text' + (plain ? ' plain' : '');
+    val.textContent = valueText;
+    row.appendChild(lbl);
+    row.appendChild(val);
+    return row;
+  }
+
+  body.appendChild(makeRow('The spark', spark, false));
+
+  // Person row — appears after M1 is completed
+  if (S.m1Fields?.person) {
+    const who = S.m1Fields.person;
+    const when = S.m1Fields.when;
+    body.appendChild(makeRow('The person', when ? `${who}  ·  ${when}` : who, true));
+  }
+
+  rem.style.display = 'block';
+}
+
 function configureM1Fields() {
   const person = document.getElementById('m1-person');
   const label = document.getElementById('m1-person-label');
@@ -1589,11 +1655,11 @@ function configureM1Fields() {
   if (!S.m1Fields) S.m1Fields = { person:'', when:'', trying:'', happened:'' };
 
   if (S.maturity === 2) {
-    label.textContent = 'Person Corked will use';
+    label.textContent = 'Person';
     person.value = 'You';
     person.setAttribute('readonly', '');
   } else {
-    label.textContent = S.maturity === 3 ? 'Person you found' : 'Person Corked should use';
+    label.textContent = 'Person';
     person.removeAttribute('readonly');
     person.placeholder = 'e.g. Sarah, my old employee';
     person.value = S.m1Fields.person || '';
@@ -1901,8 +1967,9 @@ function continueSession() {
   S = saved.S;
   mi = saved.mechIndex || 0;
   M = buildMechs();
+  const _spark2 = getSparkSummary();
   document.getElementById('sb-idea').textContent =
-    S.idea.length > 38 ? S.idea.slice(0,38)+'…' : S.idea;
+    _spark2.length > 42 ? _spark2.slice(0,42)+'…' : _spark2;
   renderElList();
   updateBottle();
   showScreen('phase1');
