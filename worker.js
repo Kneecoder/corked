@@ -47,6 +47,10 @@ When digestibility.state is bottleable_cloudy or unbottleable, set followup.need
 For bottleable_cloudy, the question should ask for the missing person or problem without upgrading the idea.
 For unbottleable, the question should ask for the minimum concrete idea material needed to re-spark.
 When digestibility.state is cellar_ready, set followup.needed false and followup.question null.
+When a followup answer is provided, treat it as clarification of the missing field only.
+Use it to name the tension or problem if the user stated one.
+Do not convert the followup answer into a solution promise, feature, or outcome unless the original Spark already promised that change.
+If the user says "so the founder could give extra attention or start hiring again," the User Line should preserve the worry as "employee may be looking for other work," not promise that the tool helps retain or replace them.
 
 VOICE:
 Dry, precise, lab-result register.
@@ -118,6 +122,8 @@ function buildM0UserMessage(rawSpark, followupQuestion, followupAnswer) {
 
 Use the followup answer only as clarification of the raw Spark.
 Produce a revised User Line candidate that reflects the Spark plus the clarification.
+Prefer naming the clarified problem/tension over adding the user's proposed reaction.
+Do not turn a worry into a promised outcome.
 Do not expose the followup question format in raw_spark or user_line_candidate.
 `
     : '';

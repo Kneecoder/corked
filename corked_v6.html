@@ -667,6 +667,16 @@ body {
   line-height:1.65;
   white-space:pre-wrap;
 }
+.m0-process-note {
+  display:none;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid var(--border);
+  font-size:.72rem;
+  color:var(--cream-dim);
+  line-height:1.65;
+  letter-spacing:.02em;
+}
 </style>
 </head>
 <body>
@@ -1235,6 +1245,7 @@ function renderIntake() {
         <div class="m0-secondary">
           <div class="m0-obs-label">Winemaster</div>
           <div class="m0-obs-text" id="m0-wm-text"></div>
+          <div class="m0-process-note" id="m0-process-note"></div>
           <div id="m0-followup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
             <div id="m0-followup-q" style="font-size:.82rem;color:var(--cream-dim);line-height:1.65;margin-bottom:10px"></div>
             <textarea id="m0-followup-ans" class="field" rows="2" placeholder="Your answer…" oninput="v6FollowupChange()" style="font-size:.85rem"></textarea>
@@ -2058,7 +2069,7 @@ function lsInit() {
 })();
 
 // ── M0 INTEGRATION ──
-window._v6M0 = { data: null, state: null, needsFollowup: false };
+window._v6M0 = { data: null, state: null, needsFollowup: false, editableLine: null };
 
 function v6GetWorkerUrl() {
   const inp = document.getElementById('v6-worker-url');
@@ -2073,12 +2084,14 @@ function v6SaveWorkerUrl() {
   if (url) localStorage.setItem('corked_worker_url', url);
 }
 
-async function v6RunM0(payload, statusText) {
+async function v6RunM0(payload, statusText, opts) {
+  opts = opts || {};
   const workerUrl = v6GetWorkerUrl();
   const status = document.getElementById('v6-bottle-status');
   const btn = document.getElementById('v6-bottle-btn');
   const panelBtn = document.getElementById('m0-bottle-btn');
   const rewriteBtn = document.getElementById('m0-rewrite-btn');
+  const note = document.getElementById('m0-process-note');
 
   if (!workerUrl) {
     const cfg = document.getElementById('m0-config');
@@ -2091,6 +2104,10 @@ async function v6RunM0(payload, statusText) {
   if (panelBtn) panelBtn.disabled = true;
   if (rewriteBtn) rewriteBtn.disabled = true;
   if (status) status.textContent = statusText || 'Bottling…';
+  if (note && opts.note) {
+    note.textContent = opts.note;
+    note.style.display = 'block';
+  }
 
   try {
     const res = await fetch(workerUrl + '/m0', {
@@ -2100,6 +2117,7 @@ async function v6RunM0(payload, statusText) {
     });
     const data = await res.json();
     if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
+    if (opts.rebottled) data._rebottled = true;
     window._v6M0.data = data;
     if (status) status.textContent = '';
     v6RenderM0(data);
@@ -2132,6 +2150,7 @@ function v6RenderM0(data) {
   const needsFollowup = !!(data.followup?.needed && data.followup?.question);
   window._v6M0.state = state;
   window._v6M0.needsFollowup = needsFollowup;
+  window._v6M0.editableLine = data.user_line_candidate || data.raw_spark || '';
 
   // Lock the spark field
   const inp = document.getElementById('f-inp');
@@ -2145,6 +2164,16 @@ function v6RenderM0(data) {
   document.getElementById('m0-eyebrow').textContent = state === 'unbottleable' ? 'CANNOT BE BOTTLED' : 'THIS ENTERS THE CELLAR AS';
   document.getElementById('m0-entry-line').textContent = data.user_line_candidate || '—';
   v6TypeOut(document.getElementById('m0-wm-text'), data.digestibility?.reason || '');
+  const note = document.getElementById('m0-process-note');
+  if (note) {
+    if (data._rebottled) {
+      note.textContent = 'Re-bottled from your follow-up. The line was revised by the Winemaster, not pasted from your answer.';
+      note.style.display = 'block';
+    } else {
+      note.textContent = '';
+      note.style.display = 'none';
+    }
+  }
 
   // Followup block — shown for thin/unusable when followup present
   const followupBlock = document.getElementById('m0-followup');
@@ -2200,7 +2229,10 @@ async function v6RebottleFollowup() {
     raw_spark: data.raw_spark,
     followup_question: data.followup?.question || '',
     followup_answer: followupAnswer
-  }, 'Re-bottling…');
+  }, 'Re-bottling…', {
+    rebottled: true,
+    note: 'Re-bottling with your follow-up. The Winemaster will revise the line before it enters the cellar.'
+  });
 }
 
 async function v6BottleThis() {
@@ -2236,11 +2268,17 @@ function v6Rewrite() {
     inp.removeAttribute('readonly');
     inp.style.opacity = '';
     if (window._v6M0.state === 'unbottleable') inp.value = '';
+    else inp.value = window._v6M0.editableLine || inp.value;
     inp.focus();
     inp.setSelectionRange(inp.value.length, inp.value.length);
   }
 
   document.getElementById('m0-result').style.display = 'none';
+  const note = document.getElementById('m0-process-note');
+  if (note) {
+    note.textContent = '';
+    note.style.display = 'none';
+  }
 
   const bar = document.getElementById('v6-bottom-bar');
   if (bar) bar.style.display = '';
