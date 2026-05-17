@@ -7,6 +7,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
+*:focus { outline:none; }
+*:focus-visible { outline:2px solid rgba(122,46,60,.7); outline-offset:2px; }
 
 :root {
   --bg: #0C0906;
@@ -165,7 +167,7 @@ body {
   border:1px solid var(--border-hi); background:none;
 }
 .wm-label {
-  font-size:.58rem; letter-spacing:.18em; text-transform:uppercase;
+  font-size:.7rem; letter-spacing:.18em; text-transform:uppercase;
   color:var(--muted); white-space:nowrap;
   -webkit-font-smoothing:antialiased;
 }
@@ -313,7 +315,7 @@ body {
   margin-bottom:2rem;
 }
 .intake-prog-seg {
-  flex:1; height:1px;
+  flex:1; height:2px;
   background:var(--border);
   transition:background .3s ease;
 }
@@ -329,7 +331,7 @@ body {
   font-size:.95rem; font-weight:300; line-height:1.75; outline:none;
   transition:border-color .18s; resize:none;
 }
-.field:focus { border-color:var(--wine); }
+.field:focus { border-color:var(--wine); box-shadow:0 0 0 3px rgba(122,46,60,.18); }
 .field.err { border-color:var(--wine-hi); }
 .field.spark-provenance {
   opacity:.38;
@@ -337,7 +339,7 @@ body {
 }
 .field-label {
   display:none;
-  font-size:.58rem;
+  font-size:.7rem;
   letter-spacing:.18em;
   text-transform:uppercase;
   color:var(--muted);
@@ -358,7 +360,7 @@ body {
   align-items:center;
   gap:.38rem;
   padding:.1rem 0;
-  font-size:.58rem;
+  font-size:.7rem;
   letter-spacing:.18em;
   text-transform:uppercase;
 }
@@ -371,7 +373,7 @@ body {
 .opt {
   background:var(--card); border:1px solid var(--border); padding:.9rem 1.1rem;
   cursor:pointer; display:flex; gap:.9rem; align-items:flex-start;
-  transition:border-color .15s, background .15s;
+  transition:border-color .15s, background .15s; min-height:44px;
 }
 .opt:hover { border-color:var(--border-hi); }
 .opt.sel { border-color:var(--wine); background:rgba(122,46,60,.12); }
@@ -398,7 +400,7 @@ body {
   color:var(--muted); margin-top:.35rem;
 }
 .sb-save {
-  font-size:.65rem; color:var(--muted); letter-spacing:.1em;
+  font-size:.7rem; color:var(--muted); letter-spacing:.1em;
   opacity:0; transition:opacity .5s; margin-top:.25rem;
 }
 .sb-save.show { opacity:.6; }
@@ -406,7 +408,7 @@ body {
 .el-list { display:flex; flex-direction:column; gap:.5rem; }
 .el-row {
   display:flex; align-items:center; gap:.65rem; padding:.3rem 0;
-  border-bottom:1px solid var(--border); transition:background .15s;
+  border-bottom:1px solid var(--border); transition:background .15s; min-height:36px;
 }
 .el-row:last-child { border-bottom:none; }
 .el-row.live { cursor:pointer; }
@@ -425,7 +427,7 @@ body {
 }
 .el-name.inert { opacity:.18; }
 .el-state {
-  font-size:.62rem; letter-spacing:.12em; text-transform:uppercase;
+  font-size:.7rem; letter-spacing:.12em; text-transform:uppercase;
   transition:color .3s, opacity .3s;
 }
 .el-state.inert   { opacity:0; }
@@ -439,7 +441,7 @@ body {
   justify-content:flex-start; padding:3.5rem 2rem 3rem; overflow-y:auto;
 }
 .phase-wrap { width:100%; max-width:580px; }
-.prog-bar { height:1px; background:var(--border); margin-bottom:3rem; }
+.prog-bar { height:2px; background:var(--border); margin-bottom:3rem; }
 .prog-fill { height:100%; background:var(--wine); transition:width .5s ease; }
 .mech-eyebrow {
   font-size:.68rem; letter-spacing:.22em; text-transform:uppercase;
@@ -457,7 +459,7 @@ body {
   font-size:.9rem; font-weight:300; line-height:1.85; resize:none; outline:none;
   transition:border-color .18s; height:160px;
 }
-.answer-box:focus { border-color:var(--wine); }
+.answer-box:focus { border-color:var(--wine); box-shadow:0 0 0 3px rgba(122,46,60,.18); }
 .answer-box[readonly] { opacity:.75; }
 
 /* Obs box */
@@ -467,7 +469,7 @@ body {
   color:var(--muted); line-height:1.8;
 }
 
-/* Grape name input (post-M1) */
+/* M1 structured capture */
 .grape-input-row {
   display:none; margin-top:1.25rem;
 }
@@ -481,6 +483,37 @@ body {
   font-size:.9rem; font-weight:300; outline:none; transition:border-color .18s;
 }
 .grape-field:focus { border-color:var(--wine); }
+.m1-field-stack {
+  display:none;
+  flex-direction:column;
+  gap:.85rem;
+  margin-top:1rem;
+}
+.m1-field-pair {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.85rem;
+}
+.m1-field {
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--border);
+  color:var(--cream);
+  padding:.85rem .95rem;
+  font-family:'Inter',sans-serif;
+  font-size:.86rem;
+  line-height:1.55;
+  outline:none;
+  transition:border-color .18s;
+}
+.m1-field:focus { border-color:var(--wine); }
+.m1-field[readonly] {
+  opacity:.55;
+  border-color:var(--border);
+}
+@media(max-width:767px){
+  .m1-field-pair { grid-template-columns:1fr; }
+}
 
 /* Assessment — removed from user flow; system drives state */
 .assess { display:none !important; }
@@ -495,7 +528,7 @@ body {
 /* ── REVIEW PANEL ── */
 .review-panel { display:none; }
 .review-back {
-  font-size:.68rem; letter-spacing:.18em; text-transform:uppercase;
+  font-size:.7rem; letter-spacing:.18em; text-transform:uppercase;
   color:var(--muted); cursor:pointer; margin-bottom:2.5rem;
   display:inline-flex; align-items:center; gap:.5rem; transition:color .15s;
 }
@@ -507,7 +540,7 @@ body {
 .review-el-desc { font-size:.78rem; color:var(--muted); margin-bottom:2rem; }
 .review-block { margin-bottom:1.75rem; }
 .review-mech-id {
-  font-size:.65rem; letter-spacing:.2em; text-transform:uppercase;
+  font-size:.7rem; letter-spacing:.2em; text-transform:uppercase;
   color:var(--wine-hi); margin-bottom:.4rem;
 }
 .review-q {
@@ -551,7 +584,7 @@ body {
 .vc-rule { width:100%; height:1px; background:var(--border); margin:1.5rem 0; }
 .vc-field { margin-bottom:1.1rem; }
 .vc-field-name {
-  font-size:.62rem; letter-spacing:.22em; text-transform:uppercase;
+  font-size:.7rem; letter-spacing:.22em; text-transform:uppercase;
   color:var(--wine-hi); margin-bottom:.3rem; display:flex; align-items:baseline; gap:.5rem;
 }
 .vc-field-desc {
@@ -561,7 +594,7 @@ body {
 .vc-field-val { font-size:.875rem; color:var(--cream); line-height:1.65; }
 .vc-field-val.empty { color:var(--muted); font-style:italic; }
 .state-pill {
-  display:inline-block; font-size:.58rem; letter-spacing:.14em;
+  display:inline-block; font-size:.7rem; letter-spacing:.14em;
   text-transform:uppercase; padding:.12rem .45rem; border:1px solid;
   margin-left:.4rem; vertical-align:middle;
 }
@@ -668,7 +701,7 @@ body {
   pointer-events:none;
 }
 .m0-stamp-eyebrow {
-  font-size:.58rem;
+  font-size:.7rem;
   letter-spacing:.28em;
   text-transform:uppercase;
   color:var(--gold);
@@ -693,7 +726,7 @@ body {
 }
 .m0-secondary { padding:14px 20px 20px; }
 .m0-obs-label {
-  font-size:.58rem;
+  font-size:.7rem;
   letter-spacing:.18em;
   text-transform:uppercase;
   color:var(--muted);
@@ -708,7 +741,7 @@ body {
 }
 .m0-state-label {
   display:none;
-  font-size:.58rem;
+  font-size:.7rem;
   letter-spacing:.18em;
   text-transform:uppercase;
   color:var(--gold);
@@ -986,6 +1019,26 @@ body {
       <div class="mech-eyebrow" id="m-label">—</div>
       <div class="mech-q" id="m-q"></div>
       <div class="mech-hint" id="m-hint"></div>
+      <div class="m1-field-stack" id="m1-fields">
+        <div>
+          <div class="grape-input-label" id="m1-person-label">Person</div>
+          <input type="text" class="m1-field" id="m1-person" maxlength="60">
+        </div>
+        <div class="m1-field-pair">
+          <div>
+            <div class="grape-input-label">When did it happen?</div>
+            <input type="text" class="m1-field" id="m1-when" placeholder="e.g. last month, after she left">
+          </div>
+          <div>
+            <div class="grape-input-label">What were they trying to do?</div>
+            <input type="text" class="m1-field" id="m1-trying" placeholder="e.g. keep the team staffed">
+          </div>
+        </div>
+        <div>
+          <div class="grape-input-label">What actually happened?</div>
+          <textarea class="m1-field" id="m1-happened" rows="4" placeholder="Write the observable scene. What happened, and what did the person do?"></textarea>
+        </div>
+      </div>
       <textarea class="answer-box" id="ans" placeholder="Write here. The more specific you are, the more Phase 1 can work with."></textarea>
       <div class="obs" id="obs-box"></div>
       <div class="grape-input-row" id="grape-row">
@@ -1022,7 +1075,7 @@ body {
     <div class="label-note">
       The settled elements are your foundation for Phase 2.
       The rest tells you what to go find before the bottle clears.
-      An idea with an unclear label is still an idea — it is just not finished aging.
+      An idea with an unclear label is still an idea. It is just not finished aging.
     </div>
     <button class="btn" onclick="restart()">Cork another idea</button>
     <button class="btn-ghost" onclick="showScreen('landing')">Back to cellar</button>
@@ -1038,6 +1091,7 @@ function freshState() {
     idea:'', grape:'', maturity:-1, progress:-1, pace:-1, notifTiming:-1,
     elements:{ grape:'inert', tell:'inert', vintage:'inert', gap:'inert', echo:'inert', limit:'inert' },
     answers:{},
+    m1Fields:{ person:'', when:'', trying:'', happened:'' },
     label:{ grape:'', tell:'', vintage:'', gap:'', echo:'', limit:'' },
     m0:null,
     m1:null,
@@ -1081,6 +1135,13 @@ const EL_KEYS = Object.keys(EL_META);
 // ── MECHANISMS ──
 function buildMechs() {
   const g = S.grape || 'the person you named';
+  const selfMode = S.maturity === 2 && g === 'you';
+  const m2q = selfMode
+    ? `Stay inside the instance you just described.\n\nWhat did you actually do next? Write the observable steps. What could a camera capture?`
+    : `Describe a specific moment when ${g} encountered this problem. What did they actually do? Write the exact behaviour you could film if you were there.`;
+  const m2hint = selfMode
+    ? 'Not what you felt. What happened next, step by step.'
+    : 'Not what they felt. What a camera would capture.';
 
   // M1 framing depends on maturity
   // maturity: 0=witnessed, 1=talked but described idea, 2=self, 3=no one
@@ -1088,26 +1149,26 @@ function buildMechs() {
 
   if (S.maturity === 3) {
     // Direction framing
-    m1q = `Before this question can be answered honestly, you need a real person.\n\nNot a type — a name. Someone in your life who actually has this problem right now. Go have that conversation with them. Come back when you have a name.\n\nWhen you are ready: who is it, and what do you know about them?`;
-    m1hint = 'This is not a blocker — it is an instruction. The cellar will wait.';
+    m1q = `Before this question can be answered honestly, you need a real person.\n\nNot a type. A name. Someone in your life who actually has this problem right now. Go have that conversation with them. Come back when you have a name.\n\nWhen you are ready: who is it, and what do you know about them?`;
+    m1hint = 'This is not a blocker. It is an instruction. The cellar will wait.';
     m1obs = a => {
       if (a.trim().split(/\s+/).length < 5) return "Not enough here. When you have a real person in mind, come back with their name and something about who they are.";
       return "Something is here. Whether a real person exists behind it is what M2 will find out.";
     };
   } else if (S.maturity === 2) {
     // Self as grape
-    m1q = `You identified yourself as the person with this problem.\n\nDescribe a specific instance when you experienced it. When did it happen? What were you trying to do? What did you actually do — not feel, do — because of it?`;
+    m1q = `You identified yourself as the person with this problem.\n\nCorked will use you as the person Phase 1 draws from. Now place one specific instance on the record.`;
     m1hint = 'Treat yourself as the raw material. Phase 1 draws from the same evidence whether the person is you or someone else.';
     m1obs = a => {
       const wc = a.trim().split(/\s+/).length;
       if (wc < 8) return "Too thin. Phase 1 needs a specific instance: when, what you were doing, what you actually did.";
-      if (/feel|felt|frustrated|annoyed|stressed/i.test(a) && wc < 20) return "A feeling was described more than a behaviour. The Tell needs what was done — the observable action.";
+      if (/feel|felt|frustrated|annoyed|stressed/i.test(a) && wc < 20) return "A feeling was described more than a behaviour. The Tell needs what was done, the observable action.";
       return "You are in the cellar. Phase 1 will draw from what you have written.";
     };
   } else {
     // Extraction framing (maturity 0 or 1)
-    m1q = `Your idea: "${S.idea}"\n\nWho is the one specific person you're thinking of — someone who actually has this problem right now? Not a type. A real person. Describe who they are.`;
-    m1hint = 'A first name comes next. For now: who is this person and what do you know about them.';
+    m1q = `Your idea: "${S.idea}"\n\nName the one specific person this starts from. Then place one concrete instance on the record.`;
+    m1hint = 'A first name, nickname, or plain handle is enough. Not a type. A real person.';
     m1obs = a => {
       const wc = a.trim().split(/\s+/).length;
       if (wc < 5) return "Not enough here. The question needs a real person and something about who they are.";
@@ -1125,12 +1186,12 @@ function buildMechs() {
     },
     {
       id:'M2', name:'The Friction Test',
-      q:`Describe a specific moment when ${g} encountered this problem. What did they actually do — the exact behaviour you could film if you were there?`,
-      hint:'Not what they felt. What a camera would capture.',
+      q:m2q,
+      hint:m2hint,
       els:['tell','vintage'],
       obs: a => {
         if (/\b(feel|felt|frustrated|annoyed|stressed|overwhelmed|bothered)\b/i.test(a))
-          return "A feeling was described. The mechanism is looking for behaviour — the observable action, not the inferred state behind it.";
+          return "A feeling was described. This step is looking for behaviour, the observable action, not the inferred state behind it.";
         if (a.trim().split(/\s+/).length < 12)
           return "A behaviour was named but the moment is thin. The Vintage needs a specific scene: when, where, what happened exactly.";
         return "Behaviour and moment are both present. The Tell and the Vintage have material to draw from.";
@@ -1138,8 +1199,8 @@ function buildMechs() {
     },
     {
       id:'M3', name:'Prior Attempted Solution',
-      q:`What has ${g} already tried to fix this — not your idea, but what they actually did before you showed up? Walk through it specifically.`,
-      hint:'Workarounds, hacks, paying for something that half-works — any of it counts.',
+      q:`What has ${g} already tried to fix this? Focus on what they actually did before your idea showed up. Walk through it specifically.`,
+      hint:'Workarounds, hacks, paying for something that half-works. Any of it counts.',
       els:['echo'],
       obs: a => {
         if (/\b(nothing|don't know|haven't|not sure|no idea|never tried)\b/i.test(a))
@@ -1149,19 +1210,19 @@ function buildMechs() {
     },
     {
       id:'M4', name:'The Second Person',
-      q:`Is there anyone else — different from ${g} — who has this problem in a noticeably different way? Describe them and how their version of the problem differs.`,
+      q:`Is there anyone else, different from ${g}, who has this problem in a noticeably different way? Describe them and how their version of the problem differs.`,
       hint:'If no one comes to mind, say so honestly. That is also a finding.',
       els:['echo'],
       obs: a => {
         const wc = a.trim().split(/\s+/).length;
         if (wc < 10 && /\b(no|not really|don't think|nobody|can't think)\b/i.test(a))
-          return "No second person emerged. The problem may be specific to one configuration — or the search has not reached wide enough yet.";
+          return "No second person emerged. The problem may be specific to one configuration, or the search has not reached wide enough yet.";
         return "A second person was named. If their version differs meaningfully, that split will need resolving in Phase 2.";
       }
     },
     {
       id:'M5', name:'The Existing Fix',
-      q:`What is the most obvious existing solution to this problem — an app, a service, a habit, a person? Name it. Then name the precise thing it fails to do for ${g}.`,
+      q:`What is the most obvious existing solution to this problem? It could be an app, a service, a habit, or a person. Name it. Then name the precise thing it fails to do for ${g}.`,
       hint:'One without the other is not an answer. Both need to be specific.',
       els:['gap'],
       obs: a => {
@@ -1172,12 +1233,12 @@ function buildMechs() {
     },
     {
       id:'M6', name:'Their Words, Not Yours',
-      q:`What has ${g} actually said about this problem — their exact words, not your interpretation? If you have not had that conversation yet, what would you need to ask them before this question can be honest?`,
+      q:`What has ${g} actually said about this problem? Use their exact words, not your interpretation. If you have not had that conversation yet, what would you need to ask them before this question can be honest?`,
       hint:'Quotes over summaries. Their language over yours.',
       els:['tell','echo'],
       obs: a => {
         if (/\b(would|probably|i think they|i imagine|i assume|i expect)\b/i.test(a))
-          return "An inference was offered, not a quote. The mechanism is looking for their actual words — not a reconstruction of what they might say.";
+          return "An inference was offered, not a quote. This step is looking for their actual words, not a reconstruction of what they might say.";
         if (a.includes('"') || a.includes('\u201c') || a.includes('\u201d'))
           return "Direct language is present. The Echo and The Tell both have real material to draw from.";
         return "Words were offered. Whether these are reconstruction or record is worth noting before Phase 2 opens.";
@@ -1185,7 +1246,7 @@ function buildMechs() {
     },
     {
       id:'M7', name:'The Non-Case',
-      q:`Who should have this problem — someone who fits every reasonable assumption — but probably doesn't? Describe them specifically. Why don't they have it?`,
+      q:`Who should have this problem, someone who fits every reasonable assumption, but probably doesn't? Describe them specifically. Why don't they have it?`,
       hint:'This is not a weakness to explain away. It is a sharpener. The boundary makes the problem real.',
       els:['limit'],
       obs: a => {
@@ -1408,6 +1469,15 @@ function startPhase1() {
     clearTimeout(window._autosave);
     window._autosave = setTimeout(saveState, 800);
   });
+  ['m1-person','m1-when','m1-trying','m1-happened'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      collectM1Fields();
+      clearTimeout(window._autosave);
+      window._autosave = setTimeout(saveState, 800);
+    });
+  });
 }
 
 function renderElList() {
@@ -1465,10 +1535,19 @@ function renderMech() {
   document.getElementById('m-hint').textContent = m.hint || '';
 
   const ans = document.getElementById('ans');
+  const m1Fields = document.getElementById('m1-fields');
   // If we have a saved answer for this mechanism, restore it
   ans.value = S.answers[m.id] || '';
   ans.removeAttribute('readonly');
   ans.style.borderColor = '';
+  ans.style.display = '';
+  if (m1Fields) m1Fields.style.display = 'none';
+
+  if (m.id === 'M1') {
+    configureM1Fields();
+    ans.style.display = 'none';
+    if (m1Fields) m1Fields.style.display = 'flex';
+  }
 
   document.getElementById('obs-box').style.display = 'none';
   document.getElementById('grape-row').style.display = 'none';
@@ -1500,6 +1579,72 @@ function showPhaseObservation(text) {
 
 function getSparkSummary() {
   return S.m0?.user_line || S.m0?.user_line_candidate || S.idea;
+}
+
+function configureM1Fields() {
+  const person = document.getElementById('m1-person');
+  const label = document.getElementById('m1-person-label');
+  if (!person || !label) return;
+
+  if (!S.m1Fields) S.m1Fields = { person:'', when:'', trying:'', happened:'' };
+
+  if (S.maturity === 2) {
+    label.textContent = 'Person Corked will use';
+    person.value = 'You';
+    person.setAttribute('readonly', '');
+  } else {
+    label.textContent = S.maturity === 3 ? 'Person you found' : 'Person Corked should use';
+    person.removeAttribute('readonly');
+    person.placeholder = 'e.g. Sarah, my old employee';
+    person.value = S.m1Fields.person || '';
+  }
+
+  document.getElementById('m1-when').value = S.m1Fields.when || '';
+  document.getElementById('m1-trying').value = S.m1Fields.trying || '';
+  document.getElementById('m1-happened').value = S.m1Fields.happened || '';
+  ['m1-person','m1-when','m1-trying','m1-happened'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.borderColor = '';
+  });
+}
+
+function collectM1Fields() {
+  const fields = {
+    person: (document.getElementById('m1-person')?.value || '').trim(),
+    when: (document.getElementById('m1-when')?.value || '').trim(),
+    trying: (document.getElementById('m1-trying')?.value || '').trim(),
+    happened: (document.getElementById('m1-happened')?.value || '').trim()
+  };
+  if (S.maturity === 2) fields.person = 'You';
+  S.m1Fields = fields;
+  return fields;
+}
+
+function buildM1AnswerText(fields) {
+  return [
+    `Person: ${fields.person}`,
+    `When it happened: ${fields.when}`,
+    `What they were trying to do: ${fields.trying}`,
+    `What actually happened: ${fields.happened}`
+  ].join('\n');
+}
+
+function validateM1Fields(fields) {
+  const checks = [
+    ['m1-person', fields.person],
+    ['m1-when', fields.when],
+    ['m1-trying', fields.trying],
+    ['m1-happened', fields.happened]
+  ];
+  let ok = true;
+  checks.forEach(([id, value]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const empty = !value || (id === 'm1-happened' && value.length < 8);
+    el.style.borderColor = empty ? 'var(--wine)' : '';
+    if (empty) ok = false;
+  });
+  return ok;
 }
 
 function rankState(state) {
@@ -1547,16 +1692,16 @@ function applyM1Result(data, txt) {
   const grape = data.grape || {};
   const workerState = grape.state || 'none';
   const personKind = grape.person_kind || 'none';
-  const named = grape.named_person || '';
+  const named = grape.named_person || S.m1Fields?.person || '';
   const isSettled = workerState === 'settled';
   const appGrapeState = isSettled ? 'settled' : 'turbid';
 
   setEl('grape', appGrapeState);
 
   if (isSettled) {
-    if (personKind === 'self') {
+    if (personKind === 'self' || S.maturity === 2) {
       S.grape = 'you';
-      S.label.grape = 'You, grounded in a specific instance.';
+      S.label.grape = 'You';
     } else {
       S.grape = named || 'the person you named';
       S.label.grape = named || txt.slice(0,150);
@@ -1586,11 +1731,17 @@ function applyLocalMechanismResult(m, txt) {
 async function p1Next() {
   const m = M[mi];
   const ans = document.getElementById('ans');
-  const txt = ans.value.trim();
+  const m1Fields = m.id === 'M1' ? collectM1Fields() : null;
+  const txt = m.id === 'M1' ? buildM1AnswerText(m1Fields) : ans.value.trim();
 
   if (!obsShown) {
     // Step 1: submit answer → show observation, system sets element state
-    if (txt.length < 8) { ans.style.borderColor='var(--wine)'; return; }
+    if (m.id === 'M1') {
+      if (!validateM1Fields(m1Fields)) return;
+    } else if (txt.length < 8) {
+      ans.style.borderColor='var(--wine)';
+      return;
+    }
 
     try {
       setPhaseBusy(true, m.id === 'M1' ? 'Reading…' : 'Reading…');
@@ -1621,6 +1772,12 @@ async function p1Next() {
     }
 
     ans.setAttribute('readonly','true');
+    if (m.id === 'M1') {
+      ['m1-person','m1-when','m1-trying','m1-happened'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.setAttribute('readonly', '');
+      });
+    }
     document.getElementById('p1-btn').textContent = 'Next →';
     obsShown = true;
 
@@ -1629,6 +1786,10 @@ async function p1Next() {
     if (m.id === 'M1') M = buildMechs();
 
     ans.removeAttribute('readonly');
+    ['m1-person','m1-when','m1-trying','m1-happened'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && !(id === 'm1-person' && S.maturity === 2)) el.removeAttribute('readonly');
+    });
     mi++;
     S.mechIndex = mi;
     saveState();
@@ -1706,7 +1867,7 @@ function showLabel() {
         </div>`;
 
   h += settled < 6
-    ? `<div class="readiness not-ready">${6-settled} element${6-settled!==1?'s':''} still unsettled. Phase 2 opens when all six clear. The bottle is aging — not finished.</div>`
+    ? `<div class="readiness not-ready">${6-settled} element${6-settled!==1?'s':''} still unsettled. Phase 2 opens when all six clear. The bottle is aging, not finished.</div>`
     : `<div class="readiness ready">All six elements settled. The bottle is ready to cork. Phase 2 is available when you are.</div>`;
 
   document.getElementById('vc').innerHTML = h;
