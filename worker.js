@@ -80,6 +80,21 @@ Do not use the words "cellar_ready", "bottleable_cloudy", or "unbottleable" verb
 BANNED WORDS in user_line_candidate:
 platform, revolutionary, optimize, transformation, seamless, empower, validate, validation, ICP, persona, target user, value proposition, pain point.
 
+M1 SETUP:
+After processing the Spark, also produce m1_setup — contextual framing that tells M1 exactly what kind of person and moment to look for, based on what this Spark is actually about.
+Do not write generic M1 framing. Write framing specific to this Spark's domain, role, and situation.
+- question: One direct sentence telling the user to name the specific person and moment this Spark starts from. Present tense. Specific to the domain.
+- hint: One short supporting sentence. What a good answer looks like for this Spark specifically.
+- person_label: The noun for the role this Spark is about. "Employee", "Customer", "Landlord", "Patient". Not "User" or "Person".
+- person_placeholder: A concrete example name and role for this Spark (e.g. "Marcus, senior developer").
+- when_label: A short field label for the "when" field, specific to this Spark's triggering situation.
+- when_placeholder: A concrete example "when" for this Spark (e.g. "two weeks before he resigned").
+- trying_label: A short field label for what the person was trying to do, specific to this Spark.
+- trying_placeholder: A concrete example goal for this Spark (e.g. "keep the team stable during a client project").
+- happened_label: A short field label for what actually happened.
+- happened_placeholder: A concrete example describing the kind of observable scene this Spark produces.
+Voice rules apply to all m1_setup strings: no dashes, no contrast formulas, no coaching language.
+
 Return only JSON.`;
 
 const M1_DOCTRINE = `You are the Winemaster — the voice of Corked.
@@ -158,6 +173,18 @@ Return exactly this JSON shape:
   "followup": {
     "needed": true|false,
     "question": "string or null"
+  },
+  "m1_setup": {
+    "question": "one sentence, spark-specific, directing user to name person and moment",
+    "hint": "one sentence, what a good answer looks like for this spark",
+    "person_label": "role noun for this spark",
+    "person_placeholder": "e.g. Marcus, senior developer",
+    "when_label": "short label for when field",
+    "when_placeholder": "e.g. two weeks before he resigned",
+    "trying_label": "short label for trying field",
+    "trying_placeholder": "e.g. keep the team stable during a client project",
+    "happened_label": "short label for happened field",
+    "happened_placeholder": "concrete example scene for this spark"
   }
 }`;
 }
@@ -195,7 +222,7 @@ Return exactly this JSON shape:
 }`;
 }
 
-async function callClaude(env, system, content) {
+async function callClaude(env, system, content, maxTokens = 700) {
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -205,7 +232,7 @@ async function callClaude(env, system, content) {
     },
     body: JSON.stringify({
       model: env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
-      max_tokens: 700,
+      max_tokens: maxTokens,
       system,
       messages: [{ role: 'user', content }]
     })
@@ -327,7 +354,17 @@ function validateM0(parsed, rawSpark) {
   const visiblePaths = [
     'user_line_candidate',
     'digestibility.reason',
-    'followup.question'
+    'followup.question',
+    'm1_setup.question',
+    'm1_setup.hint',
+    'm1_setup.person_label',
+    'm1_setup.person_placeholder',
+    'm1_setup.when_label',
+    'm1_setup.when_placeholder',
+    'm1_setup.trying_label',
+    'm1_setup.trying_placeholder',
+    'm1_setup.happened_label',
+    'm1_setup.happened_placeholder'
   ];
 
   if (!parsed || typeof parsed !== 'object') throw new Error('Invalid JSON object');
@@ -360,10 +397,16 @@ function validateM0(parsed, rawSpark) {
 
   cleanVisibleFields(parsed, visiblePaths);
 
+  // Ensure m1_setup exists — fallback to null fields if Claude omitted it
+  if (!parsed.m1_setup || typeof parsed.m1_setup !== 'object') {
+    parsed.m1_setup = null;
+  }
+
   parsed.server_checks = {
     schema_valid: true,
     banned_words_found: foundBanned,
-    visible_style_violations_cleaned: styleViolations
+    visible_style_violations_cleaned: styleViolations,
+    m1_setup_present: !!parsed.m1_setup
   };
 
   return parsed;
@@ -419,7 +462,7 @@ async function handleM0(request, env, corsHeaders) {
     return jsonResponse({ error: 'Missing raw_spark' }, 400, corsHeaders);
   }
 
-  const parsed = await callClaude(env, M0_DOCTRINE, buildM0UserMessage(rawSpark, followupQuestion, followupAnswer));
+  const parsed = await callClaude(env, M0_DOCTRINE, buildM0UserMessage(rawSpark, followupQuestion, followupAnswer), 1200);
   return jsonResponse(validateM0(parsed, rawSpark), 200, corsHeaders);
 }
 
