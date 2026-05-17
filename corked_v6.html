@@ -1781,11 +1781,12 @@ function configureM1Fields() {
   const isSelf  = S.maturity === 2;
 
   // ── Person field ──
-  label.textContent = setup?.person_label || 'Person';
   if (isSelf) {
+    label.textContent = 'Person Corked will use';
     person.value = 'You';
     person.setAttribute('readonly', '');
   } else {
+    label.textContent = setup?.person_label || 'Person Corked should use';
     person.removeAttribute('readonly');
     person.placeholder = setup?.person_placeholder || 'e.g. Sarah, my old manager';
     person.value = S.m1Fields.person || '';
@@ -1807,7 +1808,7 @@ function configureM1Fields() {
 
   if (whenEl)     whenEl.placeholder     = setup?.when_placeholder     || '';
   if (tryingEl)   tryingEl.placeholder   = setup?.trying_placeholder   || '';
-  if (happenedEl) happenedEl.placeholder = setup?.happened_placeholder || 'Write the observable scene — what happened, step by step.';
+  if (happenedEl) happenedEl.placeholder = setup?.happened_placeholder || 'Write the observable scene. What happened, step by step.';
 
   // ── Restore saved values ──
   if (whenEl)     whenEl.value     = S.m1Fields.when     || '';

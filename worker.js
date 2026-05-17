@@ -85,8 +85,8 @@ After processing the Spark, also produce m1_setup — contextual framing that te
 Do not write generic M1 framing. Write framing specific to this Spark's domain, role, and situation.
 - question: One direct sentence telling the user to name the specific person and moment this Spark starts from. Present tense. Specific to the domain.
 - hint: One short supporting sentence. What a good answer looks like for this Spark specifically.
-- person_label: The noun for the role this Spark is about. "Employee", "Customer", "Landlord", "Patient". Not "User" or "Person".
-- person_placeholder: A concrete example name and role for this Spark (e.g. "Marcus, senior developer").
+- person_label: The noun for the person who has the problem in this Spark. "Founder", "Customer", "Landlord", "Patient". Not "User" or "Person". Do not use the noun for a secondary actor being observed unless that actor is the one who has the problem.
+- person_placeholder: A concrete example name and role for the person who has the problem in this Spark (e.g. "Maya, startup founder").
 - when_label: A short field label for the "when" field, specific to this Spark's triggering situation.
 - when_placeholder: A concrete example "when" for this Spark (e.g. "two weeks before he resigned").
 - trying_label: A short field label for what the person was trying to do, specific to this Spark.
