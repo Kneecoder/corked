@@ -331,6 +331,10 @@ body {
 }
 .field:focus { border-color:var(--wine); }
 .field.err { border-color:var(--wine-hi); }
+.field.spark-provenance {
+  opacity:.38;
+  border-color:var(--border);
+}
 .options { display:flex; flex-direction:column; gap:.65rem; }
 .opt {
   background:var(--card); border:1px solid var(--border); padding:.9rem 1.1rem;
@@ -621,6 +625,9 @@ body {
   border-bottom:1px solid var(--border-hi);
   padding:22px 24px 20px;
 }
+.m0-stamp.state-cloudy { background:linear-gradient(180deg, rgba(201,160,64,.035), var(--surface)); }
+.m0-stamp.state-ready { background:linear-gradient(180deg, rgba(93,168,118,.03), var(--surface)); }
+.m0-stamp.state-blocked { background:linear-gradient(180deg, rgba(155,61,79,.05), var(--surface)); }
 .m0-stamp::before {
   content:'';
   position:absolute;
@@ -667,6 +674,36 @@ body {
   line-height:1.65;
   white-space:pre-wrap;
 }
+.m0-state-label {
+  display:none;
+  font-size:.58rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:7px;
+  -webkit-font-smoothing:antialiased;
+}
+@keyframes m0-line-revised {
+  0%   { border-color:var(--border); box-shadow:0 0 0 rgba(201,165,90,0); }
+  18%  { border-color:rgba(201,165,90,.62); box-shadow:0 0 24px rgba(201,165,90,.08); }
+  100% { border-color:var(--border-hi); box-shadow:0 0 0 rgba(201,165,90,0); }
+}
+.m0-stamp.line-revised {
+  animation:m0-line-revised 1.6s ease-out both;
+}
+@keyframes m0-cellar-seal {
+  0%   { transform:translateY(0); opacity:1; filter:brightness(1); }
+  28%  { transform:translateY(0); opacity:1; filter:brightness(1.12); }
+  72%  { transform:translateY(-4px); opacity:.94; filter:brightness(.98); }
+  100% { transform:translateY(10px); opacity:0; filter:brightness(.86); }
+}
+.m0-result-sealing {
+  pointer-events:none;
+  animation:m0-cellar-seal 1.15s cubic-bezier(.32,0,.24,1) forwards;
+}
+.m0-result-sealing .m0-stamp {
+  border-bottom-color:rgba(201,165,90,.34);
+}
 .m0-process-note {
   display:none;
   margin-top:12px;
@@ -676,6 +713,11 @@ body {
   color:var(--cream-dim);
   line-height:1.65;
   letter-spacing:.02em;
+}
+.m0-actions {
+  display:flex;
+  gap:10px;
+  align-items:center;
 }
 </style>
 </head>
@@ -1247,14 +1289,15 @@ function renderIntake() {
           <div class="m0-obs-text" id="m0-wm-text"></div>
           <div class="m0-process-note" id="m0-process-note"></div>
           <div id="m0-followup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+            <div class="m0-state-label" id="m0-state-label">One thing is cloudy</div>
             <div id="m0-followup-q" style="font-size:.82rem;color:var(--cream-dim);line-height:1.65;margin-bottom:10px"></div>
             <textarea id="m0-followup-ans" class="field" rows="2" placeholder="Your answer…" oninput="v6FollowupChange()" style="font-size:.85rem"></textarea>
           </div>
           <div class="row" style="margin-top:14px">
             <div></div>
-            <div style="display:flex;gap:10px">
+            <div class="m0-actions">
               <button class="btn-ghost" id="m0-rewrite-btn" onclick="v6Rewrite()" style="display:none">Edit spark</button>
-              <button class="btn-sm" id="m0-bottle-btn" onclick="v6BottleThis()" style="display:none">Bottle this</button>
+              <button class="btn-sm" id="m0-bottle-btn" onclick="v6BottleThis()" style="display:none">Seal line</button>
             </div>
           </div>
         </div>
@@ -1279,7 +1322,7 @@ function renderIntake() {
   if (first) {
     h += `<div id="v6-bottom-bar" class="row" style="margin-top:2rem">
             <span id="v6-bottle-status" style="font-size:.72rem;color:var(--muted)"></span>
-            <button class="btn" id="v6-bottle-btn" onclick="v6BottleSpark()">Bottle spark →</button>
+            <button class="btn" id="v6-bottle-btn" onclick="v6BottleSpark()">Bottle Spark →</button>
           </div>`;
   } else {
     h += `<div class="row">
@@ -2103,7 +2146,7 @@ async function v6RunM0(payload, statusText, opts) {
   if (btn) btn.disabled = true;
   if (panelBtn) panelBtn.disabled = true;
   if (rewriteBtn) rewriteBtn.disabled = true;
-  if (status) status.textContent = statusText || 'Bottling…';
+  if (status) status.textContent = statusText || 'Reading the spark…';
   if (note && opts.note) {
     note.textContent = opts.note;
     note.style.display = 'block';
@@ -2142,7 +2185,7 @@ async function v6BottleSpark() {
     return;
   }
 
-  await v6RunM0({ raw_spark: spark.trim() }, 'Bottling…');
+  await v6RunM0({ raw_spark: spark.trim() }, 'Reading the spark…');
 }
 
 function v6RenderM0(data) {
@@ -2154,7 +2197,10 @@ function v6RenderM0(data) {
 
   // Lock the spark field
   const inp = document.getElementById('f-inp');
-  if (inp) { inp.setAttribute('readonly', ''); inp.style.opacity = '0.45'; }
+  if (inp) {
+    inp.setAttribute('readonly', '');
+    inp.classList.add('spark-provenance');
+  }
 
   // Hide bottom action bar — panel is now the only action zone
   const bar = document.getElementById('v6-bottom-bar');
@@ -2163,11 +2209,20 @@ function v6RenderM0(data) {
   // Populate result panel
   document.getElementById('m0-eyebrow').textContent = state === 'unbottleable' ? 'CANNOT BE BOTTLED' : 'THIS ENTERS THE CELLAR AS';
   document.getElementById('m0-entry-line').textContent = data.user_line_candidate || '—';
+  const stamp = document.querySelector('.m0-stamp');
+  if (stamp) {
+    stamp.classList.remove('state-cloudy', 'state-ready', 'state-blocked', 'line-revised');
+    stamp.classList.add(state === 'cellar_ready' ? 'state-ready' : state === 'unbottleable' ? 'state-blocked' : 'state-cloudy');
+    if (data._rebottled) {
+      void stamp.offsetWidth;
+      stamp.classList.add('line-revised');
+    }
+  }
   v6TypeOut(document.getElementById('m0-wm-text'), data.digestibility?.reason || '');
   const note = document.getElementById('m0-process-note');
   if (note) {
     if (data._rebottled) {
-      note.textContent = 'Re-bottled from your follow-up. The line was revised by the Winemaster, not pasted from your answer.';
+      note.textContent = 'Your follow-up named the missing tension. The line now says why the signal matters.';
       note.style.display = 'block';
     } else {
       note.textContent = '';
@@ -2179,11 +2234,17 @@ function v6RenderM0(data) {
   const followupBlock = document.getElementById('m0-followup');
   const followupQ = document.getElementById('m0-followup-q');
   const followupAns = document.getElementById('m0-followup-ans');
+  const stateLabel = document.getElementById('m0-state-label');
   if (needsFollowup) {
+    if (stateLabel) {
+      stateLabel.textContent = state === 'unbottleable' ? 'Not bottleable yet' : 'One thing is cloudy';
+      stateLabel.style.display = 'block';
+    }
     if (followupQ) followupQ.textContent = data.followup.question;
     if (followupAns) followupAns.value = '';
     if (followupBlock) followupBlock.style.display = 'block';
   } else {
+    if (stateLabel) stateLabel.style.display = 'none';
     if (followupBlock) followupBlock.style.display = 'none';
   }
 
@@ -2197,7 +2258,7 @@ function v6RenderM0(data) {
   }
   if (bottleBtn) {
     bottleBtn.style.display = '';
-    bottleBtn.textContent = needsFollowup ? 'Re-bottle' : 'Bottle this';
+    bottleBtn.textContent = needsFollowup ? 'Re-bottle' : 'Seal line';
     bottleBtn.disabled = needsFollowup; // enabled when followup is answered
   }
 }
@@ -2217,6 +2278,10 @@ function v6TypeOut(el, text, speed) {
   tick();
 }
 
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function v6RebottleFollowup() {
   const data = window._v6M0.data;
   if (!data) return;
@@ -2229,9 +2294,9 @@ async function v6RebottleFollowup() {
     raw_spark: data.raw_spark,
     followup_question: data.followup?.question || '',
     followup_answer: followupAnswer
-  }, 'Re-bottling…', {
+  }, 'Folding in the missing tension…', {
     rebottled: true,
-    note: 'Re-bottling with your follow-up. The Winemaster will revise the line before it enters the cellar.'
+    note: 'Folding the missing tension into the line.'
   });
 }
 
@@ -2248,7 +2313,11 @@ async function v6BottleThis() {
   const followupAnswer = followupAns ? followupAns.value.trim() : '';
 
   const inp = document.getElementById('f-inp');
-  if (inp) { inp.value = data.user_line_candidate || ''; inp.removeAttribute('readonly'); inp.style.opacity = ''; }
+  if (inp) {
+    inp.value = data.user_line_candidate || '';
+    inp.removeAttribute('readonly');
+    inp.classList.remove('spark-provenance');
+  }
 
   S.m0 = data;
 
@@ -2259,6 +2328,23 @@ async function v6BottleThis() {
     m0: data
   }));
 
+  const result = document.getElementById('m0-result');
+  const note = document.getElementById('m0-process-note');
+  const bottleBtn = document.getElementById('m0-bottle-btn');
+  const rewriteBtn = document.getElementById('m0-rewrite-btn');
+  if (bottleBtn) bottleBtn.disabled = true;
+  if (rewriteBtn) rewriteBtn.disabled = true;
+  if (note) {
+    note.textContent = 'Line sealed.';
+    note.style.display = 'block';
+  }
+  if (result) {
+    result.classList.remove('m0-result-sealing');
+    void result.offsetWidth;
+    result.classList.add('m0-result-sealing');
+    await wait(1050);
+  }
+
   intakeNext();
 }
 
@@ -2266,7 +2352,7 @@ function v6Rewrite() {
   const inp = document.getElementById('f-inp');
   if (inp) {
     inp.removeAttribute('readonly');
-    inp.style.opacity = '';
+    inp.classList.remove('spark-provenance');
     if (window._v6M0.state === 'unbottleable') inp.value = '';
     else inp.value = window._v6M0.editableLine || inp.value;
     inp.focus();
@@ -2274,6 +2360,7 @@ function v6Rewrite() {
   }
 
   document.getElementById('m0-result').style.display = 'none';
+  document.getElementById('m0-result').classList.remove('m0-result-sealing');
   const note = document.getElementById('m0-process-note');
   if (note) {
     note.textContent = '';
