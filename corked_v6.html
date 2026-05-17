@@ -986,7 +986,7 @@ body {
       <div class="mech-eyebrow" id="m-label">—</div>
       <div class="mech-q" id="m-q"></div>
       <div class="mech-hint" id="m-hint"></div>
-      <textarea class="answer-box" id="ans" placeholder="Write here — the more specific, the more the mechanisms can work with."></textarea>
+      <textarea class="answer-box" id="ans" placeholder="Write here. The more specific you are, the more Phase 1 can work with."></textarea>
       <div class="obs" id="obs-box"></div>
       <div class="grape-input-row" id="grape-row">
         <div class="grape-input-label">Their first name</div>
@@ -1097,12 +1097,12 @@ function buildMechs() {
   } else if (S.maturity === 2) {
     // Self as grape
     m1q = `You identified yourself as the person with this problem.\n\nDescribe a specific instance when you experienced it. When did it happen? What were you trying to do? What did you actually do — not feel, do — because of it?`;
-    m1hint = 'Treat yourself as the raw material. The mechanisms draw from the same evidence whether the grape is you or someone else.';
+    m1hint = 'Treat yourself as the raw material. Phase 1 draws from the same evidence whether the person is you or someone else.';
     m1obs = a => {
       const wc = a.trim().split(/\s+/).length;
-      if (wc < 8) return "Too thin. The mechanisms need a specific instance: when, what you were doing, what you actually did.";
+      if (wc < 8) return "Too thin. Phase 1 needs a specific instance: when, what you were doing, what you actually did.";
       if (/feel|felt|frustrated|annoyed|stressed/i.test(a) && wc < 20) return "A feeling was described more than a behaviour. The Tell needs what was done — the observable action.";
-      return "You are in the cellar. The mechanisms will draw from what you have written.";
+      return "You are in the cellar. Phase 1 will draw from what you have written.";
     };
   } else {
     // Extraction framing (maturity 0 or 1)
@@ -1111,7 +1111,7 @@ function buildMechs() {
     m1obs = a => {
       const wc = a.trim().split(/\s+/).length;
       if (wc < 5) return "Not enough here. The question needs a real person and something about who they are.";
-      if (wc < 15) return "A person appears, but the picture is thin. The mechanisms work better with more: who they are, what their life looks like when this problem shows up.";
+      if (wc < 15) return "A person appears, but the picture is thin. Phase 1 works better with more: who they are, what their life looks like when this problem shows up.";
       return "A person has been placed in the cellar. Everything that follows draws from this.";
     };
   }
@@ -1200,7 +1200,7 @@ function buildMechs() {
 // ── INTAKE ──
 const INTAKE = [
   {
-    id:'idea', eyebrow:'The Spark · 1 of 5',
+    id:'idea', eyebrow:'The Spark · 1 of 4',
     q:'What did you bring to the cellar?',
     note:'Do not polish the spark. Corked only needs enough shape to bottle it.',
     type:'text', ph:'An app that...',
@@ -1208,12 +1208,12 @@ const INTAKE = [
     save: v => { S.idea = v.trim(); }
   },
   {
-    id:'maturity', eyebrow:'The Person · 2 of 5',
+    id:'maturity', eyebrow:'The Person · 2 of 4',
     q:'Is there a real person this idea comes from?',
     note:'The cellar works best when you arrive as you are.',
     type:'opts',
     opts:[
-      { l:'A', t:'Yes. I have someone specific in mind and have watched this firsthand.', s:'You have a person and a scene. The mechanisms will draw from both.' },
+      { l:'A', t:'Yes. I have someone specific in mind and have watched this firsthand.', s:'You have a person and a scene. Phase 1 will draw from both.' },
       { l:'B', t:'Yes. I have spoken to someone, but led with my idea rather than their situation.', s:'You have a conversation. Whether it surfaces evidence is what Phase 1 finds out.' },
       { l:'C', t:'No, but this applies to me.', s:'Your own experience can be the starting point. Phase 1 will ask for a specific moment.' },
       { l:'D', t:'No. I do not have a real person yet.', s:'That is honest. Phase 1 will show you exactly who to look for.' }
@@ -1221,20 +1221,7 @@ const INTAKE = [
     save: v => { S.maturity = v; }
   },
   {
-    id:'progress', eyebrow:'Maturity · 3 of 5',
-    q:'How far along is this idea?',
-    note:null,
-    type:'opts',
-    opts:[
-      { l:'A', t:'It just crossed my mind.',      s:"Fresh. You haven't thought it through yet." },
-      { l:'B', t:'It keeps coming back.',          s:'A recurring thought. Something is in there.' },
-      { l:'C', t:'I have been thinking seriously.',s:'You have a real sense of the problem.' },
-      { l:'D', t:'I have already started.',        s:'Conversations, research, early attempts.' }
-    ],
-    save: v => { S.progress = v; }
-  },
-  {
-    id:'pace', eyebrow:'Pace · 4 of 5',
+    id:'pace', eyebrow:'Pace · 3 of 4',
     q:'How often do you want to engage with this idea?',
     note:'Not a commitment. It calibrates the cellar.',
     type:'opts',
@@ -1247,15 +1234,15 @@ const INTAKE = [
     save: v => { S.pace = v; }
   },
   {
-    id:'notifTiming', eyebrow:'Timing · 5 of 5',
+    id:'notifTiming', eyebrow:'Timing · 4 of 4',
     q:'When does your head work best on something like this?',
     note:'The cellar will reach you when you\'re already in the right place.',
     type:'opts',
     opts:[
-      { l:'A', t:'Morning — before the day gets in the way.', s:'Questions arrive when the day is still open.' },
-      { l:'B', t:'Midday — during a break.', s:'A thinking window between things.' },
-      { l:'C', t:'Evening — once the day is done.', s:'Settled, fewer interruptions.' },
-      { l:'D', t:'Late — after the house is quiet.', s:'Fewer interruptions. Long thoughts welcome.' }
+      { l:'A', t:'Morning, before the day gets in the way.', s:'Questions arrive when the day is still open.' },
+      { l:'B', t:'Midday, during a break.', s:'A thinking window between things.' },
+      { l:'C', t:'Evening, once the day is done.', s:'Settled, fewer interruptions.' },
+      { l:'D', t:'Late, after the house is quiet.', s:'Fewer interruptions. Long thoughts welcome.' }
     ],
     save: v => { S.notifTiming = v; }
   }
