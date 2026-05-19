@@ -44,9 +44,18 @@ Cloudiness is not failure. Cloudiness is the material Corked ages through questi
 
 FOLLOWUP
 When digestibility.state is bottleable_cloudy or unbottleable, set followup.needed true and write one short followup question.
-For bottleable_cloudy, the question should ask for the missing person or problem without upgrading the idea.
+For bottleable_cloudy, the question should ask for the missing person or problem using only the Spark's own nouns, roles, domains, and mechanisms.
 For unbottleable, the question should ask for the minimum concrete idea material needed to re-spark.
 When digestibility.state is cellar_ready, set followup.needed false and followup.question null.
+
+FOLLOWUP QUESTION RULE:
+The followup question is also subject to COMPRESS, NEVER UPGRADE.
+Use only nouns, roles, domains, situations, and mechanisms stated in the raw Spark or extracted directly in spark_parse.
+Do not introduce adjacent domains, inferred activities, or broader categories.
+If the Spark says "books," ask about books or getting books. Do not ask about reading, literacy, education, or access.
+If the Spark says "cans," ask about cans. Do not ask about recycling, barter, credits, currency, or waste.
+If the Spark says "payments," ask about payments. Do not ask about cash flow, collections, finance operations, or revenue.
+The followup question asks for one missing field only: person, problem, or situation.
 When a followup answer is provided, treat it as clarification of the missing field only.
 Use it to name the tension or problem if the user stated one.
 Do not convert the followup answer into a solution promise, feature, or outcome unless the original Spark already promised that change.
@@ -391,8 +400,8 @@ function validateM0(parsed, rawSpark) {
   } else if (!parsed.followup.question) {
     parsed.followup.needed = true;
     parsed.followup.question = parsed.digestibility.state === 'bottleable_cloudy'
-      ? 'Name the specific person and the problem they have, without polishing the idea.'
-      : 'Write the idea again with a person, a problem, and the thing you imagine making.';
+      ? 'What specific person or problem is missing from this Spark? Use only the words already in the Spark.'
+      : 'Write the Spark again with a person, a problem, and the thing you imagine making.';
   }
 
   cleanVisibleFields(parsed, visiblePaths);
