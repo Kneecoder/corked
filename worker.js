@@ -52,6 +52,12 @@ FOLLOWUP QUESTION RULE:
 The followup question is also subject to COMPRESS, NEVER UPGRADE.
 Use only nouns, roles, domains, situations, and mechanisms stated in the raw Spark or extracted directly in spark_parse.
 Do not introduce adjacent domains, inferred activities, or broader categories.
+The followup question must ask about the missing evidence in the world, not why the founder thought of the idea.
+Do not ask "what made you think of this," "why this matters," "what inspired this," or any question about the founder's reasoning or associations.
+For thing-shaped Sparks, ask what is going wrong for the named person or population around the named domain or mechanism.
+Correct: "What is going wrong for homeless people around getting books?"
+Correct: "What problem are homeless people having with books?"
+Wrong: "What is it about homeless people and books that made you think of this?"
 If the Spark says "books," ask about books or getting books. Do not ask about reading, literacy, education, or access.
 If the Spark says "cans," ask about cans. Do not ask about recycling, barter, credits, currency, or waste.
 If the Spark says "payments," ask about payments. Do not ask about cash flow, collections, finance operations, or revenue.
