@@ -840,6 +840,15 @@ body {
   line-height:1.65;
   letter-spacing:.02em;
 }
+.m0-cellar-note {
+  display:none;
+  margin-top:10px;
+  font-size:.7rem;
+  color:var(--cream-dim);
+  opacity:.55;
+  line-height:1.6;
+  letter-spacing:.025em;
+}
 .m0-actions {
   display:flex;
   gap:10px;
@@ -1475,6 +1484,7 @@ function renderIntake() {
         <div class="m0-secondary">
           <div class="m0-obs-label">Winemaster</div>
           <div class="m0-obs-text" id="m0-wm-text"></div>
+          <div class="m0-cellar-note" id="m0-cellar-note"></div>
           <div class="m0-process-note" id="m0-process-note"></div>
           <div id="m0-followup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
             <div class="m0-state-label" id="m0-state-label">One thing is cloudy</div>
@@ -2628,6 +2638,19 @@ function v6RenderM0(data) {
     }
   }
   v6TypeOut(document.getElementById('m0-wm-text'), data.digestibility?.reason || '');
+  const cellarNote = document.getElementById('m0-cellar-note');
+  if (cellarNote) {
+    if (state === 'cellar_ready') {
+      cellarNote.textContent = 'This can enter the cellar. Nothing has been proven yet.';
+      cellarNote.style.display = 'block';
+    } else if (state === 'bottleable_cloudy') {
+      cellarNote.textContent = 'This can enter the cellar. The cloudiness is what the aging is for.';
+      cellarNote.style.display = 'block';
+    } else {
+      cellarNote.textContent = '';
+      cellarNote.style.display = 'none';
+    }
+  }
   const note = document.getElementById('m0-process-note');
   if (note) {
     if (data._rebottled) {
