@@ -48,6 +48,12 @@ For bottleable_cloudy, the question should ask for the missing person or problem
 For unbottleable, the question should ask for the minimum concrete idea material needed to re-spark.
 When digestibility.state is cellar_ready, set followup.needed false and followup.question null.
 
+UNBOTTLEABLE RESCUE RULE:
+When a followup answer is provided for an unbottleable Spark, do not rescue it into a new User Line unless the followup explicitly supplies all three: a specific person or role, a domain, and a concrete problem.
+If any of those three are still missing, keep digestibility.state as unbottleable.
+Do not rewrite an unbottleable Spark into "A way for X to Y" unless person/role, domain, and problem are all explicitly present in the followup answer.
+A single vague clarification does not rescue an unbottleable Spark. All three must be present and stated, not inferred.
+
 FOLLOWUP QUESTION RULE:
 The followup question is also subject to COMPRESS, NEVER UPGRADE.
 Use only nouns, roles, domains, situations, and mechanisms stated in the raw Spark or extracted directly in spark_parse.
@@ -99,6 +105,7 @@ Write 1–2 sentences in the Winemaster's voice (calm, assured, cellar-wise — 
 - unbottleable:      Name what is missing without apology. One sentence is enough.
                      Format: "Not bottleable yet. [What is missing or too vague to work with.]"
 Do not use the words "cellar_ready", "bottleable_cloudy", or "unbottleable" verbatim in the reason text.
+In digestibility.reason, call categories and plural groups "population" or "role", not "person". Only use the word "person" when a specific named individual is identifiable.
 
 BANNED WORDS in user_line_candidate:
 platform, revolutionary, optimize, transformation, seamless, empower, validate, validation, ICP, persona, target user, value proposition, pain point.
@@ -372,7 +379,35 @@ function findVisibleStyleViolations(obj, paths) {
   return violations;
 }
 
-function validateM0(parsed, rawSpark) {
+const FOLLOWUP_BANNED_PATTERNS = [
+  /what (is it|was it) about .{0,80} that (made|caused|led|surface)/i,
+  /made (you|this idea?|this) (think|surface|come up)/i,
+  /surface(d)? for you/i,
+  /come up for you/i,
+  /what (is|was) this (trying|meant|supposed) to/i,
+  /what (does|did) this (try|aim|seek|hope) to/i,
+  /what inspired/i,
+  /why (does this|did this|this) matter/i,
+  /what made you/i,
+];
+
+function repairFollowupQuestion(question, sparkParse) {
+  const isBanned = FOLLOWUP_BANNED_PATTERNS.some(re => re.test(question));
+  if (!isBanned) return { question, repaired: false };
+
+  const person = sparkParse?.implied_person;
+  const domain = sparkParse?.domain;
+
+  if (person && domain) {
+    return { question: `What problem are ${person} having with ${domain}?`, repaired: true };
+  }
+  if (person) {
+    return { question: `What is going wrong for ${person} right now?`, repaired: true };
+  }
+  return { question: 'What is going wrong for the person or group named in this Spark?', repaired: true };
+}
+
+function validateM0(parsed, rawSpark, followupAnswer) {
   const allowedStates = ['cellar_ready', 'bottleable_cloudy', 'unbottleable'];
   const visiblePaths = [
     'user_line_candidate',
@@ -418,6 +453,31 @@ function validateM0(parsed, rawSpark) {
       : 'Write the Spark again with a person, a problem, and the thing you imagine making.';
   }
 
+  // Unbottleable rescue guard: if a followup answer was provided but the
+  // spark_parse still lacks person, domain, or problem, cellar_ready is unearned.
+  let rescueBlocked = false;
+  if (followupAnswer && parsed.digestibility.state === 'cellar_ready') {
+    const sp = parsed.spark_parse || {};
+    if (!sp.implied_person || !sp.domain || !sp.suspected_problem) {
+      parsed.digestibility.state = 'bottleable_cloudy';
+      parsed.followup.needed = true;
+      if (!parsed.followup.question) {
+        parsed.followup.question = 'What specific person or problem is missing from this Spark? Use only the words already in the Spark.';
+      }
+      rescueBlocked = true;
+    }
+  }
+
+  // Server-side followup repair: catch banned question patterns doctrine missed.
+  let followupRepaired = false;
+  if (parsed.followup?.question) {
+    const repair = repairFollowupQuestion(parsed.followup.question, parsed.spark_parse);
+    if (repair.repaired) {
+      parsed.followup.question = repair.question;
+      followupRepaired = true;
+    }
+  }
+
   cleanVisibleFields(parsed, visiblePaths);
 
   // Ensure m1_setup exists — fallback to null fields if Claude omitted it
@@ -429,7 +489,9 @@ function validateM0(parsed, rawSpark) {
     schema_valid: true,
     banned_words_found: foundBanned,
     visible_style_violations_cleaned: styleViolations,
-    m1_setup_present: !!parsed.m1_setup
+    m1_setup_present: !!parsed.m1_setup,
+    followup_repaired: followupRepaired,
+    unbottleable_rescue_blocked: rescueBlocked
   };
 
   return parsed;
@@ -486,7 +548,7 @@ async function handleM0(request, env, corsHeaders) {
   }
 
   const parsed = await callClaude(env, M0_DOCTRINE, buildM0UserMessage(rawSpark, followupQuestion, followupAnswer), 1200);
-  return jsonResponse(validateM0(parsed, rawSpark), 200, corsHeaders);
+  return jsonResponse(validateM0(parsed, rawSpark, followupAnswer), 200, corsHeaders);
 }
 
 async function handleM1(request, env, corsHeaders) {
