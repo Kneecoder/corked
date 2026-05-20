@@ -1478,11 +1478,11 @@ function renderIntake() {
             <circle cx="14" cy="14" r="12.5" stroke="currentColor" stroke-width=".75"/>
             <circle cx="14" cy="14" r="8.5" stroke="currentColor" stroke-width=".5"/>
           </svg>
-          <div class="m0-stamp-eyebrow" id="m0-eyebrow">THE WINEMASTER BOTTLED THIS AS</div>
+          <div class="m0-stamp-eyebrow" id="m0-eyebrow">BOTTLED AS</div>
           <div class="m0-stamp-line" id="m0-entry-line"></div>
         </div>
         <div class="m0-secondary">
-          <div class="m0-obs-label">Winemaster</div>
+          <div class="m0-obs-label">Bottle note</div>
           <div class="m0-obs-text" id="m0-wm-text"></div>
           <div class="m0-cellar-note" id="m0-cellar-note"></div>
           <div class="m0-process-note" id="m0-process-note"></div>
@@ -2626,7 +2626,7 @@ function v6RenderM0(data) {
   if (bar) bar.style.display = 'none';
 
   // Populate result panel
-  document.getElementById('m0-eyebrow').textContent = state === 'unbottleable' ? 'CANNOT BE BOTTLED' : 'THE WINEMASTER BOTTLED THIS AS';
+  document.getElementById('m0-eyebrow').textContent = state === 'unbottleable' ? 'CANNOT BE BOTTLED' : 'BOTTLED AS';
   document.getElementById('m0-entry-line').textContent = data.user_line_candidate || '—';
   const stamp = document.querySelector('.m0-stamp');
   if (stamp) {
@@ -2644,7 +2644,7 @@ function v6RenderM0(data) {
       cellarNote.textContent = 'This can enter the cellar. What it is worth, the aging will tell.';
       cellarNote.style.display = 'block';
     } else if (state === 'bottleable_cloudy') {
-      cellarNote.textContent = 'This can enter the cellar. The cloudiness is what the aging is for.';
+      cellarNote.textContent = 'This can enter cloudy. You can bottle it now or clarify the cloudy part first.';
       cellarNote.style.display = 'block';
     } else {
       cellarNote.textContent = '';
@@ -2667,9 +2667,9 @@ function v6RenderM0(data) {
   const followupQ = document.getElementById('m0-followup-q');
   const followupAns = document.getElementById('m0-followup-ans');
   const stateLabel = document.getElementById('m0-state-label');
-  if (needsFollowup) {
+  if (state === 'unbottleable' && needsFollowup) {
     if (stateLabel) {
-      stateLabel.textContent = state === 'unbottleable' ? 'Not bottleable yet' : 'One thing is cloudy';
+      stateLabel.textContent = 'Not bottleable yet';
       stateLabel.style.display = 'block';
     }
     if (followupQ) followupQ.textContent = data.followup.question;
@@ -2689,15 +2689,33 @@ function v6RenderM0(data) {
   }
   if (bottleBtn) {
     bottleBtn.style.display = '';
-    bottleBtn.textContent = needsFollowup ? 'Re-bottle' : 'Seal line';
-    bottleBtn.disabled = needsFollowup; // enabled when followup is answered
+    if (state === 'unbottleable') {
+      bottleBtn.textContent = 'Re-bottle';
+      bottleBtn.disabled = true;
+    } else if (needsFollowup) {
+      bottleBtn.textContent = 'Seal line';
+      bottleBtn.disabled = false;
+    } else {
+      bottleBtn.textContent = 'Seal line';
+      bottleBtn.disabled = false;
+    }
   }
 }
 
 function v6FollowupChange() {
   const ans = document.getElementById('m0-followup-ans');
   const btn = document.getElementById('m0-bottle-btn');
-  if (btn) btn.disabled = !(ans && ans.value.trim());
+  const hasAnswer = !!(ans && ans.value.trim());
+  if (!btn) return;
+  if (window._v6M0.state === 'unbottleable') {
+    btn.disabled = !hasAnswer;
+    btn.textContent = 'Re-bottle';
+    return;
+  }
+  if (window._v6M0.needsFollowup) {
+    btn.disabled = false;
+    btn.textContent = hasAnswer ? 'Re-bottle' : 'Seal line';
+  }
 }
 
 function v6TypeOut(el, text, speed) {
@@ -2732,16 +2750,18 @@ async function v6RebottleFollowup() {
 }
 
 async function v6BottleThis() {
-  if (window._v6M0.needsFollowup) {
+  const followupAns = document.getElementById('m0-followup-ans');
+  const followupAnswer = followupAns ? followupAns.value.trim() : '';
+
+  if (window._v6M0.state === 'unbottleable' && !followupAnswer) return;
+
+  if (window._v6M0.needsFollowup && followupAnswer) {
     await v6RebottleFollowup();
     return;
   }
 
   const data = window._v6M0.data;
   if (!data) return;
-
-  const followupAns = document.getElementById('m0-followup-ans');
-  const followupAnswer = followupAns ? followupAns.value.trim() : '';
 
   const inp = document.getElementById('f-inp');
   if (inp) {

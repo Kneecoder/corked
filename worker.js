@@ -36,11 +36,12 @@ Filling fields in to be helpful is the failure mode you must avoid.
 - domain: The domain the user named, in the user's own language. "Books" stays "books." Do not re-categorise into "literacy" or "community services."
 
 DIGESTIBILITY
-cellar_ready      – the spark has a person, a problem, and enough shape to enter the cellar cleanly
-bottleable_cloudy – the spark has potential but is missing a clear person or problem; bottleable, but cloudiness will age through questions
+cellar_ready      – the spark has an implied person or role and a stated problem. A specific moment is not required at M0.
+bottleable_cloudy – the spark has potential but is missing a clear person or problem; bottleable, but cloudiness will age through M1 and later questions
 unbottleable      – the spark is too vague, too broad, or too abstract to bottle in any useful form
 
 Cloudiness is not failure. Cloudiness is the material Corked ages through questions.
+Do not mark a Spark cloudy only because it lacks a triggering situation, moment, timing, evidence, or specificity. M0 does not test those. M1 and Phase 1 do.
 
 FOLLOWUP
 When digestibility.state is bottleable_cloudy or unbottleable, set followup.needed true and write one short followup question.
@@ -72,7 +73,8 @@ Not allowed: "What is it about homeless people and books that made you think of 
 If the Spark says "books," ask about books or getting books. Do not ask about reading, literacy, education, or access.
 If the Spark says "cans," ask about cans. Do not ask about recycling, barter, credits, currency, or waste.
 If the Spark says "payments," ask about payments. Do not ask about cash flow, collections, finance operations, or revenue.
-The followup question asks for one missing field only: person, problem, or situation.
+The followup question asks for one missing field only: person or problem.
+Do not ask for the first moment, trigger, situation, timing, or scene in M0. That belongs to M1 and later Phase 1 mechanisms.
 When a followup answer is provided, treat it as clarification of the missing field only.
 Use it to name the tension or problem if the user stated one.
 Do not convert the followup answer into a solution promise, feature, or outcome unless the original Spark already promised that change.
@@ -95,7 +97,7 @@ No advice inside digestibility.reason.
 
 DIGESTIBILITY REASON FORMAT
 Write 1–2 sentences in the Winemaster's voice (calm, assured, cellar-wise — no hype, no hedging).
-- cellar_ready:      Confirm what is clear and why it enters cleanly. Name the person and the tension if visible.
+- cellar_ready:      Confirm the role or person and the stated problem. Do not require a moment.
                      Format: "Cellar-ready. [What is visible and why it enters cleanly.]"
 - bottleable_cloudy: Name what is visible, name what is still cloudy, signal the cellar will age it.
                      Format: "Bottleable, cloudy. [X] is visible, but [Y] is still cloudy. That is what the cellar will age."
@@ -407,6 +409,21 @@ function repairFollowupQuestion(question, sparkParse) {
   return { question: 'What is going wrong for the person or group named in this Spark?', repaired: true };
 }
 
+function applyM0DigestibilityGuards(parsed) {
+  const sp = parsed.spark_parse || {};
+  const hasPersonAndProblem = !!(sp.implied_person && sp.suspected_problem);
+
+  if (parsed.digestibility?.state === 'bottleable_cloudy' && hasPersonAndProblem) {
+    parsed.digestibility.state = 'cellar_ready';
+    parsed.digestibility.missing = [];
+    parsed.digestibility.reason = 'Cellar-ready. The role and the stated problem are visible.';
+    parsed.followup = { needed: false, question: null };
+    return { moment_cloudiness_overridden: true };
+  }
+
+  return { moment_cloudiness_overridden: false };
+}
+
 function validateM0(parsed, rawSpark, followupAnswer) {
   const allowedStates = ['cellar_ready', 'bottleable_cloudy', 'unbottleable'];
   const visiblePaths = [
@@ -439,6 +456,7 @@ function validateM0(parsed, rawSpark, followupAnswer) {
   const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
   const lineLower = parsed.user_line_candidate.toLowerCase();
   const foundBanned = M0_BANNED_USER_LINE_TERMS.filter(w => lineLower.includes(w.toLowerCase()));
+  const digestibilityGuards = applyM0DigestibilityGuards(parsed);
 
   if (!parsed.followup || typeof parsed.followup !== 'object') {
     parsed.followup = { needed: false, question: null };
@@ -491,7 +509,8 @@ function validateM0(parsed, rawSpark, followupAnswer) {
     visible_style_violations_cleaned: styleViolations,
     m1_setup_present: !!parsed.m1_setup,
     followup_repaired: followupRepaired,
-    unbottleable_rescue_blocked: rescueBlocked
+    unbottleable_rescue_blocked: rescueBlocked,
+    m0_moment_cloudiness_overridden: digestibilityGuards.moment_cloudiness_overridden
   };
 
   return parsed;
