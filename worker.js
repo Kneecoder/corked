@@ -131,26 +131,23 @@ Return only JSON.`;
 
 const M1_DOCTRINE = `You are the Winemaster — the voice of Corked.
 
-Your job in M1 is finding the Grape: the specific person who has the problem.
+Your job is grading the Grape: confirming that a named individual with a real stated relationship has been identified.
 
 GRAPE STATES:
-- settled: A specific real person is named or clearly identifiable. "My friend Sarah." "My manager Tom." "The café owner downstairs."
-- clearing: A real person seems to exist but is unnamed or thinly described. "A guy from work who complains about invoices." "My old roommate."
-- turbid: Only a category, market, or persona. "Freelancers." "Students." "People who are busy."
+- settled: A named individual AND a stated real relationship. "Sarah, my sister." "Tom, the café owner downstairs." "My manager Priya." Name plus real tie = settled.
+- clearing: A name without a real tie, or a real tie without a name. "A guy from work." "My friend." "Sarah." Either alone does not settle.
+- turbid: A category with a name pinned on it. "Freelancers I know." "Startup founders like my colleague." The name is incidental, not a specific individual.
 - none: No usable person identified.
 
-SPECIAL CASE: Self-as-grape
-If the user is the grape (maturity class 2):
-- settled requires one specific past instance. "I forgot to invoice a client last week and only noticed when rent was due." = settled.
-- "I have this problem all the time." = clearing. Needs a specific instance.
-
-DIRECTION MODE: If user has no person yet (maturity class 3)
-Your job is not to proceed. It is to direct them to find one.
-Return grape.state = turbid, and framing = specific instruction on where to find a person or what to ask next.
+SPECIAL CASE: Self-as-grape (maturity_class 2)
+There is no relationship to yourself. Grade on whether a specific past instance was provided instead.
+- settled: One concrete past moment named. "I forgot to invoice a client last week and only noticed when rent was due." = settled.
+- clearing: Pattern described, no specific instance. "I have this problem all the time." = clearing.
+- turbid: No personal instance at all. General assertion only.
 
 ANTI-FABRICATION:
-Every observation you make must point to a verbatim span from the user's answer.
-If no such span exists, the finding is still valid (no person named = valid finding).
+Every observation you make must point to a verbatim span from the person_name or relationship fields.
+If no such span exists, the finding is still valid.
 Do not invent a person that is not there.
 
 VOICE:
@@ -221,16 +218,15 @@ Return exactly this JSON shape:
 }`;
 }
 
-function buildM1UserMessage(sparkSummary, maturityClass, questionText, userAnswer) {
+function buildM1UserMessage(sparkSummary, maturityClass, personName, relationship) {
   return `<spark_summary>${sparkSummary}</spark_summary>
 <maturity_class>${maturityClass}</maturity_class>
-<question>${questionText}</question>
-<user_answer>${userAnswer}</user_answer>
+<person_name>${personName}</person_name>
+<relationship>${relationship}</relationship>
 
 You must choose the right framing based on maturity_class:
-- 0/1: Extraction mode. A real person should be identifiable from the answer.
-- 2: Self mode. The user is the grape. Settled requires a specific past instance.
-- 3: Direction mode. No person yet. Your job is to direct, not proceed.
+- 0/1: Extraction mode. Grade on named individual plus real stated relationship.
+- 2: Self mode. The user is the grape. Grade on whether a specific past instance was provided.
 
 Return exactly this JSON shape:
 {
@@ -245,7 +241,7 @@ Return exactly this JSON shape:
   },
   "observation": {
     "surface_text": "max 280 chars, two sentences, lab register tone",
-    "anchor_span": "verbatim from user_answer or null"
+    "anchor_span": "verbatim from person_name or relationship or null"
   },
   "next_question": {
     "should_advance": true|false,
@@ -573,20 +569,21 @@ async function handleM0(request, env, corsHeaders) {
 async function handleM1(request, env, corsHeaders) {
   const body = await request.json();
   const sparkSummary = String(body.spark_summary || '').trim();
-  const maturityClass = Number.parseInt(body.maturity_class, 10);
-  const questionText = String(body.question_text || '').trim();
-  const userAnswer = String(body.user_answer || '').trim();
+  const personName = String(body.person_name || '').trim();
+  const relationship = String(body.relationship || '').trim();
+  const maturityClass = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
 
-  if (!sparkSummary || !questionText || !userAnswer || Number.isNaN(maturityClass)) {
-    return jsonResponse({ error: 'Missing required fields' }, 400, corsHeaders);
+  if (!sparkSummary || !personName) {
+    return jsonResponse({ error: 'Missing required fields: spark_summary and person_name' }, 400, corsHeaders);
   }
 
+  const combinedInput = [personName, relationship].filter(Boolean).join(' ');
   const parsed = await callClaude(
     env,
     M1_DOCTRINE,
-    buildM1UserMessage(sparkSummary, maturityClass, questionText, userAnswer)
+    buildM1UserMessage(sparkSummary, maturityClass, personName, relationship)
   );
-  return jsonResponse(validateM1(parsed, userAnswer), 200, corsHeaders);
+  return jsonResponse(validateM1(parsed, combinedInput), 200, corsHeaders);
 }
 
 export default {

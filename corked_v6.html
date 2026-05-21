@@ -1177,6 +1177,7 @@ let S = freshState();
 function freshState() {
   return {
     idea:'', grape:'', maturity:-1, progress:-1, pace:-1, notifTiming:-1,
+    grape_name:'', grape_relationship:'',
     elements:{ grape:'inert', tell:'inert', vintage:'inert', gap:'inert', echo:'inert', limit:'inert' },
     answers:{},
     m1Fields:{ person:'', when:'', trying:'', happened:'' },
@@ -1184,12 +1185,13 @@ function freshState() {
     m0:null,
     m1:null,
     mechIndex:0,
-    grapeStep:false // whether M1's grape-name sub-step has been shown
+    grapeStep:false
   };
 }
 
 // ── PERSISTENCE ──
 const SAVE_KEY = 'corked-v1';
+const DOORSTEP_KEY = 'corked-doorstep-v1';
 let saveTimer = null;
 
 function saveState() {
@@ -1207,6 +1209,9 @@ function loadSaved() {
 }
 
 function clearSaved() { localStorage.removeItem(SAVE_KEY); }
+function saveDoorstep(spark) { localStorage.setItem(DOORSTEP_KEY, spark); }
+function loadDoorstep() { return localStorage.getItem(DOORSTEP_KEY) || null; }
+function clearDoorstep() { localStorage.removeItem(DOORSTEP_KEY); }
 
 // ── ELEMENT META ──
 const EL_META = {
@@ -1223,8 +1228,6 @@ const EL_KEYS = Object.keys(EL_META);
 // ── MECHANISMS ──
 function buildMechs() {
   const g = S.grape || 'the person you named';
-  const m1Setup = S.m0?.m1_setup;
-  const sparkText = getSparkSummary();
   const selfMode = S.maturity === 2 && g === 'you';
   const m2q = selfMode
     ? `Stay inside the instance you just described.\n\nWhat did you actually do next? Write the observable steps. What could a camera capture?`
@@ -1233,64 +1236,7 @@ function buildMechs() {
     ? 'Not what you felt. What happened next, step by step.'
     : 'Not what they felt. What a camera would capture.';
 
-  // M1 framing depends on maturity
-  // maturity: 0=witnessed, 1=talked but described idea, 2=self, 3=no one
-  let m1q, m1hint, m1obs;
-
-  if (S.maturity === 3) {
-    m1q = `Before this moves forward, you need a real person.\n\nNot a type — a name. Someone in your life who actually has this problem right now. Go find them. Come back with a name and something about who they are.`;
-    m1hint = 'The cellar will wait. This is not a blocker — it is an instruction.';
-    m1obs = a => {
-      if (a.trim().split(/\s+/).length < 5) return "Not enough here. When you have a real person in mind, come back with their name and something about who they are.";
-      return "Something is here. Whether a real person exists behind it is what the next step will surface.";
-    };
-  } else if (S.maturity === 2) {
-    const role = m1Setup?.person_label || 'person with the problem';
-    if (sparkText) {
-      // Tier 2: embed spark, clean generic
-      m1q = `You are the ${role.toLowerCase()} in this spark.\n\n"${sparkText}"\n\nGive us one specific time this was real for you. One moment you can name.`;
-      m1hint = m1Setup?.hint || 'When exactly. What you were trying to do. What happened next.';
-    } else {
-      // Tier 3: fallback
-      m1q = `You're the evidence.\n\nWe need one specific moment — not the general pattern, not how it made you feel. One time this actually happened. Place it on record.`;
-      m1hint = 'When exactly. What you were doing. What you did about it. Describe it like a camera was there.';
-    }
-    m1obs = a => {
-      const wc = a.trim().split(/\s+/).length;
-      if (wc < 8) return "Too thin. We need a specific instance: when, what you were doing, what you actually did.";
-      if (/feel|felt|frustrated|annoyed|stressed/i.test(a) && wc < 20) return "A feeling was described more than a behaviour. What was the observable action — what did you actually do?";
-      return "A moment is on record. Everything that follows draws from this.";
-    };
-  } else {
-    // Maturity 0 or 1
-    if (m1Setup?.question) {
-      // Tier 1: fully spark-aware
-      m1q = m1Setup.question;
-      m1hint = m1Setup.hint || 'A first name or handle is enough. A real moment matters more than a polished summary.';
-    } else if (sparkText) {
-      // Tier 2: embed spark
-      m1q = `The idea came from someone.\n\n"${sparkText}"\n\nName that person. Then give us one specific moment when this problem was actually real for them.`;
-      m1hint = 'A first name or handle is enough. A real moment matters more than a polished summary.';
-    } else {
-      // Tier 3: fallback
-      m1q = `The idea came from someone.\n\nName that person. Then give us one specific moment when this problem was actually real for them.`;
-      m1hint = 'A first name or handle is enough. A real moment matters more than a polished summary.';
-    }
-    m1obs = a => {
-      const wc = a.trim().split(/\s+/).length;
-      if (wc < 5) return "Not enough here. We need a real person and something about who they are.";
-      if (wc < 15) return "A person appears, but the picture is thin. The more concrete the moment, the more the rest of Phase 1 has to work with.";
-      return "A person has been placed in the cellar. Everything that follows draws from this.";
-    };
-  }
-
   return [
-    {
-      id:'M1', name:'The One Person',
-      q: m1q, hint: m1hint, els:['grape'],
-      obs: m1obs,
-      grapeStep: S.maturity === 0 || S.maturity === 1 // show name input after M1 for these
-    },
     {
       id:'M2', name:'The Friction Test',
       q:m2q,
@@ -1368,7 +1314,7 @@ function buildMechs() {
 // ── INTAKE ──
 const INTAKE = [
   {
-    id:'idea', eyebrow:'The Spark · 1 of 4',
+    id:'idea', eyebrow:'The Spark · 1 of 5',
     q:'What did you bring to the cellar?',
     note:'Do not polish the spark. Corked only needs enough shape to bottle it.',
     type:'text', ph:'An app that...',
@@ -1376,20 +1322,27 @@ const INTAKE = [
     save: v => { S.idea = v.trim(); }
   },
   {
-    id:'maturity', eyebrow:'The Person · 2 of 4',
+    id:'maturity', eyebrow:'The Person · 2 of 5',
     q:'Is there a real person this idea comes from?',
     note:'The cellar works best when you arrive as you are.',
     type:'opts',
     opts:[
-      { l:'A', t:'Yes. I have someone specific in mind and have watched this firsthand.', s:'You have a person and a scene. Phase 1 will draw from both.' },
-      { l:'B', t:'Yes. I have spoken to someone, but led with my idea rather than their situation.', s:'You have a conversation. Whether it surfaces evidence is what Phase 1 finds out.' },
-      { l:'C', t:'No, but this applies to me.', s:'Your own experience can be the starting point. Phase 1 will ask for a specific moment.' },
-      { l:'D', t:'No. I do not have a real person yet.', s:'That is honest. Phase 1 will show you exactly who to look for.' }
+      { l:'A', t:'Yes. I have someone specific in mind and have watched this firsthand.', s:'You have both. The cellar asks who, next.' },
+      { l:'B', t:'Yes. I have spoken to someone, but led with my idea rather than their situation.', s:'You have a start. The cellar asks who, next.' },
+      { l:'C', t:'No, but this applies to me.', s:'Then you are the one it comes from.' },
+      { l:'D', t:'No. I do not have a real person yet.', s:'Then there is nothing to age yet. The cellar stays shut until you find one.' }
     ],
     save: v => { S.maturity = v; }
   },
   {
-    id:'pace', eyebrow:'Pace · 3 of 4',
+    id:'grape', eyebrow:'The Grape · 3 of 5',
+    q:'Name the person this idea comes from.',
+    note:'A first name is enough. What matters is that they exist.',
+    type:'person',
+    save: () => {}
+  },
+  {
+    id:'pace', eyebrow:'Pace · 4 of 5',
     q:'How often do you want to engage with this idea?',
     note:'Not a commitment. It calibrates the cellar.',
     type:'opts',
@@ -1402,7 +1355,7 @@ const INTAKE = [
     save: v => { S.pace = v; }
   },
   {
-    id:'notifTiming', eyebrow:'Timing · 4 of 4',
+    id:'notifTiming', eyebrow:'Timing · 5 of 5',
     q:'When does your head work best on something like this?',
     note:'The cellar will reach you when you\'re already in the right place.',
     type:'opts',
@@ -1446,11 +1399,19 @@ function renderIntake() {
           <div class="wm-intake-content" id="wm-content">`;
   }
 
-  h += `<div class="step-q">${step.q}</div>
-        ${step.note ? `<div class="step-note">${step.note}</div>` : '<div style="margin-bottom:2rem"></div>'}`;
+  const displayQ = (step.type === 'person' && S.maturity === 2) ? 'You are the grape.'
+    : (step.type === 'person' && S.maturity === 3) ? 'This idea needs one real person.'
+    : step.q;
+  const displayNote = (step.type === 'person' && S.maturity === 3) ? 'The cellar cannot age what has no person behind it.'
+    : (step.type === 'person' && S.maturity === 2) ? 'Your own experience is the starting material.'
+    : step.note;
+
+  h += `<div class="step-q">${displayQ}</div>
+        ${displayNote ? `<div class="step-note">${displayNote}</div>` : '<div style="margin-bottom:2rem"></div>'}`;
 
   if (step.type === 'text') {
-    const v = intakeSel[step.id] || '';
+    const doorstep = !intakeSel[step.id] && step.id === 'idea' ? loadDoorstep() : null;
+    const v = intakeSel[step.id] || doorstep || '';
     h += `<div class="spark-source-row">
             <div class="field-label" id="spark-field-label">Your original spark</div>
             <button class="btn-ghost spark-edit-btn" id="m0-rewrite-btn" onclick="v6Rewrite()" aria-label="Edit spark">
@@ -1501,6 +1462,55 @@ function renderIntake() {
       </div>
       `;
     }
+  } else if (step.type === 'person') {
+    if (S.maturity === 3) {
+      const spark = escHtml(getSparkSummary() || S.idea || '');
+      h += `<div class="spark-reminder" style="margin-bottom:1.5rem">
+              <div class="spark-reminder-row">
+                <div class="spark-reminder-label">The spark</div>
+                <div class="spark-reminder-text">${spark}</div>
+              </div>
+            </div>
+            <p style="font-size:.82rem;color:var(--muted);line-height:1.85;margin-bottom:1rem">
+              Go find one person this spark draws from. Come back with a name and how you know them.
+            </p>
+            <p style="font-size:.75rem;color:var(--muted);opacity:.7;line-height:1.7">
+              Your spark will be waiting in the idea field when you return.
+            </p>`;
+    } else {
+      const setup = S.m0?.m1_setup;
+      const isSelf = S.maturity === 2;
+      const nameLabel = isSelf ? 'Your first name' : (setup?.person_label || 'Their first name');
+      const namePh   = isSelf ? 'e.g. James' : (setup?.person_placeholder || 'e.g. Sarah');
+      const relLabel = isSelf ? 'Describe yourself as the person with this problem' : 'How do you know them?';
+      const relPh    = isSelf
+        ? 'e.g. I run a small design studio and handle all my own invoicing'
+        : 'e.g. my sister, my old manager from the London office, the café owner downstairs';
+      const savedName = escHtml(intakeSel['grape_name'] || '');
+      const savedRel  = escHtml(intakeSel['grape_rel']  || '');
+      const grapeErr  = intakeSel['grape_error'];
+
+      h += `<div>
+              <div class="grape-input-label" style="display:block;margin-bottom:.45rem">${nameLabel}</div>
+              <input type="text" class="field" id="grape-name-inp" maxlength="60"
+                     placeholder="${namePh}" value="${savedName}"
+                     style="font-size:.9rem" oninput="this.style.borderColor=''">
+            </div>
+            <div style="margin-top:.85rem">
+              <div class="grape-input-label" style="display:block;margin-bottom:.45rem">${relLabel}</div>
+              <textarea class="field" id="grape-rel-inp" rows="2"
+                        placeholder="${relPh}"
+                        style="min-height:80px;resize:none"
+                        oninput="this.style.borderColor=''">${savedRel}</textarea>
+            </div>`;
+
+      if (grapeErr) {
+        h += `<div style="font-size:.78rem;color:var(--wine-hi);margin-top:.85rem;line-height:1.65;
+                          background:rgba(155,61,79,.08);padding:.7rem .9rem;border-left:2px solid var(--wine-dim)">
+                ${escHtml(grapeErr)}
+              </div>`;
+      }
+    }
   } else {
     h += `<div class="options">`;
     step.opts.forEach((o,i) => {
@@ -1522,9 +1532,11 @@ function renderIntake() {
             <button class="btn" id="v6-bottle-btn" onclick="v6BottleSpark()">Bottle Spark →</button>
           </div>`;
   } else {
+    const btnLabel = (step.type === 'person' && S.maturity === 3) ? 'Save spark and go find them →'
+      : last ? 'Enter the cellar →' : 'Continue →';
     h += `<div class="row">
-            <button class="btn-ghost" onclick="intakeBack()" style="opacity:${first?0:1};pointer-events:${first?'none':'auto'}">← Back</button>
-            <button class="btn" onclick="intakeNext()">${last?'Enter the cellar →':'Continue →'}</button>
+            <button class="btn-ghost" onclick="intakeBack()">← Back</button>
+            <button class="btn" id="grape-continue-btn" onclick="intakeNext()">${btnLabel}</button>
           </div>`;
   }
 
@@ -1540,17 +1552,82 @@ function pickOpt(i) {
   renderIntake();
 }
 
-function intakeNext() {
+async function intakeNext() {
   const step = INTAKE[intakeStep];
+
   if (step.type === 'text') {
     const el = document.getElementById('f-inp');
     if (!step.ok(el.value)) { el.classList.add('err'); return; }
     intakeSel[step.id] = el.value;
     step.save(el.value);
+
+  } else if (step.type === 'person') {
+    if (S.maturity === 3) {
+      saveDoorstep(S.idea);
+      clearSaved();
+      showScreen('landing');
+      return;
+    }
+
+    const nameEl = document.getElementById('grape-name-inp');
+    const relEl  = document.getElementById('grape-rel-inp');
+    const name   = nameEl ? nameEl.value.trim() : '';
+    const rel    = relEl  ? relEl.value.trim()  : '';
+    if (!name) { if (nameEl) nameEl.style.borderColor = 'var(--wine)'; return; }
+    if (!rel)  { if (relEl)  relEl.style.borderColor  = 'var(--wine)'; return; }
+
+    intakeSel['grape_name']  = name;
+    intakeSel['grape_rel']   = rel;
+    intakeSel['grape_error'] = null;
+
+    const workerUrl = v6GetWorkerUrl();
+    if (workerUrl) {
+      const btn = document.getElementById('grape-continue-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
+      try {
+        const res = await fetch(workerUrl + '/m1', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            spark_summary: getSparkSummary(),
+            person_name: name,
+            relationship: rel
+          })
+        });
+        const data = await res.json();
+        if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
+        const grapeState = data.grape?.state || 'turbid';
+        if (grapeState !== 'settled') {
+          intakeSel['grape_error'] = data.observation?.surface_text
+            || 'A more specific person is needed. Name them and state your connection to them.';
+          if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
+          renderIntake();
+          return;
+        }
+        S.grape_name = name;
+        S.grape_relationship = rel;
+        S.grape = S.maturity === 2 ? 'you' : name;
+        S.m1 = data;
+        clearDoorstep();
+      } catch (err) {
+        intakeSel['grape_error'] = 'Could not reach the worker. Check your Worker URL in the idea step.';
+        if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
+        renderIntake();
+        return;
+      }
+    } else {
+      S.grape_name = name;
+      S.grape_relationship = rel;
+      S.grape = S.maturity === 2 ? 'you' : name;
+      clearDoorstep();
+    }
+    step.save();
+
   } else {
     if (intakeSel[step.id] === undefined) return;
     step.save(intakeSel[step.id]);
   }
+
   if (intakeStep < INTAKE.length - 1) { intakeStep++; renderIntake(); }
   else startPhase1();
 }
@@ -1577,15 +1654,6 @@ function startPhase1() {
   document.getElementById('ans').addEventListener('input', () => {
     clearTimeout(window._autosave);
     window._autosave = setTimeout(saveState, 800);
-  });
-  ['m1-person','m1-when','m1-trying','m1-happened'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('input', () => {
-      collectM1Fields();
-      clearTimeout(window._autosave);
-      window._autosave = setTimeout(saveState, 800);
-    });
   });
 }
 
@@ -1653,12 +1721,6 @@ function renderMech() {
   ans.style.borderColor = '';
   ans.style.display = '';
   if (m1Fields) m1Fields.style.display = 'none';
-
-  if (m.id === 'M1') {
-    configureM1Fields();
-    ans.style.display = 'none';
-    if (m1Fields) m1Fields.style.display = 'flex';
-  }
 
   document.getElementById('obs-box').style.display = 'none';
   hideGrapeJudgment();
@@ -1762,11 +1824,8 @@ function updateSparkReminder() {
 
   body.appendChild(makeRow('The spark', spark, false));
 
-  // Person row — appears after M1 is completed
-  if (S.m1Fields?.person) {
-    const who = S.m1Fields.person;
-    const when = S.m1Fields.when;
-    body.appendChild(makeRow('The person', when ? `${who}  ·  ${when}` : who, true));
+  if (S.grape_name) {
+    body.appendChild(makeRow('The person', S.grape_name, true));
   }
 
   rem.style.display = 'block';
@@ -1956,36 +2015,19 @@ function applyLocalMechanismResult(m, txt) {
 async function p1Next() {
   const m = M[mi];
   const ans = document.getElementById('ans');
-  const m1Fields = m.id === 'M1' ? collectM1Fields() : null;
-  const txt = m.id === 'M1' ? buildM1AnswerText(m1Fields) : ans.value.trim();
+  const txt = ans.value.trim();
 
   if (!obsShown) {
     // Step 1: submit answer → show observation, system sets element state
-    if (m.id === 'M1') {
-      if (!validateM1Fields(m1Fields)) return;
-    } else if (txt.length < 8) {
+    if (txt.length < 8) {
       ans.style.borderColor='var(--wine)';
       return;
     }
 
     try {
-      setPhaseBusy(true, m.id === 'M1' ? 'Reading…' : 'Reading…');
-
-      if (m.id === 'M1') {
-        const data = await callM1Worker(m, txt);
-        const shouldAdvance = applyM1Result(data, txt);
-
-        if (!shouldAdvance) {
-          ans.removeAttribute('readonly');
-          document.getElementById('p1-btn').textContent = 'Try again →';
-          obsShown = false;
-          saveState();
-          return;
-        }
-      } else {
-        S.answers[m.id] = txt;
-        applyLocalMechanismResult(m, txt);
-      }
+      setPhaseBusy(true, 'Reading…');
+      S.answers[m.id] = txt;
+      applyLocalMechanismResult(m, txt);
     } catch (err) {
       showPhaseObservation('Worker error. ' + err.message);
       ans.removeAttribute('readonly');
@@ -1997,24 +2039,12 @@ async function p1Next() {
     }
 
     ans.setAttribute('readonly','true');
-    if (m.id === 'M1') {
-      ['m1-person','m1-when','m1-trying','m1-happened'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.setAttribute('readonly', '');
-      });
-    }
     document.getElementById('p1-btn').textContent = 'Next →';
     obsShown = true;
 
   } else {
     // Step 2: advance to next mechanism
-    if (m.id === 'M1') M = buildMechs();
-
     ans.removeAttribute('readonly');
-    ['m1-person','m1-when','m1-trying','m1-happened'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el && !(id === 'm1-person' && S.maturity === 2)) el.removeAttribute('readonly');
-    });
     mi++;
     S.mechIndex = mi;
     saveState();
