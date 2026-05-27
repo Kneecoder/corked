@@ -187,6 +187,33 @@ body {
 }
 .wm-intake-content { opacity:0; transition:opacity .55s ease; }
 .wm-intake-content.visible { opacity:1; }
+.wm-intake-content.m0-has-result {
+  display:flex;
+  flex-direction:column;
+}
+.wm-intake-content.m0-has-result #m0-result { order:1; }
+.wm-intake-content.m0-has-result .spark-source-row { order:2; margin-top:18px; padding-top:18px; border-top:1px solid var(--border); }
+.wm-intake-content.m0-has-result #f-inp { order:3; }
+.wm-intake-content.m0-has-result #m0-wm-result { order:4; }
+.wm-intake-content.m0-has-result #m0-action-row { order:5; }
+.wm-intake-content.m0-has-result #m0-config { order:6; }
+.wm-section.m0-hidden { display:none; }
+.wm-intake-content.m0-revealing #m0-result {
+  animation:m0-bottle-reveal 1.05s cubic-bezier(.32,0,.24,1) both;
+}
+.wm-intake-content.m0-revealing #m0-wm-result {
+  animation:m0-winemaster-reveal .95s cubic-bezier(.32,0,.24,1) both;
+  animation-delay:1.1s;
+}
+.wm-intake-content.m0-revealing .spark-source-row,
+.wm-intake-content.m0-revealing #f-inp {
+  animation:m0-source-settle .9s cubic-bezier(.32,0,.24,1) both;
+  animation-delay:.85s;
+}
+.wm-intake-content.m0-revealing #m0-action-row {
+  animation:m0-action-reveal .75s ease both;
+  animation-delay:1.45s;
+}
 .ph-overlay {
   position:absolute; inset:0;
   padding:1rem 1.1rem;
@@ -347,6 +374,24 @@ body {
   -webkit-font-smoothing:antialiased;
 }
 .field-label.visible { display:block; }
+.field-label.visible[data-step] {
+  display:flex;
+  align-items:center;
+  gap:.65rem;
+}
+.field-label.visible[data-step]::before {
+  content:attr(data-step);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:18px;
+  height:18px;
+  border:1px solid var(--border-hi);
+  border-radius:50%;
+  color:var(--gold);
+  font-size:.58rem;
+  letter-spacing:0;
+}
 .spark-source-row {
   display:flex;
   align-items:center;
@@ -383,7 +428,7 @@ body {
 .row { display:flex; justify-content:space-between; align-items:center; margin-top:2rem; }
 
 /* ── PHASE 1 ── */
-#screen-phase1 { flex-direction:row; }
+#screen-phase1 { flex-direction:row; position:relative; overflow:hidden; }
 
 .sidebar {
   width:260px; min-width:260px; background:var(--surface);
@@ -393,7 +438,8 @@ body {
 }
 .sb-idea {
   font-family:'Playfair Display',serif; font-size:1rem;
-  color:var(--cream); line-height:1.4;
+  color:var(--cream); line-height:1.45;
+  max-height:8.8rem; overflow:auto; padding-right:.2rem;
 }
 .sb-phase {
   font-size:.68rem; letter-spacing:.18em; text-transform:uppercase;
@@ -413,6 +459,11 @@ body {
 .el-row:last-child { border-bottom:none; }
 .el-row.live { cursor:pointer; }
 .el-row.live:hover { background:rgba(255,255,255,.025); padding-left:.25rem; }
+.el-row.active-el {
+  background:rgba(201,165,90,.035);
+  padding-left:.25rem;
+}
+.el-row.active-el .el-name { color:var(--cream-dim); }
 .el-dot {
   width:7px; height:7px; border-radius:50%; flex-shrink:0;
   transition:background .3s, opacity .3s;
@@ -434,6 +485,73 @@ body {
 .el-state.turbid  { color:var(--turbid-col); }
 .el-state.clearing{ color:var(--clearing-col); }
 .el-state.settled { color:var(--settled-col); }
+
+.element-thread {
+  position:absolute; inset:0; width:100%; height:100%;
+  pointer-events:none; z-index:2; overflow:visible;
+}
+.element-thread path {
+  fill:none; stroke:url(#thread-gradient); stroke-width:1.15;
+  stroke-linecap:round;
+  opacity:0; transition:opacity .5s ease;
+}
+.element-thread.is-visible path { opacity:.42; }
+.sidebar, .phase-main { position:relative; z-index:3; }
+
+@keyframes cellar-entry-panel {
+  0%   { opacity:0; transform:translateY(12px); filter:brightness(.82); }
+  45%  { opacity:1; transform:translateY(0); filter:brightness(1.06); }
+  100% { opacity:1; transform:translateY(0); filter:brightness(1); }
+}
+@keyframes cellar-entry-bottle {
+  0%   { opacity:.45; transform:translateY(-8px) scale(.98); filter:drop-shadow(0 0 0 rgba(201,165,90,0)); }
+  55%  { opacity:1; transform:translateY(1px) scale(1.015); filter:drop-shadow(0 0 16px rgba(201,165,90,.16)); }
+  100% { opacity:1; transform:translateY(0) scale(1); filter:drop-shadow(0 0 0 rgba(201,165,90,0)); }
+}
+@keyframes grape-row-light {
+  0%   { background:transparent; transform:translateX(0); }
+  38%  { background:rgba(201,165,90,.08); transform:translateX(2px); }
+  100% { background:transparent; transform:translateX(0); }
+}
+@keyframes grape-dot-light {
+  0%   { opacity:.12; transform:scale(.75); background:var(--turbid-col); box-shadow:0 0 0 rgba(201,165,90,0); }
+  35%  { opacity:.18; transform:scale(.9); background:var(--turbid-col); box-shadow:0 0 0 rgba(201,165,90,0); }
+  72%  { opacity:1; transform:scale(1.75); background:var(--entry-grape-color); box-shadow:0 0 18px rgba(201,165,90,.36); }
+  100% { opacity:1; transform:scale(1); background:var(--entry-grape-color); box-shadow:0 0 0 rgba(201,165,90,0); }
+}
+@keyframes grape-state-light {
+  0%,35% { opacity:0; color:var(--muted); }
+  100%   { opacity:1; color:var(--entry-grape-color); }
+}
+#screen-phase1.cellar-entering .sidebar {
+  animation:cellar-entry-panel 2.4s cubic-bezier(.32,0,.24,1) both;
+}
+#screen-phase1.cellar-entering .phase-main {
+  animation:cellar-entry-panel 1.35s cubic-bezier(.32,0,.24,1) both;
+  animation-delay:3.2s;
+}
+#screen-phase1.cellar-entering #question-panel {
+  animation:landing-fade 1.2s ease both;
+  animation-delay:3.35s;
+}
+#screen-phase1.cellar-entering .bottle-wrap svg {
+  transform-origin:center bottom;
+  animation:cellar-entry-bottle 2.65s cubic-bezier(.32,0,.24,1) both;
+}
+#screen-phase1.cellar-entering.cellar-grape-settled { --entry-grape-color:var(--settled-col); }
+#screen-phase1.cellar-entering.cellar-grape-clearing { --entry-grape-color:var(--clearing-col); }
+#screen-phase1.cellar-entering #elr-grape {
+  animation:grape-row-light 2.75s cubic-bezier(.32,0,.24,1) both;
+  animation-delay:.75s;
+}
+#screen-phase1.cellar-entering #eld-grape {
+  animation:grape-dot-light 2.75s cubic-bezier(.32,0,.24,1) both;
+  animation-delay:.75s;
+}
+#screen-phase1.cellar-entering #els-grape {
+  animation:grape-state-light 2.75s cubic-bezier(.32,0,.24,1) both;
+  animation-delay:.75s;
+}
 
 /* ── PHASE MAIN ── */
 .phase-main {
@@ -466,7 +584,7 @@ body {
 .obs {
   display:none; background:var(--surface); border-left:2px solid var(--wine-dim);
   padding:.9rem 1.1rem; margin-top:1.25rem; font-size:.82rem;
-  color:var(--muted); line-height:1.8;
+  color:var(--muted); line-height:1.8; white-space:pre-line;
 }
 
 /* ── SPARK REMINDER ── */
@@ -748,7 +866,7 @@ body {
 .m0-stamp {
   position:relative;
   background:var(--surface);
-  border-bottom:1px solid var(--border-hi);
+  border:1px solid var(--border-hi);
   padding:22px 24px 20px;
 }
 .m0-stamp.state-cloudy { background:linear-gradient(180deg, rgba(201,160,64,.035), var(--surface)); }
@@ -760,6 +878,30 @@ body {
   top:5px; left:5px; right:5px; bottom:5px;
   border:1px solid var(--border);
   pointer-events:none;
+}
+.m0-section-label {
+  display:flex;
+  align-items:center;
+  gap:.65rem;
+  font-size:.68rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin:0 0 .7rem;
+  -webkit-font-smoothing:antialiased;
+}
+.m0-section-label::before {
+  content:attr(data-step);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:18px;
+  height:18px;
+  border:1px solid var(--border-hi);
+  border-radius:50%;
+  color:var(--gold);
+  font-size:.58rem;
+  letter-spacing:0;
 }
 .m0-stamp-eyebrow {
   font-size:.7rem;
@@ -785,7 +927,15 @@ body {
   opacity:.28;
   pointer-events:none;
 }
-.m0-secondary { padding:14px 20px 20px; }
+.m0-secondary { padding:18px 0 0; }
+.m0-wm-section {
+  margin:22px 0 0;
+  padding:0 0 18px;
+  border-bottom:1px solid var(--border);
+}
+.m0-wm-section .wm-bubble {
+  min-height:0;
+}
 .m0-obs-label {
   font-size:.7rem;
   letter-spacing:.18em;
@@ -799,6 +949,39 @@ body {
   color:var(--muted);
   line-height:1.65;
   white-space:pre-wrap;
+}
+.m0-original {
+  margin-top:18px;
+  padding-top:18px;
+  border-top:1px solid var(--border);
+}
+.m0-original .field {
+  min-height:118px;
+}
+.m0-action-row {
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  margin-top:18px;
+  padding-top:18px;
+  border-top:1px solid var(--border);
+}
+@keyframes m0-bottle-reveal {
+  0%   { opacity:0; transform:translateY(16px); filter:brightness(.82); }
+  42%  { opacity:1; transform:translateY(0); filter:brightness(1.06); }
+  100% { opacity:1; transform:translateY(0); filter:brightness(1); }
+}
+@keyframes m0-winemaster-reveal {
+  0%   { opacity:0; transform:translateY(10px); }
+  100% { opacity:1; transform:translateY(0); }
+}
+@keyframes m0-source-settle {
+  0%   { opacity:.28; transform:translateY(-10px); filter:brightness(.82); }
+  100% { opacity:1; transform:translateY(0); filter:brightness(1); }
+}
+@keyframes m0-action-reveal {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
 }
 .m0-state-label {
   display:none;
@@ -1045,6 +1228,17 @@ body {
 
 <!-- PHASE 1 -->
 <div id="screen-phase1" class="screen">
+  <svg class="element-thread" id="element-thread" aria-hidden="true">
+    <defs>
+      <linearGradient id="thread-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C9A55A" stop-opacity="0"/>
+        <stop offset="18%" stop-color="#C9A55A" stop-opacity=".58"/>
+        <stop offset="82%" stop-color="#7A2E3C" stop-opacity=".38"/>
+        <stop offset="100%" stop-color="#7A2E3C" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path id="element-thread-path"></path>
+  </svg>
 
   <div class="sidebar">
     <div>
@@ -1151,6 +1345,11 @@ body {
       <div id="rv-blocks"></div>
     </div>
 
+    <!-- Threshold panel: one-time calibration, fires after grape card -->
+    <div class="phase-wrap" id="threshold-panel" style="display:none">
+      <div id="threshold-body"></div>
+    </div>
+
   </div>
 </div>
 
@@ -1185,7 +1384,9 @@ function freshState() {
     m0:null,
     m1:null,
     mechIndex:0,
-    grapeStep:false
+    grapeStep:false,
+    cellarEntryPlayed:false,
+    thresholdDone:false
   };
 }
 
@@ -1213,6 +1414,29 @@ function saveDoorstep(spark) { localStorage.setItem(DOORSTEP_KEY, spark); }
 function loadDoorstep() { return localStorage.getItem(DOORSTEP_KEY) || null; }
 function clearDoorstep() { localStorage.removeItem(DOORSTEP_KEY); }
 
+function normalizeGrapeState(state) {
+  return ['settled', 'clearing', 'turbid'].includes(state) ? state : 'turbid';
+}
+
+function writeM1FromIntake(name, relationship, data) {
+  const grapeState = normalizeGrapeState(data?.grape?.state || 'settled');
+  S.grape_name = name;
+  S.grape_relationship = relationship;
+  S.grape = S.maturity === 2 ? 'you' : name;
+  S.m1 = data || {
+    schema_version:'m1.v1',
+    mechanism:'M1',
+    outcome:grapeState,
+    grape:{ state:grapeState, named_person:name },
+    observation:{ surface_text:'The Grape is on record.', anchor_span:name },
+    next_question:{ should_advance:true, framing:null }
+  };
+  S.answers.M1 = `${name} - ${relationship}`;
+  S.elements.grape = grapeState;
+  S.label.grape = S.maturity === 2 ? 'You' : name;
+  clearDoorstep();
+}
+
 // ── ELEMENT META ──
 const EL_META = {
   grape:   { name:'Grape',     desc:'The person who has it' },
@@ -1229,6 +1453,16 @@ const EL_KEYS = Object.keys(EL_META);
 function buildMechs() {
   const g = S.grape || 'the person you named';
   const selfMode = S.maturity === 2 && g === 'you';
+  const grapeState = normalizeGrapeState(S.elements.grape);
+  const grapeName = S.label.grape || S.grape_name || (selfMode ? 'You' : 'The person you named');
+  const grapeRelation = S.grape_relationship || 'No relationship recorded.';
+  const grapeObservation = S.m1?.observation?.surface_text || 'The Grape has been answered during intake.';
+  const grapeQ = selfMode
+    ? `This is the Grape.\n\nYou are the person this idea must answer to.`
+    : `This is the Grape.\n\n${grapeName} is the person this idea must answer to.`;
+  const grapeHint = grapeState === 'settled'
+    ? 'Wine starts with fruit. Corked starts with one real person. Without that, there is nothing to age.'
+    : 'This person is real enough to enter, but still cloudy. The cellar will not pretend it is clearer than it is.';
   const m2q = selfMode
     ? `Stay inside the instance you just described.\n\nWhat did you actually do next? Write the observable steps. What could a camera capture?`
     : `Describe a specific moment when ${g} encountered this problem. What did they actually do? Write the exact behaviour you could film if you were there.`;
@@ -1238,10 +1472,23 @@ function buildMechs() {
 
   return [
     {
+      id:'M1', name:'The Grape',
+      q:grapeQ,
+      hint:grapeHint,
+      els:['grape'],
+      activeEl:'grape',
+      prefilled:true,
+      obs: () => [
+        `${grapeName} - ${grapeRelation}`,
+        grapeObservation
+      ].filter(Boolean).join('\n\n')
+    },
+    {
       id:'M2', name:'The Friction Test',
       q:m2q,
       hint:m2hint,
       els:['tell','vintage'],
+      activeEl:'tell',
       obs: a => {
         if (/\b(feel|felt|frustrated|annoyed|stressed|overwhelmed|bothered)\b/i.test(a))
           return "A feeling was described. This step is looking for behaviour, the observable action, not the inferred state behind it.";
@@ -1255,6 +1502,7 @@ function buildMechs() {
       q:`What has ${g} already tried to fix this? Focus on what they actually did before your idea showed up. Walk through it specifically.`,
       hint:'Workarounds, hacks, paying for something that half-works. Any of it counts.',
       els:['echo'],
+      activeEl:'echo',
       obs: a => {
         if (/\b(nothing|don't know|haven't|not sure|no idea|never tried)\b/i.test(a))
           return "No prior attempt was identified. Either the problem is not painful enough to prompt action, or this answer requires a real conversation before it can be honest.";
@@ -1262,22 +1510,11 @@ function buildMechs() {
       }
     },
     {
-      id:'M4', name:'The Second Person',
-      q:`Is there anyone else, different from ${g}, who has this problem in a noticeably different way? Describe them and how their version of the problem differs.`,
-      hint:'If no one comes to mind, say so honestly. That is also a finding.',
-      els:['echo'],
-      obs: a => {
-        const wc = a.trim().split(/\s+/).length;
-        if (wc < 10 && /\b(no|not really|don't think|nobody|can't think)\b/i.test(a))
-          return "No second person emerged. The problem may be specific to one configuration, or the search has not reached wide enough yet.";
-        return "A second person was named. If their version differs meaningfully, that split will need resolving in Phase 2.";
-      }
-    },
-    {
-      id:'M5', name:'The Existing Fix',
+      id:'M4', name:'The Existing Fix',
       q:`What is the most obvious existing solution to this problem? It could be an app, a service, a habit, or a person. Name it. Then name the precise thing it fails to do for ${g}.`,
       hint:'One without the other is not an answer. Both need to be specific.',
       els:['gap'],
+      activeEl:'gap',
       obs: a => {
         if (a.trim().split(/\s+/).length < 10)
           return "An existing solution was named without a specific failure point. The Gap requires both: what exists, and precisely where it breaks down.";
@@ -1285,10 +1522,11 @@ function buildMechs() {
       }
     },
     {
-      id:'M6', name:'Their Words, Not Yours',
+      id:'M5', name:'Their Words, Not Yours',
       q:`What has ${g} actually said about this problem? Use their exact words, not your interpretation. If you have not had that conversation yet, what would you need to ask them before this question can be honest?`,
       hint:'Quotes over summaries. Their language over yours.',
       els:['tell','echo'],
+      activeEl:'echo',
       obs: a => {
         if (/\b(would|probably|i think they|i imagine|i assume|i expect)\b/i.test(a))
           return "An inference was offered, not a quote. This step is looking for their actual words, not a reconstruction of what they might say.";
@@ -1298,10 +1536,11 @@ function buildMechs() {
       }
     },
     {
-      id:'M7', name:'The Non-Case',
+      id:'M6', name:'The Non-Case',
       q:`Who should have this problem, someone who fits every reasonable assumption, but probably doesn't? Describe them specifically. Why don't they have it?`,
       hint:'This is not a weakness to explain away. It is a sharpener. The boundary makes the problem real.',
       els:['limit'],
+      activeEl:'limit',
       obs: a => {
         if (a.trim().split(/\s+/).length < 12)
           return "A boundary was suggested but not drawn. The Limit needs a named type of person and a specific reason they do not share the problem.";
@@ -1314,7 +1553,7 @@ function buildMechs() {
 // ── INTAKE ──
 const INTAKE = [
   {
-    id:'idea', eyebrow:'The Spark · 1 of 5',
+    id:'idea', eyebrow:'The Spark · 1 of 3',
     q:'What did you bring to the cellar?',
     note:'Do not polish the spark. Corked only needs enough shape to bottle it.',
     type:'text', ph:'An app that...',
@@ -1322,7 +1561,7 @@ const INTAKE = [
     save: v => { S.idea = v.trim(); }
   },
   {
-    id:'maturity', eyebrow:'The Person · 2 of 5',
+    id:'maturity', eyebrow:'The Person · 2 of 3',
     q:'Is there a real person this idea comes from?',
     note:'The cellar works best when you arrive as you are.',
     type:'opts',
@@ -1335,37 +1574,11 @@ const INTAKE = [
     save: v => { S.maturity = v; }
   },
   {
-    id:'grape', eyebrow:'The Grape · 3 of 5',
+    id:'grape', eyebrow:'The Grape · 3 of 3',
     q:'Name the person this idea comes from.',
     note:'A first name is enough. What matters is that they exist.',
     type:'person',
     save: () => {}
-  },
-  {
-    id:'pace', eyebrow:'Pace · 4 of 5',
-    q:'How often do you want to engage with this idea?',
-    note:'Not a commitment. It calibrates the cellar.',
-    type:'opts',
-    opts:[
-      { l:'A', t:'Daily',                s:'You are in the middle of it. This idea is live right now.' },
-      { l:'B', t:'Every couple of days', s:'Momentum without pressure. You have a day job.' },
-      { l:'C', t:'Weekly',               s:'A slow burn. You do not want it to go cold.' },
-      { l:'D', t:'Monthly',              s:'Back-burner. Alive but not urgent.' }
-    ],
-    save: v => { S.pace = v; }
-  },
-  {
-    id:'notifTiming', eyebrow:'Timing · 5 of 5',
-    q:'When does your head work best on something like this?',
-    note:'The cellar will reach you when you\'re already in the right place.',
-    type:'opts',
-    opts:[
-      { l:'A', t:'Morning, before the day gets in the way.', s:'Questions arrive when the day is still open.' },
-      { l:'B', t:'Midday, during a break.', s:'A thinking window between things.' },
-      { l:'C', t:'Evening, once the day is done.', s:'Settled, fewer interruptions.' },
-      { l:'D', t:'Late, after the house is quiet.', s:'Fewer interruptions. Long thoughts welcome.' }
-    ],
-    save: v => { S.notifTiming = v; }
   }
 ];
 
@@ -1389,7 +1602,7 @@ function renderIntake() {
   let h = `<div class="intake-prog-bar">${segs}</div>`;
 
   if (first) {
-    h += `<div class="wm-section">
+    h += `<div class="wm-section" id="intake-wm">
             <div class="wm-avatar">
               <div class="wm-circle"></div>
               <div class="wm-label">The Winemaster</div>
@@ -1433,7 +1646,8 @@ function renderIntake() {
                value="${localStorage.getItem('corked_worker_url') || ''}"
                oninput="v6SaveWorkerUrl()" onblur="v6SaveWorkerUrl()">
       </div>
-      <div id="m0-result" style="display:none;margin-top:16px;border:1px solid var(--border);overflow:hidden">
+      <div id="m0-result" style="display:none;margin-top:16px">
+        <div class="m0-section-label" data-step="1">Bottle line</div>
         <div class="m0-stamp">
           <svg class="m0-seal" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="14" cy="14" r="12.5" stroke="currentColor" stroke-width=".75"/>
@@ -1442,22 +1656,24 @@ function renderIntake() {
           <div class="m0-stamp-eyebrow" id="m0-eyebrow">BOTTLED AS</div>
           <div class="m0-stamp-line" id="m0-entry-line"></div>
         </div>
-        <div class="m0-secondary">
-          <div class="m0-obs-label">Bottle note</div>
-          <div class="m0-obs-text" id="m0-wm-text"></div>
-          <div class="m0-cellar-note" id="m0-cellar-note"></div>
-          <div class="m0-process-note" id="m0-process-note"></div>
-          <div id="m0-followup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-            <div class="m0-state-label" id="m0-state-label">One thing is cloudy</div>
-            <div id="m0-followup-q" style="font-size:.82rem;color:var(--cream-dim);line-height:1.65;margin-bottom:10px"></div>
-            <textarea id="m0-followup-ans" class="field" rows="2" placeholder="Your answer…" oninput="v6FollowupChange()" style="font-size:.85rem"></textarea>
+      </div>
+      <div class="m0-secondary m0-wm-result" id="m0-wm-result" style="display:none">
+        <div class="m0-section-label" data-step="4">Winemaster read</div>
+        <div class="wm-section m0-wm-section">
+          <div class="wm-avatar">
+            <div class="wm-circle"></div>
+            <div class="wm-label">The Winemaster</div>
           </div>
-          <div class="row" style="margin-top:14px">
-            <div></div>
-            <div class="m0-actions">
-              <button class="btn-sm" id="m0-bottle-btn" onclick="v6BottleThis()" style="display:none">Seal line</button>
-            </div>
+          <div class="wm-bubble">
+            <div class="m0-obs-text" id="m0-wm-text"></div>
+            <div class="m0-cellar-note" id="m0-cellar-note"></div>
+            <div class="m0-process-note" id="m0-process-note"></div>
           </div>
+        </div>
+        <div id="m0-followup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+          <div class="m0-state-label" id="m0-state-label">One thing is cloudy</div>
+          <div id="m0-followup-q" style="font-size:.82rem;color:var(--cream-dim);line-height:1.65;margin-bottom:10px"></div>
+          <textarea id="m0-followup-ans" class="field" rows="2" placeholder="Your answer…" oninput="v6FollowupChange()" style="font-size:.85rem"></textarea>
         </div>
       </div>
       `;
@@ -1529,7 +1745,10 @@ function renderIntake() {
   if (first) {
     h += `<div id="v6-bottom-bar" class="row" style="margin-top:2rem">
             <span id="v6-bottle-status" style="font-size:.72rem;color:var(--muted)"></span>
-            <button class="btn" id="v6-bottle-btn" onclick="v6BottleSpark()">Bottle Spark →</button>
+            <button class="btn" id="v6-bottle-btn" onclick="v6BottleSpark()">Bottle your spark →</button>
+          </div>`;
+    h += `<div class="m0-action-row" id="m0-action-row" style="display:none">
+            <button class="btn-sm" id="m0-bottle-btn" onclick="v6BottleThis()" style="display:none">Seal line</button>
           </div>`;
   } else {
     const btnLabel = (step.type === 'person' && S.maturity === 3) ? 'Save spark and go find them →'
@@ -1591,24 +1810,21 @@ async function intakeNext() {
           body: JSON.stringify({
             spark_summary: getSparkSummary(),
             person_name: name,
-            relationship: rel
+            relationship: rel,
+            maturity_class: S.maturity
           })
         });
         const data = await res.json();
         if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
-        const grapeState = data.grape?.state || 'turbid';
-        if (grapeState !== 'settled') {
+        const grapeState = normalizeGrapeState(data.grape?.state || 'turbid');
+        if (grapeState === 'turbid') {
           intakeSel['grape_error'] = data.observation?.surface_text
             || 'A more specific person is needed. Name them and state your connection to them.';
           if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
           renderIntake();
           return;
         }
-        S.grape_name = name;
-        S.grape_relationship = rel;
-        S.grape = S.maturity === 2 ? 'you' : name;
-        S.m1 = data;
-        clearDoorstep();
+        writeM1FromIntake(name, rel, data);
       } catch (err) {
         intakeSel['grape_error'] = 'Could not reach the worker. Check your Worker URL in the idea step.';
         if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
@@ -1616,10 +1832,7 @@ async function intakeNext() {
         return;
       }
     } else {
-      S.grape_name = name;
-      S.grape_relationship = rel;
-      S.grape = S.maturity === 2 ? 'you' : name;
-      clearDoorstep();
+      writeM1FromIntake(name, rel, null);
     }
     step.save();
 
@@ -1645,16 +1858,29 @@ function startPhase1() {
   M = buildMechs();
   mi = S.mechIndex || 0;
   const _spark = getSparkSummary();
-  document.getElementById('sb-idea').textContent =
-    _spark.length > 42 ? _spark.slice(0,42)+'…' : _spark;
+  document.getElementById('sb-idea').textContent = _spark;
   renderElList();
   showScreen('phase1');
   renderMech();
+  playCellarEntryIfNeeded();
   // Auto-save answer as user types
   document.getElementById('ans').addEventListener('input', () => {
     clearTimeout(window._autosave);
     window._autosave = setTimeout(saveState, 800);
   });
+}
+
+function playCellarEntryIfNeeded() {
+  const screen = document.getElementById('screen-phase1');
+  if (!screen || S.cellarEntryPlayed) return;
+  S.cellarEntryPlayed = true;
+  screen.classList.remove('cellar-grape-settled', 'cellar-grape-clearing');
+  screen.classList.add(`cellar-grape-${normalizeGrapeState(S.elements.grape)}`);
+  screen.classList.add('cellar-entering');
+  setTimeout(() => {
+    screen.classList.remove('cellar-entering', 'cellar-grape-settled', 'cellar-grape-clearing');
+  }, 5200);
+  saveState();
 }
 
 function renderElList() {
@@ -1688,6 +1914,42 @@ function setEl(key, val) {
   updateBottle();
 }
 
+function setActiveElementThread(key) {
+  document.querySelectorAll('.el-row.active-el').forEach(r => r.classList.remove('active-el'));
+  const row = document.getElementById(`elr-${key}`);
+  if (row) row.classList.add('active-el');
+  requestAnimationFrame(() => drawElementThread(key));
+}
+
+function drawElementThread(key) {
+  const svg = document.getElementById('element-thread');
+  const path = document.getElementById('element-thread-path');
+  const screen = document.getElementById('screen-phase1');
+  const row = document.getElementById(`elr-${key}`);
+  const reviewPanel = document.getElementById('review-panel');
+  const questionPanel = document.getElementById('question-panel');
+  const panel = reviewPanel?.style.display === 'block' ? reviewPanel : questionPanel;
+  if (!svg || !path || !screen || !row || !panel || !screen.classList.contains('active')) return;
+
+  if (window.innerWidth <= 700) {
+    svg.classList.remove('is-visible');
+    path.setAttribute('d', '');
+    return;
+  }
+
+  const s = screen.getBoundingClientRect();
+  const r = row.getBoundingClientRect();
+  const p = panel.getBoundingClientRect();
+  const x1 = r.right - s.left + 8;
+  const y1 = r.top - s.top + r.height / 2;
+  const x2 = p.left - s.left - 18;
+  const y2 = p.top - s.top + Math.min(76, Math.max(34, p.height * .18));
+  const dx = Math.max(90, (x2 - x1) * .36);
+
+  path.setAttribute('d', `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`);
+  svg.classList.add('is-visible');
+}
+
 function updateBottle() {
   let settled = 0;
   EL_KEYS.forEach((k,i) => {
@@ -1716,10 +1978,10 @@ function renderMech() {
   const ans = document.getElementById('ans');
   const m1Fields = document.getElementById('m1-fields');
   // If we have a saved answer for this mechanism, restore it
-  ans.value = S.answers[m.id] || '';
+  ans.value = m.prefilled ? '' : (S.answers[m.id] || '');
   ans.removeAttribute('readonly');
   ans.style.borderColor = '';
-  ans.style.display = '';
+  ans.style.display = m.prefilled ? 'none' : '';
   if (m1Fields) m1Fields.style.display = 'none';
 
   document.getElementById('obs-box').style.display = 'none';
@@ -1728,11 +1990,13 @@ function renderMech() {
   document.getElementById('assess-box').style.display = 'none';
   document.getElementById('p1-btn').textContent = 'Continue →';
 
-  obsShown = false; grapeStepShown = false; curAssess = {};
+  obsShown = !!m.prefilled; grapeStepShown = false; curAssess = {};
+  if (m.prefilled) showPhaseObservation(m.obs());
 
   // Show review panel hidden, question panel visible
   document.getElementById('question-panel').style.display = 'block';
   document.getElementById('review-panel').style.display = 'none';
+  setActiveElementThread(m.activeEl || m.els[0]);
 
   S.mechIndex = mi;
   saveState();
@@ -2045,6 +2309,11 @@ async function p1Next() {
   } else {
     // Step 2: advance to next mechanism
     ans.removeAttribute('readonly');
+    // Threshold seam: leaving grape card before calibration is done
+    if (mi === 0 && !S.thresholdDone) {
+      showThreshold();
+      return;
+    }
     mi++;
     S.mechIndex = mi;
     saveState();
@@ -2053,10 +2322,114 @@ async function p1Next() {
 }
 
 
+// ── CELLAR THRESHOLD ──
+const THRESHOLD_STEPS = [
+  {
+    id:'pace',
+    q:'How often do you want to engage with this idea?',
+    note:'Not a commitment. It calibrates the cellar.',
+    opts:[
+      { l:'A', t:'Daily',                s:'You are in the middle of it. This idea is live right now.' },
+      { l:'B', t:'Every couple of days', s:'Momentum without pressure. You have a day job.' },
+      { l:'C', t:'Weekly',               s:'A slow burn. You do not want it to go cold.' },
+      { l:'D', t:'Monthly',              s:'Back-burner. Alive but not urgent.' }
+    ]
+  },
+  {
+    id:'notifTiming',
+    q:'When does your head work best on something like this?',
+    note:"The cellar will reach you when you're already in the right place.",
+    opts:[
+      { l:'A', t:'Morning, before the day gets in the way.', s:'Questions arrive when the day is still open.' },
+      { l:'B', t:'Midday, during a break.',                 s:'A thinking window between things.' },
+      { l:'C', t:'Evening, once the day is done.',          s:'Settled, fewer interruptions.' },
+      { l:'D', t:'Late, after the house is quiet.',         s:'Fewer interruptions. Long thoughts welcome.' }
+    ]
+  }
+];
+
+let thresholdStep = 0;
+let thresholdSel  = {};
+
+function showThreshold() {
+  document.getElementById('question-panel').style.display = 'none';
+  document.getElementById('review-panel').style.display  = 'none';
+  document.getElementById('threshold-panel').style.display = 'block';
+  thresholdStep = 0;
+  thresholdSel  = {};
+  renderThreshold();
+}
+
+function renderThreshold() {
+  const step = THRESHOLD_STEPS[thresholdStep];
+  let h = `<div class="mech-q">${step.q}</div>
+           <div class="mech-hint">${step.note}</div>
+           <div class="options">`;
+  step.opts.forEach((o, i) => {
+    const sel = thresholdSel[step.id] === i;
+    h += `<div class="opt${sel?' sel':''}" onclick="pickThresholdOpt(${i})">
+            <div class="opt-letter">${o.l}</div>
+            <div>
+              <div class="opt-text">${o.t}</div>
+              ${o.s ? `<div class="opt-sub">${o.s}</div>` : ''}
+            </div>
+          </div>`;
+  });
+  h += `</div>
+        <div class="phase-row">
+          <div></div>
+          <button class="btn" onclick="thresholdNext()">Continue →</button>
+        </div>`;
+  document.getElementById('threshold-body').innerHTML = h;
+}
+
+function pickThresholdOpt(i) {
+  thresholdSel[THRESHOLD_STEPS[thresholdStep].id] = i;
+  renderThreshold();
+}
+
+function thresholdNext() {
+  const step = THRESHOLD_STEPS[thresholdStep];
+  if (thresholdSel[step.id] === undefined) return;
+
+  if (thresholdStep === 0) {
+    thresholdStep = 1;
+    renderThreshold();
+    return;
+  }
+
+  S.pace        = thresholdSel.pace;
+  S.notifTiming = thresholdSel.notifTiming;
+  S.thresholdDone = true;
+  mi = 1;
+  S.mechIndex = mi;
+  saveState();
+  document.getElementById('threshold-panel').style.display = 'none';
+  document.getElementById('question-panel').style.display  = 'block';
+  renderMech();
+}
+
 // ── REVIEW ──
 function reviewEl(key) {
   if (S.elements[key] === 'inert') return;
   const meta = EL_META[key];
+
+  if (key === 'grape' && S.answers.M1) {
+    document.getElementById('rv-name').textContent = meta.name;
+    document.getElementById('rv-desc').textContent = meta.desc;
+    const observation = S.m1?.observation?.surface_text || '';
+    document.getElementById('rv-blocks').innerHTML =
+      `<div class="review-block">
+         <div class="review-mech-id">M1 · Grape</div>
+         <div class="review-q">Name the person this idea comes from.</div>
+         <div class="review-a">${escHtml(S.answers.M1)}</div>
+         ${observation ? `<div class="review-a">${escHtml(observation)}</div>` : ''}
+       </div>`;
+    document.getElementById('question-panel').style.display = 'none';
+    document.getElementById('review-panel').style.display = 'block';
+    setActiveElementThread(key);
+    return;
+  }
 
   // Find mechanisms that affect this element
   const relMechs = M.filter(m => m.els.includes(key) && S.answers[m.id]);
@@ -2076,12 +2449,21 @@ function reviewEl(key) {
 
   document.getElementById('question-panel').style.display = 'none';
   document.getElementById('review-panel').style.display = 'block';
+  setActiveElementThread(key);
 }
 
 function exitReview() {
   document.getElementById('review-panel').style.display = 'none';
   document.getElementById('question-panel').style.display = 'block';
+  if (M[mi]) setActiveElementThread(M[mi].activeEl || M[mi].els[0]);
 }
+
+window.addEventListener('resize', () => {
+  if (document.getElementById('screen-phase1')?.classList.contains('active')) {
+    const active = document.querySelector('.el-row.active-el')?.id?.replace('elr-', '');
+    if (active) drawElementThread(active);
+  }
+});
 
 function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -2157,8 +2539,7 @@ function continueSession() {
   mi = saved.mechIndex || 0;
   M = buildMechs();
   const _spark2 = getSparkSummary();
-  document.getElementById('sb-idea').textContent =
-    _spark2.length > 42 ? _spark2.slice(0,42)+'…' : _spark2;
+  document.getElementById('sb-idea').textContent = _spark2;
   renderElList();
   updateBottle();
   showScreen('phase1');
@@ -2648,12 +3029,24 @@ function v6RenderM0(data) {
   }
   const sparkLabel = document.getElementById('spark-field-label');
   if (sparkLabel) sparkLabel.classList.add('visible');
+  if (sparkLabel) sparkLabel.setAttribute('data-step', '3');
   const sparkRow = document.querySelector('.spark-source-row');
   if (sparkRow) sparkRow.classList.add('active');
+  const content = document.getElementById('wm-content');
+  if (content) {
+    content.classList.remove('m0-revealing');
+    content.classList.add('m0-has-result');
+  }
+  const intakeWm = document.getElementById('intake-wm');
+  if (intakeWm) intakeWm.classList.add('m0-hidden');
 
   // Hide bottom action bar — panel is now the only action zone
   const bar = document.getElementById('v6-bottom-bar');
   if (bar) bar.style.display = 'none';
+  const actionRow = document.getElementById('m0-action-row');
+  if (actionRow) actionRow.style.display = 'flex';
+  const wmResult = document.getElementById('m0-wm-result');
+  if (wmResult) wmResult.style.display = 'block';
 
   // Populate result panel
   document.getElementById('m0-eyebrow').textContent = state === 'unbottleable' ? 'CANNOT BE BOTTLED' : 'BOTTLED AS';
@@ -2712,6 +3105,11 @@ function v6RenderM0(data) {
 
   // Show panel, show action buttons
   document.getElementById('m0-result').style.display = 'block';
+  if (content) {
+    void content.offsetWidth;
+    content.classList.add('m0-revealing');
+    setTimeout(() => content.classList.remove('m0-revealing'), 2300);
+  }
   const rewriteBtn = document.getElementById('m0-rewrite-btn');
   const bottleBtn = document.getElementById('m0-bottle-btn');
   if (rewriteBtn) {
@@ -2842,8 +3240,15 @@ function v6Rewrite() {
 
   document.getElementById('m0-result').style.display = 'none';
   document.getElementById('m0-result').classList.remove('m0-result-sealing');
+  const content = document.getElementById('wm-content');
+  if (content) content.classList.remove('m0-has-result', 'm0-revealing');
+  const intakeWm = document.getElementById('intake-wm');
+  if (intakeWm) intakeWm.classList.remove('m0-hidden');
+  const wmResult = document.getElementById('m0-wm-result');
+  if (wmResult) wmResult.style.display = 'none';
   const sparkLabel = document.getElementById('spark-field-label');
   if (sparkLabel) sparkLabel.classList.remove('visible');
+  if (sparkLabel) sparkLabel.removeAttribute('data-step');
   const sparkRow = document.querySelector('.spark-source-row');
   if (sparkRow) sparkRow.classList.remove('active');
   const rewriteBtn = document.getElementById('m0-rewrite-btn');
@@ -2859,6 +3264,8 @@ function v6Rewrite() {
 
   const bar = document.getElementById('v6-bottom-bar');
   if (bar) bar.style.display = '';
+  const actionRow = document.getElementById('m0-action-row');
+  if (actionRow) actionRow.style.display = 'none';
 
   const btn = document.getElementById('v6-bottle-btn');
   if (btn) btn.disabled = false;
