@@ -374,24 +374,6 @@ body {
   -webkit-font-smoothing:antialiased;
 }
 .field-label.visible { display:block; }
-.field-label.visible[data-step] {
-  display:flex;
-  align-items:center;
-  gap:.65rem;
-}
-.field-label.visible[data-step]::before {
-  content:attr(data-step);
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:18px;
-  height:18px;
-  border:1px solid var(--border-hi);
-  border-radius:50%;
-  color:var(--gold);
-  font-size:.58rem;
-  letter-spacing:0;
-}
 .spark-source-row {
   display:flex;
   align-items:center;
@@ -450,6 +432,13 @@ body {
   opacity:0; transition:opacity .5s; margin-top:.25rem;
 }
 .sb-save.show { opacity:.6; }
+.sb-rhythm {
+  margin-top:.5rem;
+  font-size:.72rem;
+  color:var(--muted);
+  line-height:1.55;
+  opacity:.52;
+}
 .bottle-wrap { display:flex; justify-content:center; }
 .el-list { display:flex; flex-direction:column; gap:.5rem; }
 .el-row {
@@ -647,6 +636,76 @@ body {
   font-family:'Playfair Display',serif; font-style:italic; font-size:.9rem;
 }
 .gj-row-val.conclusion { color:var(--muted); font-size:.82rem; }
+
+/* Cellar rhythm */
+.rhythm-panel {
+  display:none;
+  margin-top:1.15rem;
+  padding:1rem 0 0;
+  border-top:1px solid var(--border);
+}
+.rhythm-panel.is-visible {
+  display:block;
+  animation:rhythm-reveal .5s cubic-bezier(.32,0,.24,1) both;
+}
+@keyframes rhythm-reveal {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.rhythm-kicker {
+  font-size:.68rem;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:var(--wine-hi);
+  margin-bottom:.55rem;
+}
+.rhythm-question {
+  font-family:'Playfair Display',serif;
+  color:var(--cream);
+  font-size:1rem;
+  line-height:1.45;
+  margin-bottom:.85rem;
+}
+.rhythm-choices {
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:.45rem;
+}
+.rhythm-choice {
+  min-height:42px;
+  border:1px solid var(--border);
+  background:rgba(36,21,18,.48);
+  color:var(--cream-dim);
+  font-family:'Inter',sans-serif;
+  font-size:.74rem;
+  letter-spacing:.02em;
+  cursor:pointer;
+  transition:border-color .18s, background .18s, color .18s, transform .18s;
+}
+.rhythm-choice:hover {
+  border-color:var(--border-hi);
+  color:var(--cream);
+  transform:translateY(-1px);
+}
+.rhythm-choice.is-selected {
+  border-color:var(--wine);
+  background:rgba(122,46,60,.12);
+  color:var(--cream);
+}
+.rhythm-summary {
+  display:none;
+  margin-top:.85rem;
+  padding:.7rem .85rem;
+  border-left:2px solid var(--wine-dim);
+  background:rgba(16,12,8,.5);
+  color:var(--muted);
+  font-size:.78rem;
+  line-height:1.65;
+}
+.rhythm-summary.is-visible { display:block; }
+@media(max-width:767px){
+  .rhythm-choices { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+}
 
 /* M1 structured capture */
 .grape-input-row {
@@ -867,11 +926,21 @@ body {
   position:relative;
   background:var(--surface);
   border:1px solid var(--border-hi);
+  border-left-width:2px;
   padding:22px 24px 20px;
 }
-.m0-stamp.state-cloudy { background:linear-gradient(180deg, rgba(201,160,64,.035), var(--surface)); }
-.m0-stamp.state-ready { background:linear-gradient(180deg, rgba(93,168,118,.03), var(--surface)); }
-.m0-stamp.state-blocked { background:linear-gradient(180deg, rgba(155,61,79,.05), var(--surface)); }
+.m0-stamp.state-cloudy {
+  border-left-color:var(--clearing-col);
+  background:linear-gradient(180deg, rgba(201,160,64,.04), var(--surface));
+}
+.m0-stamp.state-ready {
+  border-left-color:var(--settled-col);
+  background:linear-gradient(180deg, rgba(93,168,118,.04), var(--surface));
+}
+.m0-stamp.state-blocked {
+  border-left-color:var(--wine-dim);
+  background:linear-gradient(180deg, rgba(155,61,79,.05), var(--surface));
+}
 .m0-stamp::before {
   content:'';
   position:absolute;
@@ -889,19 +958,6 @@ body {
   color:var(--muted);
   margin:0 0 .7rem;
   -webkit-font-smoothing:antialiased;
-}
-.m0-section-label::before {
-  content:attr(data-step);
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:18px;
-  height:18px;
-  border:1px solid var(--border-hi);
-  border-radius:50%;
-  color:var(--gold);
-  font-size:.58rem;
-  letter-spacing:0;
 }
 .m0-stamp-eyebrow {
   font-size:.7rem;
@@ -993,9 +1049,24 @@ body {
   -webkit-font-smoothing:antialiased;
 }
 @keyframes m0-line-revised {
-  0%   { border-color:var(--border); box-shadow:0 0 0 rgba(201,165,90,0); }
-  18%  { border-color:rgba(201,165,90,.62); box-shadow:0 0 24px rgba(201,165,90,.08); }
-  100% { border-color:var(--border-hi); box-shadow:0 0 0 rgba(201,165,90,0); }
+  0% {
+    border-top-color:var(--border);
+    border-right-color:var(--border);
+    border-bottom-color:var(--border);
+    box-shadow:0 0 0 rgba(201,165,90,0);
+  }
+  18% {
+    border-top-color:rgba(201,165,90,.62);
+    border-right-color:rgba(201,165,90,.62);
+    border-bottom-color:rgba(201,165,90,.62);
+    box-shadow:0 0 24px rgba(201,165,90,.08);
+  }
+  100% {
+    border-top-color:var(--border-hi);
+    border-right-color:var(--border-hi);
+    border-bottom-color:var(--border-hi);
+    box-shadow:0 0 0 rgba(201,165,90,0);
+  }
 }
 .m0-stamp.line-revised {
   animation:m0-line-revised 1.6s ease-out both;
@@ -1245,6 +1316,7 @@ body {
       <div class="sb-idea" id="sb-idea">—</div>
       <div class="sb-phase">Phase 1 · Observation</div>
       <div class="sb-save" id="sb-save">· saved</div>
+      <div class="sb-rhythm" id="sb-rhythm"></div>
     </div>
     <div class="bottle-wrap">
       <svg width="72" height="152" viewBox="0 0 72 152">
@@ -1323,6 +1395,7 @@ body {
           <div class="gj-row-val conclusion" id="gj-means"></div>
         </div>
       </div>
+      <div class="rhythm-panel" id="rhythm-panel"></div>
       <div class="grape-input-row" id="grape-row">
         <div class="grape-input-label">Their first name</div>
         <input type="text" class="grape-field" id="grape-field" placeholder="e.g. Sarah" maxlength="40">
@@ -1362,9 +1435,9 @@ body {
     <div class="label-note">
       The settled elements are your foundation for Phase 2.
       The rest tells you what to go find before the bottle clears.
-      An idea with an unclear label is still an idea. It is just not finished aging.
+      A spark with an unclear label is still a spark. It is just not finished aging.
     </div>
-    <button class="btn" onclick="restart()">Cork another idea</button>
+    <button class="btn" onclick="restart()">Cork another spark</button>
     <button class="btn-ghost" onclick="showScreen('landing')">Back to cellar</button>
   </div>
 </div>
@@ -1386,7 +1459,8 @@ function freshState() {
     mechIndex:0,
     grapeStep:false,
     cellarEntryPlayed:false,
-    thresholdDone:false
+    thresholdDone:false,
+    nextQuestionAt:null
   };
 }
 
@@ -1399,6 +1473,7 @@ function saveState() {
   localStorage.setItem(SAVE_KEY, JSON.stringify({ S, mechIndex: mi }));
   const ind = document.getElementById('sb-save');
   if (ind) { ind.classList.add('show'); clearTimeout(saveTimer); saveTimer = setTimeout(()=>ind.classList.remove('show'), 2000); }
+  updateRhythmStatus();
 }
 
 function loadSaved() {
@@ -1413,6 +1488,16 @@ function clearSaved() { localStorage.removeItem(SAVE_KEY); }
 function saveDoorstep(spark) { localStorage.setItem(DOORSTEP_KEY, spark); }
 function loadDoorstep() { return localStorage.getItem(DOORSTEP_KEY) || null; }
 function clearDoorstep() { localStorage.removeItem(DOORSTEP_KEY); }
+
+function updateRhythmStatus() {
+  const el = document.getElementById('sb-rhythm');
+  if (!el) return;
+  if (!S.thresholdDone || S.pace < 0 || S.notifTiming < 0) {
+    el.textContent = '';
+    return;
+  }
+  el.textContent = `Next question: ${formatNextQuestion(S.nextQuestionAt, S.notifTiming)}`;
+}
 
 function normalizeGrapeState(state) {
   return ['settled', 'clearing', 'turbid'].includes(state) ? state : 'turbid';
@@ -1458,8 +1543,8 @@ function buildMechs() {
   const grapeRelation = S.grape_relationship || 'No relationship recorded.';
   const grapeObservation = S.m1?.observation?.surface_text || 'The Grape has been answered during intake.';
   const grapeQ = selfMode
-    ? `This is the Grape.\n\nYou are the person this idea must answer to.`
-    : `This is the Grape.\n\n${grapeName} is the person this idea must answer to.`;
+    ? `This is the Grape.\n\nYou are the person this spark must answer to.`
+    : `This is the Grape.\n\n${grapeName} is the person this spark must answer to.`;
   const grapeHint = grapeState === 'settled'
     ? 'Wine starts with fruit. Corked starts with one real person. Without that, there is nothing to age.'
     : 'This person is real enough to enter, but still cloudy. The cellar will not pretend it is clearer than it is.';
@@ -1499,7 +1584,7 @@ function buildMechs() {
     },
     {
       id:'M3', name:'Prior Attempted Solution',
-      q:`What has ${g} already tried to fix this? Focus on what they actually did before your idea showed up. Walk through it specifically.`,
+      q:`What has ${g} already tried to fix this? Focus on what they actually did before your spark showed up. Walk through it specifically.`,
       hint:'Workarounds, hacks, paying for something that half-works. Any of it counts.',
       els:['echo'],
       activeEl:'echo',
@@ -1562,12 +1647,12 @@ const INTAKE = [
   },
   {
     id:'maturity', eyebrow:'The Person · 2 of 3',
-    q:'Is there a real person this idea comes from?',
+    q:'Is there a real person this spark comes from?',
     note:'The cellar works best when you arrive as you are.',
     type:'opts',
     opts:[
       { l:'A', t:'Yes. I have someone specific in mind and have watched this firsthand.', s:'You have both. The cellar asks who, next.' },
-      { l:'B', t:'Yes. I have spoken to someone, but led with my idea rather than their situation.', s:'You have a start. The cellar asks who, next.' },
+      { l:'B', t:'Yes. I have spoken to someone, but led with my spark rather than their situation.', s:'You have a start. The cellar asks who, next.' },
       { l:'C', t:'No, but this applies to me.', s:'Then you are the one it comes from.' },
       { l:'D', t:'No. I do not have a real person yet.', s:'Then there is nothing to age yet. The cellar stays shut until you find one.' }
     ],
@@ -1575,7 +1660,7 @@ const INTAKE = [
   },
   {
     id:'grape', eyebrow:'The Grape · 3 of 3',
-    q:'Name the person this idea comes from.',
+    q:'Name the person this spark comes from.',
     note:'A first name is enough. What matters is that they exist.',
     type:'person',
     save: () => {}
@@ -1613,7 +1698,7 @@ function renderIntake() {
   }
 
   const displayQ = (step.type === 'person' && S.maturity === 2) ? 'You are the grape.'
-    : (step.type === 'person' && S.maturity === 3) ? 'This idea needs one real person.'
+    : (step.type === 'person' && S.maturity === 3) ? 'This spark needs one real person.'
     : step.q;
   const displayNote = (step.type === 'person' && S.maturity === 3) ? 'The cellar cannot age what has no person behind it.'
     : (step.type === 'person' && S.maturity === 2) ? 'Your own experience is the starting material.'
@@ -1647,7 +1732,7 @@ function renderIntake() {
                oninput="v6SaveWorkerUrl()" onblur="v6SaveWorkerUrl()">
       </div>
       <div id="m0-result" style="display:none;margin-top:16px">
-        <div class="m0-section-label" data-step="1">Bottle line</div>
+        <div class="m0-section-label">Bottle line</div>
         <div class="m0-stamp">
           <svg class="m0-seal" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="14" cy="14" r="12.5" stroke="currentColor" stroke-width=".75"/>
@@ -1658,7 +1743,6 @@ function renderIntake() {
         </div>
       </div>
       <div class="m0-secondary m0-wm-result" id="m0-wm-result" style="display:none">
-        <div class="m0-section-label" data-step="4">Winemaster read</div>
         <div class="wm-section m0-wm-section">
           <div class="wm-avatar">
             <div class="wm-circle"></div>
@@ -1691,7 +1775,7 @@ function renderIntake() {
               Go find one person this spark draws from. Come back with a name and how you know them.
             </p>
             <p style="font-size:.75rem;color:var(--muted);opacity:.7;line-height:1.7">
-              Your spark will be waiting in the idea field when you return.
+              Your spark will be waiting in the spark field when you return.
             </p>`;
     } else {
       const setup = S.m0?.m1_setup;
@@ -1826,7 +1910,7 @@ async function intakeNext() {
         }
         writeM1FromIntake(name, rel, data);
       } catch (err) {
-        intakeSel['grape_error'] = 'Could not reach the worker. Check your Worker URL in the idea step.';
+        intakeSel['grape_error'] = 'Could not reach the worker. Check your Worker URL in the spark step.';
         if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
         renderIntake();
         return;
@@ -1986,6 +2070,7 @@ function renderMech() {
 
   document.getElementById('obs-box').style.display = 'none';
   hideGrapeJudgment();
+  hideCellarRhythm();
   document.getElementById('grape-row').style.display = 'none';
   document.getElementById('assess-box').style.display = 'none';
   document.getElementById('p1-btn').textContent = 'Continue →';
@@ -2000,6 +2085,7 @@ function renderMech() {
 
   S.mechIndex = mi;
   saveState();
+  updateRhythmStatus();
 }
 
 function setPhaseBusy(isBusy, label) {
@@ -2309,9 +2395,13 @@ async function p1Next() {
   } else {
     // Step 2: advance to next mechanism
     ans.removeAttribute('readonly');
-    // Threshold seam: leaving grape card before calibration is done
+    // Rhythm seam: finish the grape card by setting the cellar's return rhythm.
     if (mi === 0 && !S.thresholdDone) {
-      showThreshold();
+      if (rhythmOpen && thresholdSel.pace !== undefined && thresholdSel.notifTiming !== undefined) {
+        completeCellarRhythm();
+      } else {
+        showCellarRhythm();
+      }
       return;
     }
     mi++;
@@ -2326,30 +2416,138 @@ async function p1Next() {
 const THRESHOLD_STEPS = [
   {
     id:'pace',
-    q:'How often do you want to engage with this idea?',
-    note:'Not a commitment. It calibrates the cellar.',
+    q:'How often should this spark return to you?',
+    note:'Not a commitment. It sets the aging rhythm.',
     opts:[
-      { l:'A', t:'Daily',                s:'You are in the middle of it. This idea is live right now.' },
-      { l:'B', t:'Every couple of days', s:'Momentum without pressure. You have a day job.' },
-      { l:'C', t:'Weekly',               s:'A slow burn. You do not want it to go cold.' },
-      { l:'D', t:'Monthly',              s:'Back-burner. Alive but not urgent.' }
+      { l:'A', t:'Daily',        s:'The cellar keeps it close.', days:1, cadence:'daily' },
+      { l:'B', t:'Any other day', s:'A steady rhythm without making it heavy.', days:2, cadence:'every other day' },
+      { l:'C', t:'Weekly',       s:'A slow burn. The spark stays alive.', days:7, cadence:'weekly' },
+      { l:'D', t:'Monthly',      s:'Back-burner. Still aging, not urgent.', days:30, cadence:'monthly' }
     ]
   },
   {
     id:'notifTiming',
-    q:'When does your head work best on something like this?',
-    note:"The cellar will reach you when you're already in the right place.",
+    q:'When should it surface?',
+    note:"The cellar returns it when your head is already in the right place.",
     opts:[
-      { l:'A', t:'Morning, before the day gets in the way.', s:'Questions arrive when the day is still open.' },
-      { l:'B', t:'Midday, during a break.',                 s:'A thinking window between things.' },
-      { l:'C', t:'Evening, once the day is done.',          s:'Settled, fewer interruptions.' },
-      { l:'D', t:'Late, after the house is quiet.',         s:'Fewer interruptions. Long thoughts welcome.' }
+      { l:'A', t:'Morning', s:'Before the day gets in the way.' },
+      { l:'B', t:'Midday',  s:'During a break between things.' },
+      { l:'C', t:'Evening', s:'Once the day is done.' },
+      { l:'D', t:'Late',    s:'After the house is quiet.' }
     ]
   }
 ];
 
 let thresholdStep = 0;
 let thresholdSel  = {};
+let rhythmOpen = false;
+
+function showCellarRhythm() {
+  rhythmOpen = true;
+  thresholdStep = 0;
+  thresholdSel = {};
+  renderCellarRhythm();
+}
+
+function hideCellarRhythm() {
+  rhythmOpen = false;
+  const panel = document.getElementById('rhythm-panel');
+  if (panel) {
+    panel.classList.remove('is-visible');
+    panel.innerHTML = '';
+  }
+}
+
+function renderCellarRhythm() {
+  const panel = document.getElementById('rhythm-panel');
+  if (!panel || !rhythmOpen) return;
+  const paceStep   = THRESHOLD_STEPS[0];
+  const timingStep = THRESHOLD_STEPS[1];
+  const bothPicked = thresholdSel.pace !== undefined && thresholdSel.notifTiming !== undefined;
+
+  let h = `<div class="rhythm-kicker">Cellar rhythm</div>
+           <div class="rhythm-question">${paceStep.q}</div>
+           <div class="mech-hint" style="margin-bottom:.85rem">${paceStep.note}</div>
+           <div class="rhythm-choices">`;
+  paceStep.opts.forEach((o, i) => {
+    const sel = thresholdSel.pace === i;
+    h += `<button type="button" class="rhythm-choice${sel ? ' is-selected' : ''}" onclick="pickPaceOpt(${i})">${o.t}</button>`;
+  });
+  h += `</div>
+        <div class="rhythm-question" style="margin-top:.85rem">${timingStep.q}</div>
+        <div class="mech-hint" style="margin-bottom:.85rem">${timingStep.note}</div>
+        <div class="rhythm-choices">`;
+  timingStep.opts.forEach((o, i) => {
+    const sel = thresholdSel.notifTiming === i;
+    h += `<button type="button" class="rhythm-choice${sel ? ' is-selected' : ''}" onclick="pickTimingOpt(${i})">${o.t}</button>`;
+  });
+  h += `</div>
+        <div class="rhythm-summary${bothPicked ? ' is-visible' : ''}" id="rhythm-summary">
+          ${bothPicked ? buildRhythmSummary(thresholdSel.pace, thresholdSel.notifTiming) : ''}
+        </div>`;
+  panel.innerHTML = h;
+  panel.classList.add('is-visible');
+
+  const btn = document.getElementById('p1-btn');
+  if (btn) {
+    btn.disabled = !bothPicked;
+    btn.textContent = bothPicked ? 'Continue to The Tell →' : 'Set rhythm first';
+  }
+}
+
+function completeCellarRhythm() {
+  S.pace = thresholdSel.pace;
+  S.notifTiming = thresholdSel.notifTiming;
+  S.thresholdDone = true;
+  S.nextQuestionAt = computeNextQuestionAt(S.pace, S.notifTiming);
+  saveState();
+  hideCellarRhythm();
+  mi = 1;
+  S.mechIndex = mi;
+  saveState();
+  renderMech();
+}
+
+function computeNextQuestionAt(pace, timing) {
+  const days = THRESHOLD_STEPS[0].opts[pace]?.days || 7;
+  const hours = [9, 13, 18, 22][timing] || 9;
+  const next = new Date();
+  next.setDate(next.getDate() + days);
+  next.setHours(hours, 0, 0, 0);
+  return next.toISOString();
+}
+
+function formatNextQuestion(iso, timing) {
+  if (!iso) return 'on rhythm';
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return 'on rhythm';
+  const day = date.toLocaleDateString(undefined, { weekday:'long' });
+  const time = ['morning', 'midday', 'evening', 'late'][timing] || '';
+  return `${day}${time ? ' ' + time : ''}`;
+}
+
+function buildRhythmSummary(pace, timing) {
+  const cadenceLabels = ['Daily', 'Every other day', 'Weekly', 'Monthly'];
+  const timingShort   = ['in the morning', 'at midday', 'in the evening', 'late'];
+  const timingLong    = ['in the morning', 'at midday', 'in the evening', 'after the house is quiet'];
+  const cadence = cadenceLabels[pace] ?? 'Weekly';
+  const tShort  = timingShort[timing]  ?? 'in the morning';
+  const tLong   = timingLong[timing]   ?? 'in the morning';
+  let freq;
+  if (pace === 0) {
+    freq = timing === 0 ? 'each morning'
+         : timing === 1 ? 'each day, at midday'
+         : timing === 2 ? 'each evening'
+         : 'each day, after the house is quiet';
+  } else if (pace === 1) {
+    freq = `every second day, ${tLong}`;
+  } else if (pace === 2) {
+    freq = `once a week, ${tLong}`;
+  } else {
+    freq = `once a month, ${tLong}`;
+  }
+  return `${cadence}, ${tShort}. The cellar returns this spark ${freq}.`;
+}
 
 function showThreshold() {
   document.getElementById('question-panel').style.display = 'none';
@@ -2388,6 +2586,16 @@ function pickThresholdOpt(i) {
   renderThreshold();
 }
 
+function pickPaceOpt(i) {
+  thresholdSel.pace = i;
+  renderCellarRhythm();
+}
+
+function pickTimingOpt(i) {
+  thresholdSel.notifTiming = i;
+  renderCellarRhythm();
+}
+
 function thresholdNext() {
   const step = THRESHOLD_STEPS[thresholdStep];
   if (thresholdSel[step.id] === undefined) return;
@@ -2421,7 +2629,7 @@ function reviewEl(key) {
     document.getElementById('rv-blocks').innerHTML =
       `<div class="review-block">
          <div class="review-mech-id">M1 · Grape</div>
-         <div class="review-q">Name the person this idea comes from.</div>
+         <div class="review-q">Name the person this spark comes from.</div>
          <div class="review-a">${escHtml(S.answers.M1)}</div>
          ${observation ? `<div class="review-a">${escHtml(observation)}</div>` : ''}
        </div>`;
@@ -2476,7 +2684,7 @@ function showLabel() {
   const yr  = now.getFullYear();
   const mo  = now.toLocaleString('default',{month:'long'});
   const settled = Object.values(S.elements).filter(v=>v==='settled').length;
-  const paceLabels = ['Daily','Every couple of days','Weekly','Monthly'];
+  const paceLabels = ['Daily','Any other day','Weekly','Monthly'];
 
   let h = `<div class="vc-name">${S.idea.slice(0,28).toUpperCase()}</div>
             <div class="vc-year">${mo} ${yr} · Phase 1 · Observation</div>
@@ -3007,7 +3215,7 @@ async function v6BottleSpark() {
 
   if (spark.trim().length < 5) {
     const status = document.getElementById('v6-bottle-status');
-    if (status) status.textContent = 'Write an idea first.';
+    if (status) status.textContent = 'Write a spark first.';
     return;
   }
 
@@ -3029,7 +3237,6 @@ function v6RenderM0(data) {
   }
   const sparkLabel = document.getElementById('spark-field-label');
   if (sparkLabel) sparkLabel.classList.add('visible');
-  if (sparkLabel) sparkLabel.setAttribute('data-step', '3');
   const sparkRow = document.querySelector('.spark-source-row');
   if (sparkRow) sparkRow.classList.add('active');
   const content = document.getElementById('wm-content');
@@ -3064,10 +3271,10 @@ function v6RenderM0(data) {
   const cellarNote = document.getElementById('m0-cellar-note');
   if (cellarNote) {
     if (state === 'cellar_ready') {
-      cellarNote.textContent = 'This can enter the cellar. What it is worth, the aging will tell.';
+      cellarNote.textContent = 'The spark is readable. The cellar will decide what it is worth.';
       cellarNote.style.display = 'block';
     } else if (state === 'bottleable_cloudy') {
-      cellarNote.textContent = 'This can enter cloudy. You can bottle it now or clarify the cloudy part first.';
+      cellarNote.textContent = 'The spark is readable, but something is still cloudy. The cellar will age it.';
       cellarNote.style.display = 'block';
     } else {
       cellarNote.textContent = '';
@@ -3248,7 +3455,6 @@ function v6Rewrite() {
   if (wmResult) wmResult.style.display = 'none';
   const sparkLabel = document.getElementById('spark-field-label');
   if (sparkLabel) sparkLabel.classList.remove('visible');
-  if (sparkLabel) sparkLabel.removeAttribute('data-step');
   const sparkRow = document.querySelector('.spark-source-row');
   if (sparkRow) sparkRow.classList.remove('active');
   const rewriteBtn = document.getElementById('m0-rewrite-btn');
