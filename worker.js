@@ -34,6 +34,11 @@ Filling fields in to be helpful is the failure mode you must avoid.
 - triggering_situation: The situation the user named. Null if unstated.
 - promised_change: The change the user named. Null if unstated.
 - domain: The domain the user named, in the user's own language. "Books" stays "books." Do not re-categorise into "literacy" or "community services."
+- solution_is_software: Classify whether the proposed solution is a software product. Values: "software" | "non_software" | "unstated".
+  software:     The spark explicitly names or clearly implies a digital product: an app, SaaS tool, website, API, software service, dashboard, or mobile app. "An app for…", "A tool that tracks…", "A platform where…" are software.
+  non_software: The spark explicitly names a physical product, physical store, or non-digital service with no software component: a bakery, physical bookstore, clothing line, restaurant, physical goods, or manufacturing business.
+  unstated:     The spark does not name a solution form clearly enough to classify, or could plausibly be either. When in doubt, return unstated.
+  The asymmetry matters: only explicit non_software is out of scope. A physical domain word ("books", "cans", "food") does not make the solution non_software if no solution form is stated.
 
 DIGESTIBILITY
 cellar_ready      – the spark has an implied person or role and a stated problem. A specific moment is not required at M0.
@@ -127,6 +132,16 @@ Do not write generic M1 framing. Write framing specific to this Spark's domain, 
 - happened_placeholder: A concrete example describing the kind of observable scene this Spark produces.
 Voice rules apply to all m1_setup strings: no dashes, no contrast formulas, no coaching language.
 
+PERSON IN SPARK:
+Before any generalisation, grade whether the raw spark contains a named individual with a real relationship tie.
+Apply the same grading rules as M1 Grape grading:
+- settled: Named individual AND stated real relationship. "my sister Sarah." "Tom, my co-founder." Name plus real tie = settled.
+- clearing: Name without real tie, or real tie without a name. "Sarah." "my manager." Either alone does not settle.
+- turbid: Category with a name pinned on it. "freelancers I know." "startup founders like my colleague."
+- none: No usable person identified in the raw spark.
+named_person: the person's first name only, or null.
+relationship_tie: the relational descriptor exactly as written in the raw spark (e.g. "my sister", "my co-founder", "the café owner downstairs"), or null.
+
 Return only JSON.`;
 
 const M1_DOCTRINE = `You are the Winemaster — the voice of Corked.
@@ -162,6 +177,99 @@ No contrast formulas like "not X, but Y" or "not just X". Say the finding direct
 
 Return only JSON.`;
 
+const M2_DOCTRINE_PROBLEM = `You are the Winemaster — the voice of Corked, an idea-aging system.
+
+Your job in M2 Phase A is Problem Recovery.
+
+You receive a User Line (the bottled spark) and its spark_parse. Identify the candidate problem the spark is trying to solve, then write the friction question.
+
+SPARK FORMS:
+Problem-language: "A way for teachers to share quizzes without a paywall" — suspected_problem is present. Use it directly.
+Solution-language: "A free quiz app", "A better Slack" — no suspected_problem. The problem must be inferred.
+
+PROBLEM RECOVERY RULES:
+1. If spark_parse.suspected_problem is not null: use it as recovered_problem. Do not rephrase or embellish. Set needs_confirmation false.
+2. If suspected_problem is null: infer the minimum plausible friction from solution_form, implied_person, and domain. Use only nouns and roles the spark_parse already contains. Set needs_confirmation true.
+3. State the recovered_problem as what the person cannot do, or what keeps going wrong. Not a feature. Not a product capability.
+4. One sentence. The user's own language level. COMPRESS, NEVER UPGRADE: do not introduce nouns the spark did not supply.
+
+GAP DETECTION:
+Set gap_in_play true if the recovered_problem explicitly names an existing tool, service, or product AND describes how it fails.
+"Kahoot charges teachers for sharing, so the paywall blocks it" = gap_in_play true.
+"Teachers can't share quizzes without hitting a paywall" = gap_in_play false (no existing solution named).
+gap_in_play is a signal that a Gap evidence check is warranted in Phase B. It does not clear the Gap element — the user's answer does that.
+When in doubt, set gap_in_play false.
+
+QUESTION:
+Write the friction question to show after the problem is confirmed.
+Ask for a specific past moment when the named grape encountered this exact problem.
+Use the grape's name and the recovered_problem's nouns.
+Ask what they actually did — observable behaviour, not what they felt.
+One sentence.
+
+HINT:
+One sentence. What a good friction answer looks like for this spark and this grape.
+Use domain words from the spark. Not generic.
+
+VOICE:
+Two short declarative sentences for observation.surface_text.
+No praise. No warmth. No coaching. No em dashes or en dashes.
+No contrast formulas. No questions in the observation.
+
+Return only JSON.`;
+
+const M2_DOCTRINE_FRICTION = `You are the Winemaster — the voice of Corked, an idea-aging system.
+
+Your job in M2 Phase B is The Friction Test.
+
+You receive a confirmed problem, a grape (named person with relationship), the user's friction answer, and a gap_in_play flag.
+
+Grade the answer against two bars always. Grade a third bar (Gap) only when gap_in_play is true.
+
+TELL BAR — filmable behaviour:
+settled:  A specific observable action named. What the person actually did. A camera would capture it.
+          "She stopped mid-form and switched to Google Forms" = settled.
+          "He just closed the tab and sent a spreadsheet instead" = settled.
+clearing: An emotion, pattern, or inferred state stands in place of behaviour.
+          "She finds it really annoying" = clearing. "He always struggles with this" = clearing.
+turbid:   No behaviour. Pure assumption about what people in general must feel or do. No named person acting.
+
+VINTAGE BAR — specific moment:
+settled:  Behaviour is anchored to one specific past instance. A named time, a single event, a concrete context.
+          "Last Tuesday before her seminar" = settled. "When he was setting up for the Monday pitch" = settled.
+clearing: Behaviour described but the moment is recurring or unanchored.
+          "Every time she tries to share" = clearing. "He usually just gives up" = clearing.
+turbid:   No time anchor at all. No specific instance named.
+
+GAP BAR — only grade this when gap_in_play is true:
+The Gap element requires a named existing solution AND its precise failure point, drawn from the answer.
+settled:  The answer names the existing solution by name and states exactly how it failed in this moment.
+          "Kahoot locked sharing behind a paywall, so she couldn't send the link" = settled.
+clearing: An existing solution is implied or named without a specific failure point, or the failure is vague.
+turbid:   No existing solution named in the answer at all.
+When gap_in_play is false, omit the gap field from your response entirely.
+
+OVERALL STATE:
+settled:  All active bars settled (Tell, Vintage, and Gap if in play).
+clearing: At least one bar clearing and none turbid.
+turbid:   Any active bar turbid.
+
+OBSERVATION:
+Two short declarative sentences. Monotone lab register.
+Sentence one: what the Tell bar found — behaviour present or absent, what kind.
+Sentence two: what the Vintage bar found — moment present or absent, what kind.
+If gap_in_play, a third sentence for the Gap bar finding.
+When a verbatim span from the answer directly supports a finding, use it as anchor_span.
+
+ANTI-FABRICATION:
+Do not invent behaviour, time, existing-solution, or failure detail not present in the answer.
+anchor_span must be a verbatim excerpt from the user_answer. If none supports the claim, set null.
+
+VOICE:
+No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
+
+Return only JSON.`;
+
 function buildM0UserMessage(rawSpark, followupQuestion, followupAnswer) {
   const followupBlock = followupAnswer
     ? `
@@ -192,7 +300,8 @@ Return exactly this JSON shape:
     "suspected_problem": "string or null",
     "triggering_situation": "string or null",
     "promised_change": "string or null",
-    "domain": "string or null"
+    "domain": "string or null",
+    "solution_is_software": "software|non_software|unstated"
   },
   "digestibility": {
     "state": "cellar_ready|bottleable_cloudy|unbottleable",
@@ -214,6 +323,11 @@ Return exactly this JSON shape:
     "trying_placeholder": "e.g. keep the team stable during a client project",
     "happened_label": "short label for happened field",
     "happened_placeholder": "concrete example scene for this spark"
+  },
+  "person_in_spark": {
+    "grade": "settled|clearing|turbid|none",
+    "named_person": "string or null",
+    "relationship_tie": "string or null"
   }
 }`;
 }
@@ -246,6 +360,79 @@ Return exactly this JSON shape:
   "next_question": {
     "should_advance": true|false,
     "framing": "string or null"
+  }
+}`;
+}
+
+function buildM2ProblemUserMessage(userLine, sparkParse, grapeName, grapeRel, maturityClass) {
+  const selfMode = maturityClass === 2;
+  const sp = sparkParse || {};
+  const grapeBlock = selfMode
+    ? `<grape>self (the speaker)</grape>`
+    : `<grape_name>${grapeName}</grape_name>\n<grape_relationship>${grapeRel}</grape_relationship>`;
+
+  return `<user_line>${userLine}</user_line>
+<spark_parse>
+  suspected_problem: ${sp.suspected_problem || 'null'}
+  implied_person: ${sp.implied_person || 'null'}
+  domain: ${sp.domain || 'null'}
+  solution_form: ${sp.solution_form || 'null'}
+</spark_parse>
+${grapeBlock}
+<maturity_class>${maturityClass}</maturity_class>
+
+Return exactly this JSON shape:
+{
+  "schema_version": "m2.v1",
+  "mechanism": "M2",
+  "phase": "problem",
+  "recovered_problem": "one sentence — the problem, not a solution or feature",
+  "needs_confirmation": true|false,
+  "gap_in_play": true|false,
+  "observation": {
+    "surface_text": "two sentences, lab register",
+    "problem_source": "explicit|implied"
+  },
+  "question": "one sentence — friction question tailored to this grape and this problem",
+  "hint": "one sentence — what a good friction answer looks like for this spark"
+}`;
+}
+
+function buildM2FrictionUserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer, gapInPlay) {
+  const selfMode = maturityClass === 2;
+  const grapeBlock = selfMode
+    ? `<grape>self (the speaker)</grape>`
+    : `<grape_name>${grapeName}</grape_name>\n<grape_relationship>${grapeRel}</grape_relationship>`;
+
+  const gapShape = gapInPlay ? `
+  "gap": {
+    "state": "turbid|clearing|settled",
+    "anchor_span": "verbatim from user_answer or null"
+  },` : '';
+
+  return `<confirmed_problem>${confirmedProblem}</confirmed_problem>
+${grapeBlock}
+<maturity_class>${maturityClass}</maturity_class>
+<gap_in_play>${gapInPlay ? 'true' : 'false'}</gap_in_play>
+<user_answer>${userAnswer}</user_answer>
+
+Return exactly this JSON shape:
+{
+  "schema_version": "m2.v1",
+  "mechanism": "M2",
+  "phase": "friction",
+  "state": "turbid|clearing|settled",
+  "tell": {
+    "state": "turbid|clearing|settled",
+    "anchor_span": "verbatim from user_answer or null"
+  },
+  "vintage": {
+    "state": "turbid|clearing|settled",
+    "anchor_span": "verbatim from user_answer or null"
+  },${gapShape}
+  "observation": {
+    "surface_text": "max 280 chars, two or three sentences depending on gap_in_play",
+    "anchor_span": "verbatim from user_answer or null"
   }
 }`;
 }
@@ -545,6 +732,134 @@ function validateM1(parsed, userAnswer) {
   return parsed;
 }
 
+function validateM2Problem(parsed) {
+  const visiblePaths = [
+    'recovered_problem',
+    'observation.surface_text',
+    'question',
+    'hint'
+  ];
+
+  if (!parsed || typeof parsed !== 'object') throw new Error('Invalid JSON object');
+  if (parsed.mechanism !== 'M2') throw new Error('Invalid mechanism');
+  if (parsed.phase !== 'problem') throw new Error('Expected phase: problem');
+  if (!parsed.recovered_problem || typeof parsed.recovered_problem !== 'string') {
+    throw new Error('Missing recovered_problem');
+  }
+
+  parsed.needs_confirmation = !!parsed.needs_confirmation;
+  parsed.gap_in_play = !!parsed.gap_in_play;
+
+  if (!parsed.observation || typeof parsed.observation !== 'object') {
+    parsed.observation = { surface_text: '', problem_source: 'implied' };
+  }
+
+  const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
+  cleanVisibleFields(parsed, visiblePaths);
+
+  parsed.server_checks = {
+    schema_valid: true,
+    gap_in_play: parsed.gap_in_play,
+    needs_confirmation: parsed.needs_confirmation,
+    visible_style_violations_cleaned: styleViolations
+  };
+
+  return parsed;
+}
+
+function validateM2Friction(parsed, userAnswer, gapInPlay) {
+  const allowedStates = ['settled', 'clearing', 'turbid'];
+  const visiblePaths = ['observation.surface_text'];
+
+  if (!parsed || typeof parsed !== 'object') throw new Error('Invalid JSON object');
+  if (parsed.mechanism !== 'M2') throw new Error('Invalid mechanism');
+  if (parsed.phase !== 'friction') throw new Error('Expected phase: friction');
+  if (!parsed.state || !allowedStates.includes(parsed.state)) {
+    throw new Error('Invalid state');
+  }
+
+  if (!parsed.tell || !allowedStates.includes(parsed.tell?.state)) {
+    parsed.tell = { state: 'turbid', anchor_span: null };
+  }
+  if (!parsed.vintage || !allowedStates.includes(parsed.vintage?.state)) {
+    parsed.vintage = { state: 'turbid', anchor_span: null };
+  }
+  if (gapInPlay) {
+    if (!parsed.gap || !allowedStates.includes(parsed.gap?.state)) {
+      parsed.gap = { state: 'turbid', anchor_span: null };
+    }
+  } else {
+    delete parsed.gap;
+  }
+
+  // Verify all anchor spans are verbatim substrings of the answer.
+  const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
+  const normAnswer = norm(userAnswer);
+  const verifySpan = (obj, key) => {
+    if (obj?.[key] && !normAnswer.includes(norm(obj[key]))) { obj[key] = null; return false; }
+    return !!obj?.[key];
+  };
+  const tellAnchorOk    = verifySpan(parsed.tell, 'anchor_span');
+  const vintageAnchorOk = verifySpan(parsed.vintage, 'anchor_span');
+  const gapAnchorOk     = gapInPlay ? verifySpan(parsed.gap, 'anchor_span') : null;
+  const obsAnchorOk     = verifySpan(parsed.observation, 'anchor_span');
+
+  const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
+  cleanVisibleFields(parsed, visiblePaths);
+
+  parsed.server_checks = {
+    schema_valid: true,
+    tell_anchor_verified: tellAnchorOk,
+    vintage_anchor_verified: vintageAnchorOk,
+    ...(gapInPlay ? { gap_anchor_verified: gapAnchorOk } : {}),
+    obs_anchor_verified: obsAnchorOk,
+    visible_style_violations_cleaned: styleViolations
+  };
+
+  return parsed;
+}
+
+async function handleM2(request, env, corsHeaders) {
+  const body = await request.json();
+  const userLine      = String(body.user_line       || '').trim();
+  const grapeName     = String(body.grape_name      || '').trim();
+  const grapeRel      = String(body.grape_relationship || '').trim();
+  const maturityClass = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
+
+  if (!userLine) {
+    return jsonResponse({ error: 'Missing user_line' }, 400, corsHeaders);
+  }
+
+  if (!body.user_answer) {
+    // Phase A: problem recovery — no answer yet, recover the candidate problem.
+    const sparkParse = body.spark_parse || null;
+    const parsed = await callClaude(
+      env,
+      M2_DOCTRINE_PROBLEM,
+      buildM2ProblemUserMessage(userLine, sparkParse, grapeName, grapeRel, maturityClass),
+      600
+    );
+    return jsonResponse(validateM2Problem(parsed), 200, corsHeaders);
+  }
+
+  // Phase B: friction grading — confirmed problem + user answer both present.
+  const confirmedProblem = String(body.confirmed_problem || '').trim();
+  const userAnswer       = String(body.user_answer       || '').trim();
+  const gapInPlay        = !!body.gap_in_play;
+
+  if (!confirmedProblem) {
+    return jsonResponse({ error: 'Missing confirmed_problem for friction phase' }, 400, corsHeaders);
+  }
+
+  const parsed = await callClaude(
+    env,
+    M2_DOCTRINE_FRICTION,
+    buildM2FrictionUserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer, gapInPlay),
+    700
+  );
+  return jsonResponse(validateM2Friction(parsed, userAnswer, gapInPlay), 200, corsHeaders);
+}
+
 function jsonResponse(body, status, corsHeaders) {
   return new Response(JSON.stringify(body), {
     status,
@@ -563,6 +878,27 @@ async function handleM0(request, env, corsHeaders) {
   }
 
   const parsed = await callClaude(env, M0_DOCTRINE, buildM0UserMessage(rawSpark, followupQuestion, followupAnswer), 1200);
+
+  // Scope gate — deterministic check before digestibility processing.
+  // Only explicit non_software is rejected; unstated and vague sparks age normally.
+  if (parsed?.spark_parse?.solution_is_software === 'non_software') {
+    return jsonResponse({
+      schema_version: parsed.schema_version || 'm0.v1',
+      mechanism: 'M0',
+      raw_spark: rawSpark,
+      user_line_candidate: parsed.user_line_candidate || rawSpark,
+      spark_parse: parsed.spark_parse,
+      digestibility: { state: 'out_of_scope', missing: [], reason: '' },
+      followup: { needed: false, question: null },
+      m1_setup: null,
+      scope: {
+        in_scope: false,
+        reason: 'This spark describes something that belongs in a different cellar. Corked ages software products built by solo builders. A non-software idea is not less valid, it ages somewhere else.'
+      },
+      server_checks: { schema_valid: true, scope_gated: true }
+    }, 200, corsHeaders);
+  }
+
   return jsonResponse(validateM0(parsed, rawSpark, followupAnswer), 200, corsHeaders);
 }
 
@@ -607,6 +943,7 @@ export default {
     try {
       if (url.pathname === '/m0') return await handleM0(request, env, corsHeaders);
       if (url.pathname === '/m1') return await handleM1(request, env, corsHeaders);
+      if (url.pathname === '/m2') return await handleM2(request, env, corsHeaders);
       return jsonResponse({ error: 'Unknown route. Use /m0 or /m1.' }, 404, corsHeaders);
     } catch (err) {
       if (err instanceof Response) {

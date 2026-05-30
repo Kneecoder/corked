@@ -404,6 +404,7 @@ body {
 }
 .opt:hover { border-color:var(--border-hi); }
 .opt.sel { border-color:var(--wine); background:rgba(122,46,60,.12); }
+.opt.dim { opacity:.3; pointer-events:none; }
 .opt-letter { font-size:.68rem; color:var(--wine-hi); font-weight:500; letter-spacing:.05em; padding-top:.15rem; min-width:14px; }
 .opt-text { font-size:.875rem; color:var(--cream); line-height:1.45; }
 .opt-sub { font-size:.775rem; color:var(--muted); margin-top:.2rem; }
@@ -1378,6 +1379,11 @@ body {
           <textarea class="m1-field" id="m1-happened" rows="4"></textarea>
         </div>
       </div>
+      <div id="m2-confirm" style="display:none;margin-bottom:.9rem">
+        <div style="color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.45rem">Recovered problem</div>
+        <input type="text" class="field" id="m2-confirm-inp"
+               style="width:100%;font-size:.88rem;padding:.6rem .85rem;background:var(--card);border:1px solid var(--border-hi);border-radius:6px;color:var(--cream)">
+      </div>
       <textarea class="answer-box" id="ans" placeholder="Write here. The more specific you are, the more Phase 1 can work with."></textarea>
       <div class="obs" id="obs-box"></div>
       <div class="grape-judgment" id="grape-judgment">
@@ -1548,12 +1554,6 @@ function buildMechs() {
   const grapeHint = grapeState === 'settled'
     ? 'Wine starts with fruit. Corked starts with one real person. Without that, there is nothing to age.'
     : 'This person is real enough to enter, but still cloudy. The cellar will not pretend it is clearer than it is.';
-  const m2q = selfMode
-    ? `Stay inside the instance you just described.\n\nWhat did you actually do next? Write the observable steps. What could a camera capture?`
-    : `Describe a specific moment when ${g} encountered this problem. What did they actually do? Write the exact behaviour you could film if you were there.`;
-  const m2hint = selfMode
-    ? 'Not what you felt. What happened next, step by step.'
-    : 'Not what they felt. What a camera would capture.';
 
   return [
     {
@@ -1570,17 +1570,22 @@ function buildMechs() {
     },
     {
       id:'M2', name:'The Friction Test',
-      q:m2q,
-      hint:m2hint,
-      els:['tell','vintage'],
+      // q and hint are populated from S.m2_problem after the Phase A worker call.
+      // Static strings below are fallbacks only — Phase A must run before M2 renders.
+      q: S.m2_problem?.question || (selfMode
+        ? `Stay inside the instance you just described.\n\nWhat did you actually do next? Write the observable steps. What could a camera capture?`
+        : `Describe a specific moment when ${g} encountered this problem. What did they actually do? Write the exact behaviour you could film if you were there.`),
+      hint: S.m2_problem?.hint || (selfMode
+        ? 'Not what you felt. What happened next, step by step.'
+        : 'Not what they felt. What a camera would capture.'),
+      // M2 conditionally tests the gap element when Phase A flagged gap_in_play.
+      // gap_in_play means the recovered problem names an existing solution + its failure.
+      // The Gap element only clears from the user's friction answer (Phase B), not from spark text.
+      // NOTE: M2-clears-gap is new, untested doctrine — not canon yet.
+      els: S.m2_problem?.gap_in_play ? ['tell', 'vintage', 'gap'] : ['tell', 'vintage'],
       activeEl:'tell',
-      obs: a => {
-        if (/\b(feel|felt|frustrated|annoyed|stressed|overwhelmed|bothered)\b/i.test(a))
-          return "A feeling was described. This step is looking for behaviour, the observable action, not the inferred state behind it.";
-        if (a.trim().split(/\s+/).length < 12)
-          return "A behaviour was named but the moment is thin. The Vintage needs a specific scene: when, where, what happened exactly.";
-        return "Behaviour and moment are both present. The Tell and the Vintage have material to draw from.";
-      }
+      // obs reads from S.m2 set by the Phase B worker call, not computed locally.
+      obs: () => S.m2?.observation?.surface_text || null
     },
     {
       id:'M3', name:'Prior Attempted Solution',
@@ -1647,12 +1652,12 @@ const INTAKE = [
   },
   {
     id:'maturity', eyebrow:'The Person · 2 of 3',
-    q:'Is there a real person this spark comes from?',
-    note:'The cellar works best when you arrive as you are.',
+    q:'Have you talked to a real person this is for?',
+    note:'This sets how Phase 1 questions you. Claiming more than you have gains you nothing.',
     type:'opts',
     opts:[
       { l:'A', t:'Yes. I have someone specific in mind and have watched this firsthand.', s:'You have both. The cellar asks who, next.' },
-      { l:'B', t:'Yes. I have spoken to someone, but led with my spark rather than their situation.', s:'You have a start. The cellar asks who, next.' },
+      { l:'B', t:"Yes. I've talked to them about it, but I'm not sure I've seen it happen.", s:'You have a start. The cellar asks who, next.' },
       { l:'C', t:'No, but this applies to me.', s:'Then you are the one it comes from.' },
       { l:'D', t:'No. I do not have a real person yet.', s:'Then there is nothing to age yet. The cellar stays shut until you find one.' }
     ],
@@ -1786,8 +1791,10 @@ function renderIntake() {
       const relPh    = isSelf
         ? 'e.g. I run a small design studio and handle all my own invoicing'
         : 'e.g. my sister, my old manager from the London office, the café owner downstairs';
-      const savedName = escHtml(intakeSel['grape_name'] || '');
-      const savedRel  = escHtml(intakeSel['grape_rel']  || '');
+      const _grapePis = window._v6M0?.data?.person_in_spark;
+      const _pisSettled = _grapePis?.grade === 'settled';
+      const savedName = escHtml(intakeSel['grape_name'] || (_pisSettled ? _grapePis.named_person : '') || '');
+      const savedRel  = escHtml(intakeSel['grape_rel']  || (_pisSettled ? _grapePis.relationship_tie : '') || '');
       const grapeErr  = intakeSel['grape_error'];
 
       h += `<div>
@@ -1812,10 +1819,30 @@ function renderIntake() {
       }
     }
   } else {
+    const _pis = (step.id === 'maturity' && window._v6M0?.data?.person_in_spark?.grade === 'settled')
+      ? window._v6M0.data.person_in_spark : null;
+    if (_pis && intakeSel['maturity'] === undefined) intakeSel['maturity'] = 1;
+    if (_pis) {
+      const rawTie = _pis.relationship_tie || '';
+      const hasPoss = /^(my|our)\s+/i.test(rawTie);
+      const tieTxt  = rawTie.replace(/^(my|our)\s+/i, '');
+      const pisName = escHtml(_pis.named_person || '');
+      const pisTie  = escHtml(rawTie);
+      const pisTieClean = escHtml(tieTxt);
+      const reason = pisName && rawTie
+        ? hasPoss
+          ? `You named your ${pisTieClean} ${pisName}, so the cellar already knows who this comes from.`
+          : `You named ${pisName}, ${pisTie}, so the cellar already knows who this comes from.`
+        : pisName
+          ? `You named ${pisName} in your spark, so the cellar already knows who this comes from.`
+          : 'The cellar found a real person in your spark.';
+      h += `<div style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;padding:.55rem .85rem;background:rgba(122,46,60,.06);border-left:2px solid var(--wine-dim)">${reason}</div>`;
+    }
     h += `<div class="options">`;
     step.opts.forEach((o,i) => {
       const sel = intakeSel[step.id] === i;
-      h += `<div class="opt${sel?' sel':''}" onclick="pickOpt(${i})">
+      const dim = !!(_pis && i !== 0);
+      h += `<div class="opt${sel?' sel':''}${dim?' dim':''}" ${dim?'':'onclick="pickOpt('+i+')"'}>
               <div class="opt-letter">${o.l}</div>
               <div>
                 <div class="opt-text">${o.t}</div>
@@ -2077,6 +2104,12 @@ function renderMech() {
 
   obsShown = !!m.prefilled; grapeStepShown = false; curAssess = {};
   if (m.prefilled) showPhaseObservation(m.obs());
+
+  // M2: reset confirm state and trigger Phase A before the user can type.
+  m2AwaitingConfirm = false;
+  const m2ConfirmPanel = document.getElementById('m2-confirm');
+  if (m2ConfirmPanel) m2ConfirmPanel.style.display = 'none';
+  if (m.id === 'M2') triggerM2PhaseA();
 
   // Show review panel hidden, question panel visible
   document.getElementById('question-panel').style.display = 'block';
@@ -2362,10 +2395,133 @@ function applyLocalMechanismResult(m, txt) {
   showPhaseObservation(m.obs(txt));
 }
 
+// ── M2: THE FRICTION TEST ──────────────────────────────────────────────────
+
+let m2AwaitingConfirm = false;
+
+async function triggerM2PhaseA() {
+  const workerUrl = v6GetWorkerUrl();
+  const ans = document.getElementById('ans');
+  const confirmPanel = document.getElementById('m2-confirm');
+
+  if (ans) ans.style.display = 'none';
+  if (confirmPanel) confirmPanel.style.display = 'none';
+  document.getElementById('obs-box').style.display = 'none';
+
+  if (!workerUrl) {
+    showPhaseObservation('Worker URL missing. Add it in the Spark step before continuing.');
+    setPhaseBusy(true);
+    return;
+  }
+
+  setPhaseBusy(true, 'Reading spark…');
+
+  try {
+    const res = await fetch(workerUrl + '/m2', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_line:        getSparkSummary(),
+        spark_parse:      S.m0?.spark_parse || null,
+        grape_name:       S.grape_name || '',
+        grape_relationship: S.grape_relationship || '',
+        maturity_class:   S.maturity
+      })
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
+    applyM2PhaseAResult(data);
+  } catch (err) {
+    // Phase A failure: block-and-surface. No silent fallback — matching M0 behaviour.
+    showPhaseObservation('Could not recover the problem from this spark. ' + err.message);
+    setPhaseBusy(true);
+  }
+}
+
+function applyM2PhaseAResult(data) {
+  S.m2_problem = data;
+  m2AwaitingConfirm = false;
+
+  // Overwrite the buildMechs() fallback question/hint with the worker's spark-specific versions.
+  const qEl    = document.getElementById('m-q');
+  const hintEl = document.getElementById('m-hint');
+  if (qEl    && data.question) qEl.textContent    = data.question;
+  if (hintEl && data.hint)     hintEl.textContent = data.hint;
+
+  const confirmPanel = document.getElementById('m2-confirm');
+  const confirmInp   = document.getElementById('m2-confirm-inp');
+  const ans          = document.getElementById('ans');
+
+  if (data.needs_confirmation) {
+    if (confirmInp) confirmInp.value = data.recovered_problem || '';
+    if (confirmPanel) confirmPanel.style.display = 'block';
+    m2AwaitingConfirm = true;
+    setPhaseBusy(false, "That's it →");
+  } else {
+    S.m2_confirmed_problem = data.recovered_problem;
+    if (confirmPanel) confirmPanel.style.display = 'none';
+    if (ans) ans.style.display = '';
+    setPhaseBusy(false, 'Continue →');
+  }
+}
+
+function m2ConfirmProblem() {
+  const inp = document.getElementById('m2-confirm-inp');
+  S.m2_confirmed_problem = (inp ? inp.value.trim() : '') || S.m2_problem?.recovered_problem || '';
+  m2AwaitingConfirm = false;
+
+  const confirmPanel = document.getElementById('m2-confirm');
+  const ans          = document.getElementById('ans');
+  if (confirmPanel) confirmPanel.style.display = 'none';
+  if (ans) { ans.style.display = ''; ans.focus(); }
+  setPhaseBusy(false, 'Continue →');
+}
+
+async function callM2Worker(txt) {
+  const workerUrl = v6GetWorkerUrl();
+  if (!workerUrl) throw new Error('Worker URL missing.');
+
+  const res = await fetch(workerUrl + '/m2', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      user_line:          getSparkSummary(),
+      grape_name:         S.grape_name || '',
+      grape_relationship: S.grape_relationship || '',
+      maturity_class:     S.maturity,
+      confirmed_problem:  S.m2_confirmed_problem || S.m2_problem?.recovered_problem || '',
+      gap_in_play:        !!(S.m2_problem?.gap_in_play),
+      user_answer:        txt
+    })
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
+  return data;
+}
+
+function applyM2Result(data, txt) {
+  S.m2 = data;
+  const ok = ['turbid', 'clearing', 'settled'];
+  applyElementState('tell',    ok.includes(data.tell?.state)    ? data.tell.state    : 'turbid', txt);
+  applyElementState('vintage', ok.includes(data.vintage?.state) ? data.vintage.state : 'turbid', txt);
+  if (S.m2_problem?.gap_in_play && ok.includes(data.gap?.state)) {
+    applyElementState('gap', data.gap.state, txt);
+  }
+  showPhaseObservation(data.observation?.surface_text || '');
+}
+
+// ── END M2 ────────────────────────────────────────────────────────────────
+
 async function p1Next() {
   const m = M[mi];
   const ans = document.getElementById('ans');
   const txt = ans.value.trim();
+
+  // M2 confirm step: user is confirming the recovered problem, not answering friction yet.
+  if (m.id === 'M2' && m2AwaitingConfirm) {
+    m2ConfirmProblem();
+    return;
+  }
 
   if (!obsShown) {
     // Step 1: submit answer → show observation, system sets element state
@@ -2377,7 +2533,12 @@ async function p1Next() {
     try {
       setPhaseBusy(true, 'Reading…');
       S.answers[m.id] = txt;
-      applyLocalMechanismResult(m, txt);
+      if (m.id === 'M2') {
+        const data = await callM2Worker(txt);
+        applyM2Result(data, txt);
+      } else {
+        applyLocalMechanismResult(m, txt);
+      }
     } catch (err) {
       showPhaseObservation('Worker error. ' + err.message);
       ans.removeAttribute('readonly');
@@ -3150,8 +3311,8 @@ window._v6M0 = { data: null, state: null, needsFollowup: false, editableLine: nu
 
 function v6GetWorkerUrl() {
   const inp = document.getElementById('v6-worker-url');
-  if (inp && inp.value.trim()) return inp.value.trim();
-  return localStorage.getItem('corked_worker_url') || '';
+  const raw = (inp && inp.value.trim()) ? inp.value.trim() : (localStorage.getItem('corked_worker_url') || '');
+  return raw.replace(/\/+$/, '');
 }
 
 function v6SaveWorkerUrl() {
@@ -3223,6 +3384,52 @@ async function v6BottleSpark() {
 }
 
 function v6RenderM0(data) {
+  // Scope gate: wrong cellar — show message, suppress all action paths
+  if (data.scope?.in_scope === false) {
+    const inp = document.getElementById('f-inp');
+    if (inp) { inp.setAttribute('readonly', ''); inp.classList.add('spark-provenance'); }
+    const sparkLabel = document.getElementById('spark-field-label');
+    if (sparkLabel) sparkLabel.classList.add('visible');
+    const sparkRow = document.querySelector('.spark-source-row');
+    if (sparkRow) sparkRow.classList.add('active');
+    const content = document.getElementById('wm-content');
+    if (content) { content.classList.remove('m0-revealing'); content.classList.add('m0-has-result'); }
+    const intakeWm = document.getElementById('intake-wm');
+    if (intakeWm) intakeWm.classList.add('m0-hidden');
+    const bar = document.getElementById('v6-bottom-bar');
+    if (bar) bar.style.display = 'none';
+    const actionRow = document.getElementById('m0-action-row');
+    if (actionRow) actionRow.style.display = 'flex';
+    const wmResult = document.getElementById('m0-wm-result');
+    if (wmResult) wmResult.style.display = 'block';
+
+    document.getElementById('m0-eyebrow').textContent = 'WRONG CELLAR';
+    document.getElementById('m0-entry-line').textContent = data.user_line_candidate || data.raw_spark || '—';
+    const stamp = document.querySelector('.m0-stamp');
+    if (stamp) { stamp.classList.remove('state-cloudy', 'state-ready', 'state-blocked', 'line-revised'); stamp.classList.add('state-blocked'); }
+    v6TypeOut(document.getElementById('m0-wm-text'), data.scope.reason);
+    const cellarNote = document.getElementById('m0-cellar-note');
+    if (cellarNote) { cellarNote.textContent = ''; cellarNote.style.display = 'none'; }
+    const note = document.getElementById('m0-process-note');
+    if (note) { note.textContent = ''; note.style.display = 'none'; }
+    const followupBlock = document.getElementById('m0-followup');
+    if (followupBlock) followupBlock.style.display = 'none';
+    const stateLabel = document.getElementById('m0-state-label');
+    if (stateLabel) stateLabel.style.display = 'none';
+
+    document.getElementById('m0-result').style.display = 'block';
+    if (content) { void content.offsetWidth; content.classList.add('m0-revealing'); setTimeout(() => content.classList.remove('m0-revealing'), 2300); }
+    const rewriteBtn = document.getElementById('m0-rewrite-btn');
+    if (rewriteBtn) { rewriteBtn.style.display = 'inline-flex'; rewriteBtn.disabled = false; }
+    const bottleBtn = document.getElementById('m0-bottle-btn');
+    if (bottleBtn) bottleBtn.style.display = 'none';
+
+    window._v6M0.state = 'out_of_scope';
+    window._v6M0.needsFollowup = false;
+    window._v6M0.editableLine = '';
+    return;
+  }
+
   const state = data.digestibility?.state || 'unbottleable';
   const needsFollowup = !!(data.followup?.needed && data.followup?.question);
   window._v6M0.state = state;
