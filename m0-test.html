@@ -315,6 +315,20 @@ async function runM0() {
 }
 
 function renderM0(data) {
+  // Scope gate: wrong cellar — show message, hide all action buttons
+  if (data.scope?.in_scope === false) {
+    els.resultPanel.style.display = 'block';
+    els.eyebrow.textContent = 'WRONG CELLAR';
+    els.entryLine.textContent = data.user_line_candidate || data.raw_spark || '—';
+    typeOut(els.wmText, data.scope.reason);
+    els.keepBtn.style.display = 'none';
+    els.resparkBtn.style.display = 'none';
+    els.rawJson.textContent = JSON.stringify(data, null, 2);
+    lastState = 'out_of_scope';
+    lastM0 = data;
+    return;
+  }
+
   const state = data.digestibility?.state || 'unbottleable';
   const unusable = state === 'unbottleable';
 

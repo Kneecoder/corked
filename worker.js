@@ -131,6 +131,7 @@ Do not write generic M1 framing. Write framing specific to this Spark's domain, 
 - happened_label: A short field label for what actually happened.
 - happened_placeholder: A concrete example describing the kind of observable scene this Spark produces.
 Voice rules apply to all m1_setup strings: no dashes, no contrast formulas, no coaching language.
+When suspected_problem is null, set happened_placeholder and trying_placeholder to null. Placeholders may illustrate form but must not assert a problem, failure, or outcome the spark did not state.
 
 PERSON IN SPARK:
 Before any generalisation, grade whether the raw spark contains a named individual with a real relationship tie.
@@ -202,19 +203,28 @@ When in doubt, set gap_in_play false.
 
 QUESTION:
 Write the friction question to show after the problem is confirmed.
-Ask for a specific past moment when the named grape encountered this exact problem.
-Use the grape's name and the recovered_problem's nouns.
-Ask what they actually did — observable behaviour, not what they felt.
-One sentence.
+The question door depends on maturity_class:
+
+maturity_class 0 — EXTRACTION DOOR (observed firsthand):
+Ask for the specific moment when the grape encountered this problem. Use the grape's name and the recovered_problem's nouns. Ask what they actually did — observable behaviour, not what they felt. One sentence.
+
+maturity_class 1 — DIRECTION DOOR (talked to them, not observed):
+The founder has talked to the grape but has not watched the problem happen, so they probably do not have a specific moment in hand yet. Do not write a question that assumes they do. Never use the phrases "think of the last time," "describe the moment," "remember when," or "film if you were there" for this maturity_class. Write the question as a clear instruction to go get one real moment: have the grape walk you through the last specific time it happened, or watch for the next time it does. One sentence.
+
+maturity_class 2 — EXTRACTION DOOR (self as grape):
+Ask for the specific past instance when the speaker hit this problem themselves. One sentence.
 
 HINT:
-One sentence. What a good friction answer looks like for this spark and this grape.
+One sentence. What a good answer looks like for this spark and this grape, matched to the door.
+maturity_class 0 or 2: what a witnessed or lived moment looks like.
+maturity_class 1: a moment the grape describes to you counts as much as one you watch. One real instance, told or seen.
 Use domain words from the spark. Not generic.
 
 VOICE:
 Two short declarative sentences for observation.surface_text.
 No praise. No warmth. No coaching. No em dashes or en dashes.
 No contrast formulas. No questions in the observation.
+Do not narrate method, reasoning, or inference process in observation.surface_text. Report findings only.
 
 Return only JSON.`;
 
@@ -641,6 +651,14 @@ function validateM0(parsed, rawSpark, followupAnswer) {
   const foundBanned = M0_BANNED_USER_LINE_TERMS.filter(w => lineLower.includes(w.toLowerCase()));
   const digestibilityGuards = applyM0DigestibilityGuards(parsed);
 
+  // When no problem was stated, null out placeholders that would pre-load an invented scenario.
+  let m1PlaceholdersNulled = false;
+  if (parsed.m1_setup && !parsed.spark_parse?.suspected_problem) {
+    parsed.m1_setup.happened_placeholder = null;
+    parsed.m1_setup.trying_placeholder = null;
+    m1PlaceholdersNulled = true;
+  }
+
   if (!parsed.followup || typeof parsed.followup !== 'object') {
     parsed.followup = { needed: false, question: null };
   }
@@ -693,7 +711,8 @@ function validateM0(parsed, rawSpark, followupAnswer) {
     m1_setup_present: !!parsed.m1_setup,
     followup_repaired: followupRepaired,
     unbottleable_rescue_blocked: rescueBlocked,
-    m0_moment_cloudiness_overridden: digestibilityGuards.moment_cloudiness_overridden
+    m0_moment_cloudiness_overridden: digestibilityGuards.moment_cloudiness_overridden,
+    m1_placeholders_nulled: m1PlaceholdersNulled
   };
 
   return parsed;

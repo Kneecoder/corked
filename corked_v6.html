@@ -2403,6 +2403,10 @@ async function triggerM2PhaseA() {
   const workerUrl = v6GetWorkerUrl();
   const ans = document.getElementById('ans');
   const confirmPanel = document.getElementById('m2-confirm');
+  const qEl = document.getElementById('m-q');
+  const hintEl = document.getElementById('m-hint');
+  if (qEl) qEl.textContent = '';
+  if (hintEl) hintEl.textContent = '';
 
   if (ans) ans.style.display = 'none';
   if (confirmPanel) confirmPanel.style.display = 'none';
@@ -2442,22 +2446,24 @@ function applyM2PhaseAResult(data) {
   S.m2_problem = data;
   m2AwaitingConfirm = false;
 
-  // Overwrite the buildMechs() fallback question/hint with the worker's spark-specific versions.
-  const qEl    = document.getElementById('m-q');
-  const hintEl = document.getElementById('m-hint');
-  if (qEl    && data.question) qEl.textContent    = data.question;
-  if (hintEl && data.hint)     hintEl.textContent = data.hint;
-
+  const qEl          = document.getElementById('m-q');
+  const hintEl       = document.getElementById('m-hint');
   const confirmPanel = document.getElementById('m2-confirm');
   const confirmInp   = document.getElementById('m2-confirm-inp');
   const ans          = document.getElementById('ans');
 
   if (data.needs_confirmation) {
+    // Hold the friction question until the user confirms the recovered problem.
+    if (qEl)    qEl.textContent    = '';
+    if (hintEl) hintEl.textContent = '';
     if (confirmInp) confirmInp.value = data.recovered_problem || '';
     if (confirmPanel) confirmPanel.style.display = 'block';
     m2AwaitingConfirm = true;
     setPhaseBusy(false, "That's it →");
   } else {
+    // Problem was explicit — show friction question immediately.
+    if (qEl    && data.question) qEl.textContent    = data.question;
+    if (hintEl && data.hint)     hintEl.textContent = data.hint;
     S.m2_confirmed_problem = data.recovered_problem;
     if (confirmPanel) confirmPanel.style.display = 'none';
     if (ans) ans.style.display = '';
@@ -2470,8 +2476,12 @@ function m2ConfirmProblem() {
   S.m2_confirmed_problem = (inp ? inp.value.trim() : '') || S.m2_problem?.recovered_problem || '';
   m2AwaitingConfirm = false;
 
+  const qEl          = document.getElementById('m-q');
+  const hintEl       = document.getElementById('m-hint');
   const confirmPanel = document.getElementById('m2-confirm');
   const ans          = document.getElementById('ans');
+  if (qEl    && S.m2_problem?.question) qEl.textContent    = S.m2_problem.question;
+  if (hintEl && S.m2_problem?.hint)     hintEl.textContent = S.m2_problem.hint;
   if (confirmPanel) confirmPanel.style.display = 'none';
   if (ans) { ans.style.display = ''; ans.focus(); }
   setPhaseBusy(false, 'Continue →');
@@ -2808,13 +2818,14 @@ function reviewEl(key) {
   document.getElementById('rv-name').textContent = meta.name;
   document.getElementById('rv-desc').textContent = meta.desc;
 
-  document.getElementById('rv-blocks').innerHTML = relMechs.map(m =>
-    `<div class="review-block">
+  document.getElementById('rv-blocks').innerHTML = relMechs.map(m => {
+    const shownQ = (m.id === 'M2' && S.m2_problem?.question) ? S.m2_problem.question : m.q;
+    return `<div class="review-block">
        <div class="review-mech-id">${m.id} · ${m.name}</div>
-       <div class="review-q">${m.q}</div>
+       <div class="review-q">${escHtml(shownQ)}</div>
        <div class="review-a">${escHtml(S.answers[m.id])}</div>
-     </div>`
-  ).join('');
+     </div>`;
+  }).join('');
 
   document.getElementById('question-panel').style.display = 'none';
   document.getElementById('review-panel').style.display = 'block';
