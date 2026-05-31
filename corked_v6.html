@@ -408,6 +408,15 @@ body {
 .opt-letter { font-size:.68rem; color:var(--wine-hi); font-weight:500; letter-spacing:.05em; padding-top:.15rem; min-width:14px; }
 .opt-text { font-size:.875rem; color:var(--cream); line-height:1.45; }
 .opt-sub { font-size:.775rem; color:var(--muted); margin-top:.2rem; }
+.opt-note {
+  display:inline-block;
+  margin-bottom:.35rem;
+  font-size:.62rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--gold);
+  opacity:.58;
+}
 .row { display:flex; justify-content:space-between; align-items:center; margin-top:2rem; }
 
 /* ── PHASE 1 ── */
@@ -1694,14 +1703,14 @@ const INTAKE = [
   },
   {
     id:'maturity', eyebrow:'The Person · 2 of 3',
-    q:'Have you talked to a real person this is for?',
+    q:'Who does this spark start from?',
     note:'This sets how Phase 1 questions you. Claiming more than you have gains you nothing.',
     type:'opts',
     opts:[
-      { l:'A', t:'Yes. I have someone specific in mind and have watched this firsthand.', s:'You have both. The cellar asks who, next.' },
-      { l:'B', t:"Yes. I've talked to them about it, but I'm not sure I've seen it happen.", s:'You have a start. The cellar asks who, next.' },
-      { l:'C', t:'No, but this applies to me.', s:'Then you are the one it comes from.' },
-      { l:'D', t:'No. I do not have a real person yet.', s:'Then there is nothing to age yet. The cellar stays shut until you find one.' }
+      { l:'A', t:'Someone specific, and I have seen it happen.', s:'You have both the person and the moment.' },
+      { l:'B', t:'Someone specific, but I have only talked about it.', s:'You have the person. The moment still needs work.' },
+      { l:'C', t:'Me. This comes from my own experience.', s:'Your own experience becomes the starting point.' },
+      { l:'D', t:'No one specific yet.', s:'Then there is nothing to age yet.' }
     ],
     save: v => { S.maturity = v; }
   },
@@ -1884,9 +1893,11 @@ function renderIntake() {
     step.opts.forEach((o,i) => {
       const sel = intakeSel[step.id] === i;
       const dim = !!(_pis && i !== 0);
+      const likelySelf = step.id === 'maturity' && i === 2 && rawSparkHasFirstPerson();
       h += `<div class="opt${sel?' sel':''}${dim?' dim':''}" ${dim?'':'onclick="pickOpt('+i+')"'}>
               <div class="opt-letter">${o.l}</div>
               <div>
+                ${likelySelf ? '<div class="opt-note">Likely match from your spark</div>' : ''}
                 <div class="opt-text">${o.t}</div>
                 ${o.s ? `<div class="opt-sub">${o.s}</div>` : ''}
               </div>
@@ -2220,6 +2231,10 @@ function getSparkDisplaySummary() {
 function sparkLooksSelfAuthored(data) {
   const raw = `${data?.raw_spark || ''} ${data?.spark_parse?.implied_person || ''}`.toLowerCase();
   return /\b(i|me|my|mine|myself|the speaker)\b/.test(raw);
+}
+
+function rawSparkHasFirstPerson() {
+  return /\b(i|me|my|mine|myself)\b/i.test(S.m0?.raw_spark || S.idea || '');
 }
 
 function visibleBottleLine(data) {
