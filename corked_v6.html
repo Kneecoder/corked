@@ -1901,7 +1901,7 @@ function renderIntake() {
             <button class="btn" id="v6-bottle-btn" onclick="v6BottleSpark()">Bottle your spark →</button>
           </div>`;
     h += `<div class="m0-action-row" id="m0-action-row" style="display:none">
-            <button class="btn-sm" id="m0-bottle-btn" onclick="v6BottleThis()" style="display:none">Bottle this line</button>
+            <button class="btn-sm" id="m0-bottle-btn" onclick="v6BottleThis()" style="display:none">Seal this line</button>
           </div>`;
   } else {
     const btnLabel = (step.type === 'person' && S.maturity === 3) ? 'Save spark and go find them →'
@@ -2243,8 +2243,19 @@ function visibleBottleLine(data) {
 function sanitizeVisibleCopy(text, data) {
   const self = sparkLooksSelfAuthored(data || S.m0 || window._v6M0?.data || null);
   return String(text || '')
+    .replace(/\bCellar-ready\.\s*/ig, '')
     .replace(/\bthe speaker\b/ig, self ? 'you' : 'the person')
-    .replace(/\bfor the speaker\b/ig, self ? 'for you' : 'for the person');
+    .replace(/\bfor the speaker\b/ig, self ? 'for you' : 'for the person')
+    .replace(/\byou is\b/ig, 'you are')
+    .replace(/\byou was\b/ig, 'you were')
+    .replace(/\byou has\b/ig, 'you have')
+    .replace(/\byou does\b/ig, 'you do')
+    .replace(/\byou enters\b/ig, 'you enter')
+    .replace(/\byou are present and the stated problem is\b/ig, 'your place in the spark is clear, and the stated tension is')
+    .replace(/\bthe stated problem is\b/ig, 'the stated tension is')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/^([a-z])/, m => m.toUpperCase());
 }
 
 function sanitizeBeforeMomentCopy(text) {
@@ -3690,7 +3701,7 @@ function v6RenderM0(data) {
       bottleBtn.textContent = 'Re-bottle';
       bottleBtn.disabled = true;
     } else {
-      bottleBtn.textContent = 'Bottle this line';
+      bottleBtn.textContent = 'Seal this line';
       bottleBtn.disabled = false;
     }
   }
@@ -3708,7 +3719,7 @@ function v6FollowupChange() {
   }
   if (window._v6M0.needsFollowup) {
     btn.disabled = false;
-    btn.textContent = hasAnswer ? 'Re-bottle' : 'Bottle this line';
+    btn.textContent = hasAnswer ? 'Re-bottle' : 'Seal this line';
   }
 }
 
