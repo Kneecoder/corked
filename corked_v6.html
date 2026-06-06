@@ -409,13 +409,13 @@ body {
 .opt-text { font-size:.875rem; color:var(--cream); line-height:1.45; }
 .opt-sub { font-size:.775rem; color:var(--muted); margin-top:.2rem; }
 .opt-note {
-  display:inline-block;
-  margin-bottom:.35rem;
-  font-size:.62rem;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-  color:var(--gold);
-  opacity:.58;
+  display:block;
+  margin-top:.32rem;
+  font-size:.72rem;
+  letter-spacing:0;
+  color:var(--muted);
+  opacity:.72;
+  font-style:italic;
 }
 .row { display:flex; justify-content:space-between; align-items:center; margin-top:2rem; }
 
@@ -1153,6 +1153,88 @@ body {
   gap:10px;
   align-items:center;
 }
+
+/* ── CELLAR ── */
+#screen-cellar {
+  flex-direction:column;
+  align-items:stretch;
+}
+.cellar-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:2rem 2rem 1.75rem;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.cellar-wordmark {
+  font-family:'Playfair Display',serif;
+  font-size:1.4rem; font-weight:300; letter-spacing:.28em;
+  color:var(--cream);
+  -webkit-font-smoothing:antialiased;
+}
+.cellar-subtitle {
+  font-size:.65rem; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--muted); margin-top:.3rem;
+}
+.cellar-body {
+  flex:1; overflow-y:auto; padding:2rem;
+  display:flex; flex-direction:column; align-items:center;
+}
+.cellar-list {
+  width:100%; max-width:640px;
+  display:flex; flex-direction:column; gap:.55rem;
+}
+.cellar-empty {
+  text-align:center; padding:4rem 2rem;
+  color:var(--muted); font-size:.85rem; line-height:1.85;
+}
+.bottle-row {
+  border:1px solid var(--border);
+  padding:1.1rem 1.25rem 1rem;
+  cursor:pointer;
+  transition:border-color .15s, background .15s;
+  display:flex; flex-direction:column; gap:.6rem;
+}
+.bottle-row:hover {
+  border-color:var(--border-hi);
+  background:rgba(255,255,255,.018);
+}
+.bottle-row-line {
+  font-family:'Playfair Display',serif;
+  font-size:.95rem; color:var(--cream); line-height:1.4;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.bottle-row-lower {
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+}
+.bottle-row-dots { display:flex; align-items:center; gap:.38rem; }
+.bottle-row-dot {
+  width:6px; height:6px; border-radius:50%; flex-shrink:0;
+}
+.bottle-row-dot.inert   { background:var(--turbid-col); opacity:.15; }
+.bottle-row-dot.turbid  { background:var(--turbid-col); opacity:.65; }
+.bottle-row-dot.clearing{ background:var(--clearing-col); }
+.bottle-row-dot.settled { background:var(--settled-col); }
+.bottle-row-waiting {
+  font-size:.72rem; color:var(--muted); letter-spacing:.04em;
+  flex:1; text-align:right;
+}
+.bottle-row-date {
+  font-size:.65rem; color:var(--muted); opacity:.45;
+  letter-spacing:.04em; white-space:nowrap;
+}
+.sb-back {
+  display:flex; align-items:center; gap:.4rem;
+  font-size:.68rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--muted); cursor:pointer; padding:.3rem 0;
+  transition:color .15s; background:none; border:none;
+  font-family:'Inter',sans-serif; margin-top:1.5rem;
+}
+.sb-back:hover { color:var(--cream-dim); }
+@media(max-width:600px) {
+  .cellar-header { padding:1.5rem 1rem 1.25rem; }
+  .cellar-body   { padding:1.25rem 1rem; }
+}
 </style>
 </head>
 <body>
@@ -1337,6 +1419,20 @@ body {
 
 </div>
 
+<!-- CELLAR -->
+<div id="screen-cellar" class="screen">
+  <div class="cellar-header">
+    <div>
+      <div class="cellar-wordmark">Corked</div>
+      <div class="cellar-subtitle" id="cellar-count"></div>
+    </div>
+    <button class="btn-sm" onclick="createAndOpenBottle()">Add Spark</button>
+  </div>
+  <div class="cellar-body">
+    <div class="cellar-list" id="cellar-list"></div>
+  </div>
+</div>
+
 <!-- INTAKE -->
 <div id="screen-intake" class="screen">
   <div class="intake-wrap"><div id="intake-body"></div></div>
@@ -1390,6 +1486,10 @@ body {
       <div style="font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.65rem;">The Label</div>
       <div class="el-list" id="el-list"></div>
     </div>
+    <button class="sb-back" onclick="showCellar()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Cellar
+    </button>
   </div>
 
   <div class="phase-main" id="phase-main">
@@ -1488,8 +1588,8 @@ body {
       The rest tells you what to go find before the bottle clears.
       A spark with an unclear label is still a spark. It is just not finished aging.
     </div>
-    <button class="btn" onclick="restart()">Cork another spark</button>
-    <button class="btn-ghost" onclick="showScreen('landing')">Back to cellar</button>
+    <button class="btn" onclick="createAndOpenBottle()">Cork another spark</button>
+    <button class="btn-ghost" onclick="showCellar()">Back to the cellar</button>
   </div>
 </div>
 
@@ -1517,11 +1617,13 @@ function freshState() {
 
 // ── PERSISTENCE ──
 const SAVE_KEY = 'corked-v1';
+const CELLAR_KEY = 'corked-cellar-v1';
 const DOORSTEP_KEY = 'corked-doorstep-v1';
 let saveTimer = null;
+let activeBottleId = null;
 
 function saveState() {
-  localStorage.setItem(SAVE_KEY, JSON.stringify({ S, mechIndex: mi }));
+  if (activeBottleId) saveBottle(activeBottleId, S, mi);
   const ind = document.getElementById('sb-save');
   if (ind) { ind.classList.add('show'); clearTimeout(saveTimer); saveTimer = setTimeout(()=>ind.classList.remove('show'), 2000); }
   updateRhythmStatus();
@@ -1539,6 +1641,55 @@ function clearSaved() { localStorage.removeItem(SAVE_KEY); }
 function saveDoorstep(spark) { localStorage.setItem(DOORSTEP_KEY, spark); }
 function loadDoorstep() { return localStorage.getItem(DOORSTEP_KEY) || null; }
 function clearDoorstep() { localStorage.removeItem(DOORSTEP_KEY); }
+
+// ── CELLAR PERSISTENCE ──
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+function getAllBottles() {
+  try {
+    const raw = localStorage.getItem(CELLAR_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  } catch(e) { return []; }
+}
+
+function saveAllBottles(bottles) {
+  localStorage.setItem(CELLAR_KEY, JSON.stringify(bottles));
+}
+
+function saveBottle(id, s, mechIdx) {
+  const bottles = getAllBottles();
+  const now = new Date().toISOString();
+  const idx = bottles.findIndex(b => b.id === id);
+  if (idx >= 0) {
+    bottles[idx] = { ...bottles[idx], s, mechIndex: mechIdx, updated_at: now };
+  } else {
+    bottles.push({ id, created_at: now, updated_at: now, status: 'active', s, mechIndex: mechIdx });
+  }
+  saveAllBottles(bottles);
+}
+
+function loadBottle(id) {
+  return getAllBottles().find(b => b.id === id) || null;
+}
+
+function migrateOldSave() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return;
+    const old = JSON.parse(raw);
+    if (!old || !old.S || !old.S.idea) { localStorage.removeItem(SAVE_KEY); return; }
+    if (getAllBottles().length > 0) { localStorage.removeItem(SAVE_KEY); return; }
+    const id = generateId();
+    const now = new Date().toISOString();
+    const bottles = [{ id, created_at: now, updated_at: now, status: 'active', s: old.S, mechIndex: old.mechIndex || 0 }];
+    saveAllBottles(bottles);
+    if (getAllBottles().find(b => b.id === id)) localStorage.removeItem(SAVE_KEY);
+  } catch(e) {}
+}
 
 function updateRhythmStatus() {
   const el = document.getElementById('sb-rhythm');
@@ -1897,9 +2048,9 @@ function renderIntake() {
       h += `<div class="opt${sel?' sel':''}${dim?' dim':''}" ${dim?'':'onclick="pickOpt('+i+')"'}>
               <div class="opt-letter">${o.l}</div>
               <div>
-                ${likelySelf ? '<div class="opt-note">Likely match from your spark</div>' : ''}
                 <div class="opt-text">${o.t}</div>
                 ${o.s ? `<div class="opt-sub">${o.s}</div>` : ''}
+                ${likelySelf ? '<div class="opt-note">Suggested by your wording.</div>' : ''}
               </div>
             </div>`;
     });
@@ -1947,8 +2098,7 @@ async function intakeNext() {
   } else if (step.type === 'person') {
     if (S.maturity === 3) {
       saveDoorstep(S.idea);
-      clearSaved();
-      showScreen('landing');
+      if (getAllBottles().length > 0) { showCellar(); } else { showScreen('landing'); }
       return;
     }
 
@@ -3050,7 +3200,6 @@ function showLabel() {
     : `<div class="readiness ready">All six elements settled. The bottle is ready to cork. Phase 2 is available when you are.</div>`;
 
   document.getElementById('vc').innerHTML = h;
-  clearSaved();
 }
 
 // ── NAV / UTIL ──
@@ -3061,9 +3210,7 @@ function showScreen(name) {
 }
 
 function restart() {
-  clearSaved();
-  S = freshState();
-  showIntake();
+  createAndOpenBottle();
 }
 
 function newSession() {
@@ -3218,7 +3365,7 @@ function triggerCork() {
 
       // Transition to intake
       setTimeout(() => {
-        showIntake();
+        createAndOpenBottle();
         // Reset for returning users
         corkFired = false;
         cork.getAnimations().forEach(a => a.cancel());
@@ -3442,14 +3589,12 @@ function lsInit() {
 
 // ── INIT ──
 (function init() {
-  const saved = loadSaved();
-  if (saved && saved.S && saved.S.idea) {
-    document.getElementById('continue-row').style.display = 'flex';
-    document.getElementById('new-row').style.display = 'none';
-    const ideaPreview = saved.S.idea.length > 40 ? saved.S.idea.slice(0,40)+'…' : saved.S.idea;
-    document.getElementById('continue-note').textContent = `"${ideaPreview}"`;
+  migrateOldSave();
+  if (getAllBottles().length > 0) {
+    showCellar();
+  } else {
+    showScreen('landing');
   }
-  showScreen('landing');
 
   // Hover orbit: spark drifts in a slow Lissajous figure around the bottle opening.
   // Two sin waves at different frequencies so the path never repeats quickly.
@@ -3478,6 +3623,123 @@ function lsInit() {
 
   lsInit();
 })();
+
+// ── CELLAR VIEW ──
+function showCellar() {
+  renderCellar();
+  showScreen('cellar');
+}
+
+function renderCellar() {
+  const bottles = getAllBottles()
+    .filter(b => b.s && b.s.idea)
+    .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+
+  const countEl = document.getElementById('cellar-count');
+  if (countEl) countEl.textContent = bottles.length === 1 ? '1 bottle' : `${bottles.length} bottles`;
+
+  const list = document.getElementById('cellar-list');
+  if (!list) return;
+
+  if (!bottles.length) {
+    list.innerHTML = '<div class="cellar-empty">The cellar is empty.<br>Cork an idea to begin.</div>';
+    return;
+  }
+
+  list.innerHTML = bottles.map(b => {
+    const line = escHtml(getBottleDisplayLine(b));
+    const dots = EL_KEYS.map(k => {
+      const st = (b.s.elements && b.s.elements[k]) || 'inert';
+      return `<div class="bottle-row-dot ${st}"></div>`;
+    }).join('');
+    const waiting = escHtml(getCellarWaiting(b));
+    const date = formatCellarDate(b.updated_at);
+    return `<div class="bottle-row" onclick="openBottle('${b.id}')">
+              <div class="bottle-row-line">${line}</div>
+              <div class="bottle-row-lower">
+                <div class="bottle-row-dots">${dots}</div>
+                <div class="bottle-row-waiting">${waiting}</div>
+                <div class="bottle-row-date">${date}</div>
+              </div>
+            </div>`;
+  }).join('');
+}
+
+function getBottleDisplayLine(bottle) {
+  const s = bottle.s;
+  if (s && s.m0) return visibleBottleLine(s.m0);
+  return (s && s.idea) || '—';
+}
+
+function getCellarWaiting(bottle) {
+  const s = bottle.s || {};
+  const els = s.elements || {};
+  if (bottle.status === 'rested') return 'Archived';
+
+  if (s.thresholdDone && s.nextQuestionAt) {
+    const next = new Date(s.nextQuestionAt);
+    if (!isNaN(next.getTime())) {
+      const diff = next - new Date();
+      if (diff <= 0) return 'Question ready';
+      const days = Math.ceil(diff / 86400000);
+      if (days === 1) return 'Question due tomorrow';
+      if (days <= 7) return `Question in ${days} days`;
+    }
+  }
+
+  const elNames = { grape:'Grape', tell:'The Tell', vintage:'Vintage', gap:'The Gap', echo:'The Echo', limit:'The Limit' };
+  for (const key of EL_KEYS) {
+    const st = els[key];
+    if (st === 'turbid')   return `${elNames[key]} · turbid`;
+    if (st === 'clearing') return `${elNames[key]} · clearing`;
+  }
+  if (EL_KEYS.every(k => els[k] === 'settled')) return 'All elements settled';
+  return 'Phase 1 · beginning';
+}
+
+function formatCellarDate(iso) {
+  if (!iso) return '';
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    const days = Math.floor((new Date() - d) / 86400000);
+    if (days === 0) return 'today';
+    if (days === 1) return 'yesterday';
+    if (days < 7)  return `${days} days ago`;
+    return d.toLocaleDateString(undefined, { month:'short', day:'numeric' });
+  } catch(e) { return ''; }
+}
+
+function createAndOpenBottle() {
+  activeBottleId = generateId();
+  S = freshState();
+  mi = 0;
+  showIntake();
+}
+
+function openBottle(id) {
+  const record = loadBottle(id);
+  if (!record) return;
+  activeBottleId = id;
+  S = record.s || freshState();
+  mi = record.mechIndex || 0;
+  M = buildMechs();
+
+  if (mi >= M.length) {
+    showLabel();
+    return;
+  }
+
+  document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
+  renderElList();
+  updateBottle();
+  showScreen('phase1');
+  renderMech();
+  document.getElementById('ans').addEventListener('input', () => {
+    clearTimeout(window._autosave);
+    window._autosave = setTimeout(saveState, 800);
+  });
+}
 
 // ── M0 INTEGRATION ──
 window._v6M0 = { data: null, state: null, needsFollowup: false, editableLine: null };
