@@ -280,6 +280,49 @@ No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No c
 
 Return only JSON.`;
 
+const FIELD_DOCTRINE = `You are the Winemaster — the voice of Corked, an idea-aging system.
+
+Your job is generating a field brief: one question for the founder to carry into the real world.
+
+Two modes:
+
+FIND (mode: find, missing: grape)
+Build entirely from user_line and spark_parse. No grape is present.
+Name who to go find. Draw the person from the spark's own nouns and roles, not from inference.
+Write the question they should use: have that person walk through how they handle the relevant thing now and the last time it gave them trouble.
+Keep it open. The person must be able to answer without being coached toward a problem.
+Do not assert a problem the spark did not state.
+Do not name a solution.
+Do not ask "would you use" or "would you want."
+Return target: a short label (3-6 words) naming who to find, drawn from the spark.
+
+ASK (mode: ask)
+The founder has a named grape and a confirmed problem.
+confirmed_problem is required. If absent, return { "error": "ASK requires a confirmed problem" }.
+Build a Mom Test question about the grape's past behaviour around the confirmed problem.
+Anchor in the past: "Walk me through the last time..." or "What did you actually do when..." or similar phrasing.
+Never about the idea.
+Never hypothetical ("would you", "could you imagine", "do you think").
+Never ask whether the problem exists, it is confirmed.
+Never name a pitch, feature, or solution.
+Return target: null.
+
+FAILURE RULES:
+If the spark is too vague to produce a question using its actual nouns, return { "error": "brief_impossible" }.
+A generic brief is a failure. "Ask them about their workflow" does not name the spark's domain.
+The question text must contain at least one noun drawn from user_line or confirmed_problem.
+
+VOICE:
+No em dashes or en dashes. Use commas or short sentences instead.
+No contrast formulas ("not X, but Y", "not just X").
+No praise, no coaching, no startup language.
+Winemaster register: dry, precise, direct.
+text hard cap: 280 characters. Count carefully. Cut if needed.
+
+Return only JSON:
+{ "brief": { "kind": "find"|"ask", "text": "...", "target": "string or null" } }
+or: { "error": "..." }`;
+
 function buildM0UserMessage(rawSpark, followupQuestion, followupAnswer) {
   const followupBlock = followupAnswer
     ? `
@@ -445,6 +488,23 @@ Return exactly this JSON shape:
     "anchor_span": "verbatim from user_answer or null"
   }
 }`;
+}
+
+function buildFieldUserMessage(mode, userLine, sparkParse, missing, grapeName, grapeRel, confirmedProblem, element) {
+  const sp = sparkParse || {};
+  return `<mode>${mode}</mode>
+<missing>${missing || ''}</missing>
+<user_line>${userLine}</user_line>
+<spark_parse>
+  implied_person: ${sp.implied_person || 'null'}
+  suspected_problem: ${sp.suspected_problem || 'null'}
+  domain: ${sp.domain || 'null'}
+  solution_form: ${sp.solution_form || 'null'}
+</spark_parse>
+<grape_name>${grapeName || ''}</grape_name>
+<grape_relationship>${grapeRel || ''}</grape_relationship>
+<confirmed_problem>${confirmedProblem || ''}</confirmed_problem>
+<element>${element || ''}</element>`;
 }
 
 async function callClaude(env, system, content, maxTokens = 700) {
@@ -886,6 +946,46 @@ function jsonResponse(body, status, corsHeaders) {
   });
 }
 
+async function handleField(request, env, corsHeaders) {
+  const body = await request.json();
+  const mode             = String(body.mode || '').trim();
+  const userLine         = String(body.user_line || '').trim();
+  const sparkParse       = body.spark_parse || null;
+  const missing          = String(body.missing || '').trim();
+  const grapeName        = String(body.grape_name || '').trim();
+  const grapeRel         = String(body.grape_relationship || '').trim();
+  const confirmedProblem = String(body.confirmed_problem || '').trim();
+  const element          = String(body.element || '').trim();
+
+  if (!mode || !userLine) {
+    return jsonResponse({ error: 'Missing mode or user_line' }, 400, corsHeaders);
+  }
+  if (mode === 'ask' && !confirmedProblem) {
+    return jsonResponse({ error: 'ASK requires a confirmed problem' }, 400, corsHeaders);
+  }
+
+  const content = buildFieldUserMessage(mode, userLine, sparkParse, missing, grapeName, grapeRel, confirmedProblem, element);
+  const parsed = await callClaude(env, FIELD_DOCTRINE, content, 400);
+
+  if (parsed.error) {
+    return jsonResponse({ error: parsed.error }, 422, corsHeaders);
+  }
+  if (!parsed.brief || typeof parsed.brief.text !== 'string') {
+    return jsonResponse({ error: 'brief_impossible' }, 422, corsHeaders);
+  }
+
+  let text = cleanVisibleText(parsed.brief.text);
+  if (text.length > 280) text = text.slice(0, 277) + '...';
+
+  return jsonResponse({
+    brief: {
+      kind:   parsed.brief.kind === 'ask' ? 'ask' : 'find',
+      text,
+      target: parsed.brief.target || null
+    }
+  }, 200, corsHeaders);
+}
+
 async function handleM0(request, env, corsHeaders) {
   const body = await request.json();
   const rawSpark = String(body.raw_spark || '').trim();
@@ -963,7 +1063,8 @@ export default {
       if (url.pathname === '/m0') return await handleM0(request, env, corsHeaders);
       if (url.pathname === '/m1') return await handleM1(request, env, corsHeaders);
       if (url.pathname === '/m2') return await handleM2(request, env, corsHeaders);
-      return jsonResponse({ error: 'Unknown route. Use /m0 or /m1.' }, 404, corsHeaders);
+      if (url.pathname === '/field') return await handleField(request, env, corsHeaders);
+      return jsonResponse({ error: 'Unknown route.' }, 404, corsHeaders);
     } catch (err) {
       if (err instanceof Response) {
         const text = await err.text();

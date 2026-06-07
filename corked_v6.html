@@ -1235,6 +1235,49 @@ body {
   .cellar-header { padding:1.5rem 1rem 1.25rem; }
   .cellar-body   { padding:1.25rem 1rem; }
 }
+
+/* ── DORMANT ── */
+.bottle-row--dormant { border-color:rgba(201,165,90,.45); }
+.bottle-row--dormant:hover { border-color:rgba(201,165,90,.7); }
+#screen-dormant {
+  flex-direction:column; align-items:center; justify-content:center;
+  padding:2.5rem 1.5rem;
+}
+.dormant-wrap { width:100%; max-width:540px; }
+.dormant-eyebrow {
+  font-size:.7rem; color:var(--muted); text-transform:uppercase;
+  letter-spacing:.14em; margin-bottom:.9rem;
+}
+.dormant-brief {
+  margin-bottom:1.6rem; padding:1rem 1.2rem;
+  background:rgba(201,165,90,.05);
+  border-left:2px solid rgba(201,165,90,.3);
+}
+.dormant-brief-label {
+  font-size:.7rem; color:var(--muted); text-transform:uppercase;
+  letter-spacing:.12em; margin-bottom:.5rem;
+}
+.dormant-brief-text {
+  font-size:.9rem; color:var(--cream); line-height:1.7;
+}
+.dormant-brief-target {
+  font-size:.75rem; color:var(--muted); margin-top:.55rem;
+}
+.dormant-spark {
+  font-size:.88rem; color:var(--cream);
+  font-family:'Playfair Display',serif; font-style:italic;
+  margin-bottom:1.5rem; line-height:1.55;
+}
+.dormant-field-label {
+  font-size:.75rem; color:var(--muted); text-transform:uppercase;
+  letter-spacing:.12em; margin-bottom:.4rem;
+}
+.dormant-error {
+  display:none; font-size:.78rem; color:var(--wine-hi);
+  margin-bottom:.85rem; line-height:1.65;
+  background:rgba(155,61,79,.08); padding:.7rem .9rem;
+  border-left:2px solid var(--wine-dim);
+}
 </style>
 </head>
 <body>
@@ -1557,7 +1600,10 @@ body {
       </div>
       <div class="phase-row">
         <div class="mech-count" id="m-count"></div>
-        <button class="btn" id="p1-btn" onclick="p1Next()">Continue →</button>
+        <div style="display:flex;gap:1rem;align-items:center;">
+          <button class="btn-ghost" id="m2-park-btn" style="display:none" onclick="parkM2Ask()">This needs the real world</button>
+          <button class="btn" id="p1-btn" onclick="p1Next()">Continue →</button>
+        </div>
       </div>
     </div>
 
@@ -1574,6 +1620,13 @@ body {
       <div id="threshold-body"></div>
     </div>
 
+  </div>
+</div>
+
+<!-- DORMANT RE-ENTRY -->
+<div id="screen-dormant" class="screen">
+  <div class="dormant-wrap">
+    <div id="dormant-body"></div>
   </div>
 </div>
 
@@ -1642,6 +1695,29 @@ function saveDoorstep(spark) { localStorage.setItem(DOORSTEP_KEY, spark); }
 function loadDoorstep() { return localStorage.getItem(DOORSTEP_KEY) || null; }
 function clearDoorstep() { localStorage.removeItem(DOORSTEP_KEY); }
 
+async function fetchFieldBrief({ mode, missing, element }) {
+  const url = v6GetWorkerUrl();
+  if (!url) throw new Error('Worker URL missing.');
+  const res = await fetch(url + '/field', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      mode,
+      user_line:          getSparkSummary(),
+      spark_parse:        S.m0?.spark_parse || null,
+      maturity_class:     S.maturity,
+      missing:            missing || null,
+      grape_name:         S.grape_name || '',
+      grape_relationship: S.grape_relationship || '',
+      confirmed_problem:  S.m2_confirmed_problem || S.m2_problem?.recovered_problem || null,
+      element:            element || null
+    })
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
+  return { ...data.brief, created_at: new Date().toISOString() };
+}
+
 // ── CELLAR PERSISTENCE ──
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -1674,6 +1750,27 @@ function saveBottle(id, s, mechIdx) {
 
 function loadBottle(id) {
   return getAllBottles().find(b => b.id === id) || null;
+}
+
+function parkBottleDormant(id, brief) {
+  const bottles = getAllBottles();
+  const now = new Date().toISOString();
+  const i = bottles.findIndex(b => b.id === id);
+  if (i >= 0) {
+    bottles[i] = { ...bottles[i], s: S, status: 'dormant', brief, updated_at: now };
+  } else {
+    bottles.push({ id, created_at: now, updated_at: now, status: 'dormant', brief, s: S, mechIndex: mi });
+  }
+  saveAllBottles(bottles);
+}
+
+function wakeBottle(id) {
+  const bottles = getAllBottles();
+  const i = bottles.findIndex(b => b.id === id);
+  if (i >= 0) {
+    bottles[i] = { ...bottles[i], status: 'active', updated_at: new Date().toISOString() };
+    saveAllBottles(bottles);
+  }
 }
 
 function migrateOldSave() {
@@ -1982,7 +2079,7 @@ function renderIntake() {
               Go find one person this spark draws from. Come back with a name and how you know them.
             </p>
             <p style="font-size:.75rem;color:var(--muted);opacity:.7;line-height:1.7">
-              Your spark will be waiting in the spark field when you return.
+              The cellar will hold it while you go.
             </p>`;
     } else {
       const setup = S.m0?.m1_setup;
@@ -1998,8 +2095,18 @@ function renderIntake() {
       const savedName = escHtml(intakeSel['grape_name'] || (_pisSettled ? _grapePis.named_person : '') || '');
       const savedRel  = escHtml(intakeSel['grape_rel']  || (_pisSettled ? _grapePis.relationship_tie : '') || '');
       const grapeErr  = intakeSel['grape_error'];
+      const wmGrapeLine = isSelf
+        ? 'Every wine has a source. Here, that source is you — your own experience.'
+        : 'No great wine was ever made from a type of person. Only from a person. The grape is who your idea draws from — the real life it needs to prove itself against.';
 
-      h += `<div>
+      h += `<div class="wm-section" style="margin-bottom:1.5rem">
+              <div class="wm-avatar">
+                <div class="wm-circle"></div>
+                <div class="wm-label">The Winemaster</div>
+              </div>
+              <div class="wm-bubble" style="font-style:italic">${wmGrapeLine}</div>
+            </div>
+            <div>
               <div class="grape-input-label" style="display:block;margin-bottom:.45rem">${nameLabel}</div>
               <input type="text" class="field" id="grape-name-inp" maxlength="60"
                      placeholder="${namePh}" value="${savedName}"
@@ -2066,7 +2173,7 @@ function renderIntake() {
             <button class="btn-sm" id="m0-bottle-btn" onclick="v6BottleThis()" style="display:none">Seal this line</button>
           </div>`;
   } else {
-    const btnLabel = (step.type === 'person' && S.maturity === 3) ? 'Save spark and go find them →'
+    const btnLabel = (step.type === 'person' && S.maturity === 3) ? 'Save spark →'
       : last ? 'Enter the cellar →' : 'Continue →';
     h += `<div class="row">
             <button class="btn-ghost" onclick="intakeBack()">← Back</button>
@@ -2097,8 +2204,16 @@ async function intakeNext() {
 
   } else if (step.type === 'person') {
     if (S.maturity === 3) {
-      saveDoorstep(S.idea);
-      if (getAllBottles().length > 0) { showCellar(); } else { showScreen('landing'); }
+      const btn = document.getElementById('grape-continue-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Finding the question…'; }
+      let brief;
+      try {
+        brief = await fetchFieldBrief({ mode: 'find', missing: 'grape' });
+      } catch (e) {
+        brief = { kind: 'find', text: null, pending: true, created_at: new Date().toISOString() };
+      }
+      parkBottleDormant(activeBottleId, brief);
+      showCellar();
       return;
     }
 
@@ -2306,6 +2421,8 @@ function renderMech() {
   document.getElementById('grape-row').style.display = 'none';
   document.getElementById('assess-box').style.display = 'none';
   document.getElementById('p1-btn').textContent = 'Continue →';
+  const parkBtn = document.getElementById('m2-park-btn');
+  if (parkBtn) parkBtn.style.display = 'none';
 
   obsShown = !!m.prefilled; grapeStepShown = false; curAssess = {};
   if (m.prefilled) showPhaseObservation(m.obs());
@@ -2694,8 +2811,48 @@ function applyLocalMechanismResult(m, txt) {
 // ── M2: THE FRICTION TEST ──────────────────────────────────────────────────
 
 let m2AwaitingConfirm = false;
+let _askReentryAnswer = null;
+
+async function parkM2Ask() {
+  const btn = document.getElementById('m2-park-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving the question…'; }
+  let brief;
+  try {
+    brief = await fetchFieldBrief({ mode: 'ask', element: 'vintage' });
+  } catch (e) {
+    brief = { kind: 'ask', text: null, pending: true, created_at: new Date().toISOString() };
+  }
+  parkBottleDormant(activeBottleId, brief);
+  showCellar();
+}
 
 async function triggerM2PhaseA() {
+  // ASK re-entry: skip Phase A, grade Phase B directly with the pending answer.
+  if (_askReentryAnswer !== null) {
+    const answer = _askReentryAnswer;
+    _askReentryAnswer = null;
+    const ansEl = document.getElementById('ans');
+    const confirmPanel2 = document.getElementById('m2-confirm');
+    if (ansEl) ansEl.style.display = 'none';
+    if (confirmPanel2) confirmPanel2.style.display = 'none';
+    document.getElementById('obs-box').style.display = 'none';
+    setPhaseBusy(true, 'Reading answer...');
+    try {
+      S.answers.M2 = answer;
+      const data = await callM2Worker(answer);
+      applyM2Result(data, answer);
+    } catch (err) {
+      showPhaseObservation('Worker error. ' + err.message);
+      setPhaseBusy(false);
+      return;
+    }
+    if (ansEl) { ansEl.value = answer; ansEl.setAttribute('readonly', 'true'); ansEl.style.display = ''; }
+    document.getElementById('p1-btn').textContent = 'Continue →';
+    obsShown = true;
+    setPhaseBusy(false);
+    return;
+  }
+
   const workerUrl = v6GetWorkerUrl();
   const ans = document.getElementById('ans');
   const confirmPanel = document.getElementById('m2-confirm');
@@ -2763,6 +2920,8 @@ function applyM2PhaseAResult(data) {
     S.m2_confirmed_problem = data.recovered_problem;
     if (confirmPanel) confirmPanel.style.display = 'none';
     if (ans) ans.style.display = '';
+    const parkBtn2 = document.getElementById('m2-park-btn');
+    if (parkBtn2) parkBtn2.style.display = 'inline-flex';
     setPhaseBusy(false, 'Continue →');
   }
 }
@@ -2780,6 +2939,8 @@ function m2ConfirmProblem() {
   if (hintEl && S.m2_problem?.hint)     hintEl.textContent = S.m2_problem.hint;
   if (confirmPanel) confirmPanel.style.display = 'none';
   if (ans) { ans.style.display = ''; ans.focus(); }
+  const parkBtnConfirm = document.getElementById('m2-park-btn');
+  if (parkBtnConfirm) parkBtnConfirm.style.display = 'inline-flex';
   setPhaseBusy(false, 'Continue →');
 }
 
@@ -3654,7 +3815,8 @@ function renderCellar() {
     }).join('');
     const waiting = escHtml(getCellarWaiting(b));
     const date = formatCellarDate(b.updated_at);
-    return `<div class="bottle-row" onclick="openBottle('${b.id}')">
+    const isDormant = b.status === 'dormant';
+    return `<div class="bottle-row${isDormant ? ' bottle-row--dormant' : ''}" onclick="openBottle('${b.id}')">
               <div class="bottle-row-line">${line}</div>
               <div class="bottle-row-lower">
                 <div class="bottle-row-dots">${dots}</div>
@@ -3675,6 +3837,11 @@ function getCellarWaiting(bottle) {
   const s = bottle.s || {};
   const els = s.elements || {};
   if (bottle.status === 'rested') return 'Archived';
+
+  if (bottle.status === 'dormant') {
+    return bottle.brief?.kind === 'ask' ? 'Waiting on you · a question to ask'
+                                        : 'Waiting on you · find the person';
+  }
 
   if (s.thresholdDone && s.nextQuestionAt) {
     const next = new Date(s.nextQuestionAt);
@@ -3725,6 +3892,11 @@ function openBottle(id) {
   mi = record.mechIndex || 0;
   M = buildMechs();
 
+  if (record.status === 'dormant') {
+    if (record.brief?.kind === 'ask') return openDormantAsk(id, record);
+    return openDormantFind(id, record);
+  }
+
   if (mi >= M.length) {
     showLabel();
     return;
@@ -3739,6 +3911,178 @@ function openBottle(id) {
     clearTimeout(window._autosave);
     window._autosave = setTimeout(saveState, 800);
   });
+}
+
+// ── DORMANT RE-ENTRY ──
+async function openDormantFind(id, record) {
+  const brief = record.brief || {};
+  const pending = brief.pending && !brief.text;
+
+  // Regenerate if pending and worker is available.
+  if (pending && v6GetWorkerUrl()) {
+    try {
+      const freshBrief = await fetchFieldBrief({ mode: 'find', missing: 'grape' });
+      record.brief = freshBrief;
+      parkBottleDormant(id, freshBrief);
+    } catch (e) {
+      // stay pending, render with fallback
+    }
+  }
+
+  const finalBrief = record.brief || {};
+  const briefText = escHtml(finalBrief.text || (finalBrief.pending
+    ? 'The worker could not be reached. Find the first person this spark draws from and come back with their name and how you know them.'
+    : 'Find the first real person this spark draws from. Walk them through how they handle the relevant thing now and the last time it gave them trouble.'));
+  const target = escHtml(finalBrief.target || '');
+  const spark  = escHtml(getSparkDisplaySummary() || S.idea || '');
+
+  document.getElementById('dormant-body').innerHTML = `
+    <div style="margin-bottom:1.5rem">
+      <button class="btn-ghost" onclick="showCellar()" style="font-size:.8rem;padding:.4rem .8rem">← Back to cellar</button>
+    </div>
+    <div class="dormant-eyebrow">Dormant · find the person</div>
+    <div class="dormant-brief">
+      <div class="dormant-brief-label">Your brief</div>
+      <div class="dormant-brief-text">${briefText}</div>
+      ${target ? `<div class="dormant-brief-target">Looking for: ${target}</div>` : ''}
+    </div>
+    <div style="margin-bottom:.4rem;font-size:.82rem;color:var(--cream-dim)">The spark</div>
+    <div class="dormant-spark">${spark}</div>
+    <div style="margin-bottom:.85rem">
+      <div class="dormant-field-label">Their first name</div>
+      <input type="text" class="field" id="df-name" maxlength="60"
+             placeholder="e.g. Sarah" style="font-size:.9rem"
+             oninput="this.style.borderColor=''">
+    </div>
+    <div style="margin-bottom:1.5rem">
+      <div class="dormant-field-label">How do you know them?</div>
+      <textarea class="field" id="df-rel" rows="2"
+                placeholder="e.g. my sister, the café owner downstairs, my old manager"
+                style="min-height:80px;resize:none"
+                oninput="this.style.borderColor=''"></textarea>
+    </div>
+    <div class="dormant-error" id="df-error"></div>
+    <div class="row">
+      <span></span>
+      <button class="btn" id="df-submit-btn" onclick="submitDormantFind('${escHtml(id)}')">Enter the person →</button>
+    </div>`;
+  showScreen('dormant');
+}
+
+async function submitDormantFind(id) {
+  const nameEl  = document.getElementById('df-name');
+  const relEl   = document.getElementById('df-rel');
+  const errEl   = document.getElementById('df-error');
+  const btn     = document.getElementById('df-submit-btn');
+  const name    = nameEl ? nameEl.value.trim() : '';
+  const rel     = relEl  ? relEl.value.trim()  : '';
+
+  if (!name) { if (nameEl) nameEl.style.borderColor = 'var(--wine)'; return; }
+  if (!rel)  { if (relEl)  relEl.style.borderColor  = 'var(--wine)'; return; }
+  if (errEl) errEl.style.display = 'none';
+
+  const workerUrl = v6GetWorkerUrl();
+  if (workerUrl) {
+    if (btn) { btn.disabled = true; btn.textContent = 'Reading person...'; }
+    try {
+      const res = await fetch(workerUrl + '/m1', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          spark_summary:  getSparkSummary(),
+          person_name:    name,
+          relationship:   rel,
+          maturity_class: S.maturity
+        })
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
+      const grapeState = normalizeGrapeState(data.grape?.state || 'turbid');
+      if (grapeState === 'turbid') {
+        if (errEl) {
+          errEl.textContent = data.observation?.surface_text || 'A more specific person is needed.';
+          errEl.style.display = 'block';
+        }
+        if (btn) { btn.disabled = false; btn.textContent = 'Enter the person →'; }
+        return;
+      }
+      wakeBottle(id);
+      writeM1FromIntake(name, rel, data);
+    } catch (err) {
+      if (errEl) {
+        errEl.textContent = 'Could not reach the worker. Check your Worker URL.';
+        errEl.style.display = 'block';
+      }
+      if (btn) { btn.disabled = false; btn.textContent = 'Enter the person →'; }
+      return;
+    }
+  } else {
+    wakeBottle(id);
+    writeM1FromIntake(name, rel, null);
+  }
+
+  if (S.maturity === 3) S.maturity = 1;
+  startPhase1();
+}
+
+async function openDormantAsk(id, record) {
+  const brief   = record.brief || {};
+
+  // Regenerate if pending and worker is available.
+  if (brief.pending && !brief.text && v6GetWorkerUrl()) {
+    try {
+      const freshBrief = await fetchFieldBrief({ mode: 'ask', element: 'vintage' });
+      record.brief = freshBrief;
+      parkBottleDormant(id, freshBrief);
+    } catch (e) {
+      // stay pending
+    }
+  }
+
+  const finalBrief = record.brief || {};
+  const briefText = escHtml(finalBrief.text || (finalBrief.pending
+    ? 'The worker could not be reached. Ask the person directly: walk them through the last time this happened.'
+    : 'Go ask the person directly. Walk them through the last time this happened.'));
+  const grapeName = escHtml(S.grape_name || 'the person you named');
+
+  document.getElementById('dormant-body').innerHTML = `
+    <div style="margin-bottom:1.5rem">
+      <button class="btn-ghost" onclick="showCellar()" style="font-size:.8rem;padding:.4rem .8rem">← Back to cellar</button>
+    </div>
+    <div class="dormant-eyebrow">Dormant · a question to ask</div>
+    <div class="dormant-brief">
+      <div class="dormant-brief-label">Ask ${grapeName}</div>
+      <div class="dormant-brief-text">${briefText}</div>
+    </div>
+    <div style="margin-top:1.2rem;margin-bottom:1.5rem">
+      <div class="dormant-field-label">What did they say?</div>
+      <textarea class="field" id="da-answer" rows="4"
+                placeholder="Write what they actually said or did. Their words, their actions."
+                style="resize:none"
+                oninput="this.style.borderColor=''"></textarea>
+    </div>
+    <div class="dormant-error" id="da-error"></div>
+    <div class="row">
+      <span></span>
+      <button class="btn" id="da-submit-btn" onclick="submitDormantAsk('${escHtml(id)}')">Continue →</button>
+    </div>`;
+  showScreen('dormant');
+}
+
+function submitDormantAsk(id) {
+  const ansEl  = document.getElementById('da-answer');
+  const errEl  = document.getElementById('da-error');
+  const answer = ansEl ? ansEl.value.trim() : '';
+
+  if (answer.length < 8) {
+    if (ansEl) ansEl.style.borderColor = 'var(--wine)';
+    return;
+  }
+  if (errEl) errEl.style.display = 'none';
+
+  wakeBottle(id);
+  _askReentryAnswer = answer;
+  startPhase1();
 }
 
 // ── M0 INTEGRATION ──
