@@ -1891,9 +1891,9 @@ function buildMechs() {
       id:'M3', name:'Prior Attempted Solution',
       // q is updated dynamically in renderMech once S.m2_confirmed_problem is available.
       q: selfMode
-        ? `Your own experience aside — who else do you know who runs into this problem? Name one person, describe them, and tell me what they have actually done about it.`
-        : `Set ${grapeName} aside. Who else do you know who runs into this problem? Name one person, describe them, and walk me through what they have actually done about it.`,
-      hint: 'A tool they pay for, a workaround they built, someone they hand it to, a habit, or nothing at all. Any real behaviour counts.',
+        ? `Your own experience aside — who else hits this? Name one person and tell me what they have actually done about it.`
+        : `Set ${grapeName} aside. Who else hits this? Name one person and tell me what they have actually done about it.`,
+      hint: 'A workaround, a tool, a habit, nothing at all. Any real behaviour counts.',
       els:['echo','vintage'],
       activeEl:'echo',
       obs: () => S.m3?.observation?.surface_text || null
@@ -2430,8 +2430,8 @@ function renderMech() {
     const gn = S.label.grape || S.grape_name || 'the person you named';
     const selfMode3 = S.maturity === 2;
     m.q = selfMode3
-      ? `Your own experience aside — who else do you know who runs into this: ${problem}? Name one person, describe them, and tell me what they have actually done about it.`
-      : `Set ${gn} aside. Who else do you know who runs into this: ${problem}? Name one person, describe them, and walk me through what they have actually done about it.`;
+      ? `Your own experience aside — who else hits this? Name one person and tell me what they have actually done about it.`
+      : `Set ${gn} aside. Who else hits this? Name one person and tell me what they have actually done about it.`;
     document.getElementById('m-q').textContent = m.q;
     if (m3ParkBtn) m3ParkBtn.style.display = 'inline-flex';
     if (_echoReentryAnswer !== null) triggerM3EchoReentry();
