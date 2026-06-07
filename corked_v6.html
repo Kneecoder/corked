@@ -1602,6 +1602,7 @@ body {
         <div class="mech-count" id="m-count"></div>
         <div style="display:flex;gap:1rem;align-items:center;">
           <button class="btn-ghost" id="m2-park-btn" style="display:none" onclick="parkM2Ask()">This needs the real world</button>
+          <button class="btn-ghost" id="m3-park-btn" style="display:none" onclick="parkM3Echo()">I need to find another person</button>
           <button class="btn" id="p1-btn" onclick="p1Next()">Continue →</button>
         </div>
       </div>
@@ -1888,15 +1889,14 @@ function buildMechs() {
     },
     {
       id:'M3', name:'Prior Attempted Solution',
-      q:`What has ${g} already tried to fix this? Focus on what they actually did before your spark showed up. Walk through it specifically.`,
-      hint:'Workarounds, hacks, paying for something that half-works. Any of it counts.',
-      els:['echo'],
+      // q is updated dynamically in renderMech once S.m2_confirmed_problem is available.
+      q: selfMode
+        ? `Your own experience aside — who else do you know who runs into this problem? Name one person, describe them, and tell me what they have actually done about it.`
+        : `Set ${grapeName} aside. Who else do you know who runs into this problem? Name one person, describe them, and walk me through what they have actually done about it.`,
+      hint: 'A tool they pay for, a workaround they built, someone they hand it to, a habit, or nothing at all. Any real behaviour counts.',
+      els:['echo','vintage'],
       activeEl:'echo',
-      obs: a => {
-        if (/\b(nothing|don't know|haven't|not sure|no idea|never tried)\b/i.test(a))
-          return "No prior attempt was identified. Either the friction is not sharp enough to prompt action, or this answer requires a real conversation before it can be honest.";
-        return "A workaround exists. That is evidence the friction is real enough to motivate behaviour. The Echo has a source.";
-      }
+      obs: () => S.m3?.observation?.surface_text || null
     },
     {
       id:'M4', name:'The Existing Fix',
@@ -2095,18 +2095,7 @@ function renderIntake() {
       const savedName = escHtml(intakeSel['grape_name'] || (_pisSettled ? _grapePis.named_person : '') || '');
       const savedRel  = escHtml(intakeSel['grape_rel']  || (_pisSettled ? _grapePis.relationship_tie : '') || '');
       const grapeErr  = intakeSel['grape_error'];
-      const wmGrapeLine = isSelf
-        ? 'Every wine has a source. Here, that source is you — your own experience.'
-        : 'No great wine was ever made from a type of person. Only from a person. The grape is who your idea draws from — the real life it needs to prove itself against.';
-
-      h += `<div class="wm-section" style="margin-bottom:1.5rem">
-              <div class="wm-avatar">
-                <div class="wm-circle"></div>
-                <div class="wm-label">The Winemaster</div>
-              </div>
-              <div class="wm-bubble" style="font-style:italic">${wmGrapeLine}</div>
-            </div>
-            <div>
+      h += `<div>
               <div class="grape-input-label" style="display:block;margin-bottom:.45rem">${nameLabel}</div>
               <input type="text" class="field" id="grape-name-inp" maxlength="60"
                      placeholder="${namePh}" value="${savedName}"
@@ -2423,6 +2412,8 @@ function renderMech() {
   document.getElementById('p1-btn').textContent = 'Continue →';
   const parkBtn = document.getElementById('m2-park-btn');
   if (parkBtn) parkBtn.style.display = 'none';
+  const m3ParkBtn = document.getElementById('m3-park-btn');
+  if (m3ParkBtn) m3ParkBtn.style.display = 'none';
 
   obsShown = !!m.prefilled; grapeStepShown = false; curAssess = {};
   if (m.prefilled) showPhaseObservation(m.obs());
@@ -2432,6 +2423,19 @@ function renderMech() {
   const m2ConfirmPanel = document.getElementById('m2-confirm');
   if (m2ConfirmPanel) m2ConfirmPanel.style.display = 'none';
   if (m.id === 'M2') triggerM2PhaseA();
+
+  // M3: inject confirmed problem into question, show park button, handle echo re-entry.
+  if (m.id === 'M3') {
+    const problem = S.m2_confirmed_problem || 'this problem';
+    const gn = S.label.grape || S.grape_name || 'the person you named';
+    const selfMode3 = S.maturity === 2;
+    m.q = selfMode3
+      ? `Your own experience aside — who else do you know who runs into this: ${problem}? Name one person, describe them, and tell me what they have actually done about it.`
+      : `Set ${gn} aside. Who else do you know who runs into this: ${problem}? Name one person, describe them, and walk me through what they have actually done about it.`;
+    document.getElementById('m-q').textContent = m.q;
+    if (m3ParkBtn) m3ParkBtn.style.display = 'inline-flex';
+    if (_echoReentryAnswer !== null) triggerM3EchoReentry();
+  }
 
   // Show review panel hidden, question panel visible
   document.getElementById('question-panel').style.display = 'block';
@@ -3010,6 +3014,100 @@ function applyM2Result(data, txt) {
 
 // ── END M2 ────────────────────────────────────────────────────────────────
 
+// ── M3: PRIOR ATTEMPTED SOLUTION ──────────────────────────────────────────
+
+let _echoReentryAnswer = null;
+
+async function callM3Worker(txt) {
+  const workerUrl = v6GetWorkerUrl();
+  if (!workerUrl) throw new Error('Worker URL missing.');
+  const res = await fetch(workerUrl + '/m3', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      confirmed_problem:  S.m2_confirmed_problem || '',
+      grape_name:         S.grape_name || '',
+      grape_relationship: S.grape_relationship || '',
+      maturity_class:     S.maturity,
+      user_answer:        txt
+    })
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
+  return data;
+}
+
+function applyM3Result(data, txt) {
+  S.m3 = data;
+  const ok = ['turbid', 'clearing', 'settled'];
+  const changedRows = [];
+
+  function applyAnchoredResult(key, result, settledLabel, weakLabel) {
+    const prior = S.elements[key];
+    let state = ok.includes(result?.state) ? result.state : 'turbid';
+    const anchor = verifiedAnchor(result, txt);
+    const claimedSettled = state === 'settled';
+    if (claimedSettled && !anchor) state = 'clearing';
+
+    applyElementState(key, state, anchor || txt);
+
+    const after = S.elements[key];
+    if (rankState(after) <= rankState(prior) && !(claimedSettled && !anchor)) return;
+
+    if (after === 'settled' && anchor) {
+      changedRows.push({ name: `${EL_META[key]?.name || key} settled.`, detail: `${settledLabel}: ${anchor}` });
+    } else if (after === 'clearing') {
+      changedRows.push({
+        name: `${EL_META[key]?.name || key} is clearing.`,
+        detail: anchor ? `${weakLabel}: ${anchor}` : `Corked could not pin the exact phrase that would settle ${EL_META[key]?.name || key}.`,
+        weaker: true
+      });
+    }
+  }
+
+  applyAnchoredResult('echo',    data.echo,    'Third-party confirmation', 'Partial confirmation');
+  applyAnchoredResult('vintage', data.vintage, 'Specific instance',        'Partial moment');
+  showPhaseObservation(data.observation?.surface_text || '');
+  showWhatChanged(changedRows);
+}
+
+async function parkM3Echo() {
+  const btn = document.getElementById('m3-park-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving the question…'; }
+  let brief;
+  try {
+    brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
+  } catch (e) {
+    brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
+  }
+  parkBottleDormant(activeBottleId, brief);
+  showCellar();
+}
+
+async function triggerM3EchoReentry() {
+  const answer = _echoReentryAnswer;
+  _echoReentryAnswer = null;
+  const ansEl = document.getElementById('ans');
+  if (ansEl) ansEl.style.display = 'none';
+  document.getElementById('obs-box').style.display = 'none';
+  setPhaseBusy(true, 'Reading answer...');
+  try {
+    S.answers.M3 = answer;
+    const data = await callM3Worker(answer);
+    applyM3Result(data, answer);
+  } catch (err) {
+    showPhaseObservation('Worker error. ' + err.message);
+    setPhaseBusy(false);
+    return;
+  }
+  if (ansEl) { ansEl.value = answer; ansEl.setAttribute('readonly', 'true'); ansEl.style.display = ''; }
+  document.getElementById('p1-btn').textContent = 'Continue →';
+  obsShown = true;
+  setPhaseBusy(false);
+}
+
+// ── END M3 ────────────────────────────────────────────────────────────────
+
 async function p1Next() {
   const m = M[mi];
   const ans = document.getElementById('ans');
@@ -3034,6 +3132,9 @@ async function p1Next() {
       if (m.id === 'M2') {
         const data = await callM2Worker(txt);
         applyM2Result(data, txt);
+      } else if (m.id === 'M3') {
+        const data = await callM3Worker(txt);
+        applyM3Result(data, txt);
       } else {
         applyLocalMechanismResult(m, txt);
       }
@@ -3839,8 +3940,9 @@ function getCellarWaiting(bottle) {
   if (bottle.status === 'rested') return 'Archived';
 
   if (bottle.status === 'dormant') {
-    return bottle.brief?.kind === 'ask' ? 'Waiting on you · a question to ask'
-                                        : 'Waiting on you · find the person';
+    return bottle.brief?.kind === 'ask'  ? 'Waiting on you · a question to ask'
+         : bottle.brief?.kind === 'echo' ? 'Waiting on you · find another person'
+         :                                 'Waiting on you · find the person';
   }
 
   if (s.thresholdDone && s.nextQuestionAt) {
@@ -3893,7 +3995,8 @@ function openBottle(id) {
   M = buildMechs();
 
   if (record.status === 'dormant') {
-    if (record.brief?.kind === 'ask') return openDormantAsk(id, record);
+    if (record.brief?.kind === 'ask')  return openDormantAsk(id, record);
+    if (record.brief?.kind === 'echo') return openDormantEcho(id, record);
     return openDormantFind(id, record);
   }
 
@@ -4082,6 +4185,66 @@ function submitDormantAsk(id) {
 
   wakeBottle(id);
   _askReentryAnswer = answer;
+  startPhase1();
+}
+
+async function openDormantEcho(id, record) {
+  const brief = record.brief || {};
+
+  if (brief.pending && !brief.text && v6GetWorkerUrl()) {
+    try {
+      const freshBrief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
+      record.brief = freshBrief;
+      parkBottleDormant(id, freshBrief);
+    } catch (e) { /* stay pending */ }
+  }
+
+  const finalBrief = record.brief || {};
+  const problem    = escHtml(S.m2_confirmed_problem || 'this problem');
+  const briefText  = escHtml(finalBrief.text || (finalBrief.pending
+    ? `Find someone else who hits ${S.m2_confirmed_problem || 'this problem'}. Ask them: walk me through how you handle this. The last time it happened, what did you actually do?`
+    : `Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`));
+  const target = escHtml(finalBrief.target || '');
+  const grapeName = escHtml(S.grape_name || 'the person you named');
+
+  document.getElementById('dormant-body').innerHTML = `
+    <div style="margin-bottom:1.5rem">
+      <button class="btn-ghost" onclick="showCellar()" style="font-size:.8rem;padding:.4rem .8rem">← Back to cellar</button>
+    </div>
+    <div class="dormant-eyebrow">Dormant · find another person</div>
+    <div class="dormant-brief">
+      <div class="dormant-brief-label">Not ${grapeName}. Someone else who hits: ${problem}</div>
+      <div class="dormant-brief-text">${briefText}</div>
+      ${target ? `<div class="dormant-brief-target">Looking for: ${target}</div>` : ''}
+    </div>
+    <div style="margin-top:1.2rem;margin-bottom:1.5rem">
+      <div class="dormant-field-label">Who did you find, and what have they done about it?</div>
+      <textarea class="field" id="de-answer" rows="4"
+                placeholder="Describe them and walk through what they actually do or have done. Specific behaviour counts."
+                style="resize:none"
+                oninput="this.style.borderColor=''"></textarea>
+    </div>
+    <div class="dormant-error" id="de-error"></div>
+    <div class="row">
+      <span></span>
+      <button class="btn" id="de-submit-btn" onclick="submitDormantEcho('${escHtml(id)}')">Continue →</button>
+    </div>`;
+  showScreen('dormant');
+}
+
+function submitDormantEcho(id) {
+  const ansEl  = document.getElementById('de-answer');
+  const errEl  = document.getElementById('de-error');
+  const answer = ansEl ? ansEl.value.trim() : '';
+
+  if (answer.length < 8) {
+    if (ansEl) ansEl.style.borderColor = 'var(--wine)';
+    return;
+  }
+  if (errEl) errEl.style.display = 'none';
+
+  wakeBottle(id);
+  _echoReentryAnswer = answer;
   startPhase1();
 }
 

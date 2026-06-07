@@ -284,7 +284,7 @@ const FIELD_DOCTRINE = `You are the Winemaster — the voice of Corked, an idea-
 
 Your job is generating a field brief: one question for the founder to carry into the real world.
 
-Two modes:
+Three modes:
 
 FIND (mode: find, missing: grape)
 Build entirely from user_line and spark_parse. No grape is present.
@@ -307,6 +307,14 @@ Never ask whether the problem exists, it is confirmed.
 Never name a pitch, feature, or solution.
 Return target: null.
 
+ECHO (mode: echo)
+The founder has a named grape and a confirmed problem. They need to find a second person, not the grape, who hits the same problem and ask about their workaround.
+confirmed_problem is required. If absent, return { "error": "ECHO requires a confirmed problem" }.
+Build a brief that names who else to find (draw from the domain and confirmed_problem, not the grape's specific role) and what to ask them.
+The question must be past-behaviour anchored: "Walk me through how you handle [problem]." or "The last time [problem] happened, what did you actually do?"
+Never about the idea. Never hypothetical. Do not reference the grape by name.
+Return target: a short label (3-6 words) naming what kind of person to find, drawn from domain and confirmed_problem.
+
 FAILURE RULES:
 If the spark is too vague to produce a question using its actual nouns, return { "error": "brief_impossible" }.
 A generic brief is a failure. "Ask them about their workflow" does not name the spark's domain.
@@ -320,7 +328,7 @@ Winemaster register: dry, precise, direct.
 text hard cap: 280 characters. Count carefully. Cut if needed.
 
 Return only JSON:
-{ "brief": { "kind": "find"|"ask", "text": "...", "target": "string or null" } }
+{ "brief": { "kind": "find"|"ask"|"echo", "text": "...", "target": "string or null" } }
 or: { "error": "..." }`;
 
 function buildM0UserMessage(rawSpark, followupQuestion, followupAnswer) {
@@ -505,6 +513,84 @@ function buildFieldUserMessage(mode, userLine, sparkParse, missing, grapeName, g
 <grape_relationship>${grapeRel || ''}</grape_relationship>
 <confirmed_problem>${confirmedProblem || ''}</confirmed_problem>
 <element>${element || ''}</element>`;
+}
+
+const M3_DOCTRINE = `You are the Winemaster — the voice of Corked, an idea-aging system.
+
+Your job in M3 is grading the Prior Attempted Solution.
+
+M3 looks for one thing: a real person, someone other than the grape and other than the founder, who has hit the same problem, and what they actually did about it. This is the Echo: confirmation that the problem exists outside the founder's interpretation and outside the grape's account.
+
+You receive the confirmed problem, the grape's name (to exclude), the founder's maturity class, and their answer.
+
+ECHO BAR — third-party confirmation:
+settled:  A specific person, clearly not the grape and not the founder, is named or concretely described. Their workaround, tool, habit, or behaviour is stated in concrete terms.
+          "My colleague James pays someone to do it manually every month" = settled.
+          "A designer I know built a spreadsheet on macros because nothing else handles it" = settled.
+clearing: A third party is implied or vaguely referenced without a concrete behaviour. Or only the grape or the founder is present. Or the workaround is too vague to distinguish from assumption.
+          "People just deal with it" = clearing. "I have heard others have the same issue" = clearing.
+turbid:   No third party at all. Only the grape, the founder, or pure assumption. No real person outside the problem-holder relationship.
+
+GRAPE EXCLUSION RULE — critical:
+If the answer describes only what the grape (the person named in the problem) does or has done, Echo is turbid regardless of how specific the behaviour is. M3 is explicitly looking for someone other than the grape.
+You have the grape's name. Apply this rule precisely: if every person in the answer is the grape or the founder, Echo is turbid.
+
+VINTAGE BAR — specific moment:
+settled:  The workaround or behaviour is anchored to a specific past instance. A named time, a concrete situation, one event.
+          "Last month when her client needed it filed" = settled.
+          "When he was setting up his end-of-year accounts" = settled.
+clearing: A workaround is described but recurring or unanchored. A general habit, a pattern. "She always just does it manually" = clearing.
+turbid:   No time anchor at all. No specific instance referenced.
+
+OVERALL STATE:
+settled:  Both bars settled.
+clearing: At least one bar clearing, none turbid.
+turbid:   Either bar turbid.
+
+OBSERVATION:
+Two short declarative sentences. Monotone lab register.
+Sentence one: what the Echo bar found — whether a real third party is present, and what their concrete behaviour looks like.
+Sentence two: what the Vintage bar found — whether a specific instance is present or only a recurring pattern.
+When a verbatim span from the answer directly supports a finding, use it as anchor_span.
+
+ANTI-FABRICATION:
+Do not invent person, behaviour, workaround, or moment detail not present in the answer.
+anchor_span must be a verbatim excerpt from the user_answer. If none supports the claim, set null.
+
+VOICE:
+No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
+
+Return only JSON.`;
+
+function buildM3UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer) {
+  const selfMode = maturityClass === 2;
+  const grapeBlock = selfMode
+    ? `<grape>self (the speaker)</grape>`
+    : `<grape_name>${grapeName}</grape_name>\n<grape_relationship>${grapeRel}</grape_relationship>`;
+
+  return `<confirmed_problem>${confirmedProblem}</confirmed_problem>
+${grapeBlock}
+<maturity_class>${maturityClass}</maturity_class>
+<user_answer>${userAnswer}</user_answer>
+
+Return exactly this JSON shape:
+{
+  "schema_version": "m3.v1",
+  "mechanism": "M3",
+  "state": "turbid|clearing|settled",
+  "echo": {
+    "state": "turbid|clearing|settled",
+    "anchor_span": "verbatim from user_answer or null"
+  },
+  "vintage": {
+    "state": "turbid|clearing|settled",
+    "anchor_span": "verbatim from user_answer or null"
+  },
+  "observation": {
+    "surface_text": "max 280 chars, two sentences, lab register",
+    "anchor_span": "verbatim from user_answer or null"
+  }
+}`;
 }
 
 async function callClaude(env, system, content, maxTokens = 700) {
@@ -960,8 +1046,8 @@ async function handleField(request, env, corsHeaders) {
   if (!mode || !userLine) {
     return jsonResponse({ error: 'Missing mode or user_line' }, 400, corsHeaders);
   }
-  if (mode === 'ask' && !confirmedProblem) {
-    return jsonResponse({ error: 'ASK requires a confirmed problem' }, 400, corsHeaders);
+  if ((mode === 'ask' || mode === 'echo') && !confirmedProblem) {
+    return jsonResponse({ error: 'ASK/ECHO requires a confirmed problem' }, 400, corsHeaders);
   }
 
   const content = buildFieldUserMessage(mode, userLine, sparkParse, missing, grapeName, grapeRel, confirmedProblem, element);
@@ -977,13 +1063,56 @@ async function handleField(request, env, corsHeaders) {
   let text = cleanVisibleText(parsed.brief.text);
   if (text.length > 280) text = text.slice(0, 277) + '...';
 
+  const kind = ['ask', 'echo', 'find'].includes(parsed.brief.kind) ? parsed.brief.kind : 'find';
+
   return jsonResponse({
-    brief: {
-      kind:   parsed.brief.kind === 'ask' ? 'ask' : 'find',
-      text,
-      target: parsed.brief.target || null
-    }
+    brief: { kind, text, target: parsed.brief.target || null }
   }, 200, corsHeaders);
+}
+
+async function handleM3(request, env, corsHeaders) {
+  const body = await request.json();
+  const confirmedProblem = String(body.confirmed_problem || '').trim();
+  const grapeName        = String(body.grape_name || '').trim();
+  const grapeRel         = String(body.grape_relationship || '').trim();
+  const maturityClass    = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
+  const userAnswer       = String(body.user_answer || '').trim();
+
+  if (!confirmedProblem || !userAnswer) {
+    return jsonResponse({ error: 'Missing confirmed_problem or user_answer' }, 400, corsHeaders);
+  }
+
+  const parsed = await callClaude(
+    env,
+    M3_DOCTRINE,
+    buildM3UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer),
+    700
+  );
+
+  const allowedStates = ['settled', 'clearing', 'turbid'];
+  if (!parsed || typeof parsed !== 'object' || parsed.mechanism !== 'M3') {
+    throw new Error('Invalid M3 response');
+  }
+  if (!allowedStates.includes(parsed.state)) parsed.state = 'turbid';
+  if (!parsed.echo   || !allowedStates.includes(parsed.echo?.state))    parsed.echo    = { state: 'turbid', anchor_span: null };
+  if (!parsed.vintage || !allowedStates.includes(parsed.vintage?.state)) parsed.vintage = { state: 'turbid', anchor_span: null };
+
+  const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
+  const normAnswer = norm(userAnswer);
+  const verifySpan = (obj, key) => {
+    if (obj?.[key] && !normAnswer.includes(norm(obj[key]))) { obj[key] = null; return false; }
+    return !!obj?.[key];
+  };
+  verifySpan(parsed.echo, 'anchor_span');
+  verifySpan(parsed.vintage, 'anchor_span');
+  verifySpan(parsed.observation, 'anchor_span');
+
+  const visiblePaths = ['observation.surface_text'];
+  const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
+  cleanVisibleFields(parsed, visiblePaths);
+  parsed.server_checks = { schema_valid: true, visible_style_violations_cleaned: styleViolations };
+
+  return jsonResponse(parsed, 200, corsHeaders);
 }
 
 async function handleM0(request, env, corsHeaders) {
@@ -1063,6 +1192,7 @@ export default {
       if (url.pathname === '/m0') return await handleM0(request, env, corsHeaders);
       if (url.pathname === '/m1') return await handleM1(request, env, corsHeaders);
       if (url.pathname === '/m2') return await handleM2(request, env, corsHeaders);
+      if (url.pathname === '/m3') return await handleM3(request, env, corsHeaders);
       if (url.pathname === '/field') return await handleField(request, env, corsHeaders);
       return jsonResponse({ error: 'Unknown route.' }, 404, corsHeaders);
     } catch (err) {
