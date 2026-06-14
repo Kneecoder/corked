@@ -89,7 +89,6 @@ body {
 .rule               { animation:landing-fade .9s ease both; animation-delay:.25s; }
 .tagline            { animation:landing-fade .9s ease both; animation-delay:.35s; }
 .landing-body       { animation:landing-fade .9s ease both; animation-delay:.5s; }
-.continue-row       { animation:landing-fade .9s ease both; animation-delay:.65s; }
 
 .logo {
   font-family:'Playfair Display',serif;
@@ -151,7 +150,6 @@ body {
   -moz-osx-font-smoothing:grayscale;
 }
 .four-line-gap { margin-top:.55rem; }
-.continue-row { display:flex; flex-direction:column; align-items:center; gap:.75rem; margin-bottom:1rem; }
 .continue-note { font-size:.72rem; color:var(--muted); letter-spacing:.08em; }
 
 /* ── WINEMASTER ── */
@@ -572,7 +570,7 @@ body {
   font-size:clamp(1.1rem,3vw,1.4rem); line-height:1.5;
   color:var(--cream); margin-bottom:.5rem; white-space:pre-line;
 }
-.mech-hint { font-size:.78rem; color:var(--muted); font-style:italic; margin-bottom:1.75rem; }
+.mech-hint { font-size:.78rem; color:var(--muted); margin-bottom:1.75rem; }
 .answer-box {
   width:100%; background:var(--card); border:1px solid var(--border);
   color:var(--cream); padding:1.1rem 1.2rem; font-family:'Inter',sans-serif;
@@ -766,42 +764,7 @@ body {
   font-size:.9rem; font-weight:300; outline:none; transition:border-color .18s;
 }
 .grape-field:focus { border-color:var(--wine); }
-.m1-field-stack {
-  display:none;
-  flex-direction:column;
-  gap:.85rem;
-  margin-top:1rem;
-}
-.m1-field-pair {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:.85rem;
-}
-.m1-field {
-  width:100%;
-  background:var(--card);
-  border:1px solid var(--border);
-  color:var(--cream);
-  padding:.85rem .95rem;
-  font-family:'Inter',sans-serif;
-  font-size:.86rem;
-  line-height:1.55;
-  outline:none;
-  transition:border-color .18s;
-}
-.m1-field:focus { border-color:var(--wine); }
-.m1-field[readonly] {
-  opacity:.55;
-  border-color:var(--border);
-}
-@media(max-width:767px){
-  .m1-field-pair { grid-template-columns:1fr; }
-}
 
-/* Assessment — removed from user flow; system drives state */
-.assess { display:none !important; }
-.assess-label { display:none; }
-.assess-btns { display:none; }
 
 .phase-row {
   display:flex; justify-content:space-between; align-items:center; margin-top:2rem;
@@ -1236,6 +1199,16 @@ body {
   .cellar-body   { padding:1.25rem 1rem; }
 }
 
+/* ── CELLAR DELETE ── */
+.bottle-row-del {
+  background:none; border:none; color:var(--muted);
+  font-size:.82rem; cursor:pointer; padding:.1rem .25rem;
+  opacity:0; transition:opacity .15s, color .15s;
+  font-family:'Inter',sans-serif; flex-shrink:0; line-height:1;
+}
+.bottle-row:hover .bottle-row-del { opacity:.55; }
+.bottle-row-del:hover { color:var(--wine-hi) !important; opacity:1 !important; }
+
 /* ── DORMANT ── */
 .bottle-row--dormant { border-color:rgba(201,165,90,.45); }
 .bottle-row--dormant:hover { border-color:rgba(201,165,90,.7); }
@@ -1338,12 +1311,6 @@ body {
       </div>
     </div>
 
-  </div>
-
-  <div id="continue-row" class="continue-row" style="display:none">
-    <button class="btn" onclick="continueSession()">Continue where you left off →</button>
-    <div class="continue-note" id="continue-note"></div>
-    <button class="btn-ghost" onclick="newSession()">Start a new idea instead</button>
   </div>
 
   <div id="new-row" style="animation:landing-fade .9s ease both;animation-delay:.3s">
@@ -1546,26 +1513,6 @@ body {
       <div class="mech-eyebrow" id="m-label">—</div>
       <div class="mech-q" id="m-q"></div>
       <div class="mech-hint" id="m-hint"></div>
-      <div class="m1-field-stack" id="m1-fields">
-        <div>
-          <div class="grape-input-label" id="m1-person-label">Person</div>
-          <input type="text" class="m1-field" id="m1-person" maxlength="60">
-        </div>
-        <div class="m1-field-pair">
-          <div>
-            <div class="grape-input-label" id="m1-when-label">When did it happen?</div>
-            <input type="text" class="m1-field" id="m1-when">
-          </div>
-          <div>
-            <div class="grape-input-label" id="m1-trying-label">What were they trying to do?</div>
-            <input type="text" class="m1-field" id="m1-trying">
-          </div>
-        </div>
-        <div>
-          <div class="grape-input-label" id="m1-happened-label">What actually happened?</div>
-          <textarea class="m1-field" id="m1-happened" rows="4"></textarea>
-        </div>
-      </div>
       <div id="m2-confirm" style="display:none;margin-bottom:.9rem">
         <div style="color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.45rem">Recovered line</div>
         <input type="text" class="field" id="m2-confirm-inp"
@@ -1594,10 +1541,6 @@ body {
         <div class="grape-input-label">Their first name</div>
         <input type="text" class="grape-field" id="grape-field" placeholder="e.g. Sarah" maxlength="40">
       </div>
-      <div class="assess" id="assess-box">
-        <div class="assess-label" id="assess-lbl"></div>
-        <div class="assess-btns" id="assess-btns"></div>
-      </div>
       <div class="phase-row">
         <div class="mech-count" id="m-count"></div>
         <div style="display:flex;gap:1rem;align-items:center;">
@@ -1614,11 +1557,6 @@ body {
       <div class="review-el-name" id="rv-name"></div>
       <div class="review-el-desc" id="rv-desc"></div>
       <div id="rv-blocks"></div>
-    </div>
-
-    <!-- Threshold panel: one-time calibration, fires after grape card -->
-    <div class="phase-wrap" id="threshold-panel" style="display:none">
-      <div id="threshold-body"></div>
     </div>
 
   </div>
@@ -1683,16 +1621,6 @@ function saveState() {
   updateRhythmStatus();
 }
 
-function loadSaved() {
-  try {
-    const raw = localStorage.getItem(SAVE_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw);
-  } catch(e) { return null; }
-}
-
-function clearSaved() { localStorage.removeItem(SAVE_KEY); }
-function saveDoorstep(spark) { localStorage.setItem(DOORSTEP_KEY, spark); }
 function loadDoorstep() { return localStorage.getItem(DOORSTEP_KEY) || null; }
 function clearDoorstep() { localStorage.removeItem(DOORSTEP_KEY); }
 
@@ -1774,6 +1702,13 @@ function wakeBottle(id) {
   }
 }
 
+function deleteBottle(id, event) {
+  event.stopPropagation();
+  if (!confirm('Remove this spark from the cellar? This cannot be undone.')) return;
+  saveAllBottles(getAllBottles().filter(b => b.id !== id));
+  renderCellar();
+}
+
 function migrateOldSave() {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
@@ -1849,11 +1784,15 @@ function buildMechs() {
   const grapeRelation = S.grape_relationship || 'No relationship recorded.';
   const grapeObservation = sanitizeBeforeMomentCopy(S.m1?.observation?.surface_text || 'The Grape has been answered during intake.');
   const grapeQ = selfMode
-    ? `This is the Grape.\n\nYou are the person this spark must answer to.`
-    : `This is the Grape.\n\n${grapeName} is the person this spark must answer to.`;
+    ? `You are the person this spark must answer to.`
+    : `${grapeName} is the person this spark must answer to.`;
   const grapeHint = grapeState === 'settled'
-    ? 'Wine starts with fruit. Corked starts with one real person. Without that, there is nothing to age.'
-    : 'This person is real enough to enter, but still cloudy. The cellar will not pretend it is clearer than it is.';
+    ? (selfMode
+      ? `The elements ahead test whether this idea holds when you are actually in front of it.`
+      : `The elements ahead test whether this idea holds when ${grapeName} is actually in front of it.`)
+    : (selfMode
+      ? `You are named, but the picture is still forming. The elements ahead will sharpen it.`
+      : `${grapeName} is named, but the picture is still forming. The elements ahead will sharpen it.`);
 
   return [
     {
@@ -2395,20 +2334,17 @@ function renderMech() {
   updateSparkReminder();
 
   const ans = document.getElementById('ans');
-  const m1Fields = document.getElementById('m1-fields');
   // If we have a saved answer for this mechanism, restore it
   ans.value = m.prefilled ? '' : (S.answers[m.id] || '');
   ans.removeAttribute('readonly');
   ans.style.borderColor = '';
   ans.style.display = m.prefilled ? 'none' : '';
-  if (m1Fields) m1Fields.style.display = 'none';
 
   document.getElementById('obs-box').style.display = 'none';
   hideWhatChanged();
   hideGrapeJudgment();
   hideCellarRhythm();
   document.getElementById('grape-row').style.display = 'none';
-  document.getElementById('assess-box').style.display = 'none';
   document.getElementById('p1-btn').textContent = 'Continue →';
   const parkBtn = document.getElementById('m2-park-btn');
   if (parkBtn) parkBtn.style.display = 'none';
@@ -2631,109 +2567,6 @@ function updateSparkReminder() {
   rem.style.display = 'block';
 }
 
-function configureM1Fields() {
-  const person = document.getElementById('m1-person');
-  const label = document.getElementById('m1-person-label');
-  if (!person || !label) return;
-
-  if (!S.m1Fields) S.m1Fields = { person:'', when:'', trying:'', happened:'' };
-
-  const setup   = S.m0?.m1_setup;
-  const isSelf  = S.maturity === 2;
-
-  // ── Person field ──
-  if (isSelf) {
-    label.textContent = 'Person Corked will use';
-    person.value = 'You';
-    person.setAttribute('readonly', '');
-  } else {
-    label.textContent = setup?.person_label || 'Person Corked should use';
-    person.removeAttribute('readonly');
-    person.placeholder = setup?.person_placeholder || 'e.g. Sarah, my old manager';
-    person.value = S.m1Fields.person || '';
-  }
-
-  // ── Field labels: spark-aware (Tier 1) or pronoun-correct fallback ──
-  const whenLbl     = document.getElementById('m1-when-label');
-  const tryingLbl   = document.getElementById('m1-trying-label');
-  const happenedLbl = document.getElementById('m1-happened-label');
-  const setupLabel = (value) => String(value || '')
-    .replace(/\bor felt\b/ig, 'or did')
-    .replace(/\s+/g, ' ')
-    .trim();
-  const perspectiveLabel = (value) => {
-    const cleaned = setupLabel(value);
-    if (!isSelf) return cleaned;
-    return cleaned
-      .replace(/\bthe founder was\b/ig, 'you were')
-      .replace(/\bthe founder\b/ig, 'you')
-      .replace(/\bthey were\b/ig, 'you were')
-      .replace(/\bthey\b/ig, 'you');
-  };
-
-  if (whenLbl)     whenLbl.textContent     = setupLabel(setup?.when_label) || 'When did it happen?';
-  if (tryingLbl)   tryingLbl.textContent   = perspectiveLabel(setup?.trying_label) || (isSelf ? 'What were you trying to do?' : 'What were they trying to do?');
-  if (happenedLbl) happenedLbl.textContent = perspectiveLabel(setup?.happened_label) || 'What actually happened?';
-
-  // ── Placeholders: Tier 1 spark-aware, else blank (no misleading hardcoded examples) ──
-  const whenEl     = document.getElementById('m1-when');
-  const tryingEl   = document.getElementById('m1-trying');
-  const happenedEl = document.getElementById('m1-happened');
-
-  if (whenEl)     whenEl.placeholder     = setup?.when_placeholder     || '';
-  if (tryingEl)   tryingEl.placeholder   = setup?.trying_placeholder   || '';
-  if (happenedEl) happenedEl.placeholder = setup?.happened_placeholder || 'Write the observable scene. What happened, step by step.';
-
-  // ── Restore saved values ──
-  if (whenEl)     whenEl.value     = S.m1Fields.when     || '';
-  if (tryingEl)   tryingEl.value   = S.m1Fields.trying   || '';
-  if (happenedEl) happenedEl.value = S.m1Fields.happened || '';
-
-  ['m1-person','m1-when','m1-trying','m1-happened'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.borderColor = '';
-  });
-}
-
-function collectM1Fields() {
-  const fields = {
-    person: (document.getElementById('m1-person')?.value || '').trim(),
-    when: (document.getElementById('m1-when')?.value || '').trim(),
-    trying: (document.getElementById('m1-trying')?.value || '').trim(),
-    happened: (document.getElementById('m1-happened')?.value || '').trim()
-  };
-  if (S.maturity === 2) fields.person = 'You';
-  S.m1Fields = fields;
-  return fields;
-}
-
-function buildM1AnswerText(fields) {
-  return [
-    `Person: ${fields.person}`,
-    `When it happened: ${fields.when}`,
-    `What they were trying to do: ${fields.trying}`,
-    `What actually happened: ${fields.happened}`
-  ].join('\n');
-}
-
-function validateM1Fields(fields) {
-  const checks = [
-    ['m1-person', fields.person],
-    ['m1-when', fields.when],
-    ['m1-trying', fields.trying],
-    ['m1-happened', fields.happened]
-  ];
-  let ok = true;
-  checks.forEach(([id, value]) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const empty = !value || (id === 'm1-happened' && value.length < 8);
-    el.style.borderColor = empty ? 'var(--wine)' : '';
-    if (empty) ok = false;
-  });
-  return ok;
-}
-
 function rankState(state) {
   return ({ inert:0, turbid:1, clearing:2, settled:3 })[state] || 0;
 }
@@ -2750,56 +2583,6 @@ function applyElementState(key, state, labelValue) {
   }
 }
 
-async function callM1Worker(m, txt) {
-  const workerUrl = v6GetWorkerUrl();
-  if (!workerUrl) {
-    throw new Error('Worker URL is missing. Bottle a Spark through M0 first, or add the Worker endpoint.');
-  }
-
-  const res = await fetch(workerUrl + '/m1', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      spark_summary: getSparkSummary(),
-      maturity_class: S.maturity,
-      question_text: m.q,
-      user_answer: txt
-    })
-  });
-
-  const data = await res.json();
-  if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
-  return data;
-}
-
-function applyM1Result(data, txt) {
-  S.m1 = data;
-  S.answers.M1 = txt;
-
-  const grape = data.grape || {};
-  const workerState = grape.state || 'none';
-  const personKind = grape.person_kind || 'none';
-  const named = grape.named_person || S.m1Fields?.person || '';
-  const isSettled = workerState === 'settled';
-  const appGrapeState = isSettled ? 'settled' : 'turbid';
-
-  setEl('grape', appGrapeState);
-
-  if (isSettled) {
-    if (personKind === 'self' || S.maturity === 2) {
-      S.grape = 'you';
-      S.label.grape = 'You';
-    } else {
-      S.grape = named || 'the person you named';
-      S.label.grape = named || txt.slice(0,150);
-    }
-  }
-
-  const shouldAdvance = !!data.next_question?.should_advance && isSettled;
-  showGrapeJudgment(data, S.m1Fields);
-  return shouldAdvance;
-}
-
 function applyLocalMechanismResult(m, txt) {
   const wc = txt.trim().split(/\s+/).length;
   let systemState = 'turbid';
@@ -2810,6 +2593,37 @@ function applyLocalMechanismResult(m, txt) {
 
   m.els.forEach(e => applyElementState(e, systemState, txt));
   showPhaseObservation(m.obs(txt));
+}
+
+// ── SHARED GRADING HELPER ──────────────────────────────────────────────────
+
+function applyAnchoredResult(key, result, txt, changedRows, settledLabel, weakLabel) {
+  const ok = ['turbid', 'clearing', 'settled'];
+  const prior = S.elements[key];
+  let state = ok.includes(result?.state) ? result.state : 'turbid';
+  const anchor = verifiedAnchor(result, txt);
+  const claimedSettled = state === 'settled';
+  if (claimedSettled && !anchor) state = 'clearing';
+
+  applyElementState(key, state, anchor || txt);
+
+  const after = S.elements[key];
+  if (rankState(after) <= rankState(prior) && !(claimedSettled && !anchor)) return;
+
+  if (after === 'settled' && anchor) {
+    changedRows.push({
+      name: `${EL_META[key]?.name || key} settled.`,
+      detail: `${settledLabel}: ${anchor}`
+    });
+  } else if (after === 'clearing') {
+    changedRows.push({
+      name: `${EL_META[key]?.name || key} is clearing.`,
+      detail: anchor
+        ? `${weakLabel}: ${anchor}`
+        : `Corked could not pin the exact phrase that would settle ${EL_META[key]?.name || key}.`,
+      weaker: true
+    });
+  }
 }
 
 // ── M2: THE FRICTION TEST ──────────────────────────────────────────────────
@@ -2972,41 +2786,12 @@ async function callM2Worker(txt) {
 
 function applyM2Result(data, txt) {
   S.m2 = data;
-  const ok = ['turbid', 'clearing', 'settled'];
   const changedRows = [];
 
-  function applyAnchoredResult(key, result, settledLabel, weakLabel) {
-    const prior = S.elements[key];
-    let state = ok.includes(result?.state) ? result.state : 'turbid';
-    const anchor = verifiedAnchor(result, txt);
-    const claimedSettled = state === 'settled';
-    if (claimedSettled && !anchor) state = 'clearing';
-
-    applyElementState(key, state, anchor || txt);
-
-    const after = S.elements[key];
-    if (rankState(after) <= rankState(prior) && !(claimedSettled && !anchor)) return;
-
-    if (after === 'settled' && anchor) {
-      changedRows.push({
-        name: `${EL_META[key]?.name || key} settled.`,
-        detail: `${settledLabel}: ${anchor}`
-      });
-    } else if (after === 'clearing') {
-      changedRows.push({
-        name: `${EL_META[key]?.name || key} is clearing.`,
-        detail: anchor
-          ? `${weakLabel}: ${anchor}`
-          : `Corked could not pin the exact phrase that would settle ${EL_META[key]?.name || key}.`,
-        weaker: true
-      });
-    }
-  }
-
-  applyAnchoredResult('tell', data.tell, 'Observable action', 'Partial action');
-  applyAnchoredResult('vintage', data.vintage, 'Specific instance', 'Partial moment');
+  applyAnchoredResult('tell', data.tell, txt, changedRows, 'Observable action', 'Partial action');
+  applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance', 'Partial moment');
   if (S.m2_problem?.gap_in_play) {
-    applyAnchoredResult('gap', data.gap, 'Workaround failure', 'Partial failure point');
+    applyAnchoredResult('gap', data.gap, txt, changedRows, 'Workaround failure', 'Partial failure point');
   }
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
@@ -3039,34 +2824,10 @@ async function callM3Worker(txt) {
 
 function applyM3Result(data, txt) {
   S.m3 = data;
-  const ok = ['turbid', 'clearing', 'settled'];
   const changedRows = [];
 
-  function applyAnchoredResult(key, result, settledLabel, weakLabel) {
-    const prior = S.elements[key];
-    let state = ok.includes(result?.state) ? result.state : 'turbid';
-    const anchor = verifiedAnchor(result, txt);
-    const claimedSettled = state === 'settled';
-    if (claimedSettled && !anchor) state = 'clearing';
-
-    applyElementState(key, state, anchor || txt);
-
-    const after = S.elements[key];
-    if (rankState(after) <= rankState(prior) && !(claimedSettled && !anchor)) return;
-
-    if (after === 'settled' && anchor) {
-      changedRows.push({ name: `${EL_META[key]?.name || key} settled.`, detail: `${settledLabel}: ${anchor}` });
-    } else if (after === 'clearing') {
-      changedRows.push({
-        name: `${EL_META[key]?.name || key} is clearing.`,
-        detail: anchor ? `${weakLabel}: ${anchor}` : `Corked could not pin the exact phrase that would settle ${EL_META[key]?.name || key}.`,
-        weaker: true
-      });
-    }
-  }
-
-  applyAnchoredResult('echo',    data.echo,    'Third-party confirmation', 'Partial confirmation');
-  applyAnchoredResult('vintage', data.vintage, 'Specific instance',        'Partial moment');
+  applyAnchoredResult('echo',    data.echo,    txt, changedRows, 'Third-party confirmation', 'Partial confirmation');
+  applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance',        'Partial moment');
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
 }
@@ -3294,43 +3055,6 @@ function buildRhythmSummary(pace, timing) {
   return `${cadence}, ${tShort}. Corked will bring the next question back ${String(cadence).toLowerCase()} ${tShort}.`;
 }
 
-function showThreshold() {
-  document.getElementById('question-panel').style.display = 'none';
-  document.getElementById('review-panel').style.display  = 'none';
-  document.getElementById('threshold-panel').style.display = 'block';
-  thresholdStep = 0;
-  thresholdSel  = {};
-  renderThreshold();
-}
-
-function renderThreshold() {
-  const step = THRESHOLD_STEPS[thresholdStep];
-  let h = `<div class="mech-q">${step.q}</div>
-           <div class="mech-hint">${step.note}</div>
-           <div class="options">`;
-  step.opts.forEach((o, i) => {
-    const sel = thresholdSel[step.id] === i;
-    h += `<div class="opt${sel?' sel':''}" onclick="pickThresholdOpt(${i})">
-            <div class="opt-letter">${o.l}</div>
-            <div>
-              <div class="opt-text">${o.t}</div>
-              ${o.s ? `<div class="opt-sub">${o.s}</div>` : ''}
-            </div>
-          </div>`;
-  });
-  h += `</div>
-        <div class="phase-row">
-          <div></div>
-          <button class="btn" onclick="thresholdNext()">Continue →</button>
-        </div>`;
-  document.getElementById('threshold-body').innerHTML = h;
-}
-
-function pickThresholdOpt(i) {
-  thresholdSel[THRESHOLD_STEPS[thresholdStep].id] = i;
-  renderThreshold();
-}
-
 function pickPaceOpt(i) {
   thresholdSel.pace = i;
   renderCellarRhythm();
@@ -3339,27 +3063,6 @@ function pickPaceOpt(i) {
 function pickTimingOpt(i) {
   thresholdSel.notifTiming = i;
   renderCellarRhythm();
-}
-
-function thresholdNext() {
-  const step = THRESHOLD_STEPS[thresholdStep];
-  if (thresholdSel[step.id] === undefined) return;
-
-  if (thresholdStep === 0) {
-    thresholdStep = 1;
-    renderThreshold();
-    return;
-  }
-
-  S.pace        = thresholdSel.pace;
-  S.notifTiming = thresholdSel.notifTiming;
-  S.thresholdDone = true;
-  mi = 1;
-  S.mechIndex = mi;
-  saveState();
-  document.getElementById('threshold-panel').style.display = 'none';
-  document.getElementById('question-panel').style.display  = 'block';
-  renderMech();
 }
 
 // ── REVIEW ──
@@ -3469,36 +3172,6 @@ function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-'+name).classList.add('active');
   window.scrollTo(0,0);
-}
-
-function restart() {
-  createAndOpenBottle();
-}
-
-function newSession() {
-  clearSaved();
-  S = freshState();
-  document.getElementById('continue-row').style.display = 'none';
-  document.getElementById('new-row').style.display = 'block';
-  showIntake();
-}
-
-function continueSession() {
-  const saved = loadSaved();
-  if (!saved) { showIntake(); return; }
-  S = saved.S;
-  mi = saved.mechIndex || 0;
-  M = buildMechs();
-  const _spark2 = getSparkDisplaySummary();
-  document.getElementById('sb-idea').textContent = _spark2;
-  renderElList();
-  updateBottle();
-  showScreen('phase1');
-  renderMech();
-  document.getElementById('ans').addEventListener('input', () => {
-    clearTimeout(window._autosave);
-    window._autosave = setTimeout(saveState, 800);
-  });
 }
 
 // ── BOTTLE CTA ANIMATION ──
@@ -3923,6 +3596,7 @@ function renderCellar() {
                 <div class="bottle-row-dots">${dots}</div>
                 <div class="bottle-row-waiting">${waiting}</div>
                 <div class="bottle-row-date">${date}</div>
+                <button class="bottle-row-del" onclick="deleteBottle('${b.id}',event)" title="Remove spark">×</button>
               </div>
             </div>`;
   }).join('');
