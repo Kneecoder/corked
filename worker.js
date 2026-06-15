@@ -523,13 +523,32 @@ M3 looks for one thing: a real person, someone other than the grape and other th
 
 You receive the confirmed problem, the grape's name (to exclude), the founder's maturity class, and their answer.
 
-ECHO BAR — third-party confirmation:
-settled:  A specific person, clearly not the grape and not the founder, is named or concretely described. Their workaround, tool, habit, or behaviour is stated in concrete terms.
+ECHO BAR - third-party confirmation. This is M3's primary bar and the only
+bar that sets M3's overall state.
+settled:  ONE identifiable separate person, clearly not the grape and not the
+          founder, doing or saying ONE concrete thing.
           "My colleague James pays someone to do it manually every month" = settled.
-          "A designer I know built a spreadsheet on macros because nothing else handles it" = settled.
-clearing: A third party is implied or vaguely referenced without a concrete behaviour. Or only the grape or the founder is present. Or the workaround is too vague to distinguish from assumption.
-          "People just deal with it" = clearing. "I have heard others have the same issue" = clearing.
-turbid:   No third party at all. Only the grape, the founder, or pure assumption. No real person outside the problem-holder relationship.
+          "A designer I know built a spreadsheet on macros" = settled.
+clearing: A category of known sufferers, with or without a named workaround.
+          "Lots of freelancers I know" = clearing.
+          "Freelancers I know use spreadsheets" = clearing. The workaround does
+          not rescue the category. One identifiable person is the bar.
+          Also clearing: a third party implied without concrete behaviour.
+turbid:   No third party at all. Only the grape, the founder, or pure
+          assumption. The founder's inference about what others must do is turbid.
+
+SUBSTITUTION RULE:
+If the answer describes the founder's build, stack, architecture, or feature
+list in place of a person's behaviour, name the substitution in the
+observation: state what was described (the build) and what the question asked
+for (a separate person and what they actually did). The Echo is capped at
+clearing when a substitution carries any third-party reference, and turbid
+when no third party is present at all.
+
+SELF-AS-GRAPE (maturity_class 2):
+The grape is the founder. The Echo can never be the speaker. Any answer about
+the founder's own behaviour grades the Echo turbid. M3 in self mode is only
+satisfied by a separate person.
 
 GRAPE EXCLUSION RULE — critical:
 If the answer describes only what the grape (the person named in the problem) does or has done, Echo is turbid regardless of how specific the behaviour is. M3 is explicitly looking for someone other than the grape.
@@ -543,9 +562,11 @@ clearing: A workaround is described but recurring or unanchored. A general habit
 turbid:   No time anchor at all. No specific instance referenced.
 
 OVERALL STATE:
-settled:  Both bars settled.
-clearing: At least one bar clearing, none turbid.
-turbid:   Either bar turbid.
+state equals echo.state. Full stop.
+The Vintage is opportunistic in M3: grade it only when the answer already
+carries a moment. It may rank the Vintage element up. It never lowers the
+overall state and never blocks. The floor-of-active-bars rule belongs to M2
+and must not be applied here.
 
 OBSERVATION:
 Two short declarative sentences. Monotone lab register.
@@ -1070,7 +1091,10 @@ async function handleField(request, env, corsHeaders) {
   }, 200, corsHeaders);
 }
 
-async function handleM3(request, env, corsHeaders) {
+async function handleEvidenceMechanism(request, env, corsHeaders, cfg) {
+  if (!cfg.bars.includes(cfg.primaryBar)) {
+    throw new Error(`Config error: primaryBar '${cfg.primaryBar}' not in bars for ${cfg.mechanism}`);
+  }
   const body = await request.json();
   const confirmedProblem = String(body.confirmed_problem || '').trim();
   const grapeName        = String(body.grape_name || '').trim();
@@ -1084,18 +1108,21 @@ async function handleM3(request, env, corsHeaders) {
 
   const parsed = await callClaude(
     env,
-    M3_DOCTRINE,
-    buildM3UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer),
+    cfg.doctrine,
+    cfg.buildMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer),
     700
   );
 
   const allowedStates = ['settled', 'clearing', 'turbid'];
-  if (!parsed || typeof parsed !== 'object' || parsed.mechanism !== 'M3') {
-    throw new Error('Invalid M3 response');
+  if (!parsed || typeof parsed !== 'object' || parsed.mechanism !== cfg.mechanism) {
+    throw new Error(`Invalid ${cfg.mechanism} response`);
   }
   if (!allowedStates.includes(parsed.state)) parsed.state = 'turbid';
-  if (!parsed.echo   || !allowedStates.includes(parsed.echo?.state))    parsed.echo    = { state: 'turbid', anchor_span: null };
-  if (!parsed.vintage || !allowedStates.includes(parsed.vintage?.state)) parsed.vintage = { state: 'turbid', anchor_span: null };
+  for (const bar of cfg.bars) {
+    if (!parsed[bar] || !allowedStates.includes(parsed[bar]?.state)) {
+      parsed[bar] = { state: 'turbid', anchor_span: null };
+    }
+  }
 
   const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
   const normAnswer = norm(userAnswer);
@@ -1103,16 +1130,27 @@ async function handleM3(request, env, corsHeaders) {
     if (obj?.[key] && !normAnswer.includes(norm(obj[key]))) { obj[key] = null; return false; }
     return !!obj?.[key];
   };
-  verifySpan(parsed.echo, 'anchor_span');
-  verifySpan(parsed.vintage, 'anchor_span');
+  for (const bar of cfg.bars) verifySpan(parsed[bar], 'anchor_span');
   verifySpan(parsed.observation, 'anchor_span');
 
   const visiblePaths = ['observation.surface_text'];
   const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
   cleanVisibleFields(parsed, visiblePaths);
   parsed.server_checks = { schema_valid: true, visible_style_violations_cleaned: styleViolations };
+  parsed.state = parsed[cfg.primaryBar].state;
+  parsed.server_checks.overall_state_is_primary = true;
 
   return jsonResponse(parsed, 200, corsHeaders);
+}
+
+async function handleM3(request, env, corsHeaders) {
+  return handleEvidenceMechanism(request, env, corsHeaders, {
+    mechanism:    'M3',
+    doctrine:     M3_DOCTRINE,
+    buildMessage: buildM3UserMessage,
+    bars:         ['echo', 'vintage'],
+    primaryBar:   'echo'
+  });
 }
 
 async function handleM0(request, env, corsHeaders) {

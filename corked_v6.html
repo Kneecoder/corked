@@ -1715,17 +1715,6 @@ function parkBottleDormant(id, brief) {
   saveAllBottles(bottles);
 }
 
-function parkBottleInFlight(id, brief) {
-  const bottles = getAllBottles();
-  const now = new Date().toISOString();
-  const i = bottles.findIndex(b => b.id === id);
-  if (i >= 0) {
-    bottles[i] = { ...bottles[i], s: S, status: 'in_flight', brief, updated_at: now };
-  } else {
-    bottles.push({ id, created_at: now, updated_at: now, status: 'in_flight', brief, s: S, mechIndex: mi });
-  }
-  saveAllBottles(bottles);
-}
 
 function updateBottleBrief(id, brief) {
   const bottles = getAllBottles();
@@ -2393,7 +2382,6 @@ function renderMech() {
   if (exitsRow) exitsRow.style.display = 'none';
   const dormantPanel = document.getElementById('dormant-panel');
   if (dormantPanel) dormantPanel.style.display = 'none';
-  document.getElementById('question-panel').style.display = 'block';
 
   obsShown = !!m.prefilled; grapeStepShown = false; curAssess = {};
   if (m.prefilled) showPhaseObservation(m.obs());
@@ -2908,22 +2896,6 @@ async function parkItAction() {
   else if (M[mi].id === 'M3') await parkM3Echo();
 }
 
-async function parkInFlightAction() {
-  const parkBtn   = document.getElementById('rw-park-btn');
-  const flightBtn = document.getElementById('rw-flight-btn');
-  if (parkBtn)   parkBtn.disabled = true;
-  if (flightBtn) { flightBtn.disabled = true; flightBtn.textContent = 'Saving…'; }
-  let brief;
-  const kind = M[mi].id === 'M2' ? 'ask' : 'echo';
-  try {
-    if (M[mi].id === 'M2')       brief = await fetchFieldBrief({ mode: 'ask',  element: 'vintage' });
-    else if (M[mi].id === 'M3')  brief = await fetchFieldBrief({ mode: 'echo', element: 'echo'    });
-  } catch (e) {
-    brief = { kind, text: null, pending: true, created_at: new Date().toISOString() };
-  }
-  if (brief) parkBottleInFlight(activeBottleId, brief);
-  showCellar();
-}
 
 async function triggerM3EchoReentry() {
   const answer = _echoReentryAnswer;
