@@ -2675,13 +2675,9 @@ function applyAnchoredResult(key, result, txt, changedRows, settledLabel, weakLa
 let m2AwaitingConfirm = false;
 let _askReentryAnswer = null;
 
-async function parkM2Ask() {
-  let brief;
-  try {
-    brief = await fetchFieldBrief({ mode: 'ask', element: 'vintage' });
-  } catch (e) {
-    brief = { kind: 'ask', text: null, pending: true, created_at: new Date().toISOString() };
-  }
+function parkM2Ask() {
+  const question = S.m2_problem?.question || null;
+  const brief = { kind: 'ask', text: question, pending: !question, created_at: new Date().toISOString() };
   parkBottleDormant(activeBottleId, brief);
   showCellar();
 }
@@ -3871,7 +3867,8 @@ async function openDormantAsk(id, record) {
   }
 
   const finalBrief = record.brief || {};
-  const briefText = escHtml(finalBrief.text || (finalBrief.pending
+  const savedQuestion = S.m2_problem?.question || null;
+  const briefText = escHtml(finalBrief.text || savedQuestion || (finalBrief.pending
     ? 'The worker could not be reached. Ask the person directly: walk them through the last time this happened.'
     : 'Go ask the person directly. Walk them through the last time this happened.'));
   const grapeName   = escHtml(S.grape_name || 'the person you named');
