@@ -1209,9 +1209,24 @@ body {
 .bottle-row:hover .bottle-row-del { opacity:.55; }
 .bottle-row-del:hover { color:var(--wine-hi) !important; opacity:1 !important; }
 
-/* ── DORMANT ── */
+/* ── DORMANT / IN FLIGHT ── */
 .bottle-row--dormant { border-color:rgba(201,165,90,.45); }
 .bottle-row--dormant:hover { border-color:rgba(201,165,90,.7); }
+.bottle-row--in-flight { border-color:rgba(183,140,80,.5); }
+.bottle-row--in-flight:hover { border-color:rgba(183,140,80,.8); }
+.bottle-row--in-flight .bottle-row-waiting { color:var(--clearing-col); }
+
+/* ── REAL-WORLD EXITS ── */
+#real-world-exits { display:none; }
+#rw-park-btn:disabled { opacity:.45; pointer-events:none; }
+
+/* ── WINEMASTER BRIEF ── */
+#wm-brief {
+  font-size:.82rem; color:var(--muted);
+  line-height:1.7; margin-bottom:1.1rem;
+  padding:.75rem 1rem;
+  border-left:2px solid rgba(255,255,255,.07);
+}
 #screen-dormant {
   flex-direction:column; align-items:center; justify-content:center;
   padding:2.5rem 1.5rem;
@@ -1513,6 +1528,7 @@ body {
       <div class="mech-eyebrow" id="m-label">—</div>
       <div class="mech-q" id="m-q"></div>
       <div class="mech-hint" id="m-hint" style="font-style:normal"></div>
+      <div id="wm-brief" style="display:none"></div>
       <div id="m2-confirm" style="display:none;margin-bottom:.9rem">
         <div style="color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.45rem">Recovered line</div>
         <input type="text" class="field" id="m2-confirm-inp"
@@ -1544,11 +1560,17 @@ body {
       <div class="phase-row">
         <div class="mech-count" id="m-count"></div>
         <div style="display:flex;gap:1rem;align-items:center;">
-          <button class="btn-ghost" id="m2-park-btn" style="display:none" onclick="parkM2Ask()">This needs the real world</button>
-          <button class="btn-ghost" id="m3-park-btn" style="display:none" onclick="parkM3Echo()">I need to find another person</button>
+          <div id="real-world-exits">
+            <button class="btn-ghost" id="rw-park-btn" onclick="parkItAction()">Come back to this</button>
+          </div>
           <button class="btn" id="p1-btn" onclick="p1Next()">Continue →</button>
         </div>
       </div>
+    </div>
+
+    <!-- Dormant / in-flight re-entry panel -->
+    <div class="phase-wrap" id="dormant-panel" style="display:none">
+      <div id="dormant-panel-body"></div>
     </div>
 
     <!-- Review panel -->
@@ -1691,6 +1713,27 @@ function parkBottleDormant(id, brief) {
     bottles.push({ id, created_at: now, updated_at: now, status: 'dormant', brief, s: S, mechIndex: mi });
   }
   saveAllBottles(bottles);
+}
+
+function parkBottleInFlight(id, brief) {
+  const bottles = getAllBottles();
+  const now = new Date().toISOString();
+  const i = bottles.findIndex(b => b.id === id);
+  if (i >= 0) {
+    bottles[i] = { ...bottles[i], s: S, status: 'in_flight', brief, updated_at: now };
+  } else {
+    bottles.push({ id, created_at: now, updated_at: now, status: 'in_flight', brief, s: S, mechIndex: mi });
+  }
+  saveAllBottles(bottles);
+}
+
+function updateBottleBrief(id, brief) {
+  const bottles = getAllBottles();
+  const i = bottles.findIndex(b => b.id === id);
+  if (i >= 0) {
+    bottles[i] = { ...bottles[i], brief, updated_at: new Date().toISOString() };
+    saveAllBottles(bottles);
+  }
 }
 
 function wakeBottle(id) {
@@ -2346,30 +2389,43 @@ function renderMech() {
   hideCellarRhythm();
   document.getElementById('grape-row').style.display = 'none';
   document.getElementById('p1-btn').textContent = 'Continue →';
-  const parkBtn = document.getElementById('m2-park-btn');
-  if (parkBtn) parkBtn.style.display = 'none';
-  const m3ParkBtn = document.getElementById('m3-park-btn');
-  if (m3ParkBtn) m3ParkBtn.style.display = 'none';
+  const exitsRow = document.getElementById('real-world-exits');
+  if (exitsRow) exitsRow.style.display = 'none';
+  const dormantPanel = document.getElementById('dormant-panel');
+  if (dormantPanel) dormantPanel.style.display = 'none';
+  document.getElementById('question-panel').style.display = 'block';
 
   obsShown = !!m.prefilled; grapeStepShown = false; curAssess = {};
   if (m.prefilled) showPhaseObservation(m.obs());
+
+  // Reset wm-brief
+  const wmBrief = document.getElementById('wm-brief');
+  if (wmBrief) { wmBrief.style.display = 'none'; wmBrief.textContent = ''; }
 
   // M2: reset confirm state and trigger Phase A before the user can type.
   m2AwaitingConfirm = false;
   const m2ConfirmPanel = document.getElementById('m2-confirm');
   if (m2ConfirmPanel) m2ConfirmPanel.style.display = 'none';
-  if (m.id === 'M2') triggerM2PhaseA();
+  if (m.id === 'M2') {
+    const gn2 = S.label.grape || S.grape_name || 'the person you named';
+    if (wmBrief) wmBrief.textContent = `Haven't spoken to ${gn2} about this yet? Go have that conversation. Come back and write what they actually said.`;
+    triggerM2PhaseA();
+  }
 
-  // M3: inject confirmed problem into question, show park button, handle echo re-entry.
+  // M3: inject confirmed problem into question, show brief and exit, handle echo re-entry.
   if (m.id === 'M3') {
-    const problem = S.m2_confirmed_problem || 'this problem';
     const gn = S.label.grape || S.grape_name || 'the person you named';
     const selfMode3 = S.maturity === 2;
     m.q = selfMode3
       ? `Your own experience aside — who else hits this? Name one person and tell me what they have actually done about it.`
       : `Set ${gn} aside. Who else hits this? Name one person and tell me what they have actually done about it.`;
     document.getElementById('m-q').textContent = m.q;
-    if (m3ParkBtn) m3ParkBtn.style.display = 'inline-flex';
+    if (wmBrief) {
+      wmBrief.textContent = `Haven't found someone yet? Go find them. Come back with their name and what they've actually done about it.`;
+      wmBrief.style.display = 'block';
+    }
+    const exitsRowM3 = document.getElementById('real-world-exits');
+    if (exitsRowM3) exitsRowM3.style.display = 'flex';
     if (_echoReentryAnswer !== null) triggerM3EchoReentry();
   }
 
@@ -2632,8 +2688,6 @@ let m2AwaitingConfirm = false;
 let _askReentryAnswer = null;
 
 async function parkM2Ask() {
-  const btn = document.getElementById('m2-park-btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Saving the question…'; }
   let brief;
   try {
     brief = await fetchFieldBrief({ mode: 'ask', element: 'vintage' });
@@ -2738,8 +2792,10 @@ function applyM2PhaseAResult(data) {
     S.m2_confirmed_problem = data.recovered_problem;
     if (confirmPanel) confirmPanel.style.display = 'none';
     if (ans) ans.style.display = '';
-    const parkBtn2 = document.getElementById('m2-park-btn');
-    if (parkBtn2) parkBtn2.style.display = 'inline-flex';
+    const exitsRowM2a = document.getElementById('real-world-exits');
+    if (exitsRowM2a) exitsRowM2a.style.display = 'flex';
+    const wmBriefM2a = document.getElementById('wm-brief');
+    if (wmBriefM2a) wmBriefM2a.style.display = 'block';
     setPhaseBusy(false, 'Continue →');
   }
 }
@@ -2757,8 +2813,10 @@ function m2ConfirmProblem() {
   if (hintEl && S.m2_problem?.hint)     hintEl.textContent = S.m2_problem.hint;
   if (confirmPanel) confirmPanel.style.display = 'none';
   if (ans) { ans.style.display = ''; ans.focus(); }
-  const parkBtnConfirm = document.getElementById('m2-park-btn');
-  if (parkBtnConfirm) parkBtnConfirm.style.display = 'inline-flex';
+  const exitsRowConfirm = document.getElementById('real-world-exits');
+  if (exitsRowConfirm) exitsRowConfirm.style.display = 'flex';
+  const wmBriefConfirm = document.getElementById('wm-brief');
+  if (wmBriefConfirm) wmBriefConfirm.style.display = 'block';
   setPhaseBusy(false, 'Continue →');
 }
 
@@ -2833,8 +2891,6 @@ function applyM3Result(data, txt) {
 }
 
 async function parkM3Echo() {
-  const btn = document.getElementById('m3-park-btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Saving the question…'; }
   let brief;
   try {
     brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
@@ -2842,6 +2898,30 @@ async function parkM3Echo() {
     brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
   }
   parkBottleDormant(activeBottleId, brief);
+  showCellar();
+}
+
+async function parkItAction() {
+  const btn = document.getElementById('rw-park-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+  if (M[mi].id === 'M2') await parkM2Ask();
+  else if (M[mi].id === 'M3') await parkM3Echo();
+}
+
+async function parkInFlightAction() {
+  const parkBtn   = document.getElementById('rw-park-btn');
+  const flightBtn = document.getElementById('rw-flight-btn');
+  if (parkBtn)   parkBtn.disabled = true;
+  if (flightBtn) { flightBtn.disabled = true; flightBtn.textContent = 'Saving…'; }
+  let brief;
+  const kind = M[mi].id === 'M2' ? 'ask' : 'echo';
+  try {
+    if (M[mi].id === 'M2')       brief = await fetchFieldBrief({ mode: 'ask',  element: 'vintage' });
+    else if (M[mi].id === 'M3')  brief = await fetchFieldBrief({ mode: 'echo', element: 'echo'    });
+  } catch (e) {
+    brief = { kind, text: null, pending: true, created_at: new Date().toISOString() };
+  }
+  if (brief) parkBottleInFlight(activeBottleId, brief);
   showCellar();
 }
 
@@ -3589,8 +3669,9 @@ function renderCellar() {
     }).join('');
     const waiting = escHtml(getCellarWaiting(b));
     const date = formatCellarDate(b.updated_at);
-    const isDormant = b.status === 'dormant';
-    return `<div class="bottle-row${isDormant ? ' bottle-row--dormant' : ''}" onclick="openBottle('${b.id}')">
+    const isDormant  = b.status === 'dormant';
+    const isInFlight = b.status === 'in_flight';
+    return `<div class="bottle-row${isDormant ? ' bottle-row--dormant' : ''}${isInFlight ? ' bottle-row--in-flight' : ''}" onclick="openBottle('${b.id}')">
               <div class="bottle-row-line">${line}</div>
               <div class="bottle-row-lower">
                 <div class="bottle-row-dots">${dots}</div>
@@ -3612,6 +3693,12 @@ function getCellarWaiting(bottle) {
   const s = bottle.s || {};
   const els = s.elements || {};
   if (bottle.status === 'rested') return 'Archived';
+
+  if (bottle.status === 'in_flight') {
+    return bottle.brief?.kind === 'ask'  ? 'In flight · asked, waiting on reply'
+         : bottle.brief?.kind === 'echo' ? 'In flight · waiting on their story'
+         :                                 'In flight · finding the person';
+  }
 
   if (bottle.status === 'dormant') {
     return bottle.brief?.kind === 'ask'  ? 'Waiting on you · a question to ask'
@@ -3668,7 +3755,7 @@ function openBottle(id) {
   mi = record.mechIndex || 0;
   M = buildMechs();
 
-  if (record.status === 'dormant') {
+  if (record.status === 'dormant' || record.status === 'in_flight') {
     if (record.brief?.kind === 'ask')  return openDormantAsk(id, record);
     if (record.brief?.kind === 'echo') return openDormantEcho(id, record);
     return openDormantFind(id, record);
@@ -3695,15 +3782,12 @@ async function openDormantFind(id, record) {
   const brief = record.brief || {};
   const pending = brief.pending && !brief.text;
 
-  // Regenerate if pending and worker is available.
   if (pending && v6GetWorkerUrl()) {
     try {
       const freshBrief = await fetchFieldBrief({ mode: 'find', missing: 'grape' });
       record.brief = freshBrief;
-      parkBottleDormant(id, freshBrief);
-    } catch (e) {
-      // stay pending, render with fallback
-    }
+      updateBottleBrief(id, freshBrief);
+    } catch (e) {}
   }
 
   const finalBrief = record.brief || {};
@@ -3711,20 +3795,17 @@ async function openDormantFind(id, record) {
     ? 'The worker could not be reached. Find the first person this spark draws from and come back with their name and how you know them.'
     : 'Find the first real person this spark draws from. Walk them through how they handle the relevant thing now and the last time it gave them trouble.'));
   const target = escHtml(finalBrief.target || '');
-  const spark  = escHtml(getSparkDisplaySummary() || S.idea || '');
 
-  document.getElementById('dormant-body').innerHTML = `
-    <div style="margin-bottom:1.5rem">
-      <button class="btn-ghost" onclick="showCellar()" style="font-size:.8rem;padding:.4rem .8rem">← Back to cellar</button>
-    </div>
-    <div class="dormant-eyebrow">Dormant · find the person</div>
+  document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
+  renderElList();
+
+  document.getElementById('dormant-panel-body').innerHTML = `
+    <div class="mech-eyebrow" style="margin-bottom:.9rem">Dormant · find the person</div>
     <div class="dormant-brief">
       <div class="dormant-brief-label">Your brief</div>
       <div class="dormant-brief-text">${briefText}</div>
       ${target ? `<div class="dormant-brief-target">Looking for: ${target}</div>` : ''}
     </div>
-    <div style="margin-bottom:.4rem;font-size:.82rem;color:var(--cream-dim)">The spark</div>
-    <div class="dormant-spark">${spark}</div>
     <div style="margin-bottom:.85rem">
       <div class="dormant-field-label">Their first name</div>
       <input type="text" class="field" id="df-name" maxlength="60"
@@ -3739,11 +3820,15 @@ async function openDormantFind(id, record) {
                 oninput="this.style.borderColor=''"></textarea>
     </div>
     <div class="dormant-error" id="df-error"></div>
-    <div class="row">
-      <span></span>
+    <div class="phase-row">
+      <div></div>
       <button class="btn" id="df-submit-btn" onclick="submitDormantFind('${escHtml(id)}')">Enter the person →</button>
     </div>`;
-  showScreen('dormant');
+
+  document.getElementById('question-panel').style.display = 'none';
+  document.getElementById('review-panel').style.display = 'none';
+  document.getElementById('dormant-panel').style.display = 'block';
+  showScreen('phase1');
 }
 
 async function submitDormantFind(id) {
@@ -3803,47 +3888,49 @@ async function submitDormantFind(id) {
 }
 
 async function openDormantAsk(id, record) {
-  const brief   = record.brief || {};
+  const brief = record.brief || {};
 
-  // Regenerate if pending and worker is available.
   if (brief.pending && !brief.text && v6GetWorkerUrl()) {
     try {
       const freshBrief = await fetchFieldBrief({ mode: 'ask', element: 'vintage' });
       record.brief = freshBrief;
-      parkBottleDormant(id, freshBrief);
-    } catch (e) {
-      // stay pending
-    }
+      updateBottleBrief(id, freshBrief);
+    } catch (e) {}
   }
 
   const finalBrief = record.brief || {};
   const briefText = escHtml(finalBrief.text || (finalBrief.pending
     ? 'The worker could not be reached. Ask the person directly: walk them through the last time this happened.'
     : 'Go ask the person directly. Walk them through the last time this happened.'));
-  const grapeName = escHtml(S.grape_name || 'the person you named');
+  const grapeName   = escHtml(S.grape_name || 'the person you named');
+  const isInFlight  = record.status === 'in_flight';
+  const eyebrow     = isInFlight ? 'In flight · asked, waiting on reply' : 'Dormant · a question to ask';
 
-  document.getElementById('dormant-body').innerHTML = `
-    <div style="margin-bottom:1.5rem">
-      <button class="btn-ghost" onclick="showCellar()" style="font-size:.8rem;padding:.4rem .8rem">← Back to cellar</button>
-    </div>
-    <div class="dormant-eyebrow">Dormant · a question to ask</div>
+  document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
+  renderElList();
+
+  document.getElementById('dormant-panel-body').innerHTML = `
+    <div class="mech-eyebrow" style="margin-bottom:.9rem">${eyebrow}</div>
     <div class="dormant-brief">
       <div class="dormant-brief-label">Ask ${grapeName}</div>
       <div class="dormant-brief-text">${briefText}</div>
     </div>
     <div style="margin-top:1.2rem;margin-bottom:1.5rem">
       <div class="dormant-field-label">What did they say?</div>
-      <textarea class="field" id="da-answer" rows="4"
+      <textarea class="answer-box" id="da-answer"
                 placeholder="Write what they actually said or did. Their words, their actions."
-                style="resize:none"
                 oninput="this.style.borderColor=''"></textarea>
     </div>
     <div class="dormant-error" id="da-error"></div>
-    <div class="row">
-      <span></span>
+    <div class="phase-row">
+      <div></div>
       <button class="btn" id="da-submit-btn" onclick="submitDormantAsk('${escHtml(id)}')">Continue →</button>
     </div>`;
-  showScreen('dormant');
+
+  document.getElementById('question-panel').style.display = 'none';
+  document.getElementById('review-panel').style.display = 'none';
+  document.getElementById('dormant-panel').style.display = 'block';
+  showScreen('phase1');
 }
 
 function submitDormantAsk(id) {
@@ -3869,8 +3956,8 @@ async function openDormantEcho(id, record) {
     try {
       const freshBrief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
       record.brief = freshBrief;
-      parkBottleDormant(id, freshBrief);
-    } catch (e) { /* stay pending */ }
+      updateBottleBrief(id, freshBrief);
+    } catch (e) {}
   }
 
   const finalBrief = record.brief || {};
@@ -3878,14 +3965,16 @@ async function openDormantEcho(id, record) {
   const briefText  = escHtml(finalBrief.text || (finalBrief.pending
     ? `Find someone else who hits ${S.m2_confirmed_problem || 'this problem'}. Ask them: walk me through how you handle this. The last time it happened, what did you actually do?`
     : `Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`));
-  const target = escHtml(finalBrief.target || '');
-  const grapeName = escHtml(S.grape_name || 'the person you named');
+  const target     = escHtml(finalBrief.target || '');
+  const grapeName  = escHtml(S.grape_name || 'the person you named');
+  const isInFlight = record.status === 'in_flight';
+  const eyebrow    = isInFlight ? 'In flight · waiting on their story' : 'Dormant · find another person';
 
-  document.getElementById('dormant-body').innerHTML = `
-    <div style="margin-bottom:1.5rem">
-      <button class="btn-ghost" onclick="showCellar()" style="font-size:.8rem;padding:.4rem .8rem">← Back to cellar</button>
-    </div>
-    <div class="dormant-eyebrow">Dormant · find another person</div>
+  document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
+  renderElList();
+
+  document.getElementById('dormant-panel-body').innerHTML = `
+    <div class="mech-eyebrow" style="margin-bottom:.9rem">${eyebrow}</div>
     <div class="dormant-brief">
       <div class="dormant-brief-label">Not ${grapeName}. Someone else who hits: ${problem}</div>
       <div class="dormant-brief-text">${briefText}</div>
@@ -3893,17 +3982,20 @@ async function openDormantEcho(id, record) {
     </div>
     <div style="margin-top:1.2rem;margin-bottom:1.5rem">
       <div class="dormant-field-label">Who did you find, and what have they done about it?</div>
-      <textarea class="field" id="de-answer" rows="4"
+      <textarea class="answer-box" id="de-answer"
                 placeholder="Describe them and walk through what they actually do or have done. Specific behaviour counts."
-                style="resize:none"
                 oninput="this.style.borderColor=''"></textarea>
     </div>
     <div class="dormant-error" id="de-error"></div>
-    <div class="row">
-      <span></span>
+    <div class="phase-row">
+      <div></div>
       <button class="btn" id="de-submit-btn" onclick="submitDormantEcho('${escHtml(id)}')">Continue →</button>
     </div>`;
-  showScreen('dormant');
+
+  document.getElementById('question-panel').style.display = 'none';
+  document.getElementById('review-panel').style.display = 'none';
+  document.getElementById('dormant-panel').style.display = 'block';
+  showScreen('phase1');
 }
 
 function submitDormantEcho(id) {
