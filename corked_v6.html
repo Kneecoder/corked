@@ -2727,6 +2727,9 @@ function renderMech() {
   S.mechIndex = mi;
   saveState();
   updateRhythmStatus();
+
+  // Re-entry: if this mechanism was already answered, restore post-answer UI
+  restoreAnsweredMechUI(m);
 }
 
 function setPhaseBusy(isBusy, label) {
@@ -3412,6 +3415,7 @@ async function p1Next(bypassErrandWarn = false) {
     ans.setAttribute('readonly','true');
     document.getElementById('p1-btn').textContent = 'Continue →';
     obsShown = true;
+    saveState();
 
   } else {
     // Step 2: advance to next mechanism
@@ -3565,6 +3569,35 @@ function pickTimingOpt(i) {
   renderCellarRhythm();
 }
 
+// ── RE-ENTRY STATE RESTORE ──
+function restoreAnsweredMechUI(m) {
+  if (m.prefilled || !S.answers[m.id]) return;
+
+  const ans = document.getElementById('ans');
+  if (ans) ans.setAttribute('readonly', 'true');
+
+  let obsText = null;
+  if (m.id === 'M2') obsText = S.m2?.observation?.surface_text || null;
+  else if (m.id === 'M3') obsText = S.m3?.observation?.surface_text || null;
+  else if (m.id === 'M4') obsText = S.m4?.observation?.surface_text || null;
+  else if (typeof m.obs === 'function') { try { obsText = m.obs(S.answers[m.id]); } catch(e) {} }
+  if (obsText) showPhaseObservation(obsText);
+  obsShown = true;
+
+  const exitsRow = document.getElementById('real-world-exits');
+  if (exitsRow) exitsRow.style.display = 'flex';
+
+  if (m.id === 'M2') {
+    if ((S.elements.tell !== 'settled' || S.elements.vintage !== 'settled') && S.m2_problem?.question) {
+      showInlineErrand(S.m2_problem.question);
+    }
+  } else if (m.id === 'M3' && S.elements.echo !== 'settled' && S.m3_pending_brief?.text) {
+    showInlineErrand(S.m3_pending_brief.text);
+  } else if (m.id === 'M4' && S.elements.echo !== 'settled' && S.m4_pending_brief?.text) {
+    showInlineErrand(S.m4_pending_brief.text);
+  }
+}
+
 // ── REVIEW ──
 function reviewEl(key) {
   if (S.elements[key] === 'inert') return;
@@ -3574,12 +3607,17 @@ function reviewEl(key) {
     document.getElementById('rv-name').textContent = meta.name;
     document.getElementById('rv-desc').textContent = meta.desc;
     const observation = S.m1?.observation?.surface_text || '';
+    const grapeState = S.elements.grape;
+    const stateNote = grapeState === 'clearing'
+      ? 'Grape is clearing — the person is named but not yet anchored to a specific moment. The mechanisms ahead will develop this.'
+      : '';
     document.getElementById('rv-blocks').innerHTML =
       `<div class="review-block">
          <div class="review-mech-id">M1 · Grape</div>
          <div class="review-q">Name the person this spark comes from.</div>
          <div class="review-a">${escHtml(S.answers.M1)}</div>
          ${observation ? `<div class="review-a">${escHtml(observation)}</div>` : ''}
+         ${stateNote ? `<div class="review-a" style="color:var(--muted);font-style:italic;margin-top:.5rem">${escHtml(stateNote)}</div>` : ''}
        </div>`;
     document.getElementById('question-panel').style.display = 'none';
     document.getElementById('review-panel').style.display = 'block';
@@ -3587,8 +3625,8 @@ function reviewEl(key) {
     return;
   }
 
-  // Find mechanisms that affect this element
-  const relMechs = M.filter(m => m.els.includes(key) && S.answers[m.id]);
+  // Only show review for mechanisms completed before the current one
+  const relMechs = M.filter((m, idx) => idx < mi && m.els.includes(key) && S.answers[m.id]);
 
   if (!relMechs.length) return;
 
