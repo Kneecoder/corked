@@ -1157,7 +1157,7 @@ body {
   color:var(--muted); font-size:.85rem; line-height:1.85;
 }
 .bottle-row {
-  position:relative; height:90px; cursor:pointer;
+  position:relative; height:100px; cursor:pointer;
   transition:filter .18s;
 }
 .bottle-row:hover { filter:brightness(1.28); }
@@ -1166,7 +1166,7 @@ body {
 }
 .bottle-row-body {
   position:absolute; inset:0;
-  padding:10px 28px 10px 86px;
+  padding:12px 28px 10px calc(18% + 16px);
   display:flex; flex-direction:column; justify-content:center; gap:6px;
   pointer-events:none;
 }
@@ -1227,6 +1227,59 @@ body {
 /* ── REAL-WORLD EXITS ── */
 #real-world-exits { display:none; }
 #rw-park-btn:disabled { opacity:.45; pointer-events:none; }
+#rw-park-btn.errand-active {
+  background: rgba(201,165,90,.12);
+  color: var(--gold);
+  border: 1px solid rgba(201,165,90,.4);
+  border-radius: 6px;
+  padding: .6rem 1.15rem;
+  font-size: .74rem;
+  letter-spacing: .09em;
+  opacity: 1;
+  box-shadow: 0 0 14px rgba(201,165,90,.07);
+  transition: background .2s, border-color .2s, box-shadow .2s;
+}
+#rw-park-btn.errand-active:hover {
+  background: rgba(201,165,90,.2);
+  border-color: rgba(201,165,90,.65);
+  box-shadow: 0 0 18px rgba(201,165,90,.13);
+}
+
+/* ── ERRAND WARNING POPUP ── */
+#errand-warn-overlay {
+  display:none; position:fixed; inset:0; z-index:9000;
+  background:rgba(0,0,0,.55); backdrop-filter:blur(4px);
+  align-items:center; justify-content:center;
+}
+#errand-warn-overlay.show { display:flex; }
+#errand-warn-box {
+  background:var(--card); border:1px solid rgba(201,165,90,.28);
+  border-radius:10px; padding:1.8rem 2rem 1.5rem;
+  max-width:340px; width:90%; box-shadow:0 12px 40px rgba(0,0,0,.55);
+  animation:landing-fade .22s ease both;
+}
+#errand-warn-box .ew-eyebrow {
+  font-size:.66rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:.7rem;
+}
+#errand-warn-box .ew-body {
+  font-size:.9rem; color:var(--cream-dim); line-height:1.6; margin-bottom:1.4rem;
+}
+#errand-warn-box .ew-actions {
+  display:flex; gap:.75rem; justify-content:flex-end;
+}
+.ew-cancel {
+  background:none; border:none; color:var(--muted); font-family:'Inter',sans-serif;
+  font-size:.76rem; letter-spacing:.06em; cursor:pointer; padding:.5rem .8rem;
+}
+.ew-cancel:hover { color:var(--cream-dim); }
+.ew-go {
+  background:var(--wine); color:var(--cream); border:none;
+  font-family:'Inter',sans-serif; font-size:.76rem; letter-spacing:.08em;
+  text-transform:uppercase; cursor:pointer; padding:.55rem 1.2rem;
+  border-radius:5px; transition:background .15s;
+}
+.ew-go:hover { background:var(--wine-hi); }
 
 /* ── WINEMASTER BRIEF ── */
 #wm-brief {
@@ -1234,6 +1287,13 @@ body {
   line-height:1.7; margin-bottom:1.1rem;
   padding:.75rem 1rem;
   border-left:2px solid rgba(255,255,255,.07);
+}
+/* ── INLINE ERRAND ── */
+#inline-errand {
+  font-size:.82rem; color:var(--cream-dim);
+  line-height:1.7; margin-top:.85rem;
+  padding:.75rem 1rem;
+  border-left:2px solid var(--gold);
 }
 /* ── PHASE 1 INTRO (one-time, three scenes) ── */
 #screen-phase1-intro {
@@ -1322,6 +1382,18 @@ body {
 </style>
 </head>
 <body>
+
+<!-- ERRAND WARNING POPUP -->
+<div id="errand-warn-overlay">
+  <div id="errand-warn-box">
+    <div class="ew-eyebrow">Your errand is waiting</div>
+    <div class="ew-body">You can always come back to this after you've done your errand. In the meantime, you're free to move to another element.</div>
+    <div class="ew-actions">
+      <button class="ew-cancel" onclick="errandWarnClose()">Stay here</button>
+      <button class="ew-go" onclick="errandWarnContinue()">Continue anyway</button>
+    </div>
+  </div>
+</div>
 
 <!-- GRAIN -->
 <div class="grain" aria-hidden="true"></div>
@@ -1642,6 +1714,7 @@ body {
       </div>
       <textarea class="answer-box" id="ans" placeholder="Write here. The more specific you are, the more Phase 1 can work with."></textarea>
       <div class="obs" id="obs-box"></div>
+      <div id="inline-errand" style="display:none"></div>
       <div class="change-block" id="change-block"></div>
       <div class="grape-judgment" id="grape-judgment">
         <div class="gj-accent"></div>
@@ -2585,6 +2658,7 @@ function renderMech() {
   ans.style.display = m.prefilled ? 'none' : '';
 
   document.getElementById('obs-box').style.display = 'none';
+  hideInlineErrand();
   hideWhatChanged();
   hideGrapeJudgment();
   hideCellarRhythm();
@@ -2666,6 +2740,37 @@ function showPhaseObservation(text) {
   const ob = document.getElementById('obs-box');
   ob.textContent = sanitizeVisibleCopy(text || '');
   ob.style.display = 'block';
+}
+
+function showInlineErrand(text) {
+  const el = document.getElementById('inline-errand');
+  if (!el) return;
+  el.textContent = text || 'Finding your brief…';
+  el.style.display = 'block';
+  const wmBrief = document.getElementById('wm-brief');
+  if (wmBrief) wmBrief.style.display = 'none';
+  document.getElementById('rw-park-btn')?.classList.add('errand-active');
+}
+
+function hideInlineErrand() {
+  const el = document.getElementById('inline-errand');
+  if (el) { el.textContent = ''; el.style.display = 'none'; }
+  document.getElementById('rw-park-btn')?.classList.remove('errand-active');
+}
+
+let errandWarnPending = false;
+function errandWarnClose() {
+  document.getElementById('errand-warn-overlay').classList.remove('show');
+  errandWarnPending = false;
+}
+function errandWarnContinue() {
+  document.getElementById('errand-warn-overlay').classList.remove('show');
+  errandWarnPending = false;
+  p1Next(true);
+}
+function isErrandActive() {
+  const el = document.getElementById('inline-errand');
+  return el && el.style.display !== 'none' && el.textContent.trim().length > 0;
 }
 
 function hideWhatChanged() {
@@ -3088,6 +3193,14 @@ function applyM2Result(data, txt) {
   }
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
+
+  if (data.vintage?.state === 'turbid' || data.vintage?.state === 'clearing') {
+    const briefText = S.m2_problem?.question
+      || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?`;
+    showInlineErrand(briefText);
+  } else {
+    hideInlineErrand();
+  }
 }
 
 // ── END M2 ────────────────────────────────────────────────────────────────
@@ -3117,7 +3230,7 @@ async function callM3Worker(txt) {
   return data;
 }
 
-function applyM3Result(data, txt) {
+async function applyM3Result(data, txt) {
   S.m3 = data;
   const changedRows = [];
 
@@ -3125,14 +3238,31 @@ function applyM3Result(data, txt) {
   applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance',        'Partial moment');
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
+
+  if (data.echo?.state === 'turbid' || data.echo?.state === 'clearing') {
+    showInlineErrand(null);
+    try {
+      const brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
+      S.m3_pending_brief = brief;
+      showInlineErrand(brief.text || `Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`);
+    } catch (e) {
+      S.m3_pending_brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
+      showInlineErrand(`Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`);
+    }
+  } else {
+    hideInlineErrand();
+  }
 }
 
 async function parkM3Echo() {
-  let brief;
-  try {
-    brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
-  } catch (e) {
-    brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
+  let brief = S.m3_pending_brief || null;
+  S.m3_pending_brief = null;
+  if (!brief) {
+    try {
+      brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
+    } catch (e) {
+      brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
+    }
   }
   parkBottleDormant(activeBottleId, brief);
   showCellar();
@@ -3193,21 +3323,38 @@ async function callM4Worker(txt) {
   return data;
 }
 
-function applyM4Result(data, txt) {
+async function applyM4Result(data, txt) {
   S.m4 = data;
   const changedRows = [];
   applyAnchoredResult('echo',    data.echo,    txt, changedRows, 'Second confirmation', 'Partial confirmation');
   applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance',   'Partial moment');
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
+
+  if (data.echo?.state === 'turbid' || data.echo?.state === 'clearing') {
+    showInlineErrand(null);
+    try {
+      const brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
+      S.m4_pending_brief = brief;
+      showInlineErrand(brief.text || `Find a second person who hits this problem — not ${S.grape_name || 'the person you named'} and not whoever you named before. Ask what they've actually done about it.`);
+    } catch (e) {
+      S.m4_pending_brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
+      showInlineErrand(`Find a second person who hits this problem — not ${S.grape_name || 'the person you named'} and not whoever you named before. Ask what they've actually done about it.`);
+    }
+  } else {
+    hideInlineErrand();
+  }
 }
 
 async function parkM4Echo() {
-  let brief;
-  try {
-    brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
-  } catch (e) {
-    brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
+  let brief = S.m4_pending_brief || null;
+  S.m4_pending_brief = null;
+  if (!brief) {
+    try {
+      brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
+    } catch (e) {
+      brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
+    }
   }
   parkBottleDormant(activeBottleId, brief);
   showCellar();
@@ -3215,7 +3362,11 @@ async function parkM4Echo() {
 
 // ── END M4 ────────────────────────────────────────────────────────────────
 
-async function p1Next() {
+async function p1Next(bypassErrandWarn = false) {
+  if (!bypassErrandWarn && isErrandActive()) {
+    document.getElementById('errand-warn-overlay').classList.add('show');
+    return;
+  }
   const m = M[mi];
   const ans = document.getElementById('ans');
   const txt = ans.value.trim();
@@ -3968,14 +4119,18 @@ function showCellar() {
 }
 
 function bottleCardSVG(elements, id, W) {
-  // Same bottle shape as landing page CTA — neck/shoulder fixed pixels, body stretches.
-  // Landing page viewBox 260×72: neck x=2-46, shoulder x=46-78, body x=78-240, base x=240-257, neck y=30-42, body y=10-62.
-  // Here H=90: scale y values proportionally (×90/72 = ×1.25).
-  const H = 90;
-  const ny1 = 37, ny2 = 52;   // neck y range  (30×1.25, 42×1.25)
-  const by1 = 12, by2 = 78;   // body y range  (10×1.25, 62×1.25)
-  const bx2 = W - 17;          // body end x (matches base cap size)
-  const path = `M 2,${ny1} L 46,${ny1} C 56,${ny1} 68,${by1} 78,${by1} L ${bx2},${by1} Q ${W},${by1} ${W},45 Q ${W},${by2} ${bx2},${by2} L 78,${by2} C 68,${by2} 56,${ny2} 46,${ny2} L 2,${ny2} Z`;
+  // Scale all x-coords from the landing CTA reference (260w×72h) so neck+shoulder
+  // reads as ~30% of total width at any card width — same proportions the landing bottle has.
+  const H  = 100;
+  const s  = W / 260;                   // x scale factor
+  const nx2 = Math.round(46 * s);       // neck end
+  const c1x = Math.round(56 * s);       // shoulder bezier cp1
+  const c2x = Math.round(68 * s);       // shoulder bezier cp2
+  const sx2 = Math.round(78 * s);       // shoulder end / body start
+  const bx2 = Math.round(240 * s);      // body end
+  const ny1 = 42, ny2 = 59;             // neck y range for H=100 (17px opening)
+  const by1 = 14, by2 = 86;             // body y range for H=100
+  const path = `M 2,${ny1} L ${nx2},${ny1} C ${c1x},${ny1} ${c2x},${by1} ${sx2},${by1} L ${bx2},${by1} Q ${W},${by1} ${W},50 Q ${W},${by2} ${bx2},${by2} L ${sx2},${by2} C ${c2x},${by2} ${c1x},${ny2} ${nx2},${ny2} L 2,${ny2} Z`;
   const cid = 'bc' + String(id).replace(/[^a-z0-9]/gi,'');
   const g1 = `g1${cid}`, g2 = `g2${cid}`;
   const settled  = EL_KEYS.filter(k => elements[k] === 'settled').length;
@@ -3996,7 +4151,7 @@ function bottleCardSVG(elements, id, W) {
   <g clip-path="url(#${cid})">
     <rect width="${W}" height="${H}" fill="#0A0608"/>
     <rect width="${W}" height="${H}" fill="url(#${g1})"/>
-    <rect x="78" y="${by1}" width="${bx2-78}" height="14" fill="url(#${g2})"/>
+    <rect x="${sx2}" y="${by1}" width="${bx2-sx2}" height="14" fill="url(#${g2})"/>
   </g>
   <path d="${path}" fill="none" stroke="#3D2820" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
 </svg>`;
