@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corked — M3 Flow Bench</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:#0C0906; --surface:#141009; --card:#1C1410; --border:#2A1F18; --border-hi:#362820;
+  --wine:#7A2E3C; --wine-hi:#9B3D4F; --wine-dim:#4A1C25;
+  --gold:#C9A55A; --cream:#EDE0C4; --cream-dim:#B8A88A; --muted:#8C7A64;
+  --settled:#5DA876; --clearing:#C9A040; --turbid:#8B7A70;
+  --fail-red:#C45B5B;
+}
+body {
+  background:var(--bg); color:var(--cream);
+  font-family:'Inter',sans-serif; font-weight:300;
+  line-height:1.6; -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.wrap { max-width:700px; margin:0 auto; padding:3.5rem 1.4rem 5rem; }
+
+/* header */
+.eyebrow { font-size:.62rem; letter-spacing:.3em; text-transform:uppercase; color:var(--muted); margin-bottom:.7rem; }
+h1 { font-family:'Playfair Display',serif; font-weight:400; font-size:1.9rem; margin-bottom:.5rem; }
+.sub { font-size:.83rem; color:var(--cream-dim); max-width:520px; margin-bottom:.5rem; }
+.rule-note {
+  font-size:.77rem; color:var(--muted); border-left:2px solid var(--border-hi);
+  padding:.55rem .9rem; margin-bottom:2.4rem; font-style:italic;
+}
+
+/* score bar */
+.scorebar {
+  display:flex; gap:1.6rem; align-items:center; margin-bottom:2.6rem;
+  padding:.9rem 1.2rem; background:var(--surface); border:1px solid var(--border);
+}
+.score-pill {
+  display:flex; flex-direction:column; align-items:center; gap:.15rem;
+}
+.pill-num {
+  font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:400; line-height:1;
+}
+.pill-num.settled { color:var(--settled); }
+.pill-num.clearing { color:var(--clearing); }
+.pill-num.turbid { color:var(--turbid); }
+.pill-num.total { color:var(--cream); }
+.pill-lbl { font-size:.59rem; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); }
+.score-divider { width:1px; background:var(--border); align-self:stretch; }
+.score-msg { font-size:.78rem; color:var(--muted); flex:1; font-style:italic; }
+.score-msg b { color:var(--cream); font-style:normal; }
+
+/* flow card */
+.flow { border:1px solid var(--border); background:var(--surface); margin-bottom:1.2rem; }
+.flow-header {
+  display:flex; align-items:flex-start; gap:1rem;
+  padding:1.2rem 1.2rem .95rem; border-bottom:1px solid var(--border); cursor:pointer;
+  user-select:none;
+}
+.flow-header:hover { background:rgba(255,255,255,.015); }
+.flow-num {
+  font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:400;
+  color:var(--muted); flex-shrink:0; line-height:1.2; padding-top:.05rem;
+}
+.flow-header-right { flex:1; }
+.flow-title { font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--cream); }
+.flow-concept { font-size:.77rem; color:var(--muted); margin-top:.18rem; }
+.flow-badges { display:flex; gap:.5rem; align-items:center; margin-top:.5rem; flex-wrap:wrap; }
+.badge {
+  font-size:.6rem; letter-spacing:.18em; text-transform:uppercase;
+  padding:.18rem .55rem; border:1px solid; font-weight:500;
+}
+.badge.settled { color:var(--settled); border-color:var(--settled); }
+.badge.clearing { color:var(--clearing); border-color:var(--clearing); }
+.badge.turbid { color:var(--turbid); border-color:var(--turbid); }
+.badge.watch { color:var(--gold); border-color:var(--gold); background:rgba(201,165,90,.07); }
+.badge.wine { color:var(--wine-hi); border-color:var(--wine-dim); }
+.chevron { font-size:.8rem; color:var(--muted); margin-top:.25rem; transition:transform .2s; flex-shrink:0; }
+.flow.open .chevron { transform:rotate(180deg); }
+
+/* result dot in header */
+.result-dot {
+  width:10px; height:10px; border-radius:50%;
+  background:var(--border-hi); flex-shrink:0; margin-top:.55rem;
+  transition:background .3s, box-shadow .3s;
+}
+.flow.settled .result-dot { background:var(--settled); box-shadow:0 0 10px rgba(93,168,118,.45); }
+.flow.clearing .result-dot { background:var(--clearing); box-shadow:0 0 10px rgba(201,160,64,.45); }
+.flow.turbid .result-dot { background:var(--turbid); box-shadow:0 0 10px rgba(139,122,112,.4); }
+.flow.wrong .result-dot { background:var(--fail-red); box-shadow:0 0 10px rgba(196,91,91,.45); }
+
+/* flow body */
+.flow-body { display:none; padding:1.2rem 1.2rem 1.4rem; }
+.flow.open .flow-body { display:block; }
+
+/* steps */
+.step { margin-bottom:1.25rem; }
+.step-label {
+  font-size:.6rem; letter-spacing:.25em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:.35rem; display:flex; align-items:center; gap:.5rem;
+}
+.step-label::after { content:''; flex:1; height:1px; background:var(--border); }
+.step-desc { font-size:.74rem; color:var(--muted); margin-bottom:.45rem; font-style:italic; }
+.copy-row { display:flex; gap:.6rem; align-items:flex-start; }
+.copy-text {
+  flex:1; background:var(--card); border:1px solid var(--border);
+  padding:.75rem .9rem; font-size:.82rem; color:var(--cream-dim);
+  font-family:'Inter',sans-serif; font-weight:300; line-height:1.55;
+  border-radius:0; min-height:44px;
+}
+.copy-btn {
+  background:transparent; border:1px solid var(--border); color:var(--muted);
+  padding:.55rem .8rem; font-size:.65rem; letter-spacing:.15em; text-transform:uppercase;
+  cursor:pointer; font-family:'Inter',sans-serif; white-space:nowrap;
+  transition:all .18s; flex-shrink:0; align-self:stretch; min-height:44px;
+}
+.copy-btn:hover { border-color:var(--gold); color:var(--gold); }
+.copy-btn.copied { border-color:var(--settled); color:var(--settled); }
+
+/* inline pair for short fields */
+.pair-row { display:flex; gap:.7rem; }
+.pair-row .pair-item { flex:1; }
+.pair-label { font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:.3rem; }
+
+/* watch note */
+.watch-note {
+  background:rgba(201,165,90,.06); border-left:2px solid var(--gold);
+  padding:.65rem .9rem; font-size:.78rem; color:var(--cream-dim);
+  margin-bottom:1.25rem; line-height:1.5;
+}
+.watch-note b { color:var(--gold); font-weight:500; }
+
+/* M3 question callout */
+.q-callout {
+  background:var(--card); border:1px solid var(--border-hi);
+  padding:.7rem .9rem; font-size:.82rem; color:var(--cream);
+  margin-bottom:.5rem; font-style:italic; line-height:1.5;
+}
+.q-callout span { color:var(--gold); font-style:normal; font-weight:500; }
+
+/* result section */
+.result-section { margin-top:1.4rem; border-top:1px solid var(--border); padding-top:1.1rem; }
+.result-label {
+  font-size:.6rem; letter-spacing:.25em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:.65rem;
+}
+.result-options { display:flex; gap:.5rem; flex-wrap:wrap; }
+.result-btn {
+  border:1px solid var(--border); background:transparent; color:var(--muted);
+  padding:.6rem 1.1rem; font-size:.7rem; letter-spacing:.14em; text-transform:uppercase;
+  cursor:pointer; font-family:'Inter',sans-serif; transition:all .2s;
+}
+.result-btn:hover { border-color:var(--border-hi); color:var(--cream-dim); }
+.result-btn.active-settled { border-color:var(--settled); color:var(--settled); background:rgba(93,168,118,.08); }
+.result-btn.active-clearing { border-color:var(--clearing); color:var(--clearing); background:rgba(201,160,64,.08); }
+.result-btn.active-turbid { border-color:var(--turbid); color:var(--turbid); background:rgba(139,122,112,.1); }
+.result-btn.active-wrong { border-color:var(--fail-red); color:var(--fail-red); background:rgba(196,91,91,.08); }
+
+.obs-box {
+  margin-top:.9rem; display:none; flex-direction:column; gap:.5rem;
+}
+.obs-box.show { display:flex; }
+.obs-input {
+  width:100%; background:var(--card); border:1px solid var(--border);
+  color:var(--cream-dim); font-family:'Inter',sans-serif; font-size:.78rem;
+  font-weight:300; padding:.7rem .9rem; resize:vertical; min-height:68px;
+  line-height:1.5;
+}
+.obs-input::placeholder { color:var(--muted); }
+.obs-hint { font-size:.71rem; color:var(--muted); font-style:italic; }
+
+footer { margin-top:3.5rem; font-size:.67rem; color:var(--muted); font-style:italic; font-family:'Playfair Display',serif; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Corked · M3 · Manual Flow Bench</div>
+  <h1>Three bottles. Three verdicts.</h1>
+  <div class="sub">Run each flow end-to-end in Corked. Copy the inputs in order. Record what comes back.</div>
+  <div class="rule-note">M3 rule: the overall state equals the Echo state, full stop. Vintage can rank up its own bar but never moves the bottle. Watch Echo.</div>
+
+  <div class="scorebar" id="scorebar">
+    <div class="score-pill">
+      <div class="pill-num total" id="sc-done">0</div>
+      <div class="pill-lbl">logged</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-pill">
+      <div class="pill-num settled" id="sc-s">—</div>
+      <div class="pill-lbl">settled</div>
+    </div>
+    <div class="score-pill">
+      <div class="pill-num clearing" id="sc-c">—</div>
+      <div class="pill-lbl">clearing</div>
+    </div>
+    <div class="score-pill">
+      <div class="pill-num turbid" id="sc-t">—</div>
+      <div class="pill-lbl">turbid</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-msg" id="sc-msg">Open a flow and start filling inputs into Corked.</div>
+  </div>
+
+  <!-- ── FLOW 1 ── -->
+  <div class="flow" id="flow-1">
+    <div class="flow-header" onclick="toggle(1)">
+      <div class="result-dot"></div>
+      <div class="flow-num">01</div>
+      <div class="flow-header-right">
+        <div class="flow-title">The last voicemail</div>
+        <div class="flow-concept">Voice preservation — saving the dead person's voice before the phone is wiped</div>
+        <div class="flow-badges">
+          <span class="badge settled">Target: Settled</span>
+          <span class="badge wine">Grape: Elena</span>
+          <span class="badge watch">Watch: Diane's cassette</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="flow-body">
+
+      <div class="watch-note">
+        <b>What to watch:</b> Diane and the cassette player is a specific person doing a specific concrete thing. If the observation surface text names Diane and the tape, and Echo lands settled, the rule held. If it somehow lands clearing, the model missed the identifiable individual.
+      </div>
+
+      <div class="step">
+        <div class="step-label">Step 1 — Spark</div>
+        <div class="step-desc">Paste this into the spark entry field on the home screen.</div>
+        <div class="copy-row">
+          <div class="copy-text" id="t1-spark">a way to save the voice of someone who just died before everyone's phones get wiped and the voicemails are gone forever</div>
+          <button class="copy-btn" onclick="cp('t1-spark',this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-label">Step 2 — Grape</div>
+        <div class="step-desc">When Corked asks who the problem belongs to, enter these.</div>
+        <div class="pair-row">
+          <div class="pair-item">
+            <div class="pair-label">Name</div>
+            <div class="copy-row">
+              <div class="copy-text" id="t1-gname">Elena</div>
+              <button class="copy-btn" onclick="cp('t1-gname',this)">Copy</button>
+            </div>
+          </div>
+          <div class="pair-item">
+            <div class="pair-label">Relationship</div>
+            <div class="copy-row">
+              <div class="copy-text" id="t1-grel">my aunt</div>
+              <button class="copy-btn" onclick="cp('t1-grel',this)">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-label">Step 3 — M2 friction answer</div>
+        <div class="step-desc">When Corked asks about the friction Elena experiences, paste this.</div>
+        <div class="copy-row">
+          <div class="copy-text" id="t1-m2">She lost her husband in February and two months later accidentally deleted his last voicemail when she got a new phone. She did not realise what she was doing until it was gone.</div>
+          <button class="copy-btn" onclick="cp('t1-m2',this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-label">Step 4 — M3 answer</div>
+        <div class="q-callout">The app will ask: "Set <span>Elena</span> aside. Who else hits this? Name one person and tell me what they have actually done about it."</div>
+        <div class="copy-row">
+          <div class="copy-text" id="t1-m3">My friend's mother Diane recorded every voicemail her son had ever left her onto a cassette player held up to the phone speaker the week after he died. She has fourteen minutes of his voice on tape now.</div>
+          <button class="copy-btn" onclick="cp('t1-m3',this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="result-section">
+        <div class="result-label">What did Corked return?</div>
+        <div class="result-options">
+          <button class="result-btn" onclick="setResult(1,'settled',this)">Settled</button>
+          <button class="result-btn" onclick="setResult(1,'clearing',this)">Clearing</button>
+          <button class="result-btn" onclick="setResult(1,'turbid',this)">Turbid</button>
+          <button class="result-btn" onclick="setResult(1,'wrong',this)">Something unexpected</button>
+        </div>
+        <div class="obs-box" id="obs-1">
+          <textarea class="obs-input" placeholder="Paste the observation text from Corked here (optional but useful)" id="obs-txt-1"></textarea>
+          <div class="obs-hint">The observation is the two-sentence lab note the Winemaster writes below your answer.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── FLOW 2 ── -->
+  <div class="flow" id="flow-2">
+    <div class="flow-header" onclick="toggle(2)">
+      <div class="result-dot"></div>
+      <div class="flow-num">02</div>
+      <div class="flow-header-right">
+        <div class="flow-title">Too loud to eat</div>
+        <div class="flow-concept">Sensory restaurant guide — rated by noise level and lighting, not food</div>
+        <div class="flow-badges">
+          <span class="badge clearing">Target: Clearing</span>
+          <span class="badge wine">Grape: Kieran</span>
+          <span class="badge watch">Hardened bar — category + workaround must not settle</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="flow-body">
+
+      <div class="watch-note">
+        <b>What to watch:</b> This is the hardened bar test. The M3 answer names a category (people in communities online) and a workaround (Reddit threads, Facebook groups). The workaround does NOT rescue the category — one identifiable person is the bar for settled. If the Echo lands settled here, the category rule is broken.
+      </div>
+
+      <div class="step">
+        <div class="step-label">Step 1 — Spark</div>
+        <div class="step-desc">Paste this into the spark entry field on the home screen.</div>
+        <div class="copy-row">
+          <div class="copy-text" id="t2-spark">a guide that rates restaurants by noise level and lighting intensity for people who cannot handle overstimulating environments</div>
+          <button class="copy-btn" onclick="cp('t2-spark',this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-label">Step 2 — Grape</div>
+        <div class="step-desc">When Corked asks who the problem belongs to, enter these.</div>
+        <div class="pair-row">
+          <div class="pair-item">
+            <div class="pair-label">Name</div>
+            <div class="copy-row">
+              <div class="copy-text" id="t2-gname">Kieran</div>
+              <button class="copy-btn" onclick="cp('t2-gname',this)">Copy</button>
+            </div>
+          </div>
+          <div class="pair-item">
+            <div class="pair-label">Relationship</div>
+            <div class="copy-row">
+              <div class="copy-text" id="t2-grel">my flatmate</div>
+              <button class="copy-btn" onclick="cp('t2-grel',this)">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-label">Step 3 — M2 friction answer</div>
+        <div class="step-desc">When Corked asks about the friction Kieran experiences, paste this.</div>
+        <div class="copy-row">
+          <div class="copy-text" id="t2-m2">He has auditory processing issues. Twice last month he had to leave a restaurant mid-meal because the noise was too much. He had no way to know before he walked in.</div>
+          <button class="copy-btn" onclick="cp('t2-m2',this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-label">Step 4 — M3 answer</div>
+        <div class="q-callout">The app will ask: "Set <span>Kieran</span> aside. Who else hits this? Name one person and tell me what they have actually done about it."</div>
+        <div class="copy-row">
+          <div class="copy-text" id="t2-m3">People in the sensory processing and autism communities I follow online tend to share venue reviews in Reddit threads and Facebook groups. There is usually someone who has been and can give a rough noise rating in the comments.</div>
+          <button class="copy-btn" onclick="cp('t2-m3',this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="result-section">
+        <div class="result-label">What did Corked return?</div>
+        <div class="result-options">
+          <button class="result-btn" onclick="setResult(2,'settled',this)">Settled</button>
+          <button class="result-btn" onclick="setResult(2,'clearing',this)">Clearing</button>
+          <button class="result-btn" onclick="setResult(2,'turbid',this)">Turbid</button>
+          <button class="result-btn" onclick="setResult(2,'wrong',this)">Something unexpected</button>
+        </div>
+        <div class="obs-box" id="obs-2">
+          <textarea class="obs-input" placeholder="Paste the observation text from Corked here (optional but useful)" id="obs-txt-2"></textarea>
+          <div class="obs-hint">If this returns settled, paste the observation — we need to see what the model thought it found.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── FLOW 3 ── -->
+  <div class="flow" id="flow-3">
+    <div class="flow-header" onclick="toggle(3)">
+      <div class="result-dot"></div>
+      <div class="flow-num">03</div>
+      <div class="flow-header-right">
+        <div class="flow-title">The shelf of guilt</div>
+        <div class="flow-concept">Tsundoku tracker — make the unread book pile feel like a plan, not a failure</div>
+        <div class="flow-badges">
+          <span class="badge turbid">Target: Turbid</span>
+          <span class="badge wine">Grape: Anya</span>
+          <span class="badge watch">Grape exclusion rule</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="flow-body">
+
+      <div class="watch-note">
+        <b>What to watch:</b> The M3 answer describes Anya — the grape — handling it herself. The behaviour is specific and concrete. The grape exclusion rule says it does not matter how specific it is: if the only person in the answer is the grape, Echo is turbid. If the model settles on Anya's specificity, the exclusion rule is not holding.
+      </div>
+
+      <div class="step">
+        <div class="step-label">Step 1 — Spark</div>
+        <div class="step-desc">Paste this into the spark entry field on the home screen.</div>
+        <div class="copy-row">
+          <div class="copy-text" id="t3-spark">something for people who buy books faster than they read them — a way to make the pile feel like a plan instead of a source of guilt</div>
+          <button class="copy-btn" onclick="cp('t3-spark',this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-label">Step 2 — Grape</div>
+        <div class="step-desc">When Corked asks who the problem belongs to, enter these.</div>
+        <div class="pair-row">
+          <div class="pair-item">
+            <div class="pair-label">Name</div>
+            <div class="copy-row">
+              <div class="copy-text" id="t3-gname">Anya</div>
+              <button class="copy-btn" onclick="cp('t3-gname',this)">Copy</button>
+            </div>
+          </div>
+          <div class="pair-item">
+            <div class="pair-label">Relationship</div>
+            <div class="copy-row">
+              <div class="copy-text" id="t3-grel">my friend from book club</div>
+              <button class="copy-btn" onclick="cp('t3-grel',this)">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-label">Step 3 — M2 friction answer</div>
+        <div class="step-desc">When Corked asks about the friction Anya experiences, paste this.</div>
+        <div class="copy-row">
+          <div class="copy-text" id="t3-m2">She has over two hundred unread books. She told me she gets genuine anxiety every time she buys a new one because she knows the pile will never shrink. She still buys them anyway.</div>
+          <button class="copy-btn" onclick="cp('t3-m2',this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-label">Step 4 — M3 answer</div>
+        <div class="q-callout">The app will ask: "Set <span>Anya</span> aside. Who else hits this? Name one person and tell me what they have actually done about it."</div>
+        <div class="copy-row">
+          <div class="copy-text" id="t3-m3">Anya actually dealt with it herself — she stopped shelving unread books and started leaving them stacked on her desk face-up so she would see them every morning, and she said it helped her actually finish things.</div>
+          <button class="copy-btn" onclick="cp('t3-m3',this)">Copy</button>
+        </div>
+      </div>
+
+      <div class="result-section">
+        <div class="result-label">What did Corked return?</div>
+        <div class="result-options">
+          <button class="result-btn" onclick="setResult(3,'settled',this)">Settled</button>
+          <button class="result-btn" onclick="setResult(3,'clearing',this)">Clearing</button>
+          <button class="result-btn" onclick="setResult(3,'turbid',this)">Turbid</button>
+          <button class="result-btn" onclick="setResult(3,'wrong',this)">Something unexpected</button>
+        </div>
+        <div class="obs-box" id="obs-3">
+          <textarea class="obs-input" placeholder="Paste the observation text from Corked here (optional but useful)" id="obs-txt-3"></textarea>
+          <div class="obs-hint">If this does not land turbid, paste the observation — the exclusion rule is the thing to check.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>The Echo is the only bar that earns the verdict. Everything else is context.</footer>
+</div>
+
+<script>
+const EXPECTS = { 1:'settled', 2:'clearing', 3:'turbid' };
+const results = {};
+
+function toggle(n) {
+  const el = document.getElementById('flow-' + n);
+  el.classList.toggle('open');
+}
+
+function cp(id, btn) {
+  const text = document.getElementById(id).textContent.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+  }).catch(() => {
+    const range = document.createRange();
+    range.selectNode(document.getElementById(id));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    btn.textContent = 'Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+function setResult(n, state, btn) {
+  results[n] = state;
+  const flow = document.getElementById('flow-' + n);
+  const obsBox = document.getElementById('obs-' + n);
+
+  // clear active state from sibling buttons
+  btn.closest('.result-options').querySelectorAll('.result-btn').forEach(b => {
+    b.className = 'result-btn';
+  });
+  btn.classList.add('active-' + state);
+
+  // update flow dot
+  const expected = EXPECTS[n];
+  flow.className = 'flow open ' + (state === expected ? state : 'wrong');
+
+  // show observation input
+  obsBox.classList.add('show');
+
+  updateScore();
+}
+
+function updateScore() {
+  const done = Object.keys(results).length;
+  const counts = { settled:0, clearing:0, turbid:0 };
+  let allRight = true;
+
+  for (const [n, state] of Object.entries(results)) {
+    if (state === 'settled') counts.settled++;
+    else if (state === 'clearing') counts.clearing++;
+    else if (state === 'turbid') counts.turbid++;
+    if (state !== EXPECTS[n]) allRight = false;
+  }
+
+  document.getElementById('sc-done').textContent = done;
+  document.getElementById('sc-s').textContent = counts.settled || '—';
+  document.getElementById('sc-c').textContent = counts.clearing || '—';
+  document.getElementById('sc-t').textContent = counts.turbid || '—';
+
+  const msg = document.getElementById('sc-msg');
+  if (done === 0) {
+    msg.innerHTML = 'Open a flow and start filling inputs into Corked.';
+  } else if (done < 3) {
+    const remaining = 3 - done;
+    msg.innerHTML = `${done} of 3 logged. ${remaining} to go.`;
+  } else if (allRight) {
+    msg.innerHTML = '<b>3 of 3 correct.</b> Echo rule is holding. M3 grading is sound.';
+  } else {
+    const wrong = Object.entries(results).filter(([n,s]) => s !== EXPECTS[n]).length;
+    msg.innerHTML = `<b>${wrong} unexpected result${wrong>1?'s':''}.</b> Paste the observation text into the box below that flow and share with Claude.`;
+  }
+}
+
+// open first flow on load
+toggle(1);
+</script>
+</body>
+</html>

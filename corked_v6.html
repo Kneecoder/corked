@@ -949,6 +949,12 @@ body {
   border-left-color:var(--wine-dim);
   background:linear-gradient(180deg, rgba(155,61,79,.05), var(--surface));
 }
+.m0-stamp.state-blocked .m0-stamp-line {
+  font-family:'Inter',sans-serif;
+  font-size:1rem;
+  line-height:1.7;
+  color:var(--cream-dim);
+}
 .m0-stamp::before {
   content:'';
   position:absolute;
@@ -1244,8 +1250,11 @@ body {
 .p1i-sub { color:var(--cream-dim); font-size:.9rem; margin-bottom:2.8rem; }
 .p1i-stage {
   min-height:110px; display:flex; flex-direction:column;
-  align-items:center; gap:1.5rem; margin-bottom:2rem;
+  align-items:center; gap:1.3rem; margin-bottom:2rem;
 }
+.p1i-bottle-wrap { margin-bottom:.2rem; }
+.p1i-bl { transition:opacity .55s ease; }
+#p1i-murk { transition:opacity .65s ease; }
 .p1i-dots { display:flex; gap:.9rem; }
 .p1i-dot {
   width:15px; height:15px; border-radius:50%; background:var(--border-hi);
@@ -1513,6 +1522,29 @@ body {
     <div class="p1i-sub">Three ways one has gone before.</div>
 
     <div class="p1i-stage">
+      <div class="p1i-bottle-wrap">
+        <svg width="72" height="152" viewBox="0 0 72 152">
+          <defs>
+            <clipPath id="p1i-bcl">
+              <path d="M30 2 L30 22 Q18 32 14 52 L10 70 L10 140 Q10 150 20 150 L52 150 Q62 150 62 140 L62 70 L58 52 Q54 32 42 22 L42 2 Z"/>
+            </clipPath>
+          </defs>
+          <g clip-path="url(#p1i-bcl)">
+            <rect x="0" y="0" width="72" height="152" fill="#140810" opacity="0.5"/>
+            <rect class="p1i-bl" id="p1i-bl-5" x="0" y="109" width="72" height="43" fill="#3D1520" opacity="0"/>
+            <rect class="p1i-bl" id="p1i-bl-4" x="0" y="91"  width="72" height="18" fill="#4A1B28" opacity="0"/>
+            <rect class="p1i-bl" id="p1i-bl-3" x="0" y="73"  width="72" height="18" fill="#5C2232" opacity="0"/>
+            <rect class="p1i-bl" id="p1i-bl-2" x="0" y="55"  width="72" height="18" fill="#6E283C" opacity="0"/>
+            <rect class="p1i-bl" id="p1i-bl-1" x="0" y="37"  width="72" height="18" fill="#7A2E44" opacity="0"/>
+            <rect class="p1i-bl" id="p1i-bl-0" x="0" y="22"  width="72" height="15" fill="#8A344E" opacity="0"/>
+            <rect id="p1i-murk" x="0" y="0" width="72" height="152" fill="#080406" opacity="0.75"/>
+          </g>
+          <path d="M30 2 L30 22 Q18 32 14 52 L10 70 L10 140 Q10 150 20 150 L52 150 Q62 150 62 140 L62 70 L58 52 Q54 32 42 22 L42 2 Z"
+                fill="none" stroke="#2A1F18" stroke-width="1.5"/>
+          <line x1="30" y1="23" x2="42" y2="23" stroke="#2A1F18" stroke-width="0.75"/>
+          <rect x="28" y="-2" width="16" height="8" rx="1.5" fill="#7A5E38"/>
+        </svg>
+      </div>
       <div class="p1i-dots" id="p1i-dots">
         <div class="p1i-dot" id="p1i-dot-0"></div>
         <div class="p1i-dot" id="p1i-dot-1"></div>
@@ -1651,6 +1683,14 @@ body {
       <div class="review-el-name" id="rv-name"></div>
       <div class="review-el-desc" id="rv-desc"></div>
       <div id="rv-blocks"></div>
+      <div id="rv-reopen" style="display:none;margin-top:1.6rem;padding-top:1.4rem;border-top:1px solid var(--border)">
+        <div class="review-mech-id" id="rv-reopen-mech" style="margin-bottom:.55rem"></div>
+        <div class="review-q" id="rv-reopen-q" style="margin-bottom:1.1rem"></div>
+        <textarea class="answer-box" id="rv-reopen-ans" placeholder="Write here. The more specific you are, the more this can work with." style="resize:vertical;height:140px;margin-bottom:1rem"></textarea>
+        <div style="display:flex;justify-content:flex-end">
+          <button class="btn" id="rv-reopen-btn" onclick="submitReopen()">Submit →</button>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -1931,7 +1971,7 @@ function buildMechs() {
       obs: () => S.m2?.observation?.surface_text || null
     },
     {
-      id:'M3', name:'Prior Attempted Solution',
+      id:'M3', name:'Third-Party Workarounds',
       // q is updated dynamically in renderMech once S.m2_confirmed_problem is available.
       q: selfMode
         ? `Your own experience aside — who else hits this? Name one person and tell me what they have actually done about it.`
@@ -2079,7 +2119,7 @@ function renderIntake() {
                oninput="v6SaveWorkerUrl()" onblur="v6SaveWorkerUrl()">
       </div>
       <div id="m0-result" style="display:none;margin-top:16px">
-        <div class="m0-section-label">Bottled as</div>
+        <div class="m0-section-label" id="m0-section-label">Bottled as</div>
         <div class="m0-stamp">
           <svg class="m0-seal" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="14" cy="14" r="12.5" stroke="currentColor" stroke-width=".75"/>
@@ -2340,16 +2380,25 @@ function playP1IntroScene(idx) {
   p1IntroTimers = [];
   const scene = P1_INTRO_SCENES[idx];
   const dots = scene.states.map((_,i) => document.getElementById(`p1i-dot-${i}`));
+  const bands = scene.states.map((_,i) => document.getElementById(`p1i-bl-${5-i}`));
+  const murk = document.getElementById('p1i-murk');
   dots.forEach(d => { if (d) d.className = 'p1i-dot'; });
+  bands.forEach(b => { if (b) b.style.opacity = '0'; });
+  if (murk) murk.style.opacity = '0.75';
   const line = document.getElementById('p1i-line');
   line.classList.remove('show');
   line.textContent = scene.line;
 
+  let clarity = 0;
   scene.states.forEach((state, i) => {
     p1IntroTimers.push(setTimeout(() => {
-      if (!dots[i]) return;
-      dots[i].className = `p1i-dot ${state} lit`;
-      setTimeout(() => dots[i].classList.remove('lit'), 380);
+      if (dots[i]) {
+        dots[i].className = `p1i-dot ${state} lit`;
+        setTimeout(() => dots[i].classList.remove('lit'), 380);
+      }
+      if (bands[i]) bands[i].style.opacity = state === 'settled' ? '1' : state === 'clearing' ? '0.45' : '0';
+      clarity += state === 'settled' ? 1 : state === 'clearing' ? 0.5 : 0;
+      if (murk) murk.style.opacity = String(Math.max(0.1, 0.75 - (clarity / scene.states.length) * 0.67));
       if (i === scene.states.length - 1) {
         setTimeout(() => line.classList.add('show'), 400);
       }
@@ -2484,7 +2533,7 @@ function drawElementThread(key) {
 function updateBottle() {
   let settled = 0;
   EL_KEYS.forEach((k,i) => {
-    const el = document.getElementById(`bl${i}`);
+    const el = document.getElementById(`bl${5-i}`);
     if (!el) return;
     const st = S.elements[k];
     el.style.opacity = st==='settled'?'1': st==='clearing'?'0.35':'0';
@@ -2645,6 +2694,29 @@ function visibleBottleLine(data) {
       .replace(/\bthem\b/ig, 'you');
   }
   return line.replace(/\s+/g, ' ').trim();
+}
+
+function m0CanSeal(data) {
+  const state = data?.digestibility?.state || 'unbottleable';
+  if (typeof data?.digestibility?.can_seal === 'boolean') return data.digestibility.can_seal;
+  return state === 'cellar_ready' || state === 'bottleable_cloudy';
+}
+
+function m0RequiresFollowupBeforeSeal(data) {
+  const state = data?.digestibility?.state || 'unbottleable';
+  if (typeof data?.digestibility?.requires_followup_before_seal === 'boolean') {
+    return data.digestibility.requires_followup_before_seal;
+  }
+  return state === 'unbottleable';
+}
+
+function m0MissingDebtLine(data) {
+  const missing = Array.isArray(data?.digestibility?.missing) ? data.digestibility.missing : [];
+  const clean = missing
+    .map(x => String(x || '').replace(/[_-]+/g, ' ').trim().toLowerCase())
+    .filter(Boolean);
+  if (!clean.length) return '';
+  return `Missing: ${clean.join(', ')}.`;
 }
 
 function sanitizeVisibleCopy(text, data) {
@@ -2982,9 +3054,11 @@ function applyM2Result(data, txt) {
 
 // ── END M2 ────────────────────────────────────────────────────────────────
 
-// ── M3: PRIOR ATTEMPTED SOLUTION ──────────────────────────────────────────
+// ── M3: THIRD-PARTY WORKAROUNDS ───────────────────────────────────────────
 
 let _echoReentryAnswer = null;
+let _reopenKey = null;
+let _reopenMechId = null;
 
 async function callM3Worker(txt) {
   const workerUrl = v6GetWorkerUrl();
@@ -3293,6 +3367,29 @@ function reviewEl(key) {
      </div>`;
   }).join('');
 
+  // Reopen path: offer re-answer if element is not yet settled
+  const REOPEN_MAP = { tell:'M2', vintage:'M2', gap:'M2', echo:'M3' };
+  const reopenMechId = REOPEN_MAP[key];
+  const reopenSection = document.getElementById('rv-reopen');
+  if (reopenMechId && S.elements[key] !== 'settled' && S.answers[reopenMechId]) {
+    const rm = M.find(m => m.id === reopenMechId);
+    const q = reopenMechId === 'M2'
+      ? (S.m2_problem?.question || rm?.q || '')
+      : (rm?.q || '');
+    document.getElementById('rv-reopen-mech').textContent = reopenMechId + ' · ' + (rm?.name || reopenMechId) + ' — answer again';
+    document.getElementById('rv-reopen-q').textContent = q;
+    document.getElementById('rv-reopen-ans').value = '';
+    const btn = document.getElementById('rv-reopen-btn');
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit →'; }
+    reopenSection.style.display = 'block';
+    _reopenKey = key;
+    _reopenMechId = reopenMechId;
+  } else {
+    reopenSection.style.display = 'none';
+    _reopenKey = null;
+    _reopenMechId = null;
+  }
+
   document.getElementById('question-panel').style.display = 'none';
   document.getElementById('review-panel').style.display = 'block';
   setActiveElementThread(key);
@@ -3301,7 +3398,37 @@ function reviewEl(key) {
 function exitReview() {
   document.getElementById('review-panel').style.display = 'none';
   document.getElementById('question-panel').style.display = 'block';
+  _reopenKey = null;
+  _reopenMechId = null;
   if (M[mi]) setActiveElementThread(M[mi].activeEl || M[mi].els[0]);
+}
+
+async function submitReopen() {
+  const txt = (document.getElementById('rv-reopen-ans')?.value || '').trim();
+  if (!txt || !_reopenKey || !_reopenMechId) return;
+
+  const key = _reopenKey;
+  const mechId = _reopenMechId;
+  const btn = document.getElementById('rv-reopen-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
+
+  try {
+    if (mechId === 'M2') {
+      const data = await callM2Worker(txt);
+      S.answers.M2 = txt;
+      applyM2Result(data, txt);
+    } else if (mechId === 'M3') {
+      const data = await callM3Worker(txt);
+      S.answers.M3 = txt;
+      applyM3Result(data, txt);
+    }
+    saveState();
+    exitReview();
+  } catch (err) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit →'; }
+    const qEl = document.getElementById('rv-reopen-q');
+    if (qEl) qEl.textContent = 'Worker error — ' + err.message;
+  }
 }
 
 window.addEventListener('resize', () => {
@@ -4160,6 +4287,8 @@ function setM0ResultShellVisible() {
   if (intakeWm) intakeWm.classList.add('m0-hidden');
   const bar = document.getElementById('v6-bottom-bar');
   if (bar) bar.style.display = 'none';
+  const sectionLabel = document.getElementById('m0-section-label');
+  if (sectionLabel) sectionLabel.style.display = 'none';
   const actionRow = document.getElementById('m0-action-row');
   if (actionRow) actionRow.style.display = 'flex';
   const wmResult = document.getElementById('m0-wm-result');
@@ -4272,8 +4401,12 @@ function v6RenderM0(data) {
 
   const state = data.digestibility?.state || 'unbottleable';
   const needsFollowup = !!(data.followup?.needed && data.followup?.question);
+  const canSeal = m0CanSeal(data);
+  const requiresFollowupBeforeSeal = m0RequiresFollowupBeforeSeal(data);
   window._v6M0.state = state;
   window._v6M0.needsFollowup = needsFollowup;
+  window._v6M0.canSeal = canSeal;
+  window._v6M0.requiresFollowupBeforeSeal = requiresFollowupBeforeSeal;
   window._v6M0.editableLine = data.user_line_candidate || data.raw_spark || '';
 
   // Lock the spark field
@@ -4294,6 +4427,8 @@ function v6RenderM0(data) {
   if (wmResult) wmResult.style.display = 'block';
 
   // Populate result panel
+  const sectionLabel = document.getElementById('m0-section-label');
+  if (sectionLabel) sectionLabel.style.display = 'none';
   document.getElementById('m0-eyebrow').textContent = state === 'unbottleable' ? 'CANNOT BE BOTTLED' : 'BOTTLED AS';
   document.getElementById('m0-entry-line').textContent = visibleBottleLine(data);
   const stamp = document.querySelector('.m0-stamp');
@@ -4308,11 +4443,9 @@ function v6RenderM0(data) {
   v6TypeOut(document.getElementById('m0-wm-text'), sanitizeVisibleCopy(data.digestibility?.reason || '', data));
   const cellarNote = document.getElementById('m0-cellar-note');
   if (cellarNote) {
-    if (state === 'cellar_ready') {
-      cellarNote.textContent = 'The spark is readable. The cellar will decide what it is worth.';
-      cellarNote.style.display = 'block';
-    } else if (state === 'bottleable_cloudy') {
-      cellarNote.textContent = 'The spark is readable, but something is still cloudy. The cellar will age it.';
+    const debtLine = m0MissingDebtLine(data);
+    if (state === 'bottleable_cloudy' && debtLine) {
+      cellarNote.textContent = debtLine;
       cellarNote.style.display = 'block';
     } else {
       cellarNote.textContent = '';

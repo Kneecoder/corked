@@ -68,9 +68,9 @@ The followup question must ask about the missing evidence in the world, not why 
 Do not ask "what made you think of this," "why this matters," "what inspired this," or any question about the founder's reasoning or associations.
 For thin Sparks, the followup must point away from the proposed thing and toward the missing real-world problem.
 Do not ask what the idea is trying to address, solve, help with, or make possible.
-Ask what is going wrong for the named person or population around the named domain or mechanism.
+Ask who the Spark is for and what is going wrong for them. Use the Spark's nouns directly. Do not use the phrase "around [domain]".
 Allowed: "What problem are homeless people having with books?"
-Allowed: "What is going wrong for homeless people around getting books?"
+Allowed: "Who is this for, and what problem are they sitting with before they find it?"
 Not allowed: "What is this trying to address?"
 Not allowed: "What is this meant to solve?"
 Not allowed: "What made you think of this?"
@@ -367,7 +367,9 @@ Return exactly this JSON shape:
   "digestibility": {
     "state": "cellar_ready|bottleable_cloudy|unbottleable",
     "missing": [],
-    "reason": "lab-result sentence in the required digestibility format"
+    "reason": "lab-result sentence in the required digestibility format",
+    "can_seal": true|false,
+    "requires_followup_before_seal": true|false
   },
   "followup": {
     "needed": true|false,
@@ -754,8 +756,11 @@ const FOLLOWUP_BANNED_PATTERNS = [
 ];
 
 function repairFollowupQuestion(question, sparkParse) {
-  const isBanned = FOLLOWUP_BANNED_PATTERNS.some(re => re.test(question));
+  const rawQuestion = String(question || '');
+  const cleanedQuestion = rawQuestion.replace(/\s+around\s+[^?]+(\?)/i, '$1');
+  const isBanned = cleanedQuestion !== rawQuestion || FOLLOWUP_BANNED_PATTERNS.some(re => re.test(rawQuestion));
   if (!isBanned) return { question, repaired: false };
+  if (cleanedQuestion !== rawQuestion) return { question: cleanedQuestion, repaired: true };
 
   const person = sparkParse?.implied_person;
   const domain = sparkParse?.domain;
@@ -782,6 +787,24 @@ function applyM0DigestibilityGuards(parsed) {
   }
 
   return { moment_cloudiness_overridden: false };
+}
+
+function normalizeM0SealContract(parsed) {
+  const state = parsed.digestibility?.state;
+  const canSeal = state === 'cellar_ready' || state === 'bottleable_cloudy';
+  parsed.digestibility.can_seal = canSeal;
+  parsed.digestibility.requires_followup_before_seal = state === 'unbottleable';
+
+  if (!Array.isArray(parsed.digestibility.missing)) {
+    parsed.digestibility.missing = [];
+  }
+  parsed.digestibility.missing = parsed.digestibility.missing
+    .map(x => String(x || '').trim().toLowerCase())
+    .filter(Boolean);
+
+  if (state === 'cellar_ready') {
+    parsed.digestibility.missing = [];
+  }
 }
 
 function validateM0(parsed, rawSpark, followupAnswer) {
@@ -817,6 +840,7 @@ function validateM0(parsed, rawSpark, followupAnswer) {
   const lineLower = parsed.user_line_candidate.toLowerCase();
   const foundBanned = M0_BANNED_USER_LINE_TERMS.filter(w => lineLower.includes(w.toLowerCase()));
   const digestibilityGuards = applyM0DigestibilityGuards(parsed);
+  normalizeM0SealContract(parsed);
 
   // When no problem was stated, null out placeholders that would pre-load an invented scenario.
   let m1PlaceholdersNulled = false;
@@ -851,6 +875,7 @@ function validateM0(parsed, rawSpark, followupAnswer) {
         parsed.followup.question = 'What specific person or problem is missing from this Spark? Use only the words already in the Spark.';
       }
       rescueBlocked = true;
+      normalizeM0SealContract(parsed);
     }
   }
 
@@ -879,6 +904,7 @@ function validateM0(parsed, rawSpark, followupAnswer) {
     followup_repaired: followupRepaired,
     unbottleable_rescue_blocked: rescueBlocked,
     m0_moment_cloudiness_overridden: digestibilityGuards.moment_cloudiness_overridden,
+    seal_contract_normalized: true,
     m1_placeholders_nulled: m1PlaceholdersNulled
   };
 
@@ -1174,7 +1200,7 @@ async function handleM0(request, env, corsHeaders) {
       raw_spark: rawSpark,
       user_line_candidate: parsed.user_line_candidate || rawSpark,
       spark_parse: parsed.spark_parse,
-      digestibility: { state: 'out_of_scope', missing: [], reason: '' },
+      digestibility: { state: 'out_of_scope', missing: [], reason: '', can_seal: false, requires_followup_before_seal: false },
       followup: { needed: false, question: null },
       m1_setup: null,
       scope: {
