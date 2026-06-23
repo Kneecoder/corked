@@ -1157,15 +1157,18 @@ body {
   color:var(--muted); font-size:.85rem; line-height:1.85;
 }
 .bottle-row {
-  border:1px solid var(--border);
-  padding:1.1rem 1.25rem 1rem;
-  cursor:pointer;
-  transition:border-color .15s, background .15s;
-  display:flex; flex-direction:column; gap:.6rem;
+  position:relative; height:90px; cursor:pointer;
+  transition:filter .18s;
 }
-.bottle-row:hover {
-  border-color:var(--border-hi);
-  background:rgba(255,255,255,.018);
+.bottle-row:hover { filter:brightness(1.28); }
+.bottle-row-outline {
+  position:absolute; inset:0; display:block;
+}
+.bottle-row-body {
+  position:absolute; inset:0;
+  padding:10px 28px 10px 86px;
+  display:flex; flex-direction:column; justify-content:center; gap:6px;
+  pointer-events:none;
 }
 .bottle-row-line {
   font-family:'Playfair Display',serif;
@@ -1207,19 +1210,18 @@ body {
 
 /* ── CELLAR DELETE ── */
 .bottle-row-del {
+  position:absolute; top:10px; right:18px; z-index:2;
   background:none; border:none; color:var(--muted);
   font-size:.82rem; cursor:pointer; padding:.1rem .25rem;
   opacity:0; transition:opacity .15s, color .15s;
-  font-family:'Inter',sans-serif; flex-shrink:0; line-height:1;
+  font-family:'Inter',sans-serif; line-height:1; pointer-events:auto;
 }
-.bottle-row:hover .bottle-row-del { opacity:.55; }
+.bottle-row:hover .bottle-row-del { opacity:.5; }
 .bottle-row-del:hover { color:var(--wine-hi) !important; opacity:1 !important; }
 
 /* ── DORMANT / IN FLIGHT ── */
-.bottle-row--dormant { border-color:rgba(201,165,90,.45); }
-.bottle-row--dormant:hover { border-color:rgba(201,165,90,.7); }
-.bottle-row--in-flight { border-color:rgba(183,140,80,.5); }
-.bottle-row--in-flight:hover { border-color:rgba(183,140,80,.8); }
+.bottle-row--dormant .bottle-row-outline { filter:sepia(.4) hue-rotate(15deg) brightness(1.08); }
+.bottle-row--in-flight .bottle-row-outline { filter:sepia(.3) hue-rotate(12deg) brightness(1.1); }
 .bottle-row--in-flight .bottle-row-waiting { color:var(--clearing-col); }
 
 /* ── REAL-WORLD EXITS ── */
@@ -1982,7 +1984,18 @@ function buildMechs() {
       obs: () => S.m3?.observation?.surface_text || null
     },
     {
-      id:'M4', name:'The Existing Fix',
+      id:'M4', name:'Second Person',
+      // q is updated dynamically in renderMech to use the current grape name.
+      q: selfMode
+        ? `Set aside whoever you named before. Name one more person who has this problem. What have they actually done about it?`
+        : `Set ${grapeName} aside and set aside whoever you named before. Name one more person who has this problem. What have they actually done about it?`,
+      hint: 'Not a category. One person. Their actual behaviour.',
+      els:['echo','vintage'],
+      activeEl:'echo',
+      obs: () => S.m4?.observation?.surface_text || null
+    },
+    {
+      id:'M5', name:'The Existing Fix',
       q:`What is the most obvious existing solution to this? It could be an app, a service, a habit, or a person. Name it. Then name the precise thing it fails to do for ${g}.`,
       hint:'One without the other is not an answer. Both need to be specific.',
       els:['gap'],
@@ -1994,7 +2007,7 @@ function buildMechs() {
       }
     },
     {
-      id:'M5', name:'Their Words, Not Yours',
+      id:'M6', name:'Their Words, Not Yours',
       q:`What has ${g} actually said about this? Use their exact words, not your interpretation. If you have not had that conversation yet, what would you need to ask them before this question can be honest?`,
       hint:'Quotes over summaries. Their language over yours.',
       els:['tell','echo'],
@@ -2008,7 +2021,7 @@ function buildMechs() {
       }
     },
     {
-      id:'M6', name:'The Non-Case',
+      id:'M7', name:'The Non-Case',
       q:`Who should have this need, someone who fits every reasonable assumption, but probably doesn't? Describe them specifically. Why don't they have it?`,
       hint:'This is not a weakness to explain away. It is a sharpener. The boundary makes the need real.',
       els:['limit'],
@@ -2547,6 +2560,15 @@ function renderMech() {
   if (mi >= M.length) { showLabel(); return; }
   const m = M[mi];
 
+  // M4 conditional skip: echo already confirmed by M3, second-person question is unnecessary.
+  if (m.id === 'M4' && S.elements.echo === 'settled') {
+    mi++;
+    S.mechIndex = mi;
+    saveState();
+    renderMech();
+    return;
+  }
+
   document.getElementById('prog').style.width = (mi/M.length*100)+'%';
   document.getElementById('m-count').textContent = `Phase 1 element ${mi+1} of ${M.length}`;
   document.getElementById('m-label').textContent = `Element ${mi+1} of ${M.length}  ·  ${m.name}`;
@@ -2605,6 +2627,22 @@ function renderMech() {
     const exitsRowM3 = document.getElementById('real-world-exits');
     if (exitsRowM3) exitsRowM3.style.display = 'flex';
     if (_echoReentryAnswer !== null) triggerM3EchoReentry();
+  }
+
+  // M4: update question with current grape name, show brief and exits row.
+  if (m.id === 'M4') {
+    const gn4 = S.label.grape || S.grape_name || 'the person you named';
+    const selfMode4 = S.maturity === 2;
+    m.q = selfMode4
+      ? `Set aside whoever you named before. Name one more person who has this problem. What have they actually done about it?`
+      : `Set ${gn4} aside and set aside whoever you named before. Name one more person who has this problem. What have they actually done about it?`;
+    document.getElementById('m-q').textContent = m.q;
+    if (wmBrief) {
+      wmBrief.textContent = `Haven't found a second person yet? Go find one. Come back with their name and what they've actually done about it.`;
+      wmBrief.style.display = 'block';
+    }
+    const exitsRowM4 = document.getElementById('real-world-exits');
+    if (exitsRowM4) exitsRowM4.style.display = 'flex';
   }
 
   // Show review panel hidden, question panel visible
@@ -3105,6 +3143,7 @@ async function parkItAction() {
   if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
   if (M[mi].id === 'M2') await parkM2Ask();
   else if (M[mi].id === 'M3') await parkM3Echo();
+  else if (M[mi].id === 'M4') await parkM4Echo();
 }
 
 
@@ -3131,6 +3170,50 @@ async function triggerM3EchoReentry() {
 }
 
 // ── END M3 ────────────────────────────────────────────────────────────────
+
+// ── M4: SECOND PERSON ─────────────────────────────────────────────────────
+
+async function callM4Worker(txt) {
+  const workerUrl = v6GetWorkerUrl();
+  if (!workerUrl) throw new Error('Worker URL missing.');
+  const res = await fetch(workerUrl + '/m4', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      confirmed_problem:  S.m2_confirmed_problem || '',
+      grape_name:         S.grape_name || '',
+      grape_relationship: S.grape_relationship || '',
+      maturity_class:     S.maturity,
+      prior_echo_context: S.answers.M3 || '',
+      user_answer:        txt
+    })
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
+  return data;
+}
+
+function applyM4Result(data, txt) {
+  S.m4 = data;
+  const changedRows = [];
+  applyAnchoredResult('echo',    data.echo,    txt, changedRows, 'Second confirmation', 'Partial confirmation');
+  applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance',   'Partial moment');
+  showPhaseObservation(data.observation?.surface_text || '');
+  showWhatChanged(changedRows);
+}
+
+async function parkM4Echo() {
+  let brief;
+  try {
+    brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
+  } catch (e) {
+    brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
+  }
+  parkBottleDormant(activeBottleId, brief);
+  showCellar();
+}
+
+// ── END M4 ────────────────────────────────────────────────────────────────
 
 async function p1Next() {
   const m = M[mi];
@@ -3159,6 +3242,9 @@ async function p1Next() {
       } else if (m.id === 'M3') {
         const data = await callM3Worker(txt);
         applyM3Result(data, txt);
+      } else if (m.id === 'M4') {
+        const data = await callM4Worker(txt);
+        applyM4Result(data, txt);
       } else {
         applyLocalMechanismResult(m, txt);
       }
@@ -3881,6 +3967,41 @@ function showCellar() {
   showScreen('cellar');
 }
 
+function bottleCardSVG(elements, id, W) {
+  // Same bottle shape as landing page CTA — neck/shoulder fixed pixels, body stretches.
+  // Landing page viewBox 260×72: neck x=2-46, shoulder x=46-78, body x=78-240, base x=240-257, neck y=30-42, body y=10-62.
+  // Here H=90: scale y values proportionally (×90/72 = ×1.25).
+  const H = 90;
+  const ny1 = 37, ny2 = 52;   // neck y range  (30×1.25, 42×1.25)
+  const by1 = 12, by2 = 78;   // body y range  (10×1.25, 62×1.25)
+  const bx2 = W - 17;          // body end x (matches base cap size)
+  const path = `M 2,${ny1} L 46,${ny1} C 56,${ny1} 68,${by1} 78,${by1} L ${bx2},${by1} Q ${W},${by1} ${W},45 Q ${W},${by2} ${bx2},${by2} L 78,${by2} C 68,${by2} 56,${ny2} 46,${ny2} L 2,${ny2} Z`;
+  const cid = 'bc' + String(id).replace(/[^a-z0-9]/gi,'');
+  const g1 = `g1${cid}`, g2 = `g2${cid}`;
+  const settled  = EL_KEYS.filter(k => elements[k] === 'settled').length;
+  const clearing = EL_KEYS.filter(k => elements[k] === 'clearing').length;
+  const glowOp = Math.min(0.55, settled * 0.1 + clearing * 0.04).toFixed(2);
+  return `<svg class="bottle-row-outline" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" pointer-events="none">
+  <defs>
+    <clipPath id="${cid}"><path d="${path}"/></clipPath>
+    <radialGradient id="${g1}" cx="62%" cy="50%" r="42%">
+      <stop offset="0%"   stop-color="#5C1A28" stop-opacity="${glowOp}"/>
+      <stop offset="100%" stop-color="#0C0906"  stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="${g2}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <g clip-path="url(#${cid})">
+    <rect width="${W}" height="${H}" fill="#0A0608"/>
+    <rect width="${W}" height="${H}" fill="url(#${g1})"/>
+    <rect x="78" y="${by1}" width="${bx2-78}" height="14" fill="url(#${g2})"/>
+  </g>
+  <path d="${path}" fill="none" stroke="#3D2820" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+</svg>`;
+}
+
 function renderCellar() {
   const bottles = getAllBottles()
     .filter(b => b.s && b.s.idea)
@@ -3897,6 +4018,7 @@ function renderCellar() {
     return;
   }
 
+  const cardW = Math.max(280, list.offsetWidth || 560);
   list.innerHTML = bottles.map(b => {
     const line = escHtml(getBottleDisplayLine(b));
     const dots = EL_KEYS.map(k => {
@@ -3907,14 +4029,18 @@ function renderCellar() {
     const date = formatCellarDate(b.updated_at);
     const isDormant  = b.status === 'dormant';
     const isInFlight = b.status === 'in_flight';
+    const svg = bottleCardSVG(b.s.elements || {}, b.id, cardW);
     return `<div class="bottle-row${isDormant ? ' bottle-row--dormant' : ''}${isInFlight ? ' bottle-row--in-flight' : ''}" onclick="openBottle('${b.id}')">
-              <div class="bottle-row-line">${line}</div>
-              <div class="bottle-row-lower">
-                <div class="bottle-row-dots">${dots}</div>
-                <div class="bottle-row-waiting">${waiting}</div>
-                <div class="bottle-row-date">${date}</div>
-                <button class="bottle-row-del" onclick="deleteBottle('${b.id}',event)" title="Remove spark">×</button>
+              ${svg}
+              <div class="bottle-row-body">
+                <div class="bottle-row-line">${line}</div>
+                <div class="bottle-row-lower">
+                  <div class="bottle-row-dots">${dots}</div>
+                  <div class="bottle-row-waiting">${waiting}</div>
+                  <div class="bottle-row-date">${date}</div>
+                </div>
               </div>
+              <button class="bottle-row-del" onclick="deleteBottle('${b.id}',event)" title="Remove spark">×</button>
             </div>`;
   }).join('');
 }

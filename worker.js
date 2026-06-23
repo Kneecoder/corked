@@ -585,6 +585,69 @@ No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No c
 
 Return only JSON.`;
 
+const M4_DOCTRINE = `You are the Winemaster — the voice of Corked, an idea-aging system.
+
+Your job in M4 is grading the Second Person.
+
+M4 looks for one thing: a named person — distinct from the grape and distinct from anyone described in the prior echo answer — who has hit the same problem, and what they actually did about it. M4 is a second confirmation that the problem exists outside both the founder's interpretation and the grape's account.
+
+You receive the confirmed problem, the grape's name (to exclude), the founder's maturity class, the prior echo context (exclude anyone described here), and their M4 answer.
+
+ECHO BAR - second confirmation. This is M4's primary bar and the only bar that sets M4's overall state.
+settled:  ONE identifiable person, clearly not the grape and not anyone described in the prior echo context,
+          doing or saying ONE concrete thing about the problem.
+          "A designer I know built a spreadsheet macro for it" = settled (if not already described in M3).
+          "Tom at my co-working space just hired a VA to handle it" = settled.
+clearing: A category of additional sufferers, or vague "others I know", or a person who appears to be the
+          same as the prior echo person, or a third party without concrete behaviour.
+          "More freelancers I know do it manually" = clearing.
+          The workaround does not rescue a category. One identifiable person is the bar.
+turbid:   No new third party at all. Only the grape, the founder, a repetition of the prior echo answer,
+          or pure assumption. The founder's inference about what others must do is turbid.
+
+PRIOR ECHO EXCLUSION RULE:
+If prior_echo_context names a person and the current answer appears to describe the same person (same name,
+same role, or same behaviour), grade Echo clearing rather than settled. Different phrasing of the same
+person is not a second person.
+
+GRAPE EXCLUSION RULE:
+Any answer that only describes the grape grades Echo turbid regardless of specificity.
+
+SUBSTITUTION RULE:
+If the answer describes the founder's build, stack, architecture, or feature list in place of a person's
+behaviour, name the substitution in the observation: state what was described (the build) and what the
+question asked for (a separate person and what they actually did). Echo is capped at clearing when a
+substitution carries any third-party reference, and turbid when no third party is present at all.
+
+SELF-AS-GRAPE (maturity_class 2):
+The grape is the founder. The Echo can never be the speaker. Any answer about the founder's own behaviour
+grades Echo turbid. M4 in self mode is only satisfied by a separate person.
+
+VINTAGE BAR — specific moment (opportunistic):
+settled:  The workaround or behaviour is anchored to one specific past instance.
+clearing: A workaround is described but recurring or unanchored.
+turbid:   No time anchor at all.
+
+OVERALL STATE:
+state equals echo.state. Full stop.
+The Vintage is opportunistic: grade it only when the answer already carries a moment. It may rank up the
+Vintage element. It never lowers the overall state and never blocks.
+
+OBSERVATION:
+Two short declarative sentences. Monotone lab register.
+Sentence one: what the Echo bar found — whether a new real third party is present, and what their
+concrete behaviour looks like.
+Sentence two: what the Vintage bar found — whether a specific instance is present or only a pattern.
+
+ANTI-FABRICATION:
+Do not invent person, behaviour, workaround, or moment detail not present in the answer.
+anchor_span must be a verbatim excerpt from the user_answer. If none supports the claim, set null.
+
+VOICE:
+No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
+
+Return only JSON.`;
+
 function buildM3UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer) {
   const selfMode = maturityClass === 2;
   const grapeBlock = selfMode
@@ -600,6 +663,38 @@ Return exactly this JSON shape:
 {
   "schema_version": "m3.v1",
   "mechanism": "M3",
+  "state": "turbid|clearing|settled",
+  "echo": {
+    "state": "turbid|clearing|settled",
+    "anchor_span": "verbatim from user_answer or null"
+  },
+  "vintage": {
+    "state": "turbid|clearing|settled",
+    "anchor_span": "verbatim from user_answer or null"
+  },
+  "observation": {
+    "surface_text": "max 280 chars, two sentences, lab register",
+    "anchor_span": "verbatim from user_answer or null"
+  }
+}`;
+}
+
+function buildM4UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer, priorEchoContext) {
+  const selfMode = maturityClass === 2;
+  const grapeBlock = selfMode
+    ? `<grape>self (the speaker)</grape>`
+    : `<grape_name>${grapeName}</grape_name>\n<grape_relationship>${grapeRel}</grape_relationship>`;
+
+  return `<confirmed_problem>${confirmedProblem}</confirmed_problem>
+${grapeBlock}
+<maturity_class>${maturityClass}</maturity_class>
+<prior_echo_context>${priorEchoContext || ''}</prior_echo_context>
+<user_answer>${userAnswer}</user_answer>
+
+Return exactly this JSON shape:
+{
+  "schema_version": "m4.v1",
+  "mechanism": "M4",
   "state": "turbid|clearing|settled",
   "echo": {
     "state": "turbid|clearing|settled",
@@ -1179,6 +1274,56 @@ async function handleM3(request, env, corsHeaders) {
   });
 }
 
+async function handleM4(request, env, corsHeaders) {
+  const body = await request.json();
+  const confirmedProblem  = String(body.confirmed_problem  || '').trim();
+  const grapeName         = String(body.grape_name         || '').trim();
+  const grapeRel          = String(body.grape_relationship || '').trim();
+  const maturityClass     = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
+  const userAnswer        = String(body.user_answer        || '').trim();
+  const priorEchoContext  = String(body.prior_echo_context || '').trim();
+
+  if (!confirmedProblem || !userAnswer) {
+    return jsonResponse({ error: 'Missing confirmed_problem or user_answer' }, 400, corsHeaders);
+  }
+
+  const parsed = await callClaude(
+    env,
+    M4_DOCTRINE,
+    buildM4UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer, priorEchoContext),
+    700
+  );
+
+  const allowedStates = ['settled', 'clearing', 'turbid'];
+  if (!parsed || typeof parsed !== 'object' || parsed.mechanism !== 'M4') {
+    throw new Error('Invalid M4 response');
+  }
+  if (!allowedStates.includes(parsed.state)) parsed.state = 'turbid';
+  for (const bar of ['echo', 'vintage']) {
+    if (!parsed[bar] || !allowedStates.includes(parsed[bar]?.state)) {
+      parsed[bar] = { state: 'turbid', anchor_span: null };
+    }
+  }
+
+  const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
+  const normAnswer = norm(userAnswer);
+  const verifySpan = (obj, key) => {
+    if (obj?.[key] && !normAnswer.includes(norm(obj[key]))) { obj[key] = null; return false; }
+    return !!obj?.[key];
+  };
+  for (const bar of ['echo', 'vintage']) verifySpan(parsed[bar], 'anchor_span');
+  verifySpan(parsed.observation, 'anchor_span');
+
+  const visiblePaths = ['observation.surface_text'];
+  const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
+  cleanVisibleFields(parsed, visiblePaths);
+  parsed.server_checks = { schema_valid: true, visible_style_violations_cleaned: styleViolations };
+  parsed.state = parsed.echo.state;
+  parsed.server_checks.overall_state_is_primary = true;
+
+  return jsonResponse(parsed, 200, corsHeaders);
+}
+
 async function handleM0(request, env, corsHeaders) {
   const body = await request.json();
   const rawSpark = String(body.raw_spark || '').trim();
@@ -1257,6 +1402,7 @@ export default {
       if (url.pathname === '/m1') return await handleM1(request, env, corsHeaders);
       if (url.pathname === '/m2') return await handleM2(request, env, corsHeaders);
       if (url.pathname === '/m3') return await handleM3(request, env, corsHeaders);
+      if (url.pathname === '/m4') return await handleM4(request, env, corsHeaders);
       if (url.pathname === '/field') return await handleField(request, env, corsHeaders);
       return jsonResponse({ error: 'Unknown route.' }, 404, corsHeaders);
     } catch (err) {
