@@ -2548,11 +2548,18 @@ function playCellarEntryIfNeeded() {
   saveState();
 }
 
+// An element is interactive only if at least one mechanism that grades it has been answered.
+// Element state (turbid/clearing/settled) alone is not enough — gap_in_play can promote gap
+// to non-inert from M2 before M5 has run, and we don't want that to open a click target.
+function isElementSourced(key) {
+  return M.some(m => m.els.includes(key) && !!S.answers[m.id]);
+}
+
 function renderElList() {
   document.getElementById('el-list').innerHTML = EL_KEYS.map(k => {
     const m = EL_META[k];
     const st = S.elements[k];
-    const live = st !== 'inert';
+    const live = st !== 'inert' && isElementSourced(k);
     return `<div class="el-row${live?' live':''}" id="elr-${k}" title="${escHtml(m.desc)}" ${live?`onclick="reviewEl('${k}')"`:''}">
               <div class="el-dot ${st}" id="eld-${k}"></div>
               <div class="el-name${!live?' inert':''}" id="eln-${k}">${m.name}</div>
@@ -2567,7 +2574,7 @@ function setEl(key, val) {
   const s = document.getElementById(`els-${key}`);
   const n = document.getElementById(`eln-${key}`);
   const r = document.getElementById(`elr-${key}`);
-  const live = val !== 'inert';
+  const live = val !== 'inert' && isElementSourced(key);
   if (d) d.className = `el-dot ${val}`;
   if (s) { s.className = `el-state ${val}`; s.textContent = live ? val : ''; }
   if (n) { n.className = `el-name${!live?' inert':''}`; }
@@ -3600,7 +3607,7 @@ function restoreAnsweredMechUI(m) {
 
 // ── REVIEW ──
 function reviewEl(key) {
-  if (S.elements[key] === 'inert') return;
+  if (S.elements[key] === 'inert' || !isElementSourced(key)) return;
   const meta = EL_META[key];
 
   if (key === 'grape' && S.answers.M1) {
