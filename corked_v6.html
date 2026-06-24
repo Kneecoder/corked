@@ -3626,6 +3626,24 @@ function reviewEl(key) {
          ${observation ? `<div class="review-a">${escHtml(observation)}</div>` : ''}
          ${stateNote ? `<div class="review-a" style="color:var(--muted);font-style:italic;margin-top:.5rem">${escHtml(stateNote)}</div>` : ''}
        </div>`;
+
+    const reopenSection = document.getElementById('rv-reopen');
+    if (grapeState !== 'settled') {
+      const gn = S.grape_name || 'this person';
+      document.getElementById('rv-reopen-mech').textContent = 'M1 · The Grape — describe again';
+      document.getElementById('rv-reopen-q').textContent = `How do you know ${gn}? Describe your connection and what you have seen them do.`;
+      document.getElementById('rv-reopen-ans').value = S.grape_relationship || '';
+      const btn = document.getElementById('rv-reopen-btn');
+      if (btn) { btn.disabled = false; btn.textContent = 'Submit →'; }
+      reopenSection.style.display = 'block';
+      _reopenKey = 'grape';
+      _reopenMechId = 'M1';
+    } else {
+      reopenSection.style.display = 'none';
+      _reopenKey = null;
+      _reopenMechId = null;
+    }
+
     document.getElementById('question-panel').style.display = 'none';
     document.getElementById('review-panel').style.display = 'block';
     setActiveElementThread(key);
@@ -3695,7 +3713,26 @@ async function submitReopen() {
   if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
 
   try {
-    if (mechId === 'M2') {
+    if (mechId === 'M1') {
+      const workerUrl = v6GetWorkerUrl();
+      if (workerUrl) {
+        const res = await fetch(workerUrl + '/m1', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            spark_summary:   getSparkSummary(),
+            person_name:     S.grape_name || '',
+            relationship:    txt,
+            maturity_class:  S.maturity
+          })
+        });
+        const data = await res.json();
+        if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
+        writeM1FromIntake(S.grape_name || '', txt, data);
+      } else {
+        writeM1FromIntake(S.grape_name || '', txt, null);
+      }
+    } else if (mechId === 'M2') {
       const data = await callM2Worker(txt);
       S.answers.M2 = txt;
       applyM2Result(data, txt);
