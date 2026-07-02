@@ -175,6 +175,7 @@ No warmth.
 No generic AI/product language.
 No em dashes or en dashes in any returned string. Use short sentences or commas.
 No contrast formulas like "not X, but Y" or "not just X". Say the finding directly.
+Deficiency findings name the answer or the element, never the answerer. "No specific instance is present" not "You did not provide a specific instance." In self mode: "The answer names a pattern" not "You described a pattern."
 
 Return only JSON.`;
 
@@ -266,9 +267,8 @@ turbid:   Any active bar turbid.
 
 OBSERVATION:
 Two short declarative sentences. Monotone lab register.
-Sentence one: what the Tell bar found — behaviour present or absent, what kind.
-Sentence two: what the Vintage bar found — moment present or absent, what kind.
-If gap_in_play, a third sentence for the Gap bar finding.
+Order sentences by settlement state: settled bars first, then clearing, then turbid. Each sentence names one bar's finding — Tell covers behaviour, Vintage covers the moment, Gap (when gap_in_play) covers the named existing solution.
+If gap_in_play, write a third sentence for the Gap bar finding.
 When a verbatim span from the answer directly supports a finding, use it as anchor_span.
 
 ANTI-FABRICATION:
@@ -277,6 +277,7 @@ anchor_span must be a verbatim excerpt from the user_answer. If none supports th
 
 VOICE:
 No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
+Deficiency findings name the answer or the element, never the answerer. "The answer contains no observable action" not "You did not describe an action." In self mode: "No specific instance is named in the answer" not "You did not name a specific instance."
 
 Return only JSON.`;
 
@@ -582,6 +583,7 @@ anchor_span must be a verbatim excerpt from the user_answer. If none supports th
 
 VOICE:
 No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
+Deficiency findings name the answer or the element, never the answerer. "The answer names a category" not "You named a category."
 
 Return only JSON.`;
 
@@ -645,6 +647,7 @@ anchor_span must be a verbatim excerpt from the user_answer. If none supports th
 
 VOICE:
 No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
+Deficiency findings name the answer or the element, never the answerer. "The answer names a category" not "You named a category."
 
 Return only JSON.`;
 
@@ -902,7 +905,7 @@ function normalizeM0SealContract(parsed) {
   }
 }
 
-function validateM0(parsed, rawSpark, followupAnswer) {
+function validateM0(parsed, rawSpark, followupAnswer, priorDigestibility) {
   const allowedStates = ['cellar_ready', 'bottleable_cloudy', 'unbottleable'];
   const visiblePaths = [
     'user_line_candidate',
@@ -958,10 +961,10 @@ function validateM0(parsed, rawSpark, followupAnswer) {
       : 'Write the Spark again with a person, a problem, and the thing you imagine making.';
   }
 
-  // Unbottleable rescue guard: if a followup answer was provided but the
-  // spark_parse still lacks person, domain, or problem, cellar_ready is unearned.
+  // Unbottleable rescue guard: fires only when the prior spark was unbottleable.
+  // Cloudy rebottles grade at the standard person+problem bar (applyM0DigestibilityGuards).
   let rescueBlocked = false;
-  if (followupAnswer && parsed.digestibility.state === 'cellar_ready') {
+  if (followupAnswer && priorDigestibility === 'unbottleable' && parsed.digestibility.state === 'cellar_ready') {
     const sp = parsed.spark_parse || {};
     if (!sp.implied_person || !sp.domain || !sp.suspected_problem) {
       parsed.digestibility.state = 'bottleable_cloudy';
@@ -1329,6 +1332,7 @@ async function handleM0(request, env, corsHeaders) {
   const rawSpark = String(body.raw_spark || '').trim();
   const followupQuestion = String(body.followup_question || '').trim();
   const followupAnswer = String(body.followup_answer || '').trim();
+  const priorDigestibility = String(body.prior_digestibility || '').trim();
 
   if (!rawSpark) {
     return jsonResponse({ error: 'Missing raw_spark' }, 400, corsHeaders);
@@ -1356,7 +1360,7 @@ async function handleM0(request, env, corsHeaders) {
     }, 200, corsHeaders);
   }
 
-  return jsonResponse(validateM0(parsed, rawSpark, followupAnswer), 200, corsHeaders);
+  return jsonResponse(validateM0(parsed, rawSpark, followupAnswer, priorDigestibility), 200, corsHeaders);
 }
 
 async function handleM1(request, env, corsHeaders) {

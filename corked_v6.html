@@ -4903,7 +4903,8 @@ async function v6RebottleFollowup() {
   await v6RunM0({
     raw_spark: data.raw_spark,
     followup_question: data.followup?.question || '',
-    followup_answer: followupAnswer
+    followup_answer: followupAnswer,
+    prior_digestibility: data.digestibility?.state
   }, 'Folding in the missing tension…', {
     rebottled: true,
     note: 'Folding the missing tension into the line.'
