@@ -319,17 +319,19 @@ Return target: a short label (3-6 words) naming what kind of person to find, dra
 FAILURE RULES:
 If the spark is too vague to produce a question using its actual nouns, return { "error": "brief_impossible" }.
 A generic brief is a failure. "Ask them about their workflow" does not name the spark's domain.
-The question text must contain at least one noun drawn from user_line or confirmed_problem.
+question must contain at least one noun drawn from user_line or confirmed_problem.
 
 VOICE:
 No em dashes or en dashes. Use commas or short sentences instead.
 No contrast formulas ("not X, but Y", "not just X").
 No praise, no coaching, no startup language.
 Winemaster register: dry, precise, direct.
-text hard cap: 280 characters. Count carefully. Cut if needed.
+setup cap: 120 characters. question cap: 160 characters. Combined hard cap: 280. Count carefully. Cut if needed.
 
 Return only JSON:
-{ "brief": { "kind": "find"|"ask"|"echo", "text": "...", "target": "string or null" } }
+{ "brief": { "kind": "find"|"ask"|"echo", "setup": "one sentence naming who to find or the context", "question": "the exact question to ask, no Ask: prefix", "target": "string or null" } }
+setup is null for ASK mode (grape is already named in the addressing line).
+question must contain at least one noun drawn from user_line or confirmed_problem.
 or: { "error": "..." }`;
 
 function buildM0UserMessage(rawSpark, followupQuestion, followupAnswer) {
@@ -1201,17 +1203,19 @@ async function handleField(request, env, corsHeaders) {
   if (parsed.error) {
     return jsonResponse({ error: parsed.error }, 422, corsHeaders);
   }
-  if (!parsed.brief || typeof parsed.brief.text !== 'string') {
+  if (!parsed.brief || typeof parsed.brief.question !== 'string') {
     return jsonResponse({ error: 'brief_impossible' }, 422, corsHeaders);
   }
 
-  let text = cleanVisibleText(parsed.brief.text);
-  if (text.length > 280) text = text.slice(0, 277) + '...';
+  let setup    = parsed.brief.setup    ? cleanVisibleText(parsed.brief.setup)    : null;
+  let question = cleanVisibleText(parsed.brief.question);
+  if (setup    && setup.length    > 120) setup    = setup.slice(0, 117)    + '...';
+  if (question.length > 160)             question = question.slice(0, 157) + '...';
 
   const kind = ['ask', 'echo', 'find'].includes(parsed.brief.kind) ? parsed.brief.kind : 'find';
 
   return jsonResponse({
-    brief: { kind, text, target: parsed.brief.target || null }
+    brief: { kind, setup, question, target: parsed.brief.target || null }
   }, 200, corsHeaders);
 }
 

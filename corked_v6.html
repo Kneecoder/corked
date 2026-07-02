@@ -1156,42 +1156,39 @@ body {
   text-align:center; padding:4rem 2rem;
   color:var(--muted); font-size:.85rem; line-height:1.85;
 }
-.bottle-row {
-  position:relative; height:100px; cursor:pointer;
+.bottle-card {
+  position:relative; cursor:pointer;
+  border:1px solid var(--border); border-radius:18px;
+  padding:18px 22px 16px;
+  background:#0A0608;
   transition:filter .18s;
 }
-.bottle-row:hover { filter:brightness(1.28); }
-.bottle-row-outline {
-  position:absolute; inset:0; display:block;
-}
-.bottle-row-body {
-  position:absolute; inset:0;
-  padding:12px 28px 10px calc(18% + 16px);
-  display:flex; flex-direction:column; justify-content:center; gap:6px;
-  pointer-events:none;
-}
-.bottle-row-line {
+.bottle-card:hover { filter:brightness(1.28); }
+.bottle-card-line {
   font-family:'Playfair Display',serif;
-  font-size:.95rem; color:var(--cream); line-height:1.4;
+  font-size:.95rem; color:var(--cream); line-height:1.45;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
+  margin-bottom:10px;
 }
-.bottle-row-lower {
+.bottle-card-lower {
   display:flex; align-items:center; justify-content:space-between; gap:1rem;
 }
-.bottle-row-dots { display:flex; align-items:center; gap:.38rem; }
-.bottle-row-dot {
+.bottle-card-dots { display:flex; align-items:center; gap:.38rem; }
+.bottle-card-dot {
   width:6px; height:6px; border-radius:50%; flex-shrink:0;
 }
-.bottle-row-dot.inert   { background:var(--turbid-col); opacity:.15; }
-.bottle-row-dot.turbid  { background:var(--turbid-col); opacity:.65; }
-.bottle-row-dot.clearing{ background:var(--clearing-col); }
-.bottle-row-dot.settled { background:var(--settled-col); }
-.bottle-row-waiting {
-  font-size:.72rem; color:var(--muted); letter-spacing:.04em;
-  flex:1; text-align:right;
+.bottle-card-dot.inert   { background:var(--turbid-col); opacity:.15; }
+.bottle-card-dot.turbid  { background:var(--turbid-col); opacity:.65; }
+.bottle-card-dot.clearing{ background:var(--clearing-col); }
+.bottle-card-dot.settled { background:var(--settled-col); }
+.bottle-card-meta {
+  display:flex; align-items:center; gap:.55rem; flex-shrink:0;
 }
-.bottle-row-date {
+.bottle-card-status {
+  font-size:.72rem; color:var(--muted); letter-spacing:.04em;
+}
+.bottle-card-date {
   font-size:.65rem; color:var(--muted); opacity:.45;
   letter-spacing:.04em; white-space:nowrap;
 }
@@ -1209,20 +1206,19 @@ body {
 }
 
 /* ── CELLAR DELETE ── */
-.bottle-row-del {
-  position:absolute; top:10px; right:18px; z-index:2;
+.bottle-card-del {
+  position:absolute; top:10px; right:12px; z-index:2;
   background:none; border:none; color:var(--muted);
   font-size:.82rem; cursor:pointer; padding:.1rem .25rem;
   opacity:0; transition:opacity .15s, color .15s;
   font-family:'Inter',sans-serif; line-height:1; pointer-events:auto;
 }
-.bottle-row:hover .bottle-row-del { opacity:.5; }
-.bottle-row-del:hover { color:var(--wine-hi) !important; opacity:1 !important; }
+.bottle-card:hover .bottle-card-del { opacity:.5; }
+.bottle-card-del:hover { color:var(--wine-hi) !important; opacity:1 !important; }
 
 /* ── DORMANT / IN FLIGHT ── */
-.bottle-row--dormant .bottle-row-outline { filter:sepia(.4) hue-rotate(15deg) brightness(1.08); }
-.bottle-row--in-flight .bottle-row-outline { filter:sepia(.3) hue-rotate(12deg) brightness(1.1); }
-.bottle-row--in-flight .bottle-row-waiting { color:var(--clearing-col); }
+.bottle-card--dormant { opacity:.72; }
+.bottle-card--in-flight .bottle-card-status { color:var(--clearing-col); }
 
 /* ── REAL-WORLD EXITS ── */
 #real-world-exits { display:none; }
@@ -1283,18 +1279,36 @@ body {
 
 /* ── WINEMASTER BRIEF ── */
 #wm-brief {
-  font-size:.82rem; color:var(--muted);
-  line-height:1.7; margin-bottom:1.1rem;
-  padding:.75rem 1rem;
-  border-left:2px solid rgba(255,255,255,.07);
+  margin-bottom:1.1rem;
 }
 /* ── INLINE ERRAND ── */
 #inline-errand {
-  font-size:.82rem; color:var(--cream-dim);
-  line-height:1.7; margin-top:.85rem;
-  padding:.75rem 1rem;
-  border-left:2px solid var(--gold);
+  margin-top:.85rem;
 }
+/* ── BRIEF RENDER ── */
+.brief-addressing {
+  font-size:.7rem; color:var(--muted); letter-spacing:.1em;
+  margin-bottom:.5rem;
+}
+.brief-setup {
+  font-size:.82rem; color:var(--muted); line-height:1.6;
+  margin-bottom:.65rem;
+}
+.brief-quote {
+  border-left:3px solid var(--gold);
+  background:rgba(201,165,90,.06);
+  padding:.75rem 1rem;
+  margin-bottom:.3rem;
+}
+.brief-q-text {
+  font-size:1rem; color:var(--cream); line-height:1.6;
+}
+.brief-copy-btn {
+  font-size:.68rem; color:var(--muted); background:none; border:none;
+  cursor:pointer; padding:.35rem 0 0; display:block; letter-spacing:.06em;
+}
+.brief-copy-btn:hover { color:var(--cream-dim); }
+.brief-copy-btn.copied { color:var(--gold); }
 /* ── PHASE 1 INTRO (one-time, three scenes) ── */
 #screen-phase1-intro {
   flex-direction:column; align-items:center; justify-content:center;
@@ -1350,9 +1364,7 @@ body {
   letter-spacing:.14em; margin-bottom:.9rem;
 }
 .dormant-brief {
-  margin-bottom:1.6rem; padding:1rem 1.2rem;
-  background:rgba(201,165,90,.05);
-  border-left:2px solid rgba(201,165,90,.3);
+  margin-bottom:1.6rem;
 }
 .dormant-brief-label {
   font-size:.7rem; color:var(--muted); text-transform:uppercase;
@@ -2752,10 +2764,52 @@ function showPhaseObservation(text) {
   ob.style.display = 'block';
 }
 
-function showInlineErrand(text) {
+function renderBriefHTML(brief, mode, grapeName) {
+  const isLegacy = !brief.question && brief.text;
+  const question = isLegacy ? brief.text : (brief.question || '');
+  const setup    = isLegacy ? '' : (brief.setup || '');
+  const target   = brief.target || '';
+  const grape    = grapeName || 'the person you named';
+
+  let addressing = '';
+  if (mode === 'find') {
+    addressing = target ? 'Looking for: ' + escHtml(target) : '';
+  } else if (mode === 'ask') {
+    addressing = 'Ask ' + escHtml(grape);
+  } else if (mode === 'echo') {
+    addressing = 'Not ' + escHtml(grape) + (target ? ' · looking for: ' + escHtml(target) : '');
+  }
+
+  const cid = 'bc-' + Math.random().toString(36).slice(2, 8);
+  return (addressing ? `<div class="brief-addressing">${addressing}</div>` : '')
+    + (setup ? `<div class="brief-setup">${escHtml(setup)}</div>` : '')
+    + `<div class="brief-quote">`
+    +   `<div class="brief-q-text" id="${cid}-t">${escHtml(question)}</div>`
+    +   `<button class="brief-copy-btn" id="${cid}-b" onclick="copyBriefQ('${cid}')">Copy question</button>`
+    + `</div>`;
+}
+
+function copyBriefQ(cid) {
+  const tEl = document.getElementById(cid + '-t');
+  const bEl = document.getElementById(cid + '-b');
+  if (!tEl) return;
+  navigator.clipboard.writeText(tEl.textContent).then(() => {
+    if (bEl) { bEl.textContent = 'Copied'; bEl.classList.add('copied'); }
+    setTimeout(() => {
+      if (bEl) { bEl.textContent = 'Copy question'; bEl.classList.remove('copied'); }
+    }, 2000);
+  }).catch(() => {});
+}
+
+function showInlineErrand(briefOrText) {
   const el = document.getElementById('inline-errand');
   if (!el) return;
-  el.textContent = text || 'Finding your brief…';
+  if (briefOrText && typeof briefOrText === 'object') {
+    el.innerHTML = renderBriefHTML(briefOrText, briefOrText.kind || 'ask', S.grape_name || '');
+  } else {
+    const q = briefOrText || 'Finding your brief…';
+    el.innerHTML = `<div class="brief-quote"><div class="brief-q-text">${escHtml(q)}</div></div>`;
+  }
   el.style.display = 'block';
   const wmBrief = document.getElementById('wm-brief');
   if (wmBrief) wmBrief.style.display = 'none';
@@ -3254,7 +3308,7 @@ async function applyM3Result(data, txt) {
     try {
       const brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
       S.m3_pending_brief = brief;
-      showInlineErrand(brief.text || `Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`);
+      showInlineErrand(brief.question || brief.text ? brief : `Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`);
     } catch (e) {
       S.m3_pending_brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
       showInlineErrand(`Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`);
@@ -3346,7 +3400,7 @@ async function applyM4Result(data, txt) {
     try {
       const brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
       S.m4_pending_brief = brief;
-      showInlineErrand(brief.text || `Find a second person who hits this problem — not ${S.grape_name || 'the person you named'} and not whoever you named before. Ask what they've actually done about it.`);
+      showInlineErrand(brief.question || brief.text ? brief : `Find a second person who hits this problem — not ${S.grape_name || 'the person you named'} and not whoever you named before. Ask what they've actually done about it.`);
     } catch (e) {
       S.m4_pending_brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
       showInlineErrand(`Find a second person who hits this problem — not ${S.grape_name || 'the person you named'} and not whoever you named before. Ask what they've actually done about it.`);
@@ -3598,10 +3652,10 @@ function restoreAnsweredMechUI(m) {
     if ((S.elements.tell !== 'settled' || S.elements.vintage !== 'settled') && S.m2_problem?.question) {
       showInlineErrand(S.m2_problem.question);
     }
-  } else if (m.id === 'M3' && S.elements.echo !== 'settled' && S.m3_pending_brief?.text) {
-    showInlineErrand(S.m3_pending_brief.text);
-  } else if (m.id === 'M4' && S.elements.echo !== 'settled' && S.m4_pending_brief?.text) {
-    showInlineErrand(S.m4_pending_brief.text);
+  } else if (m.id === 'M3' && S.elements.echo !== 'settled' && (S.m3_pending_brief?.question || S.m3_pending_brief?.text)) {
+    showInlineErrand(S.m3_pending_brief);
+  } else if (m.id === 'M4' && S.elements.echo !== 'settled' && (S.m4_pending_brief?.question || S.m4_pending_brief?.text)) {
+    showInlineErrand(S.m4_pending_brief);
   }
 }
 
@@ -4200,43 +4254,13 @@ function showCellar() {
   showScreen('cellar');
 }
 
-function bottleCardSVG(elements, id, W) {
-  // Scale all x-coords from the landing CTA reference (260w×72h) so neck+shoulder
-  // reads as ~30% of total width at any card width — same proportions the landing bottle has.
-  const H  = 100;
-  const s  = W / 260;                   // x scale factor
-  const nx2 = Math.round(46 * s);       // neck end
-  const c1x = Math.round(56 * s);       // shoulder bezier cp1
-  const c2x = Math.round(68 * s);       // shoulder bezier cp2
-  const sx2 = Math.round(78 * s);       // shoulder end / body start
-  const bx2 = Math.round(240 * s);      // body end
-  const ny1 = 42, ny2 = 59;             // neck y range for H=100 (17px opening)
-  const by1 = 14, by2 = 86;             // body y range for H=100
-  const path = `M 2,${ny1} L ${nx2},${ny1} C ${c1x},${ny1} ${c2x},${by1} ${sx2},${by1} L ${bx2},${by1} Q ${W},${by1} ${W},50 Q ${W},${by2} ${bx2},${by2} L ${sx2},${by2} C ${c2x},${by2} ${c1x},${ny2} ${nx2},${ny2} L 2,${ny2} Z`;
-  const cid = 'bc' + String(id).replace(/[^a-z0-9]/gi,'');
-  const g1 = `g1${cid}`, g2 = `g2${cid}`;
+function bottleCardGlow(elements) {
   const settled  = EL_KEYS.filter(k => elements[k] === 'settled').length;
   const clearing = EL_KEYS.filter(k => elements[k] === 'clearing').length;
-  const glowOp = Math.min(0.55, settled * 0.1 + clearing * 0.04).toFixed(2);
-  return `<svg class="bottle-row-outline" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" pointer-events="none">
-  <defs>
-    <clipPath id="${cid}"><path d="${path}"/></clipPath>
-    <radialGradient id="${g1}" cx="62%" cy="50%" r="42%">
-      <stop offset="0%"   stop-color="#5C1A28" stop-opacity="${glowOp}"/>
-      <stop offset="100%" stop-color="#0C0906"  stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="${g2}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.07"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-  </defs>
-  <g clip-path="url(#${cid})">
-    <rect width="${W}" height="${H}" fill="#0A0608"/>
-    <rect width="${W}" height="${H}" fill="url(#${g1})"/>
-    <rect x="${sx2}" y="${by1}" width="${bx2-sx2}" height="14" fill="url(#${g2})"/>
-  </g>
-  <path d="${path}" fill="none" stroke="#3D2820" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
-</svg>`;
+  const op = Math.min(0.55, settled * 0.1 + clearing * 0.04).toFixed(2);
+  return op > 0
+    ? `radial-gradient(ellipse 84% 100% at 62% 50%, rgba(92,26,40,${op}) 0%, #0A0608 100%)`
+    : '#0A0608';
 }
 
 function renderCellar() {
@@ -4255,29 +4279,28 @@ function renderCellar() {
     return;
   }
 
-  const cardW = Math.max(280, list.offsetWidth || 560);
   list.innerHTML = bottles.map(b => {
     const line = escHtml(getBottleDisplayLine(b));
+    const elements = b.s.elements || {};
     const dots = EL_KEYS.map(k => {
-      const st = (b.s.elements && b.s.elements[k]) || 'inert';
-      return `<div class="bottle-row-dot ${st}"></div>`;
+      const st = elements[k] || 'inert';
+      return `<div class="bottle-card-dot ${st}"></div>`;
     }).join('');
     const waiting = escHtml(getCellarWaiting(b));
     const date = formatCellarDate(b.updated_at);
     const isDormant  = b.status === 'dormant';
     const isInFlight = b.status === 'in_flight';
-    const svg = bottleCardSVG(b.s.elements || {}, b.id, cardW);
-    return `<div class="bottle-row${isDormant ? ' bottle-row--dormant' : ''}${isInFlight ? ' bottle-row--in-flight' : ''}" onclick="openBottle('${b.id}')">
-              ${svg}
-              <div class="bottle-row-body">
-                <div class="bottle-row-line">${line}</div>
-                <div class="bottle-row-lower">
-                  <div class="bottle-row-dots">${dots}</div>
-                  <div class="bottle-row-waiting">${waiting}</div>
-                  <div class="bottle-row-date">${date}</div>
+    const glow = bottleCardGlow(elements);
+    return `<div class="bottle-card${isDormant ? ' bottle-card--dormant' : ''}${isInFlight ? ' bottle-card--in-flight' : ''}" style="background:${glow}" onclick="openBottle('${b.id}')">
+              <div class="bottle-card-line">${line}</div>
+              <div class="bottle-card-lower">
+                <div class="bottle-card-dots">${dots}</div>
+                <div class="bottle-card-meta">
+                  <span class="bottle-card-status">${waiting}</span>
+                  <span class="bottle-card-date">${date}</span>
                 </div>
               </div>
-              <button class="bottle-row-del" onclick="deleteBottle('${b.id}',event)" title="Remove spark">×</button>
+              <button class="bottle-card-del" onclick="deleteBottle('${b.id}',event)" title="Remove spark">×</button>
             </div>`;
   }).join('');
 }
@@ -4379,7 +4402,7 @@ function openBottle(id) {
 // ── DORMANT RE-ENTRY ──
 async function openDormantFind(id, record) {
   const brief = record.brief || {};
-  const pending = brief.pending && !brief.text;
+  const pending = brief.pending && !brief.question && !brief.text;
 
   if (pending && v6GetWorkerUrl()) {
     try {
@@ -4390,10 +4413,12 @@ async function openDormantFind(id, record) {
   }
 
   const finalBrief = record.brief || {};
-  const briefText = escHtml(finalBrief.text || (finalBrief.pending
-    ? 'The worker could not be reached. Find the first person this spark draws from and come back with their name and how you know them.'
-    : 'Find the first real person this spark draws from. Walk them through how they handle the relevant thing now and the last time it gave them trouble.'));
-  const target = escHtml(finalBrief.target || '');
+  const fallbackBrief = finalBrief.question || finalBrief.text
+    ? finalBrief
+    : { question: finalBrief.pending
+        ? 'The worker could not be reached. Find the first person this spark draws from and come back with their name and how you know them.'
+        : 'Find the first real person this spark draws from. Walk them through how they handle the relevant thing now and the last time it gave them trouble.',
+        kind: 'find', target: finalBrief.target || null };
 
   document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
   renderElList();
@@ -4401,9 +4426,7 @@ async function openDormantFind(id, record) {
   document.getElementById('dormant-panel-body').innerHTML = `
     <div class="mech-eyebrow" style="margin-bottom:.9rem">Dormant · find the person</div>
     <div class="dormant-brief">
-      <div class="dormant-brief-label">Your brief</div>
-      <div class="dormant-brief-text">${briefText}</div>
-      ${target ? `<div class="dormant-brief-target">Looking for: ${target}</div>` : ''}
+      ${renderBriefHTML(fallbackBrief, 'find', '')}
     </div>
     <div style="margin-bottom:.85rem">
       <div class="dormant-field-label">Their first name</div>
@@ -4489,7 +4512,7 @@ async function submitDormantFind(id) {
 async function openDormantAsk(id, record) {
   const brief = record.brief || {};
 
-  if (brief.pending && !brief.text && v6GetWorkerUrl()) {
+  if (brief.pending && !brief.question && !brief.text && v6GetWorkerUrl()) {
     try {
       const freshBrief = await fetchFieldBrief({ mode: 'ask', element: 'vintage' });
       record.brief = freshBrief;
@@ -4497,23 +4520,25 @@ async function openDormantAsk(id, record) {
     } catch (e) {}
   }
 
-  const finalBrief = record.brief || {};
+  const finalBrief    = record.brief || {};
   const savedQuestion = S.m2_problem?.question || null;
-  const briefText = escHtml(finalBrief.text || savedQuestion || (finalBrief.pending
-    ? 'The worker could not be reached. Ask the person directly: walk them through the last time this happened.'
-    : 'Go ask the person directly. Walk them through the last time this happened.'));
-  const grapeName   = escHtml(S.grape_name || 'the person you named');
-  const isInFlight  = record.status === 'in_flight';
-  const eyebrow     = isInFlight ? 'In flight · asked, waiting on reply' : 'Dormant · a question to ask';
+  const fallbackBrief = finalBrief.question || finalBrief.text
+    ? finalBrief
+    : { question: savedQuestion || (finalBrief.pending
+        ? 'The worker could not be reached. Ask the person directly: walk them through the last time this happened.'
+        : 'Go ask the person directly. Walk them through the last time this happened.'),
+        kind: 'ask', setup: null, target: null };
+  const grapeName  = S.grape_name || 'the person you named';
+  const isInFlight = record.status === 'in_flight';
+  const eyebrow    = isInFlight ? 'In flight · asked, waiting on reply' : 'Dormant · a question to ask';
 
   document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
   renderElList();
 
   document.getElementById('dormant-panel-body').innerHTML = `
-    <div class="mech-eyebrow" style="margin-bottom:.9rem">${eyebrow}</div>
+    <div class="mech-eyebrow" style="margin-bottom:.9rem">${escHtml(eyebrow)}</div>
     <div class="dormant-brief">
-      <div class="dormant-brief-label">Ask ${grapeName}</div>
-      <div class="dormant-brief-text">${briefText}</div>
+      ${renderBriefHTML(fallbackBrief, 'ask', grapeName)}
     </div>
     <div style="margin-top:1.2rem;margin-bottom:1.5rem">
       <div class="dormant-field-label">What did they say?</div>
@@ -4552,7 +4577,7 @@ function submitDormantAsk(id) {
 async function openDormantEcho(id, record) {
   const brief = record.brief || {};
 
-  if (brief.pending && !brief.text && v6GetWorkerUrl()) {
+  if (brief.pending && !brief.question && !brief.text && v6GetWorkerUrl()) {
     try {
       const freshBrief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
       record.brief = freshBrief;
@@ -4561,12 +4586,14 @@ async function openDormantEcho(id, record) {
   }
 
   const finalBrief = record.brief || {};
-  const problem    = escHtml(S.m2_confirmed_problem || 'this problem');
-  const briefText  = escHtml(finalBrief.text || (finalBrief.pending
-    ? `Find someone else who hits ${S.m2_confirmed_problem || 'this problem'}. Ask them: walk me through how you handle this. The last time it happened, what did you actually do?`
-    : `Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`));
-  const target     = escHtml(finalBrief.target || '');
-  const grapeName  = escHtml(S.grape_name || 'the person you named');
+  const problem    = S.m2_confirmed_problem || 'this problem';
+  const grapeName  = S.grape_name || 'the person you named';
+  const fallbackBrief = finalBrief.question || finalBrief.text
+    ? finalBrief
+    : { question: finalBrief.pending
+        ? `Find someone else who hits ${problem}. Ask them: walk me through how you handle this. The last time it happened, what did you actually do?`
+        : `Find someone who hits this problem and is not ${grapeName}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`,
+        kind: 'echo', setup: null, target: finalBrief.target || null };
   const isInFlight = record.status === 'in_flight';
   const eyebrow    = isInFlight ? 'In flight · waiting on their story' : 'Dormant · find another person';
 
@@ -4574,11 +4601,9 @@ async function openDormantEcho(id, record) {
   renderElList();
 
   document.getElementById('dormant-panel-body').innerHTML = `
-    <div class="mech-eyebrow" style="margin-bottom:.9rem">${eyebrow}</div>
+    <div class="mech-eyebrow" style="margin-bottom:.9rem">${escHtml(eyebrow)}</div>
     <div class="dormant-brief">
-      <div class="dormant-brief-label">Not ${grapeName}. Someone else who hits: ${problem}</div>
-      <div class="dormant-brief-text">${briefText}</div>
-      ${target ? `<div class="dormant-brief-target">Looking for: ${target}</div>` : ''}
+      ${renderBriefHTML(fallbackBrief, 'echo', grapeName)}
     </div>
     <div style="margin-top:1.2rem;margin-bottom:1.5rem">
       <div class="dormant-field-label">Who did you find, and what have they done about it?</div>
