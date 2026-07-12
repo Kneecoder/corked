@@ -2235,10 +2235,15 @@ async function handleM1(request, env, corsHeaders) {
 
 export default {
   async fetch(request, env) {
+    const allowedOrigins = (env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim()).filter(Boolean);
+    const requestOrigin = request.headers.get('Origin') || '';
+    const allowOrigin = allowedOrigins.includes(requestOrigin) ? requestOrigin : (allowedOrigins[0] || '*');
+
     const corsHeaders = {
-      'Access-Control-Allow-Origin': env.ALLOWED_ORIGIN || '*',
+      'Access-Control-Allow-Origin': allowOrigin,
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Vary': 'Origin'
     };
 
     if (request.method === 'OPTIONS') {
