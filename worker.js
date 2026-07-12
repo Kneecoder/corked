@@ -143,6 +143,7 @@ Apply the same grading rules as M1 Grape grading:
 named_person: the person's first name only, or null.
 relationship_tie: the relational descriptor exactly as written in the raw spark (e.g. "my sister", "my co-founder", "the café owner downstairs"), or null.
 
+Return one JSON object only. No text before or after it. Never return two JSON blocks.
 Return only JSON.`;
 
 const M1_DOCTRINE = `You are the Winemaster — the voice of Corked.
@@ -177,6 +178,7 @@ No em dashes or en dashes in any returned string. Use short sentences or commas.
 No contrast formulas like "not X, but Y" or "not just X". Say the finding directly.
 Deficiency findings name the answer or the element, never the answerer. "No specific instance is present" not "You did not provide a specific instance." In self mode: "The answer names a pattern" not "You described a pattern."
 
+Return one JSON object only. No text before or after it. Never return two JSON blocks.
 Return only JSON.`;
 
 const M2_DOCTRINE_PROBLEM = `You are the Winemaster — the voice of Corked, an idea-aging system.
@@ -227,6 +229,7 @@ No praise. No warmth. No coaching. No em dashes or en dashes.
 No contrast formulas. No questions in the observation.
 Do not narrate method, reasoning, or inference process in observation.surface_text. Report findings only.
 
+Return one JSON object only. No text before or after it. Never return two JSON blocks.
 Return only JSON.`;
 
 const M2_DOCTRINE_FRICTION = `You are the Winemaster — the voice of Corked, an idea-aging system.
@@ -294,6 +297,7 @@ VOICE:
 No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
 Deficiency findings name the answer or the element, never the answerer. "The answer contains no observable action" not "You did not describe an action." In self mode: "No specific instance is named in the answer" not "You did not name a specific instance."
 
+Return one JSON object only. No text before or after it. Never return two JSON blocks.
 Return only JSON.`;
 
 const FIELD_DOCTRINE = `You are the Winemaster — the voice of Corked, an idea-aging system.
@@ -368,7 +372,8 @@ Return only JSON:
 { "brief": { "kind": "find"|"ask"|"echo"|"contrast"|"words"|"limit", "setup": "one sentence naming who to find or the context", "question": "the exact question to ask, no Ask: prefix", "target": "string or null" } }
 setup is null for ASK and WORDS modes (grape is already named in the addressing line, and WORDS carries no setup).
 question must contain at least one noun drawn from user_line or confirmed_problem.
-or: { "error": "..." }`;
+or: { "error": "..." }
+Return one JSON object only. No text before or after it. Never return two JSON blocks.`;
 
 function buildM0UserMessage(rawSpark, followupQuestion, followupAnswer) {
   const followupBlock = followupAnswer
@@ -588,7 +593,8 @@ If the prior answer is too thin to sharpen against, ask the plainest version of 
 is still missing, using the confirmed problem's own nouns.
 
 Return only JSON:
-{ "question": "the exact question to ask" }`;
+{ "question": "the exact question to ask" }
+Return one JSON object only. No text before or after it. Never return two JSON blocks.`;
 
 function buildResolveUserMessage(element, elementState, sourceMechanism, priorAnswer, confirmedProblem, grapeName, domain) {
   return `<element>${element}</element>
@@ -679,6 +685,7 @@ VOICE:
 No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
 Deficiency findings name the answer or the element, never the answerer. "The answer names a category" not "You named a category."
 
+Return one JSON object only. No text before or after it. Never return two JSON blocks.
 Return only JSON.`;
 
 const M4_DOCTRINE = `You are the Winemaster — the voice of Corked, an idea-aging system.
@@ -764,6 +771,7 @@ VOICE:
 No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
 Deficiency findings name the answer or the element, never the answerer. "The answer names a category" not "You named a category."
 
+Return one JSON object only. No text before or after it. Never return two JSON blocks.
 Return only JSON.`;
 
 function buildM3UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer) {
@@ -902,6 +910,7 @@ No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No c
 Deficiency findings name the answer or the element, never the answerer. "The answer names no existing
 solution" not "You did not name an existing solution."
 
+Return one JSON object only. No text before or after it. Never return two JSON blocks.
 Return only JSON.`;
 
 function buildM5UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer) {
@@ -1011,6 +1020,7 @@ No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No c
 Deficiency findings name the answer or the element, never the answerer. "The answer offers no direct
 language" not "You did not provide a quote."
 
+Return one JSON object only. No text before or after it. Never return two JSON blocks.
 Return only JSON.`;
 
 function buildM6UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer, wordsSource) {
@@ -1111,6 +1121,7 @@ No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No c
 Deficiency findings name the answer or the element, never the answerer. "The answer names no bounded
 exclusion" not "You did not name who doesn't have this."
 
+Return one JSON object only. No text before or after it. Never return two JSON blocks.
 Return only JSON.`;
 
 function buildM7UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer) {
@@ -1143,6 +1154,43 @@ Return exactly this JSON shape:
 Omit swirl entirely when state is settled.`;
 }
 
+// Collects JSON candidates from a Claude response: fenced ```json blocks if present,
+// otherwise balanced top-level {...} spans (string-literal aware, so braces inside
+// quoted values don't throw off the depth count).
+function extractJsonCandidates(rawText) {
+  const fenced = [...rawText.matchAll(/```json\s*([\s\S]*?)```/g)].map(m => m[1].trim());
+  if (fenced.length) return fenced;
+
+  const candidates = [];
+  let depth = 0;
+  let start = -1;
+  let inString = false;
+  let escape = false;
+  for (let i = 0; i < rawText.length; i++) {
+    const ch = rawText[i];
+    if (inString) {
+      if (escape) escape = false;
+      else if (ch === '\\') escape = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') { inString = true; continue; }
+    if (ch === '{') {
+      if (depth === 0) start = i;
+      depth++;
+    } else if (ch === '}') {
+      if (depth > 0) {
+        depth--;
+        if (depth === 0 && start !== -1) {
+          candidates.push(rawText.slice(start, i + 1));
+          start = -1;
+        }
+      }
+    }
+  }
+  return candidates;
+}
+
 async function callClaude(env, system, content, maxTokens = 700) {
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -1167,9 +1215,17 @@ async function callClaude(env, system, content, maxTokens = 700) {
 
   const claude = await response.json();
   const rawText = claude.content?.[0]?.text?.trim() || '';
+
+  // A self-correction can leave two JSON blocks in one response; the last one is
+  // the corrected answer, so try candidates from last to first and take the first parse.
+  const candidates = extractJsonCandidates(rawText);
+  for (let i = candidates.length - 1; i >= 0; i--) {
+    try {
+      return JSON.parse(candidates[i]);
+    } catch { /* try the next candidate */ }
+  }
   try {
-    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-    return JSON.parse(jsonMatch ? jsonMatch[0] : rawText);
+    return JSON.parse(rawText);
   } catch {
     throw new Response(JSON.stringify({ error: 'Parse error', raw: rawText }), { status: 502 });
   }
@@ -1199,6 +1255,7 @@ const GENERIC_AI_PATTERNS = [
 ];
 
 const FIELD_LENGTH_CAP = 300;
+const PROBLEM_LENGTH_CAP = 500;
 const ANSWER_LENGTH_CAP = 4000;
 const RAW_SPARK_LENGTH_CAP = 500;
 
@@ -1215,7 +1272,7 @@ function sparkParseCapFields(sparkParse) {
   const sp = sparkParse || {};
   return [
     { value: String(sp.implied_person || ''), max: FIELD_LENGTH_CAP, name: 'spark_parse.implied_person' },
-    { value: String(sp.suspected_problem || ''), max: FIELD_LENGTH_CAP, name: 'spark_parse.suspected_problem' },
+    { value: String(sp.suspected_problem || ''), max: PROBLEM_LENGTH_CAP, name: 'spark_parse.suspected_problem' },
     { value: String(sp.domain || ''), max: FIELD_LENGTH_CAP, name: 'spark_parse.domain' },
     { value: String(sp.solution_form || ''), max: FIELD_LENGTH_CAP, name: 'spark_parse.solution_form' }
   ];
@@ -1643,7 +1700,7 @@ async function handleM2(request, env, corsHeaders) {
     { value: userLine, max: FIELD_LENGTH_CAP, name: 'user_line' },
     { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
     { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
-    { value: String(body.confirmed_problem || ''), max: FIELD_LENGTH_CAP, name: 'confirmed_problem' },
+    { value: String(body.confirmed_problem || ''), max: PROBLEM_LENGTH_CAP, name: 'confirmed_problem' },
     { value: String(body.user_answer || ''), max: ANSWER_LENGTH_CAP, name: 'user_answer' },
     ...sparkParseCapFields(body.spark_parse)
   ]);
@@ -1754,7 +1811,7 @@ async function handleField(request, env, corsHeaders) {
     { value: missing, max: FIELD_LENGTH_CAP, name: 'missing' },
     { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
     { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
-    { value: confirmedProblem, max: FIELD_LENGTH_CAP, name: 'confirmed_problem' },
+    { value: confirmedProblem, max: PROBLEM_LENGTH_CAP, name: 'confirmed_problem' },
     { value: element, max: FIELD_LENGTH_CAP, name: 'element' },
     ...sparkParseCapFields(sparkParse)
   ]);
@@ -1832,7 +1889,7 @@ async function handleResolve(request, env, corsHeaders) {
     { value: elementState, max: FIELD_LENGTH_CAP, name: 'element_state' },
     { value: sourceMechanism, max: FIELD_LENGTH_CAP, name: 'source_mechanism' },
     { value: priorAnswer, max: ANSWER_LENGTH_CAP, name: 'prior_answer' },
-    { value: confirmedProblem, max: FIELD_LENGTH_CAP, name: 'confirmed_problem' },
+    { value: confirmedProblem, max: PROBLEM_LENGTH_CAP, name: 'confirmed_problem' },
     { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
     { value: domain, max: FIELD_LENGTH_CAP, name: 'domain' }
   ]);
@@ -1871,7 +1928,7 @@ async function handleEvidenceMechanism(request, env, corsHeaders, cfg) {
   const userAnswer       = String(body.user_answer || '').trim();
 
   const capViolation = checkLengthCaps(corsHeaders, [
-    { value: confirmedProblem, max: FIELD_LENGTH_CAP, name: 'confirmed_problem' },
+    { value: confirmedProblem, max: PROBLEM_LENGTH_CAP, name: 'confirmed_problem' },
     { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
     { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
     { value: userAnswer, max: ANSWER_LENGTH_CAP, name: 'user_answer' }
@@ -1962,7 +2019,7 @@ async function handleM6(request, env, corsHeaders) {
   const wordsSource      = body.words_source === 'real' ? 'real' : 'reconstructed';
 
   const capViolation = checkLengthCaps(corsHeaders, [
-    { value: confirmedProblem, max: FIELD_LENGTH_CAP, name: 'confirmed_problem' },
+    { value: confirmedProblem, max: PROBLEM_LENGTH_CAP, name: 'confirmed_problem' },
     { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
     { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
     { value: userAnswer, max: ANSWER_LENGTH_CAP, name: 'user_answer' }
@@ -2043,7 +2100,7 @@ async function handleM4(request, env, corsHeaders) {
   const priorEchoContext  = String(body.prior_echo_context || '').trim();
 
   const capViolation = checkLengthCaps(corsHeaders, [
-    { value: confirmedProblem, max: FIELD_LENGTH_CAP, name: 'confirmed_problem' },
+    { value: confirmedProblem, max: PROBLEM_LENGTH_CAP, name: 'confirmed_problem' },
     { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
     { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
     { value: userAnswer, max: ANSWER_LENGTH_CAP, name: 'user_answer' },
