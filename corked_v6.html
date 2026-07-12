@@ -1821,13 +1821,14 @@ body {
         <div class="grape-input-label">Their first name</div>
         <input type="text" class="grape-field" id="grape-field" placeholder="e.g. Sarah" maxlength="40">
       </div>
-      <div class="phase-row">
+      <div class="phase-row" id="q-phase-row">
         <div class="mech-count" id="m-count"></div>
         <div style="display:flex;gap:1rem;align-items:center;">
           <div id="real-world-exits">
             <button class="btn-ghost" id="rw-park-btn" onclick="parkItAction('dormant')">Come back to this</button>
             <button class="btn-ghost" id="rw-flight-btn" onclick="parkItAction('in_flight')">Asked, waiting on a reply</button>
           </div>
+          <div id="park-error" class="dormant-error" style="display:none"></div>
           <button class="btn" id="p1-btn" onclick="p1Next()">Continue →</button>
         </div>
       </div>
@@ -1905,8 +1906,47 @@ function freshState() {
     cellarEntryPlayed:false,
     thresholdDone:false,
     nextQuestionAt:null,
-    swirl_done:{}
+    swirl_done:{},
+    // Canonical per-question lifecycle. One field, everything else reads it.
+    // active -> parked -> answering -> evaluating -> answered | needs_clarification
+    qLifecycle:'active',
+    parkKind:null
   };
+}
+
+// ── QUESTION LIFECYCLE (single source of truth for park/answer/question state) ──
+const Q_LIFECYCLE_STATES = ['active', 'parked', 'answering', 'evaluating', 'answered', 'needs_clarification'];
+function setQLifecycle(state) {
+  S.qLifecycle = Q_LIFECYCLE_STATES.includes(state) ? state : 'active';
+}
+
+// The four mutually-exclusive panels on the phase1 screen. Exactly one is ever visible —
+// every site that used to flip these display styles by hand now goes through here, so no
+// two panels (e.g. dormant + question, both with their own answer box and Continue) can
+// ever be visible at once.
+const PHASE_PANELS = ['question', 'review', 'dormant', 'stalled'];
+function showPhasePanel(name) {
+  PHASE_PANELS.forEach(p => {
+    const el = document.getElementById(`${p}-panel`);
+    if (el) el.style.display = (p === name) ? 'block' : 'none';
+  });
+}
+function currentPhasePanel() {
+  for (const p of PHASE_PANELS) {
+    const el = document.getElementById(`${p}-panel`);
+    if (el && el.style.display === 'block') return p;
+  }
+  return 'question';
+}
+
+// Bottle-record status is a cache derived from S.qLifecycle, recomputed on every save.
+// This is what keeps the cellar card from going stale (e.g. staying "Parked" after the
+// parked question has actually been answered): whichever code path changes qLifecycle,
+// the very next save fixes the cellar label, with no separate "wake up" bookkeeping to forget.
+function deriveBottleStatus(priorStatus, s) {
+  if (priorStatus === 'rested') return 'rested';
+  if (s && s.qLifecycle === 'parked') return s.parkKind === 'in_flight' ? 'in_flight' : 'dormant';
+  return 'active';
 }
 
 // ── PERSISTENCE ──
@@ -2048,9 +2088,15 @@ function saveBottle(id, s, mechIdx) {
   const now = new Date().toISOString();
   const idx = bottles.findIndex(b => b.id === id);
   if (idx >= 0) {
-    bottles[idx] = { ...bottles[idx], s, mechIndex: mechIdx, updated_at: now };
+    const status = deriveBottleStatus(bottles[idx].status, s);
+    const keepParkFields = status === 'dormant' || status === 'in_flight';
+    bottles[idx] = {
+      ...bottles[idx], s, mechIndex: mechIdx, status, updated_at: now,
+      brief: keepParkFields ? bottles[idx].brief : null,
+      nextQuestionAt: keepParkFields ? bottles[idx].nextQuestionAt : null
+    };
   } else {
-    bottles.push({ id, created_at: now, updated_at: now, status: 'active', s, mechIndex: mechIdx });
+    bottles.push({ id, created_at: now, updated_at: now, status: deriveBottleStatus('active', s), s, mechIndex: mechIdx });
   }
   saveAllBottles(bottles);
 }
@@ -2060,6 +2106,8 @@ function loadBottle(id) {
 }
 
 function parkBottleDormant(id, brief, status = 'dormant') {
+  setQLifecycle('parked');
+  S.parkKind = status;
   const bottles = getAllBottles();
   const now = new Date().toISOString();
   const nextQuestionAt = status === 'dormant' ? computeParkNextQuestionAt(S.pace) : null;
@@ -2083,10 +2131,12 @@ function updateBottleBrief(id, brief) {
 }
 
 function wakeBottle(id) {
+  setQLifecycle('active');
+  S.parkKind = null;
   const bottles = getAllBottles();
   const i = bottles.findIndex(b => b.id === id);
   if (i >= 0) {
-    bottles[i] = { ...bottles[i], status: 'active', updated_at: new Date().toISOString() };
+    bottles[i] = { ...bottles[i], status: 'active', brief: null, nextQuestionAt: null, updated_at: new Date().toISOString() };
     saveAllBottles(bottles);
   }
 }
@@ -2162,24 +2212,10 @@ function archiveBottleFromView() {
   showCellar();
 }
 
-// A dormant bottle is locked until its standing brief's rhythm gate opens. In-flight has no clock.
+// Informational only — a parked question is never blocked from answering. This just tells
+// openDormantFind/Ask/Echo whether to show the "this would normally wait" note.
 function dormantIsLocked(bottle) {
   return bottle.status === 'dormant' && bottle.nextQuestionAt && new Date(bottle.nextQuestionAt).getTime() > Date.now();
-}
-
-// Before the rhythm gate opens: parked state + standing brief, answer entry locked.
-function renderDormantLocked(label, briefHtml, nextQuestionAt) {
-  document.getElementById('dormant-panel-body').innerHTML = `
-    <div class="mech-eyebrow" style="margin-bottom:.9rem">${escHtml(label)}</div>
-    <div class="dormant-brief">
-      ${briefHtml}
-    </div>
-    <div class="dormant-locked">This comes back to you ${escHtml(formatLockedUntil(nextQuestionAt))}. Nothing to enter yet.</div>`;
-  document.getElementById('question-panel').style.display = 'none';
-  document.getElementById('review-panel').style.display = 'none';
-  document.getElementById('stalled-panel').style.display = 'none';
-  document.getElementById('dormant-panel').style.display = 'block';
-  showScreen('phase1');
 }
 
 function deleteBottle(id, event) {
@@ -2202,6 +2238,25 @@ function migrateOldSave() {
     saveAllBottles(bottles);
     if (getAllBottles().find(b => b.id === id)) localStorage.removeItem(SAVE_KEY);
   } catch(e) {}
+}
+
+// Backfills S.qLifecycle/S.parkKind onto bottles saved before the canonical lifecycle field
+// existed, so in-flight/dormant/active test bottles already in localStorage keep working
+// under the new single-field model instead of silently losing their park state.
+function migrateQLifecycleSchema() {
+  try {
+    const bottles = getAllBottles();
+    let changed = false;
+    const migrated = bottles.map(b => {
+      const s = b.s || {};
+      if (s.qLifecycle) return b;
+      changed = true;
+      const parked = b.status === 'dormant' || b.status === 'in_flight';
+      const newS = { ...s, qLifecycle: parked ? 'parked' : 'active', parkKind: parked ? b.status : null };
+      return { ...b, s: newS };
+    });
+    if (changed) saveAllBottles(migrated);
+  } catch (e) {}
 }
 
 function updateRhythmStatus() {
@@ -2977,10 +3032,6 @@ function renderMech() {
   document.getElementById('p1-btn').textContent = 'Continue →';
   const exitsRow = document.getElementById('real-world-exits');
   if (exitsRow) exitsRow.style.display = 'none';
-  const dormantPanel = document.getElementById('dormant-panel');
-  if (dormantPanel) dormantPanel.style.display = 'none';
-  const stalledPanel = document.getElementById('stalled-panel');
-  if (stalledPanel) stalledPanel.style.display = 'none';
   const m6Interstitial = document.getElementById('m6-interstitial');
   if (m6Interstitial) { m6Interstitial.style.display = 'none'; m6Interstitial.textContent = ''; }
   const m6WordsSourceRow = document.getElementById('m6-words-source');
@@ -3089,9 +3140,8 @@ function renderMech() {
     if (exitsRowM7) exitsRowM7.style.display = 'flex';
   }
 
-  // Show review panel hidden, question panel visible
-  document.getElementById('question-panel').style.display = 'block';
-  document.getElementById('review-panel').style.display = 'none';
+  showPhasePanel('question');
+  setQLifecycle(m.prefilled ? 'answered' : 'active');
   setActiveElementThread(m.activeEl || m.els[0]);
 
   S.mechIndex = mi;
@@ -3469,6 +3519,7 @@ function maybeShowSwirl(mechId, data, originalAnswer) {
   if (!data?.swirl?.question || data.state === 'settled' || swirlAlreadyShown(mechId)) return false;
   markSwirlShown(mechId);
   _pendingSwirl = { mechId, originalAnswer };
+  setQLifecycle('needs_clarification');
 
   const panel = document.getElementById('swirl-panel');
   const qEl = document.getElementById('swirl-q');
@@ -3476,6 +3527,10 @@ function maybeShowSwirl(mechId, data, originalAnswer) {
   if (qEl) qEl.textContent = data.swirl.question;
   if (ansEl) ansEl.value = '';
   if (panel) panel.style.display = 'block';
+  // The swirl question is the only Continue while it's open — the main phase-row's
+  // Continue (and park/errand buttons) would otherwise sit visible right below it.
+  const phaseRow = document.getElementById('q-phase-row');
+  if (phaseRow) phaseRow.style.display = 'none';
   hideInlineErrand();
   return true;
 }
@@ -3483,6 +3538,8 @@ function maybeShowSwirl(mechId, data, originalAnswer) {
 function hideSwirl() {
   const panel = document.getElementById('swirl-panel');
   if (panel) panel.style.display = 'none';
+  const phaseRow = document.getElementById('q-phase-row');
+  if (phaseRow) phaseRow.style.display = '';
   _pendingSwirl = null;
 }
 
@@ -3496,6 +3553,7 @@ async function submitSwirl() {
   const combined = `${originalAnswer} ${swirlAnswer}`.trim();
   const btn = document.getElementById('swirl-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
+  setQLifecycle('evaluating');
 
   try {
     S.answers[mechId] = combined;
@@ -3520,13 +3578,17 @@ async function submitSwirl() {
     }
     const ansMain = document.getElementById('ans');
     if (ansMain) ansMain.value = combined;
+    setQLifecycle('answered');
     saveState();
   } catch (err) {
+    setQLifecycle('needs_clarification');
     showPhaseObservation('Worker error. ' + err.message);
   } finally {
     _pendingSwirl = null;
     const panel = document.getElementById('swirl-panel');
     if (panel) panel.style.display = 'none';
+    const phaseRow = document.getElementById('q-phase-row');
+    if (phaseRow) phaseRow.style.display = '';
     if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
   }
 }
@@ -3563,11 +3625,13 @@ async function triggerM2PhaseA() {
     if (confirmPanel2) confirmPanel2.style.display = 'none';
     document.getElementById('obs-box').style.display = 'none';
     setPhaseBusy(true, 'Reading answer...');
+    setQLifecycle('evaluating');
     try {
       S.answers.M2 = answer;
       const data = await callM2Worker(answer);
       await applyM2Result(data, answer);
     } catch (err) {
+      setQLifecycle('active');
       showPhaseObservation('Worker error. ' + err.message);
       setPhaseBusy(false);
       return;
@@ -3575,6 +3639,7 @@ async function triggerM2PhaseA() {
     if (ansEl) { ansEl.value = answer; ansEl.setAttribute('readonly', 'true'); ansEl.style.display = ''; }
     document.getElementById('p1-btn').textContent = 'Continue →';
     obsShown = true;
+    setQLifecycle('answered');
     setPhaseBusy(false);
     return;
   }
@@ -3632,6 +3697,7 @@ function applyM2PhaseAResult(data) {
     if (confirmInp) confirmInp.value = data.recovered_problem || '';
     if (confirmPanel) confirmPanel.style.display = 'block';
     m2AwaitingConfirm = true;
+    setQLifecycle('needs_clarification');
     setPhaseBusy(false, "That's it →");
   } else {
     // Problem was explicit — show friction question immediately.
@@ -3639,6 +3705,7 @@ function applyM2PhaseAResult(data) {
     if (hintEl && data.hint)     hintEl.textContent = data.hint;
     S.m2_confirmed_problem = data.recovered_problem;
     if (confirmPanel) confirmPanel.style.display = 'none';
+    setQLifecycle('active');
     if (ans) ans.style.display = '';
     const exitsRowM2a = document.getElementById('real-world-exits');
     if (exitsRowM2a) exitsRowM2a.style.display = 'flex';
@@ -3652,6 +3719,7 @@ function m2ConfirmProblem() {
   const inp = document.getElementById('m2-confirm-inp');
   S.m2_confirmed_problem = (inp ? inp.value.trim() : '') || S.m2_problem?.recovered_problem || '';
   m2AwaitingConfirm = false;
+  setQLifecycle('active');
 
   const qEl          = document.getElementById('m-q');
   const hintEl       = document.getElementById('m-hint');
@@ -3772,15 +3840,44 @@ async function parkM3Echo(status = 'dormant') {
   showCellar();
 }
 
+const PARK_TIMEOUT_MS = 30000;
+
 async function parkItAction(status = 'dormant') {
   const btn = document.getElementById(status === 'in_flight' ? 'rw-flight-btn' : 'rw-park-btn');
+  const errEl = document.getElementById('park-error');
+  const otherBtn = document.getElementById(status === 'in_flight' ? 'rw-park-btn' : 'rw-flight-btn');
+  const label = btn ? btn.textContent : '';
+  if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
   if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
-  if (M[mi].id === 'M2') await parkM2Ask(status);
-  else if (M[mi].id === 'M3') await parkM3Echo(status);
-  else if (M[mi].id === 'M4') await parkM4Echo(status);
-  else if (M[mi].id === 'M5') await parkM5Gap(status);
-  else if (M[mi].id === 'M6') await parkM6Words(status);
-  else if (M[mi].id === 'M7') await parkM7Limit(status);
+  if (otherBtn) otherBtn.disabled = true;
+
+  const m = M[mi];
+  if (!m) {
+    if (btn) { btn.disabled = false; btn.textContent = label; }
+    if (otherBtn) otherBtn.disabled = false;
+    if (errEl) { errEl.textContent = 'Lost track of the current question. Refresh and try again.'; errEl.style.display = 'block'; }
+    return;
+  }
+
+  const dispatch = () => {
+    if (m.id === 'M2') return parkM2Ask(status);
+    if (m.id === 'M3') return parkM3Echo(status);
+    if (m.id === 'M4') return parkM4Echo(status);
+    if (m.id === 'M5') return parkM5Gap(status);
+    if (m.id === 'M6') return parkM6Words(status);
+    if (m.id === 'M7') return parkM7Limit(status);
+    return Promise.resolve();
+  };
+  const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('This is taking too long. Check your connection and try again.')), PARK_TIMEOUT_MS));
+
+  try {
+    await Promise.race([dispatch(), timeout]);
+    // Success routes on to showCellar() inside the parkMx* helper — nothing left to reset here.
+  } catch (err) {
+    if (btn) { btn.disabled = false; btn.textContent = label; }
+    if (otherBtn) otherBtn.disabled = false;
+    if (errEl) { errEl.textContent = (err && err.message) || 'Could not save. Try again.'; errEl.style.display = 'block'; }
+  }
 }
 
 
@@ -3791,11 +3888,13 @@ async function triggerM3EchoReentry() {
   if (ansEl) ansEl.style.display = 'none';
   document.getElementById('obs-box').style.display = 'none';
   setPhaseBusy(true, 'Reading answer...');
+  setQLifecycle('evaluating');
   try {
     S.answers.M3 = answer;
     const data = await callM3Worker(answer);
     await applyM3Result(data, answer);
   } catch (err) {
+    setQLifecycle('active');
     showPhaseObservation('Worker error. ' + err.message);
     setPhaseBusy(false);
     return;
@@ -3803,6 +3902,7 @@ async function triggerM3EchoReentry() {
   if (ansEl) { ansEl.value = answer; ansEl.setAttribute('readonly', 'true'); ansEl.style.display = ''; }
   document.getElementById('p1-btn').textContent = 'Continue →';
   obsShown = true;
+  setQLifecycle('answered');
   setPhaseBusy(false);
 }
 
@@ -4077,7 +4177,9 @@ async function p1Next(bypassErrandWarn = false) {
 
     try {
       setPhaseBusy(true, m.id === 'M2' ? 'Reading moment...' : 'Reading answer...');
+      setQLifecycle('answering');
       S.answers[m.id] = txt;
+      setQLifecycle('evaluating');
       if (m.id === 'M2') {
         const data = await callM2Worker(txt);
         await applyM2Result(data, txt);
@@ -4100,6 +4202,7 @@ async function p1Next(bypassErrandWarn = false) {
         applyLocalMechanismResult(m, txt);
       }
     } catch (err) {
+      setQLifecycle('active');
       showPhaseObservation('Worker error. ' + err.message);
       ans.removeAttribute('readonly');
       document.getElementById('p1-btn').textContent = 'Try again →';
@@ -4112,6 +4215,7 @@ async function p1Next(bypassErrandWarn = false) {
     ans.setAttribute('readonly','true');
     document.getElementById('p1-btn').textContent = 'Continue →';
     obsShown = true;
+    if (S.qLifecycle === 'evaluating') setQLifecycle('answered');
     saveState();
 
   } else {
@@ -4299,6 +4403,7 @@ function pickTimingOpt(i) {
 // ── RE-ENTRY STATE RESTORE ──
 function restoreAnsweredMechUI(m) {
   if (m.prefilled || !S.answers[m.id]) return;
+  setQLifecycle('answered');
 
   const ans = document.getElementById('ans');
   if (ans) ans.setAttribute('readonly', 'true');
@@ -4330,8 +4435,13 @@ function restoreAnsweredMechUI(m) {
 }
 
 // ── REVIEW ──
+let _reviewReturnPanel = 'question';
+
 function reviewEl(key) {
   if (S.elements[key] === 'inert' || !isElementSourced(key)) return;
+  // Remember whichever panel is actually showing (question/dormant/stalled) so exitReview
+  // can return to it instead of always resurrecting the live question panel underneath.
+  _reviewReturnPanel = currentPhasePanel();
   const meta = EL_META[key];
 
   if (key === 'grape' && S.answers.M1) {
@@ -4368,8 +4478,7 @@ function reviewEl(key) {
       _reopenMechId = null;
     }
 
-    document.getElementById('question-panel').style.display = 'none';
-    document.getElementById('review-panel').style.display = 'block';
+    showPhasePanel('review');
     setActiveElementThread(key);
     return;
   }
@@ -4415,17 +4524,16 @@ function reviewEl(key) {
     _reopenMechId = null;
   }
 
-  document.getElementById('question-panel').style.display = 'none';
-  document.getElementById('review-panel').style.display = 'block';
+  showPhasePanel('review');
   setActiveElementThread(key);
 }
 
 function exitReview() {
-  document.getElementById('review-panel').style.display = 'none';
-  document.getElementById('question-panel').style.display = 'block';
+  showPhasePanel(_reviewReturnPanel || 'question');
   _reopenKey = null;
   _reopenMechId = null;
-  if (M[mi]) setActiveElementThread(M[mi].activeEl || M[mi].els[0]);
+  if (_reviewReturnPanel === 'question' && M[mi]) setActiveElementThread(M[mi].activeEl || M[mi].els[0]);
+  _reviewReturnPanel = 'question';
 }
 
 async function submitReopen() {
@@ -5052,6 +5160,7 @@ function lsInit() {
 // ── INIT ──
 (function init() {
   migrateOldSave();
+  migrateQLifecycleSchema();
   if (getAllBottles().length > 0) {
     showCellar();
   } else {
@@ -5155,17 +5264,16 @@ function getCellarWaiting(bottle) {
   const els = s.elements || {};
   if (bottle.status === 'rested') return 'Archived';
 
-  if (bottle.status === 'in_flight') {
-    return bottle.brief?.kind === 'ask'  ? 'In flight · asked, waiting on reply'
-         : bottle.brief?.kind === 'echo' ? 'In flight · waiting on their story'
-         :                                 'In flight · finding the person';
-  }
-
-  if (bottle.status === 'dormant') {
+  // Parked is read off the canonical lifecycle field, not the cached bottle.status, so this
+  // stops showing "Parked" the moment the question is actually answered — no separate wake-up
+  // bookkeeping to fall out of sync with. Falls back to bottle.status only for unmigrated bottles.
+  const isParked = s.qLifecycle ? s.qLifecycle === 'parked' : (bottle.status === 'dormant' || bottle.status === 'in_flight');
+  if (isParked) {
+    const isInFlight = s.parkKind ? s.parkKind === 'in_flight' : bottle.status === 'in_flight';
     const target = bottle.brief?.kind === 'ask'  ? 'a question to ask'
                  : bottle.brief?.kind === 'echo' ? 'find another person'
                  :                                 'find the person';
-    return dormantIsLocked(bottle) ? `Parked · ${target}` : `Waiting on you · ${target}`;
+    return isInFlight ? `Parked · asked, waiting on reply` : `Parked · ${target}`;
   }
 
   if (s.thresholdDone && s.nextQuestionAt) {
@@ -5179,14 +5287,9 @@ function getCellarWaiting(bottle) {
     }
   }
 
-  const elNames = { grape:'Grape', tell:'The Tell', vintage:'Vintage', gap:'The Gap', echo:'The Echo', limit:'The Limit' };
-  for (const key of EL_KEYS) {
-    const st = els[key];
-    if (st === 'turbid')   return `${elNames[key]} · turbid`;
-    if (st === 'clearing') return `${elNames[key]} · clearing`;
-  }
-  if (EL_KEYS.every(k => els[k] === 'settled')) return 'All elements settled';
-  return 'Phase 1 · beginning';
+  const remaining = EL_KEYS.filter(k => els[k] !== 'settled').length;
+  if (remaining === 0) return 'All elements settled';
+  return `Still aging · ${remaining} element${remaining === 1 ? '' : 's'} remain`;
 }
 
 function formatCellarDate(iso) {
@@ -5224,7 +5327,10 @@ function openBottle(id) {
     return;
   }
 
-  if (record.status === 'dormant' || record.status === 'in_flight') {
+  const isParked = S.qLifecycle
+    ? S.qLifecycle === 'parked'
+    : (record.status === 'dormant' || record.status === 'in_flight');
+  if (isParked) {
     if (record.brief?.kind === 'ask')  return openDormantAsk(id, record);
     if (record.brief?.kind === 'echo') return openDormantEcho(id, record);
     return openDormantFind(id, record);
@@ -5268,16 +5374,12 @@ function openStalledPanel(id, record) {
       </div>
     </div>`;
 
-  document.getElementById('question-panel').style.display = 'none';
-  document.getElementById('review-panel').style.display = 'none';
-  document.getElementById('dormant-panel').style.display = 'none';
-  document.getElementById('stalled-panel').style.display = 'block';
+  showPhasePanel('stalled');
   showScreen('phase1');
 }
 
 function dismissStalledPanel(id) {
   markStallAcknowledged(id);
-  document.getElementById('stalled-panel').style.display = 'none';
   document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
   renderElList();
   updateBottle();
@@ -5291,15 +5393,7 @@ function dismissStalledPanel(id) {
 
 // ── DORMANT RE-ENTRY ──
 async function openDormantFind(id, record) {
-  if (dormantIsLocked(record)) {
-    document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
-    renderElList();
-    const lockedBrief = record.brief?.question || record.brief?.text
-      ? record.brief
-      : { question: 'Find the first real person this spark draws from.', kind: 'find', target: record.brief?.target || null };
-    return renderDormantLocked('Parked · find the person', renderBriefHTML(lockedBrief, 'find', ''), record.nextQuestionAt);
-  }
-
+  const wasLocked = dormantIsLocked(record);
   const brief = record.brief || {};
   const pending = brief.pending && !brief.question && !brief.text;
 
@@ -5324,6 +5418,7 @@ async function openDormantFind(id, record) {
 
   document.getElementById('dormant-panel-body').innerHTML = `
     <div class="mech-eyebrow" style="margin-bottom:.9rem">Dormant · find the person</div>
+    ${wasLocked ? `<div class="dormant-locked">This would normally wait until ${escHtml(formatLockedUntil(record.nextQuestionAt))}. Answer now instead, any time.</div>` : ''}
     <div class="dormant-brief">
       ${renderBriefHTML(fallbackBrief, 'find', '')}
     </div>
@@ -5346,9 +5441,7 @@ async function openDormantFind(id, record) {
       <button class="btn" id="df-submit-btn" onclick="submitDormantFind('${escHtml(id)}')">Enter the person →</button>
     </div>`;
 
-  document.getElementById('question-panel').style.display = 'none';
-  document.getElementById('review-panel').style.display = 'none';
-  document.getElementById('dormant-panel').style.display = 'block';
+  showPhasePanel('dormant');
   showScreen('phase1');
 }
 
@@ -5367,6 +5460,7 @@ async function submitDormantFind(id) {
   const workerUrl = v6GetWorkerUrl();
   if (workerUrl) {
     if (btn) { btn.disabled = true; btn.textContent = 'Reading person...'; }
+    setQLifecycle('evaluating');
     try {
       const data = await workerFetch('/m1', {
         spark_summary:  getSparkSummary(),
@@ -5376,6 +5470,7 @@ async function submitDormantFind(id) {
       });
       const grapeState = normalizeGrapeState(data.grape?.state || 'turbid');
       if (grapeState === 'turbid') {
+        setQLifecycle('parked');
         if (errEl) {
           errEl.textContent = data.observation?.surface_text || 'A more specific person is needed.';
           errEl.style.display = 'block';
@@ -5386,6 +5481,7 @@ async function submitDormantFind(id) {
       wakeBottle(id);
       writeM1FromIntake(name, rel, data);
     } catch (err) {
+      setQLifecycle('parked');
       if (errEl) {
         errEl.textContent = 'Could not reach the worker. Check your Worker URL.';
         errEl.style.display = 'block';
@@ -5403,15 +5499,7 @@ async function submitDormantFind(id) {
 }
 
 async function openDormantAsk(id, record) {
-  if (dormantIsLocked(record)) {
-    document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
-    renderElList();
-    const lockedBrief = record.brief?.question || record.brief?.text
-      ? record.brief
-      : { question: S.m2_problem?.question || 'Go ask the person directly. Walk them through the last time this happened.', kind: 'ask', setup: null, target: null };
-    return renderDormantLocked('Parked · a question to ask', renderBriefHTML(lockedBrief, 'ask', S.grape_name || 'the person you named'), record.nextQuestionAt);
-  }
-
+  const wasLocked = dormantIsLocked(record);
   const brief = record.brief || {};
 
   if (brief.pending && !brief.question && !brief.text && v6GetWorkerUrl()) {
@@ -5439,6 +5527,7 @@ async function openDormantAsk(id, record) {
 
   document.getElementById('dormant-panel-body').innerHTML = `
     <div class="mech-eyebrow" style="margin-bottom:.9rem">${escHtml(eyebrow)}</div>
+    ${wasLocked ? `<div class="dormant-locked">This would normally wait until ${escHtml(formatLockedUntil(record.nextQuestionAt))}. Answer now instead, any time.</div>` : ''}
     <div class="dormant-brief">
       ${renderBriefHTML(fallbackBrief, 'ask', grapeName)}
     </div>
@@ -5451,12 +5540,10 @@ async function openDormantAsk(id, record) {
     <div class="dormant-error" id="da-error"></div>
     <div class="phase-row">
       <div></div>
-      <button class="btn" id="da-submit-btn" onclick="submitDormantAsk('${escHtml(id)}')">Continue →</button>
+      <button class="btn" id="da-submit-btn" onclick="submitDormantAsk('${escHtml(id)}')">Answer now →</button>
     </div>`;
 
-  document.getElementById('question-panel').style.display = 'none';
-  document.getElementById('review-panel').style.display = 'none';
-  document.getElementById('dormant-panel').style.display = 'block';
+  showPhasePanel('dormant');
   showScreen('phase1');
 }
 
@@ -5477,17 +5564,7 @@ function submitDormantAsk(id) {
 }
 
 async function openDormantEcho(id, record) {
-  if (dormantIsLocked(record)) {
-    document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
-    renderElList();
-    const problemLocked = S.m2_confirmed_problem || 'this problem';
-    const grapeNameLocked = S.grape_name || 'the person you named';
-    const lockedBrief = record.brief?.question || record.brief?.text
-      ? record.brief
-      : { question: `Find someone who hits ${problemLocked} and is not ${grapeNameLocked}.`, kind: 'echo', setup: null, target: record.brief?.target || null };
-    return renderDormantLocked('Parked · find another person', renderBriefHTML(lockedBrief, 'echo', grapeNameLocked), record.nextQuestionAt);
-  }
-
+  const wasLocked = dormantIsLocked(record);
   const brief = record.brief || {};
 
   if (brief.pending && !brief.question && !brief.text && v6GetWorkerUrl()) {
@@ -5515,6 +5592,7 @@ async function openDormantEcho(id, record) {
 
   document.getElementById('dormant-panel-body').innerHTML = `
     <div class="mech-eyebrow" style="margin-bottom:.9rem">${escHtml(eyebrow)}</div>
+    ${wasLocked ? `<div class="dormant-locked">This would normally wait until ${escHtml(formatLockedUntil(record.nextQuestionAt))}. Answer now instead, any time.</div>` : ''}
     <div class="dormant-brief">
       ${renderBriefHTML(fallbackBrief, 'echo', grapeName)}
     </div>
@@ -5527,12 +5605,10 @@ async function openDormantEcho(id, record) {
     <div class="dormant-error" id="de-error"></div>
     <div class="phase-row">
       <div></div>
-      <button class="btn" id="de-submit-btn" onclick="submitDormantEcho('${escHtml(id)}')">Continue →</button>
+      <button class="btn" id="de-submit-btn" onclick="submitDormantEcho('${escHtml(id)}')">Answer now →</button>
     </div>`;
 
-  document.getElementById('question-panel').style.display = 'none';
-  document.getElementById('review-panel').style.display = 'none';
-  document.getElementById('dormant-panel').style.display = 'block';
+  showPhasePanel('dormant');
   showScreen('phase1');
 }
 
