@@ -265,6 +265,13 @@ settled:  All active bars settled (Tell, Vintage, and Gap if in play).
 clearing: At least one bar clearing and none turbid.
 turbid:   Any active bar turbid.
 
+SUBSTITUTION RULE:
+If the answer describes the founder's own build, stack, architecture, or feature list in place of the
+grape's observed behaviour, name the substitution in the observation: state what was described (the build)
+and what the question asked for (the grape's own filmable action). Tell is capped at clearing when a
+substitution carries any reference to the grape's behaviour, and turbid when it does not.
+Set substitution_detected true whenever this rule fired, false otherwise.
+
 OBSERVATION:
 Two short declarative sentences. Monotone lab register.
 Order sentences by settlement state: settled bars first, then clearing, then turbid. Each sentence names one bar's finding — Tell covers behaviour, Vintage covers the moment, Gap (when gap_in_play) covers the named existing solution.
@@ -274,6 +281,14 @@ When a verbatim span from the answer directly supports a finding, use it as anch
 ANTI-FABRICATION:
 Do not invent behaviour, time, existing-solution, or failure detail not present in the answer.
 anchor_span must be a verbatim excerpt from the user_answer. If none supports the claim, set null.
+
+SWIRL (optional):
+When state is below settled (turbid or clearing), you may add one swirl question that reopens the answer
+along a second axis, distinct from the bar findings already reported. Two kinds only:
+- ownership: asks who actually owns this problem day to day, when the account of who has it feels blurred.
+- reality: asks whether the grape in the answer is a real, specific individual or a constructed stand-in.
+Pick whichever kind targets the weaker part of this specific answer. One sentence, Winemaster voice, no
+rubric language. Omit the swirl field entirely when state is settled or when neither kind applies cleanly.
 
 VOICE:
 No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
@@ -285,7 +300,7 @@ const FIELD_DOCTRINE = `You are the Winemaster — the voice of Corked, an idea-
 
 Your job is generating a field brief: one question for the founder to carry into the real world.
 
-Three modes:
+Six modes:
 
 FIND (mode: find, missing: grape)
 Build entirely from user_line and spark_parse. No grape is present.
@@ -307,6 +322,7 @@ Never hypothetical ("would you", "could you imagine", "do you think").
 Never ask whether the problem exists, it is confirmed.
 Never name a pitch, feature, or solution.
 Return target: null.
+Special case, element is "gap": anchor the question on the founder's current fix, not the friction moment. Ask what they use for the confirmed problem now and when it last let them down. Phrasing like "What are you using for [problem] now? When did it last let you down?"
 
 ECHO (mode: echo)
 The founder has a named grape and a confirmed problem. They need to find a second person, not the grape, who hits the same problem and ask about their workaround.
@@ -316,10 +332,30 @@ The question must be past-behaviour anchored: "Walk me through how you handle [p
 Never about the idea. Never hypothetical. Do not reference the grape by name.
 Return target: a short label (3-6 words) naming what kind of person to find, drawn from domain and confirmed_problem.
 
+CONTRAST (mode: contrast)
+The founder has a named grape and a confirmed problem. They need a different kind of person than the grape, a different role or context, who also hits the problem.
+confirmed_problem is required. If absent, return { "error": "CONTRAST requires a confirmed problem" }.
+Name who to find, drawn from domain and confirmed_problem, never the grape's role.
+Build a past-anchored question: "Talk me through how [problem] shows up for you." or similar. Never lead toward sameness with the grape. Never a pitch.
+Return target: a short label (3-6 words) naming the contrasting kind of person, drawn from domain and confirmed_problem.
+
+WORDS (mode: words)
+The founder is going to the grape, unprimed. domain is required.
+The question must NOT name the confirmed problem or any solution. It must not point at the problem at all.
+Build an open domain question: "What's the most annoying part of [domain] for you right now?" or similar, using domain's own nouns.
+Return setup: null. Return target: null.
+
+LIMIT (mode: limit)
+The founder needs someone who looks like they should have the confirmed problem but might not.
+confirmed_problem and domain are required. If either is absent, return { "error": "LIMIT requires a confirmed problem and domain" }.
+Name who to find: someone who looks like they should have the problem, drawn from domain.
+Build the question plus a why-not follow: "You're in [domain]. Is [problem] actually a thing for you?" plus asking why not if it isn't.
+Return target: a short label (3-6 words) naming who to find, drawn from domain.
+
 FAILURE RULES:
 If the spark is too vague to produce a question using its actual nouns, return { "error": "brief_impossible" }.
 A generic brief is a failure. "Ask them about their workflow" does not name the spark's domain.
-question must contain at least one noun drawn from user_line or confirmed_problem.
+question must contain at least one noun drawn from user_line or confirmed_problem, except WORDS mode, which must instead draw its noun from domain and must not touch confirmed_problem at all.
 
 VOICE:
 No em dashes or en dashes. Use commas or short sentences instead.
@@ -329,8 +365,8 @@ Winemaster register: dry, precise, direct.
 setup cap: 120 characters. question cap: 160 characters. Combined hard cap: 280. Count carefully. Cut if needed.
 
 Return only JSON:
-{ "brief": { "kind": "find"|"ask"|"echo", "setup": "one sentence naming who to find or the context", "question": "the exact question to ask, no Ask: prefix", "target": "string or null" } }
-setup is null for ASK mode (grape is already named in the addressing line).
+{ "brief": { "kind": "find"|"ask"|"echo"|"contrast"|"words"|"limit", "setup": "one sentence naming who to find or the context", "question": "the exact question to ask, no Ask: prefix", "target": "string or null" } }
+setup is null for ASK and WORDS modes (grape is already named in the addressing line, and WORDS carries no setup).
 question must contain at least one noun drawn from user_line or confirmed_problem.
 or: { "error": "..." }`;
 
@@ -499,8 +535,11 @@ Return exactly this JSON shape:
   "observation": {
     "surface_text": "max 280 chars, two or three sentences depending on gap_in_play",
     "anchor_span": "verbatim from user_answer or null"
-  }
-}`;
+  },
+  "substitution_detected": true|false,
+  "swirl": { "kind": "ownership|reality", "question": "one sentence" }
+}
+Omit swirl entirely when state is settled.`;
 }
 
 function buildFieldUserMessage(mode, userLine, sparkParse, missing, grapeName, grapeRel, confirmedProblem, element) {
@@ -518,6 +557,50 @@ function buildFieldUserMessage(mode, userLine, sparkParse, missing, grapeName, g
 <grape_relationship>${grapeRel || ''}</grape_relationship>
 <confirmed_problem>${confirmedProblem || ''}</confirmed_problem>
 <element>${element || ''}</element>`;
+}
+
+const RESOLVE_DOCTRINE = `You are the Winemaster — the voice of Corked, an idea-aging system.
+
+Your job is the resolving question: the last question for the one element still Turbid or Clearing when
+every other element on this bottle has settled.
+
+You receive the element, its current state, the source mechanism that grades it, the founder's prior
+answer to that mechanism's question, the confirmed problem, the grape's name, and the domain.
+
+Write ONE question, sharper than the source mechanism's original question, that names precisely what this
+element is still missing given the prior answer already on file. Read the prior answer first. Do not repeat
+the ground it already covered. Do not ask something the prior answer already answered.
+
+The question must point at the specific gap: a missing behaviour, a missing moment, a missing third party,
+a missing failure point, or a missing bounded exclusion, depending on the element. Use the confirmed
+problem's and the prior answer's own nouns. Do not introduce a new domain or scenario.
+
+VOICE:
+Winemaster register: dry, precise, direct.
+No praise, no coaching, no startup language.
+Do not name element states or bar names ("Tell", "Vintage", "Gap", "Echo", "Limit", "settled", "clearing",
+"turbid") inside the question itself.
+No em dashes or en dashes. No contrast formulas ("not X, but Y", "not just X").
+question cap: 200 characters.
+
+FAILURE RULE:
+If the prior answer is too thin to sharpen against, ask the plainest version of what real-world evidence
+is still missing, using the confirmed problem's own nouns.
+
+Return only JSON:
+{ "question": "the exact question to ask" }`;
+
+function buildResolveUserMessage(element, elementState, sourceMechanism, priorAnswer, confirmedProblem, grapeName, domain) {
+  return `<element>${element}</element>
+<element_state>${elementState}</element_state>
+<source_mechanism>${sourceMechanism}</source_mechanism>
+<prior_answer>${priorAnswer}</prior_answer>
+<confirmed_problem>${confirmedProblem || ''}</confirmed_problem>
+<grape_name>${grapeName || ''}</grape_name>
+<domain>${domain || ''}</domain>
+
+Return exactly this JSON shape:
+{ "question": "one sharper question naming what this element is still missing" }`;
 }
 
 const M3_DOCTRINE = `You are the Winemaster — the voice of Corked, an idea-aging system.
@@ -549,6 +632,7 @@ observation: state what was described (the build) and what the question asked
 for (a separate person and what they actually did). The Echo is capped at
 clearing when a substitution carries any third-party reference, and turbid
 when no third party is present at all.
+Set substitution_detected true whenever this rule fired, false otherwise.
 
 SELF-AS-GRAPE (maturity_class 2):
 The grape is the founder. The Echo can never be the speaker. Any answer about
@@ -583,6 +667,14 @@ ANTI-FABRICATION:
 Do not invent person, behaviour, workaround, or moment detail not present in the answer.
 anchor_span must be a verbatim excerpt from the user_answer. If none supports the claim, set null.
 
+SWIRL (optional):
+When state is below settled (turbid or clearing), you may add one swirl question that reopens the answer
+along a second axis, distinct from the bar findings already reported. Two kinds only:
+- ownership: asks who actually owns this problem day to day, when the account of who has it feels blurred.
+- reality: asks whether the person in the answer is a real, specific individual or a constructed stand-in.
+Pick whichever kind targets the weaker part of this specific answer. One sentence, Winemaster voice, no
+rubric language. Omit the swirl field entirely when state is settled or when neither kind applies cleanly.
+
 VOICE:
 No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
 Deficiency findings name the answer or the element, never the answerer. "The answer names a category" not "You named a category."
@@ -591,9 +683,9 @@ Return only JSON.`;
 
 const M4_DOCTRINE = `You are the Winemaster — the voice of Corked, an idea-aging system.
 
-Your job in M4 is grading the Second Person.
+Your job in M4 is detecting whether a different kind of person hits this problem, and whether it looks the same for them.
 
-M4 looks for one thing: a named person — distinct from the grape and distinct from anyone described in the prior echo answer — who has hit the same problem, and what they actually did about it. M4 is a second confirmation that the problem exists outside both the founder's interpretation and the grape's account.
+M4 looks for one thing: a named person — distinct from the grape and distinct from anyone described in the prior echo answer — who has hit the same problem, and what they actually did about it. M4 is a second confirmation that the problem exists outside both the founder's interpretation and the grape's account, and it captures whether this second person is a different kind of person than the grape and whether the problem shows up the same way for them.
 
 You receive the confirmed problem, the grape's name (to exclude), the founder's maturity class, the prior echo context (exclude anyone described here), and their M4 answer.
 
@@ -622,6 +714,7 @@ If the answer describes the founder's build, stack, architecture, or feature lis
 behaviour, name the substitution in the observation: state what was described (the build) and what the
 question asked for (a separate person and what they actually did). Echo is capped at clearing when a
 substitution carries any third-party reference, and turbid when no third party is present at all.
+Set substitution_detected true whenever this rule fired, false otherwise.
 
 SELF-AS-GRAPE (maturity_class 2):
 The grape is the founder. The Echo can never be the speaker. Any answer about the founder's own behaviour
@@ -637,6 +730,18 @@ state equals echo.state. Full stop.
 The Vintage is opportunistic: grade it only when the answer already carries a moment. It may rank up the
 Vintage element. It never lowers the overall state and never blocks.
 
+CONTRAST CAPTURE:
+Independently of the Echo bar, grade whether the answer's second person is a different kind of person than
+the grape (different role, context, or relationship to the problem — not just a different name) and whether
+the problem looks the same or different for them.
+is_different_kind: true if the answer's person is a clearly different kind of person than the grape,
+  false if they read as the same kind of person (same role or context), unclear if the answer does not
+  give enough to tell.
+same_or_different: "same" if the problem shows up the same way for this person as it does for the grape,
+  "different" if the answer describes it showing up differently, "unclear" if the answer does not say.
+This is a capture, not a gate. It never changes echo.state and never blocks settling. If Echo is turbid
+(no real second person), set is_different_kind and same_or_different to "unclear" and anchor_span to null.
+
 OBSERVATION:
 Two short declarative sentences. Monotone lab register.
 Sentence one: what the Echo bar found — whether a new real third party is present, and what their
@@ -646,6 +751,14 @@ Sentence two: what the Vintage bar found — whether a specific instance is pres
 ANTI-FABRICATION:
 Do not invent person, behaviour, workaround, or moment detail not present in the answer.
 anchor_span must be a verbatim excerpt from the user_answer. If none supports the claim, set null.
+
+SWIRL (optional):
+When state is below settled (turbid or clearing), you may add one swirl question that reopens the answer
+along a second axis, distinct from the bar findings already reported. Two kinds only:
+- ownership: asks who actually owns this problem day to day, when the account of who has it feels blurred.
+- reality: asks whether the person in the answer is a real, specific individual or a constructed stand-in.
+Pick whichever kind targets the weaker part of this specific answer. One sentence, Winemaster voice, no
+rubric language. Omit the swirl field entirely when state is settled or when neither kind applies cleanly.
 
 VOICE:
 No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
@@ -680,8 +793,11 @@ Return exactly this JSON shape:
   "observation": {
     "surface_text": "max 280 chars, two sentences, lab register",
     "anchor_span": "verbatim from user_answer or null"
-  }
-}`;
+  },
+  "substitution_detected": true|false,
+  "swirl": { "kind": "ownership|reality", "question": "one sentence" }
+}
+Omit swirl entirely when state is settled.`;
 }
 
 function buildM4UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer, priorEchoContext) {
@@ -709,11 +825,322 @@ Return exactly this JSON shape:
     "state": "turbid|clearing|settled",
     "anchor_span": "verbatim from user_answer or null"
   },
+  "contrast": {
+    "is_different_kind": "true|false|unclear",
+    "same_or_different": "same|different|unclear",
+    "anchor_span": "verbatim from user_answer or null"
+  },
   "observation": {
     "surface_text": "max 280 chars, two sentences, lab register",
     "anchor_span": "verbatim from user_answer or null"
-  }
-}`;
+  },
+  "substitution_detected": true|false,
+  "swirl": { "kind": "ownership|reality", "question": "one sentence" }
+}
+Omit swirl entirely when state is settled.`;
+}
+
+const M5_DOCTRINE = `You are the Winemaster — the voice of Corked, an idea-aging system.
+
+Your job in M5 is grading the Existing Fix.
+
+M5 looks for one thing: what people currently use to handle this problem today, and the precise point at
+which it fails them. This is the Gap: confirmation that a real alternative already exists and that it has
+a specific, nameable shortfall — not a vague dissatisfaction.
+
+You receive the confirmed problem, the grape's name, the founder's maturity class, and their M5 answer.
+
+GAP BAR — existing solution and its failure point. This is M5's primary bar and the only bar that sets
+M5's overall state.
+settled:  The answer names an existing solution (a tool, a service, a person the grape hands the problem
+          to, or a manual ritual/habit) AND states the precise thing it fails to do.
+          "She uses a spreadsheet template but it does not catch double bookings" = settled.
+          "He pays a bookkeeper but they only reconcile monthly, not in real time" = settled.
+clearing: A named solution with no specific failure ("She uses Studio Ninja" alone), or a specific failure
+          with no named solution ("Nothing catches it in time" without saying what she currently uses).
+          One without the other is not enough.
+turbid:   No existing solution named in the answer at all. Pure absence, deflection, or "there isn't
+          anything" without naming what is currently tried.
+
+SUBSTITUTION RULE:
+The founder's own build, prototype, or planned product is never a valid existing fix — it is the thing
+being validated, not an alternative to it. If the answer describes the founder's own build, stack, or
+planned feature in place of an existing solution, name the substitution in the observation: state what
+was described (the founder's own build) and what the question asked for (something that exists today,
+separate from it). Gap is capped at turbid when the answer is only the founder's own build, regardless of
+how precisely its shortcomings are described.
+Set substitution_detected true whenever this rule fired, false otherwise.
+
+SELF-AS-GRAPE (maturity_class 2):
+The grape is the founder. The founder's own current tool, habit, or workaround is valid Gap material here —
+this is the one place self-as-grape is not excluded, because M5 asks what the grape uses today, and the
+grape is the founder. Only the founder's own planned or in-progress build is excluded, per the substitution
+rule above.
+
+OVERALL STATE:
+state equals gap.state. Full stop. There is no vintage bar in M5.
+
+OBSERVATION:
+Two short declarative sentences. Monotone lab register.
+Sentence one: what the Gap bar found — whether an existing solution is named, and what it is.
+Sentence two: whether a precise failure point is present, or only the solution, or only a vague complaint.
+
+ANTI-FABRICATION:
+Do not invent a solution, tool, person, or failure detail not present in the answer.
+anchor_span must be a verbatim excerpt from the user_answer. If none supports the claim, set null.
+
+SWIRL (optional):
+When state is below settled (turbid or clearing), you may add one swirl question that reopens the answer
+along a second axis, distinct from the bar findings already reported. Two kinds only:
+- ownership: asks who actually owns this problem day to day, when the account of who has it feels blurred.
+- reality: asks whether the person in the answer is a real, specific individual or a constructed stand-in.
+Pick whichever kind targets the weaker part of this specific answer. One sentence, Winemaster voice, no
+rubric language. Omit the swirl field entirely when state is settled or when neither kind applies cleanly.
+
+VOICE:
+No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
+Deficiency findings name the answer or the element, never the answerer. "The answer names no existing
+solution" not "You did not name an existing solution."
+
+Return only JSON.`;
+
+function buildM5UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer) {
+  const selfMode = maturityClass === 2;
+  const grapeBlock = selfMode
+    ? `<grape>self (the speaker)</grape>`
+    : `<grape_name>${grapeName}</grape_name>\n<grape_relationship>${grapeRel}</grape_relationship>`;
+
+  return `<confirmed_problem>${confirmedProblem}</confirmed_problem>
+${grapeBlock}
+<maturity_class>${maturityClass}</maturity_class>
+<user_answer>${userAnswer}</user_answer>
+
+Return exactly this JSON shape:
+{
+  "schema_version": "m5.v1",
+  "mechanism": "M5",
+  "state": "turbid|clearing|settled",
+  "gap": {
+    "state": "turbid|clearing|settled",
+    "anchor_span": "verbatim from user_answer or null"
+  },
+  "observation": {
+    "surface_text": "max 280 chars, two sentences, lab register",
+    "anchor_span": "verbatim from user_answer or null"
+  },
+  "substitution_detected": true|false,
+  "swirl": { "kind": "ownership|reality", "question": "one sentence" }
+}
+Omit swirl entirely when state is settled.`;
+}
+
+const M6_DOCTRINE = `You are the Winemaster — the voice of Corked, an idea-aging system.
+
+Your job in M6 is grading Their Words.
+
+M6 looks for the grape's own language about the problem, distinct from the founder's interpretation of it,
+and separately checks whether that language carries filmable behaviour (the Tell) or a concrete third-party
+echo (the Echo, opportunistic here).
+
+You receive the confirmed problem, the grape's name, the founder's maturity class, whether the founder
+flagged this as coming from a real exchange or a reconstruction (words_source), and their M6 answer.
+
+WORDS BAR — real language from the grape. This is M6's primary bar and the only bar that sets M6's
+overall state.
+settled:  Actual language from a real exchange is present — a direct quote or a close, specific recounting
+          of what the grape said, AND words_source is real.
+          '"I just want the money side of this to be boring," she said' = settled if flagged real.
+clearing: words_source is reconstructed, regardless of how vivid or specific the language sounds. Also
+          clearing when words_source is real but the answer recounts that a real exchange happened
+          without any actual language from it — a summary of the conversation, not words from it.
+turbid:   No language at all, or the founder's own framing presented as if it were the grape's words
+          ("basically what she means is..." is the founder's interpretation, not a quote).
+
+HARD RULE — no exceptions:
+If words_source is reconstructed, Words is capped at clearing even if the quoted language is vivid,
+specific, and plausible. Vividness is not evidence of a real exchange. This rule overrides the settled
+bar above; do not grade Words settled when words_source is reconstructed under any circumstance.
+
+TELL BAR — filmable behaviour in the words (opportunistic, rank-up only, never lowers overall state):
+settled:  The quoted or recounted words themselves describe or contain a specific, filmable action or
+          moment, not just a sentiment.
+clearing: The words carry a stated feeling or complaint but no filmable action.
+turbid:   No words to assess, or words carry nothing behavioural at all.
+
+ECHO BAR — third-party echo in the words (opportunistic, rank-up only, never lowers overall state,
+never blocks). Only ever gradeable when maturity_class is 0 or 1 and words_source is real:
+settled:  words_source is real AND the grape's quoted words name or reference one concrete thing a third
+          party (not the grape, not the founder) said or did about the same problem.
+turbid:   Otherwise — words_source reconstructed, no real exchange, or nothing concrete about a third
+          party in the words.
+SELF-AS-GRAPE (maturity_class 2): omit the echo field entirely. The grape is the founder; the founder
+cannot echo themselves, and this bar does not apply in self mode.
+
+SUBSTITUTION RULE:
+If the answer describes the founder's own framing, pitch, or planned feature as if it were the grape's
+words, name the substitution in the observation: state what was described (the founder's own framing) and
+what the question asked for (the grape's actual language). Words is capped at clearing when a substitution
+still carries some attributed language from the grape, and turbid when it does not.
+Set substitution_detected true whenever this rule fired, false otherwise.
+
+OVERALL STATE:
+state equals words.state. Full stop. Tell and Echo are opportunistic: grade them only when the answer
+supports it. They may rank up their elements. They never lower the overall state and never block.
+
+OBSERVATION:
+Two short declarative sentences. Monotone lab register.
+Sentence one: what the Words bar found — whether real, attributable language is present, and whether
+words_source is real or reconstructed.
+Sentence two: whether the words carry filmable behaviour (Tell) or a third-party echo, if either is present.
+
+ANTI-FABRICATION:
+Do not invent quotes, behaviour, or third-party detail not present in the answer.
+anchor_span must be a verbatim excerpt from the user_answer. If none supports the claim, set null.
+
+SWIRL (optional):
+When state is below settled (turbid or clearing), you may add one swirl question that reopens the answer
+along a second axis, distinct from the bar findings already reported. Two kinds only:
+- ownership: asks who actually owns this problem day to day, when the account of who has it feels blurred.
+- reality: asks whether the grape's words in the answer come from a real, specific individual or a
+  constructed stand-in.
+Pick whichever kind targets the weaker part of this specific answer. One sentence, Winemaster voice, no
+rubric language. Omit the swirl field entirely when state is settled or when neither kind applies cleanly.
+
+VOICE:
+No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
+Deficiency findings name the answer or the element, never the answerer. "The answer offers no direct
+language" not "You did not provide a quote."
+
+Return only JSON.`;
+
+function buildM6UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer, wordsSource) {
+  const selfMode = maturityClass === 2;
+  const grapeBlock = selfMode
+    ? `<grape>self (the speaker)</grape>`
+    : `<grape_name>${grapeName}</grape_name>\n<grape_relationship>${grapeRel}</grape_relationship>`;
+
+  const echoShape = selfMode ? '' : `,
+  "echo": {
+    "state": "turbid|settled",
+    "anchor_span": "verbatim from user_answer or null"
+  }`;
+
+  return `<confirmed_problem>${confirmedProblem}</confirmed_problem>
+${grapeBlock}
+<maturity_class>${maturityClass}</maturity_class>
+<words_source>${wordsSource}</words_source>
+<user_answer>${userAnswer}</user_answer>
+
+Return exactly this JSON shape${selfMode ? ' (omit echo entirely, self mode)' : ''}:
+{
+  "schema_version": "m6.v1",
+  "mechanism": "M6",
+  "state": "turbid|clearing|settled",
+  "words": {
+    "state": "turbid|clearing|settled",
+    "anchor_span": "verbatim from user_answer or null"
+  },
+  "tell": {
+    "state": "turbid|clearing|settled",
+    "anchor_span": "verbatim from user_answer or null"
+  }${echoShape},
+  "observation": {
+    "surface_text": "max 280 chars, two sentences, lab register",
+    "anchor_span": "verbatim from user_answer or null"
+  },
+  "substitution_detected": true|false,
+  "swirl": { "kind": "ownership|reality", "question": "one sentence" }
+}
+Omit swirl entirely when state is settled.`;
+}
+
+const M7_DOCTRINE = `You are the Winemaster — the voice of Corked, an idea-aging system.
+
+Your job in M7 is grading the Non-Case.
+
+M7 looks for one thing: someone who fits every reasonable assumption about who should have this problem, but
+precisely does not, and why not. This is the Limit: the boundary that makes the need real by showing where
+it stops.
+
+You receive the confirmed problem, the grape's name, the founder's maturity class, and their M7 answer.
+
+LIMIT BAR — bounded exclusion and its reason. This is M7's primary bar and the only bar that sets
+M7's overall state.
+settled:  The answer names who does not have the problem — an identifiable individual person, or a
+          precisely bounded group (a specific role, situation, or arrangement, not a loose category) —
+          AND states why they do not have it.
+          "Rob shoots corporate headshots on retainer for two agencies. Cancellations cost him nothing
+          because the retainer bills monthly whether shoots happen or not" = settled.
+clearing: A vague exclusion without a bounded who ("some photographers probably don't have this"), or a
+          who without a why (naming a person or group but not explaining their immunity), or a why without
+          a bounded who (a mechanism of immunity described with no one attached to it).
+turbid:   No exclusion at all, deflection, or any form of "everyone has this" / "I can't think of anyone
+          who wouldn't." Asserting universality is itself a turbid answer, not a strong one.
+
+SUBSTITUTION RULE:
+If the answer describes the founder's own build, feature list, or planned product as the reason someone
+would be exempt (rather than a real, present-day circumstance), name the substitution in the observation:
+state what was described (the founder's build) and what the question asked for (a real person or group and
+their actual present circumstance). Limit is capped at clearing when a substitution carries any bounded
+reference to a real person or group, and turbid when it does not.
+Set substitution_detected true whenever this rule fired, false otherwise.
+
+OVERALL STATE:
+state equals limit.state. Full stop. There is no second bar in M7.
+
+OBSERVATION:
+Two short declarative sentences. Monotone lab register.
+Sentence one: what the Limit bar found — whether a bounded exclusion is named.
+Sentence two: whether the reason for the exclusion is present and specific, or vague, or absent.
+
+ANTI-FABRICATION:
+Do not invent a person, group, or reason not present in the answer.
+anchor_span must be a verbatim excerpt from the user_answer. If none supports the claim, set null.
+
+SWIRL (optional):
+When state is below settled (turbid or clearing), you may add one swirl question that reopens the answer
+along a second axis, distinct from the bar findings already reported. Two kinds only:
+- ownership: asks who actually owns this problem day to day, when the account of who has it feels blurred.
+- reality: asks whether the excluded person or group in the answer is real and specific or a constructed
+  stand-in.
+Pick whichever kind targets the weaker part of this specific answer. One sentence, Winemaster voice, no
+rubric language. Omit the swirl field entirely when state is settled or when neither kind applies cleanly.
+
+VOICE:
+No praise. No warmth. No coaching. No em dashes or en dashes. No questions. No contrast formulas.
+Deficiency findings name the answer or the element, never the answerer. "The answer names no bounded
+exclusion" not "You did not name who doesn't have this."
+
+Return only JSON.`;
+
+function buildM7UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer) {
+  const selfMode = maturityClass === 2;
+  const grapeBlock = selfMode
+    ? `<grape>self (the speaker)</grape>`
+    : `<grape_name>${grapeName}</grape_name>\n<grape_relationship>${grapeRel}</grape_relationship>`;
+
+  return `<confirmed_problem>${confirmedProblem}</confirmed_problem>
+${grapeBlock}
+<maturity_class>${maturityClass}</maturity_class>
+<user_answer>${userAnswer}</user_answer>
+
+Return exactly this JSON shape:
+{
+  "schema_version": "m7.v1",
+  "mechanism": "M7",
+  "state": "turbid|clearing|settled",
+  "limit": {
+    "state": "turbid|clearing|settled",
+    "anchor_span": "verbatim from user_answer or null"
+  },
+  "observation": {
+    "surface_text": "max 280 chars, two sentences, lab register",
+    "anchor_span": "verbatim from user_answer or null"
+  },
+  "substitution_detected": true|false,
+  "swirl": { "kind": "ownership|reality", "question": "one sentence" }
+}
+Omit swirl entirely when state is settled.`;
 }
 
 async function callClaude(env, system, content, maxTokens = 700) {
@@ -771,8 +1198,27 @@ const GENERIC_AI_PATTERNS = [
   { name: 'more_than', re: /\bmore\s+than\s+(just\s+)?/i }
 ];
 
-function escapeRegExp(value) {
-  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const FIELD_LENGTH_CAP = 300;
+const ANSWER_LENGTH_CAP = 4000;
+const RAW_SPARK_LENGTH_CAP = 500;
+
+function checkLengthCaps(corsHeaders, fields) {
+  for (const { value, max, name } of fields) {
+    if (typeof value === 'string' && value.length > max) {
+      return jsonResponse({ error: `${name} exceeds max length of ${max}` }, 400, corsHeaders);
+    }
+  }
+  return null;
+}
+
+function sparkParseCapFields(sparkParse) {
+  const sp = sparkParse || {};
+  return [
+    { value: String(sp.implied_person || ''), max: FIELD_LENGTH_CAP, name: 'spark_parse.implied_person' },
+    { value: String(sp.suspected_problem || ''), max: FIELD_LENGTH_CAP, name: 'spark_parse.suspected_problem' },
+    { value: String(sp.domain || ''), max: FIELD_LENGTH_CAP, name: 'spark_parse.domain' },
+    { value: String(sp.solution_form || ''), max: FIELD_LENGTH_CAP, name: 'spark_parse.solution_form' }
+  ];
 }
 
 function cleanVisibleText(value) {
@@ -780,11 +1226,8 @@ function cleanVisibleText(value) {
 
   let out = value
     .replace(/[—–]/g, ',')
-    .replace(/\bthis\s+is\s+not\s+[^,.!?]+,\s*but\s+/ig, '')
-    .replace(/\bnot\s+[^,.!?]+,\s*but\s+/ig, '')
     .replace(/\bnot\s+just\s+/ig, '')
     .replace(/\bmore\s+than\s+just\s+/ig, '')
-    .replace(/\bmore\s+than\s+/ig, '')
     .replace(/\s+/g, ' ')
     .replace(/\s+,/g, ',')
     .replace(/,\s*,+/g, ',')
@@ -817,6 +1260,30 @@ function cleanVisibleFields(obj, paths) {
   }
 
   return obj;
+}
+
+const SWIRL_KINDS = ['ownership', 'reality'];
+const SWIRL_QUESTION_CAP = 220;
+
+function normalizeSubstitutionFlag(parsed) {
+  parsed.substitution_detected = parsed.substitution_detected === true;
+}
+
+function normalizeSwirl(parsed) {
+  if (parsed.state === 'settled' || !parsed.swirl || typeof parsed.swirl !== 'object') {
+    delete parsed.swirl;
+    return false;
+  }
+  const kind = parsed.swirl.kind;
+  const question = parsed.swirl.question;
+  if (!SWIRL_KINDS.includes(kind) || typeof question !== 'string' || !question.trim()) {
+    delete parsed.swirl;
+    return false;
+  }
+  let cleaned = cleanVisibleText(question);
+  if (cleaned.length > SWIRL_QUESTION_CAP) cleaned = cleaned.slice(0, SWIRL_QUESTION_CAP - 3) + '...';
+  parsed.swirl = { kind, question: cleaned };
+  return true;
 }
 
 function findVisibleStyleViolations(obj, paths) {
@@ -883,10 +1350,23 @@ function applyM0DigestibilityGuards(parsed) {
     parsed.digestibility.missing = [];
     parsed.digestibility.reason = 'Cellar-ready. The role and the stated problem are visible.';
     parsed.followup = { needed: false, question: null };
-    return { moment_cloudiness_overridden: true };
+    return { moment_cloudiness_overridden: true, ready_downgraded: false };
   }
 
-  return { moment_cloudiness_overridden: false };
+  if (parsed.digestibility?.state === 'cellar_ready' && !hasPersonAndProblem) {
+    parsed.digestibility.state = 'bottleable_cloudy';
+    if (!sp.implied_person && !sp.suspected_problem) {
+      parsed.digestibility.reason = 'Bottleable, cloudy. No person and no stated problem are visible. That is what the cellar will age.';
+    } else if (!sp.implied_person) {
+      parsed.digestibility.reason = 'Bottleable, cloudy. A problem is stated, but no person is visible. That is what the cellar will age.';
+    } else {
+      parsed.digestibility.reason = 'Bottleable, cloudy. A person is visible, but no problem is stated. That is what the cellar will age.';
+    }
+    parsed.followup = { needed: true, question: null };
+    return { moment_cloudiness_overridden: false, ready_downgraded: true };
+  }
+
+  return { moment_cloudiness_overridden: false, ready_downgraded: false };
 }
 
 function normalizeM0SealContract(parsed) {
@@ -964,15 +1444,16 @@ function validateM0(parsed, rawSpark, followupAnswer, priorDigestibility) {
   }
 
   // Unbottleable rescue guard: fires only when the prior spark was unbottleable.
-  // Cloudy rebottles grade at the standard person+problem bar (applyM0DigestibilityGuards).
+  // Any regrade away from unbottleable is rechecked against the three-field bar,
+  // regardless of whether the model landed on cellar_ready or bottleable_cloudy.
   let rescueBlocked = false;
-  if (followupAnswer && priorDigestibility === 'unbottleable' && parsed.digestibility.state === 'cellar_ready') {
+  if (followupAnswer && priorDigestibility === 'unbottleable' && parsed.digestibility.state !== 'unbottleable') {
     const sp = parsed.spark_parse || {};
     if (!sp.implied_person || !sp.domain || !sp.suspected_problem) {
-      parsed.digestibility.state = 'bottleable_cloudy';
+      parsed.digestibility.state = 'unbottleable';
       parsed.followup.needed = true;
       if (!parsed.followup.question) {
-        parsed.followup.question = 'What specific person or problem is missing from this Spark? Use only the words already in the Spark.';
+        parsed.followup.question = 'Write the Spark again with a person, a problem, and the thing you imagine making.';
       }
       rescueBlocked = true;
       normalizeM0SealContract(parsed);
@@ -1004,6 +1485,7 @@ function validateM0(parsed, rawSpark, followupAnswer, priorDigestibility) {
     followup_repaired: followupRepaired,
     unbottleable_rescue_blocked: rescueBlocked,
     m0_moment_cloudiness_overridden: digestibilityGuards.moment_cloudiness_overridden,
+    m0_ready_downgraded: digestibilityGuards.ready_downgraded,
     seal_contract_normalized: true,
     m1_placeholders_nulled: m1PlaceholdersNulled
   };
@@ -1044,7 +1526,9 @@ function validateM1(parsed, userAnswer) {
   return parsed;
 }
 
-function validateM2Problem(parsed) {
+const M2_MATURITY1_BANNED_QUESTION = /think of the last time|describe the moment|remember when|film(ed)? if you were there/i;
+
+function validateM2Problem(parsed, maturityClass, grapeName) {
   const visiblePaths = [
     'recovered_problem',
     'observation.surface_text',
@@ -1069,11 +1553,18 @@ function validateM2Problem(parsed) {
   const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
   cleanVisibleFields(parsed, visiblePaths);
 
+  let questionRepaired = false;
+  if (maturityClass === 1 && typeof parsed.question === 'string' && M2_MATURITY1_BANNED_QUESTION.test(parsed.question)) {
+    parsed.question = `Have ${grapeName} walk you through the last specific time ${parsed.recovered_problem} happened, or watch for the next time it does.`;
+    questionRepaired = true;
+  }
+
   parsed.server_checks = {
     schema_valid: true,
     gap_in_play: parsed.gap_in_play,
     needs_confirmation: parsed.needs_confirmation,
-    visible_style_violations_cleaned: styleViolations
+    visible_style_violations_cleaned: styleViolations,
+    m2_question_repaired: questionRepaired
   };
 
   return parsed;
@@ -1104,6 +1595,11 @@ function validateM2Friction(parsed, userAnswer, gapInPlay) {
     delete parsed.gap;
   }
 
+  // Floor enforcement: overall state can never rank above the worst active bar.
+  const active = [parsed.tell.state, parsed.vintage.state];
+  if (gapInPlay) active.push(parsed.gap.state);
+  parsed.state = active.includes('turbid') ? 'turbid' : active.includes('clearing') ? 'clearing' : 'settled';
+
   // Verify all anchor spans are verbatim substrings of the answer.
   const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
   const normAnswer = norm(userAnswer);
@@ -1119,13 +1615,18 @@ function validateM2Friction(parsed, userAnswer, gapInPlay) {
   const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
   cleanVisibleFields(parsed, visiblePaths);
 
+  normalizeSubstitutionFlag(parsed);
+  const swirlIncluded = normalizeSwirl(parsed);
+
   parsed.server_checks = {
     schema_valid: true,
     tell_anchor_verified: tellAnchorOk,
     vintage_anchor_verified: vintageAnchorOk,
     ...(gapInPlay ? { gap_anchor_verified: gapAnchorOk } : {}),
     obs_anchor_verified: obsAnchorOk,
-    visible_style_violations_cleaned: styleViolations
+    visible_style_violations_cleaned: styleViolations,
+    overall_state_is_floor: true,
+    swirl_included: swirlIncluded
   };
 
   return parsed;
@@ -1138,11 +1639,26 @@ async function handleM2(request, env, corsHeaders) {
   const grapeRel      = String(body.grape_relationship || '').trim();
   const maturityClass = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
 
+  const capViolation = checkLengthCaps(corsHeaders, [
+    { value: userLine, max: FIELD_LENGTH_CAP, name: 'user_line' },
+    { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
+    { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
+    { value: String(body.confirmed_problem || ''), max: FIELD_LENGTH_CAP, name: 'confirmed_problem' },
+    { value: String(body.user_answer || ''), max: ANSWER_LENGTH_CAP, name: 'user_answer' },
+    ...sparkParseCapFields(body.spark_parse)
+  ]);
+  if (capViolation) return capViolation;
+
   if (!userLine) {
     return jsonResponse({ error: 'Missing user_line' }, 400, corsHeaders);
   }
 
-  if (!body.user_answer) {
+  const hasUserAnswerKey = Object.prototype.hasOwnProperty.call(body, 'user_answer');
+  if (hasUserAnswerKey && String(body.user_answer || '').trim() === '') {
+    return jsonResponse({ error: 'user_answer is empty' }, 400, corsHeaders);
+  }
+
+  if (!hasUserAnswerKey) {
     // Phase A: problem recovery — no answer yet, recover the candidate problem.
     const sparkParse = body.spark_parse || null;
     const parsed = await callClaude(
@@ -1151,7 +1667,20 @@ async function handleM2(request, env, corsHeaders) {
       buildM2ProblemUserMessage(userLine, sparkParse, grapeName, grapeRel, maturityClass),
       600
     );
-    return jsonResponse(validateM2Problem(parsed), 200, corsHeaders);
+
+    let problemForcedVerbatim = false;
+    if (sparkParse?.suspected_problem) {
+      parsed.recovered_problem = sparkParse.suspected_problem;
+      parsed.needs_confirmation = false;
+      problemForcedVerbatim = true;
+    }
+
+    const validated = validateM2Problem(parsed, maturityClass, grapeName);
+    if (problemForcedVerbatim) {
+      validated.recovered_problem = sparkParse.suspected_problem;
+    }
+    validated.server_checks.problem_forced_verbatim = problemForcedVerbatim;
+    return jsonResponse(validated, 200, corsHeaders);
   }
 
   // Phase B: friction grading — confirmed problem + user answer both present.
@@ -1179,6 +1708,35 @@ function jsonResponse(body, status, corsHeaders) {
   });
 }
 
+const FIELD_BANNED_QUESTION_PATTERN = /\bwould you\b|\bdo you think\b|\bcould you imagine\b|\b(my|our|the) (app|tool|product)\b/i;
+
+const FIELD_STOPWORDS = new Set([
+  'a', 'an', 'the', 'and', 'or', 'but', 'of', 'to', 'in', 'on', 'at', 'for', 'with', 'about',
+  'is', 'are', 'was', 'were', 'be', 'been', 'being', 'do', 'does', 'did', 'have', 'has', 'had',
+  'i', 'you', 'he', 'she', 'it', 'we', 'they', 'this', 'that', 'these', 'those', 'what', 'when',
+  'where', 'who', 'whom', 'which', 'why', 'how', 'my', 'your', 'his', 'her', 'its', 'our', 'their',
+  'not', 'no', 'so', 'if', 'then', 'than', 'as', 'by', 'from', 'into', 'over', 'under', 'up', 'down',
+  'out', 'off', 'just', 'walk', 'me', 'through', 'last', 'time', 'actually', 'get', 'got', 'like'
+]);
+
+function fieldTokenize(text) {
+  return String(text || '')
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter(w => w.length > 2 && !FIELD_STOPWORDS.has(w));
+}
+
+function tokensMatch(a, b) {
+  if (a === b) return true;
+  return a.length >= 4 && b.length >= 4 && (a.startsWith(b) || b.startsWith(a));
+}
+
+function fieldQuestionGrounded(question, userLine, confirmedProblem) {
+  const qTokens = fieldTokenize(question);
+  const sourceTokens = fieldTokenize(`${userLine} ${confirmedProblem}`);
+  return sourceTokens.some(t => qTokens.some(q => tokensMatch(t, q)));
+}
+
 async function handleField(request, env, corsHeaders) {
   const body = await request.json();
   const mode             = String(body.mode || '').trim();
@@ -1190,33 +1748,115 @@ async function handleField(request, env, corsHeaders) {
   const confirmedProblem = String(body.confirmed_problem || '').trim();
   const element          = String(body.element || '').trim();
 
+  const capViolation = checkLengthCaps(corsHeaders, [
+    { value: mode, max: FIELD_LENGTH_CAP, name: 'mode' },
+    { value: userLine, max: FIELD_LENGTH_CAP, name: 'user_line' },
+    { value: missing, max: FIELD_LENGTH_CAP, name: 'missing' },
+    { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
+    { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
+    { value: confirmedProblem, max: FIELD_LENGTH_CAP, name: 'confirmed_problem' },
+    { value: element, max: FIELD_LENGTH_CAP, name: 'element' },
+    ...sparkParseCapFields(sparkParse)
+  ]);
+  if (capViolation) return capViolation;
+
   if (!mode || !userLine) {
     return jsonResponse({ error: 'Missing mode or user_line' }, 400, corsHeaders);
   }
-  if ((mode === 'ask' || mode === 'echo') && !confirmedProblem) {
-    return jsonResponse({ error: 'ASK/ECHO requires a confirmed problem' }, 400, corsHeaders);
+  if ((mode === 'ask' || mode === 'echo' || mode === 'contrast') && !confirmedProblem) {
+    return jsonResponse({ error: 'ASK/ECHO/CONTRAST requires a confirmed problem' }, 400, corsHeaders);
+  }
+  if (mode === 'limit' && (!confirmedProblem || !sparkParse?.domain)) {
+    return jsonResponse({ error: 'LIMIT requires a confirmed problem and domain' }, 400, corsHeaders);
+  }
+  if (mode === 'words' && !sparkParse?.domain) {
+    return jsonResponse({ error: 'WORDS requires a domain' }, 400, corsHeaders);
   }
 
-  const content = buildFieldUserMessage(mode, userLine, sparkParse, missing, grapeName, grapeRel, confirmedProblem, element);
-  const parsed = await callClaude(env, FIELD_DOCTRINE, content, 400);
+  let content = buildFieldUserMessage(mode, userLine, sparkParse, missing, grapeName, grapeRel, confirmedProblem, element);
+  const maxAttempts = 2;
+  let parsed, setup, question;
 
-  if (parsed.error) {
-    return jsonResponse({ error: parsed.error }, 422, corsHeaders);
-  }
-  if (!parsed.brief || typeof parsed.brief.question !== 'string') {
-    return jsonResponse({ error: 'brief_impossible' }, 422, corsHeaders);
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    parsed = await callClaude(env, FIELD_DOCTRINE, content, 400);
+
+    if (parsed.error) {
+      if (attempt >= maxAttempts) return jsonResponse({ error: parsed.error }, 422, corsHeaders);
+      content += `\n\nThe previous attempt failed: ${parsed.error}. Write a question grounded in the spark's own nouns.`;
+      continue;
+    }
+    if (!parsed.brief || typeof parsed.brief.question !== 'string') {
+      if (attempt >= maxAttempts) return jsonResponse({ error: 'brief_impossible' }, 422, corsHeaders);
+      content += `\n\nThe previous attempt did not return a usable question. Return a brief with a concrete question.`;
+      continue;
+    }
+
+    setup    = parsed.brief.setup    ? cleanVisibleText(parsed.brief.setup)    : null;
+    question = cleanVisibleText(parsed.brief.question);
+
+    const banned = FIELD_BANNED_QUESTION_PATTERN.test(question);
+    const groundingSource = mode === 'words' ? (sparkParse?.domain || '') : confirmedProblem;
+    const grounded = fieldQuestionGrounded(question, userLine, groundingSource);
+
+    if (banned || !grounded) {
+      if (attempt >= maxAttempts) return jsonResponse({ error: 'brief_impossible' }, 422, corsHeaders);
+      content += `\n\nThe previous question was rejected: ${banned ? 'it used hypothetical or app/tool/product phrasing' : `it shared no noun with the user line or ${mode === 'words' ? 'domain' : 'confirmed problem'}`}. Rewrite the question using the spark's own nouns, anchored in past behaviour, with no hypothetical phrasing.`;
+      continue;
+    }
+
+    break;
   }
 
-  let setup    = parsed.brief.setup    ? cleanVisibleText(parsed.brief.setup)    : null;
-  let question = cleanVisibleText(parsed.brief.question);
   if (setup    && setup.length    > 120) setup    = setup.slice(0, 117)    + '...';
   if (question.length > 160)             question = question.slice(0, 157) + '...';
 
-  const kind = ['ask', 'echo', 'find'].includes(parsed.brief.kind) ? parsed.brief.kind : 'find';
+  const kind = ['ask', 'echo', 'find', 'contrast', 'words', 'limit'].includes(parsed.brief.kind) ? parsed.brief.kind : 'find';
 
   return jsonResponse({
     brief: { kind, setup, question, target: parsed.brief.target || null }
   }, 200, corsHeaders);
+}
+
+async function handleResolve(request, env, corsHeaders) {
+  const body = await request.json();
+  const element          = String(body.element || '').trim();
+  const elementState     = String(body.element_state || '').trim();
+  const sourceMechanism  = String(body.source_mechanism || '').trim();
+  const priorAnswer      = String(body.prior_answer || '').trim();
+  const confirmedProblem = String(body.confirmed_problem || '').trim();
+  const grapeName        = String(body.grape_name || '').trim();
+  const domain           = String(body.domain || '').trim();
+
+  const capViolation = checkLengthCaps(corsHeaders, [
+    { value: element, max: FIELD_LENGTH_CAP, name: 'element' },
+    { value: elementState, max: FIELD_LENGTH_CAP, name: 'element_state' },
+    { value: sourceMechanism, max: FIELD_LENGTH_CAP, name: 'source_mechanism' },
+    { value: priorAnswer, max: ANSWER_LENGTH_CAP, name: 'prior_answer' },
+    { value: confirmedProblem, max: FIELD_LENGTH_CAP, name: 'confirmed_problem' },
+    { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
+    { value: domain, max: FIELD_LENGTH_CAP, name: 'domain' }
+  ]);
+  if (capViolation) return capViolation;
+
+  if (!element || !sourceMechanism || !priorAnswer) {
+    return jsonResponse({ error: 'Missing element, source_mechanism, or prior_answer' }, 400, corsHeaders);
+  }
+
+  const parsed = await callClaude(
+    env,
+    RESOLVE_DOCTRINE,
+    buildResolveUserMessage(element, elementState, sourceMechanism, priorAnswer, confirmedProblem, grapeName, domain),
+    300
+  );
+
+  if (!parsed || typeof parsed.question !== 'string' || !parsed.question.trim()) {
+    return jsonResponse({ error: 'resolve_impossible' }, 422, corsHeaders);
+  }
+
+  let question = cleanVisibleText(parsed.question);
+  if (question.length > 200) question = question.slice(0, 197) + '...';
+
+  return jsonResponse({ question }, 200, corsHeaders);
 }
 
 async function handleEvidenceMechanism(request, env, corsHeaders, cfg) {
@@ -1229,6 +1869,14 @@ async function handleEvidenceMechanism(request, env, corsHeaders, cfg) {
   const grapeRel         = String(body.grape_relationship || '').trim();
   const maturityClass    = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
   const userAnswer       = String(body.user_answer || '').trim();
+
+  const capViolation = checkLengthCaps(corsHeaders, [
+    { value: confirmedProblem, max: FIELD_LENGTH_CAP, name: 'confirmed_problem' },
+    { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
+    { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
+    { value: userAnswer, max: ANSWER_LENGTH_CAP, name: 'user_answer' }
+  ]);
+  if (capViolation) return capViolation;
 
   if (!confirmedProblem || !userAnswer) {
     return jsonResponse({ error: 'Missing confirmed_problem or user_answer' }, 400, corsHeaders);
@@ -1268,6 +1916,9 @@ async function handleEvidenceMechanism(request, env, corsHeaders, cfg) {
   parsed.state = parsed[cfg.primaryBar].state;
   parsed.server_checks.overall_state_is_primary = true;
 
+  normalizeSubstitutionFlag(parsed);
+  parsed.server_checks.swirl_included = normalizeSwirl(parsed);
+
   return jsonResponse(parsed, 200, corsHeaders);
 }
 
@@ -1281,6 +1932,107 @@ async function handleM3(request, env, corsHeaders) {
   });
 }
 
+async function handleM5(request, env, corsHeaders) {
+  return handleEvidenceMechanism(request, env, corsHeaders, {
+    mechanism:    'M5',
+    doctrine:     M5_DOCTRINE,
+    buildMessage: buildM5UserMessage,
+    bars:         ['gap'],
+    primaryBar:   'gap'
+  });
+}
+
+async function handleM7(request, env, corsHeaders) {
+  return handleEvidenceMechanism(request, env, corsHeaders, {
+    mechanism:    'M7',
+    doctrine:     M7_DOCTRINE,
+    buildMessage: buildM7UserMessage,
+    bars:         ['limit'],
+    primaryBar:   'limit'
+  });
+}
+
+async function handleM6(request, env, corsHeaders) {
+  const body = await request.json();
+  const confirmedProblem = String(body.confirmed_problem  || '').trim();
+  const grapeName        = String(body.grape_name         || '').trim();
+  const grapeRel         = String(body.grape_relationship  || '').trim();
+  const maturityClass    = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
+  const userAnswer       = String(body.user_answer        || '').trim();
+  const wordsSource      = body.words_source === 'real' ? 'real' : 'reconstructed';
+
+  const capViolation = checkLengthCaps(corsHeaders, [
+    { value: confirmedProblem, max: FIELD_LENGTH_CAP, name: 'confirmed_problem' },
+    { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
+    { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
+    { value: userAnswer, max: ANSWER_LENGTH_CAP, name: 'user_answer' }
+  ]);
+  if (capViolation) return capViolation;
+
+  if (!confirmedProblem || !userAnswer) {
+    return jsonResponse({ error: 'Missing confirmed_problem or user_answer' }, 400, corsHeaders);
+  }
+
+  const parsed = await callClaude(
+    env,
+    M6_DOCTRINE,
+    buildM6UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer, wordsSource),
+    700
+  );
+
+  const allowedStates = ['settled', 'clearing', 'turbid'];
+  if (!parsed || typeof parsed !== 'object' || parsed.mechanism !== 'M6') {
+    throw new Error('Invalid M6 response');
+  }
+  if (!allowedStates.includes(parsed.state)) parsed.state = 'turbid';
+
+  const selfMode = maturityClass === 2;
+
+  for (const bar of ['words', 'tell']) {
+    if (!parsed[bar] || !allowedStates.includes(parsed[bar]?.state)) {
+      parsed[bar] = { state: 'turbid', anchor_span: null };
+    }
+  }
+
+  // Hard rule: reconstructed caps words at clearing, no exceptions.
+  if (wordsSource === 'reconstructed' && parsed.words.state === 'settled') {
+    parsed.words.state = 'clearing';
+  }
+
+  if (selfMode) {
+    delete parsed.echo;
+  } else {
+    if (!parsed.echo || !['turbid', 'settled'].includes(parsed.echo?.state)) {
+      parsed.echo = { state: 'turbid', anchor_span: null };
+    }
+    if (wordsSource !== 'real' && parsed.echo.state !== 'turbid') {
+      parsed.echo = { state: 'turbid', anchor_span: null };
+    }
+  }
+
+  const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
+  const normAnswer = norm(userAnswer);
+  const verifySpan = (obj, key) => {
+    if (obj?.[key] && !normAnswer.includes(norm(obj[key]))) { obj[key] = null; return false; }
+    return !!obj?.[key];
+  };
+  for (const bar of ['words', 'tell']) verifySpan(parsed[bar], 'anchor_span');
+  if (parsed.echo) verifySpan(parsed.echo, 'anchor_span');
+  verifySpan(parsed.observation, 'anchor_span');
+
+  const visiblePaths = ['observation.surface_text'];
+  const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
+  cleanVisibleFields(parsed, visiblePaths);
+  parsed.server_checks = { schema_valid: true, visible_style_violations_cleaned: styleViolations };
+  parsed.state = parsed.words.state;
+  parsed.server_checks.overall_state_is_primary = true;
+
+  normalizeSubstitutionFlag(parsed);
+  parsed.server_checks.swirl_included = normalizeSwirl(parsed);
+
+  return jsonResponse(parsed, 200, corsHeaders);
+}
+
 async function handleM4(request, env, corsHeaders) {
   const body = await request.json();
   const confirmedProblem  = String(body.confirmed_problem  || '').trim();
@@ -1289,6 +2041,15 @@ async function handleM4(request, env, corsHeaders) {
   const maturityClass     = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
   const userAnswer        = String(body.user_answer        || '').trim();
   const priorEchoContext  = String(body.prior_echo_context || '').trim();
+
+  const capViolation = checkLengthCaps(corsHeaders, [
+    { value: confirmedProblem, max: FIELD_LENGTH_CAP, name: 'confirmed_problem' },
+    { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
+    { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
+    { value: userAnswer, max: ANSWER_LENGTH_CAP, name: 'user_answer' },
+    { value: priorEchoContext, max: FIELD_LENGTH_CAP, name: 'prior_echo_context' }
+  ]);
+  if (capViolation) return capViolation;
 
   if (!confirmedProblem || !userAnswer) {
     return jsonResponse({ error: 'Missing confirmed_problem or user_answer' }, 400, corsHeaders);
@@ -1311,6 +2072,15 @@ async function handleM4(request, env, corsHeaders) {
       parsed[bar] = { state: 'turbid', anchor_span: null };
     }
   }
+  if (parsed.contrast) {
+    parsed.contrast.is_different_kind = String(parsed.contrast.is_different_kind);
+    parsed.contrast.same_or_different = String(parsed.contrast.same_or_different);
+  }
+  const allowedTri = ['true', 'false', 'unclear'];
+  const allowedSameDiff = ['same', 'different', 'unclear'];
+  if (!parsed.contrast || !allowedTri.includes(parsed.contrast?.is_different_kind) || !allowedSameDiff.includes(parsed.contrast?.same_or_different)) {
+    parsed.contrast = { is_different_kind: 'unclear', same_or_different: 'unclear', anchor_span: null };
+  }
 
   const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
   const normAnswer = norm(userAnswer);
@@ -1319,6 +2089,7 @@ async function handleM4(request, env, corsHeaders) {
     return !!obj?.[key];
   };
   for (const bar of ['echo', 'vintage']) verifySpan(parsed[bar], 'anchor_span');
+  verifySpan(parsed.contrast, 'anchor_span');
   verifySpan(parsed.observation, 'anchor_span');
 
   const visiblePaths = ['observation.surface_text'];
@@ -1327,6 +2098,9 @@ async function handleM4(request, env, corsHeaders) {
   parsed.server_checks = { schema_valid: true, visible_style_violations_cleaned: styleViolations };
   parsed.state = parsed.echo.state;
   parsed.server_checks.overall_state_is_primary = true;
+
+  normalizeSubstitutionFlag(parsed);
+  parsed.server_checks.swirl_included = normalizeSwirl(parsed);
 
   return jsonResponse(parsed, 200, corsHeaders);
 }
@@ -1338,11 +2112,19 @@ async function handleM0(request, env, corsHeaders) {
   const followupAnswer = String(body.followup_answer || '').trim();
   const priorDigestibility = String(body.prior_digestibility || '').trim();
 
+  const capViolation = checkLengthCaps(corsHeaders, [
+    { value: rawSpark, max: RAW_SPARK_LENGTH_CAP, name: 'raw_spark' },
+    { value: followupQuestion, max: FIELD_LENGTH_CAP, name: 'followup_question' },
+    { value: followupAnswer, max: ANSWER_LENGTH_CAP, name: 'followup_answer' },
+    { value: priorDigestibility, max: FIELD_LENGTH_CAP, name: 'prior_digestibility' }
+  ]);
+  if (capViolation) return capViolation;
+
   if (!rawSpark) {
     return jsonResponse({ error: 'Missing raw_spark' }, 400, corsHeaders);
   }
 
-  const parsed = await callClaude(env, M0_DOCTRINE, buildM0UserMessage(rawSpark, followupQuestion, followupAnswer), 1200);
+  const parsed = await callClaude(env, M0_DOCTRINE, buildM0UserMessage(rawSpark, followupQuestion, followupAnswer), 1600);
 
   // Scope gate — deterministic check before digestibility processing.
   // Only explicit non_software is rejected; unstated and vague sparks age normally.
@@ -1351,7 +2133,7 @@ async function handleM0(request, env, corsHeaders) {
       schema_version: parsed.schema_version || 'm0.v1',
       mechanism: 'M0',
       raw_spark: rawSpark,
-      user_line_candidate: parsed.user_line_candidate || rawSpark,
+      user_line_candidate: cleanVisibleText(parsed.user_line_candidate || rawSpark),
       spark_parse: parsed.spark_parse,
       digestibility: { state: 'out_of_scope', missing: [], reason: '', can_seal: false, requires_followup_before_seal: false },
       followup: { needed: false, question: null },
@@ -1374,8 +2156,15 @@ async function handleM1(request, env, corsHeaders) {
   const relationship = String(body.relationship || '').trim();
   const maturityClass = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
 
-  if (!sparkSummary || !personName) {
-    return jsonResponse({ error: 'Missing required fields: spark_summary and person_name' }, 400, corsHeaders);
+  const capViolation = checkLengthCaps(corsHeaders, [
+    { value: sparkSummary, max: FIELD_LENGTH_CAP, name: 'spark_summary' },
+    { value: personName, max: FIELD_LENGTH_CAP, name: 'person_name' },
+    { value: relationship, max: FIELD_LENGTH_CAP, name: 'relationship' }
+  ]);
+  if (capViolation) return capViolation;
+
+  if (!sparkSummary || (!personName && !relationship)) {
+    return jsonResponse({ error: 'Missing required fields: spark_summary and person_name or relationship' }, 400, corsHeaders);
   }
 
   const combinedInput = [personName, relationship].filter(Boolean).join(' ');
@@ -1411,7 +2200,11 @@ export default {
       if (url.pathname === '/m2') return await handleM2(request, env, corsHeaders);
       if (url.pathname === '/m3') return await handleM3(request, env, corsHeaders);
       if (url.pathname === '/m4') return await handleM4(request, env, corsHeaders);
+      if (url.pathname === '/m5') return await handleM5(request, env, corsHeaders);
+      if (url.pathname === '/m6') return await handleM6(request, env, corsHeaders);
+      if (url.pathname === '/m7') return await handleM7(request, env, corsHeaders);
       if (url.pathname === '/field') return await handleField(request, env, corsHeaders);
+      if (url.pathname === '/resolve') return await handleResolve(request, env, corsHeaders);
       return jsonResponse({ error: 'Unknown route.' }, 404, corsHeaders);
     } catch (err) {
       if (err instanceof Response) {
