@@ -2136,7 +2136,13 @@ function wakeBottle(id) {
   const bottles = getAllBottles();
   const i = bottles.findIndex(b => b.id === id);
   if (i >= 0) {
-    bottles[i] = { ...bottles[i], status: 'active', brief: null, nextQuestionAt: null, updated_at: new Date().toISOString() };
+    // Persist the corrected S (qLifecycle/parkKind already flipped above) atomically with
+    // the outer status/brief/nextQuestionAt. Without this, storage could hold an inner
+    // s.qLifecycle still 'parked' next to an outer status:'active' — and if the render
+    // that would normally flush the corrected S never runs (e.g. mechIndex already at or
+    // past the end, so renderMech() bails straight to the label screen), that mismatch
+    // never gets fixed, and the bottle reads as parked again forever.
+    bottles[i] = { ...bottles[i], s: S, status: 'active', brief: null, nextQuestionAt: null, updated_at: new Date().toISOString() };
     saveAllBottles(bottles);
   }
 }
@@ -2240,9 +2246,17 @@ function migrateOldSave() {
   } catch(e) {}
 }
 
+// Fixed mechanism count for Phase 1 (M1-M7): used to tell a complete bottle apart from one
+// still mid-flight, wherever "has Phase 1 actually finished" matters for state derivation.
+const PHASE1_MECH_COUNT = 7;
+
 // Backfills S.qLifecycle/S.parkKind onto bottles saved before the canonical lifecycle field
 // existed, so in-flight/dormant/active test bottles already in localStorage keep working
-// under the new single-field model instead of silently losing their park state.
+// under the new single-field model instead of silently losing their park state. Runs once
+// per bottle (skips anything that already has qLifecycle) — correctness beyond this first
+// pass is enforced separately and unconditionally by healPhantomParkedBottles(), since a
+// bottle can also end up with a wrong qLifecycle baked in from an earlier, buggier
+// migration/save and never touch this "never migrated" branch again.
 function migrateQLifecycleSchema() {
   try {
     const bottles = getAllBottles();
@@ -2256,6 +2270,33 @@ function migrateQLifecycleSchema() {
       return { ...b, s: newS };
     });
     if (changed) saveAllBottles(migrated);
+  } catch (e) {}
+}
+
+// Enforces two structural invariants on every load (cheap, idempotent, not gated behind
+// the one-time migration above): (1) a park with no matching real generated brief is not
+// a real park — never substitute template text for a missing generation, just heal it back
+// to live; (2) FIND is only ever legitimate when no grape has been recorded yet, never
+// inferred from a missing/unrecognized brief kind and never from the grape element's grade
+// (Clearing is still a recorded grape, not an absent one). This is what actually repairs a
+// bottle that a previous, buggier migration already mis-marked "parked" — migrateQLifecycleSchema()
+// only ever gets one shot per bottle, so a bad value it wrote earlier would otherwise stick forever.
+function healPhantomParkedBottles() {
+  try {
+    const bottles = getAllBottles();
+    let changed = false;
+    const healed = bottles.map(b => {
+      const s = b.s || {};
+      if (s.qLifecycle !== 'parked') return b;
+      const hasBrief = !!(b.brief && (b.brief.question || b.brief.text || b.brief.pending));
+      if (hasBrief) return b;
+      const hasGrape = !!(s.answers && s.answers.M1);
+      if (!hasGrape) return b; // legitimately FIND-eligible; leave for openDormantFind to (re)generate
+      changed = true;
+      const newS = { ...s, qLifecycle: 'active', parkKind: null };
+      return { ...b, s: newS, status: 'active', brief: null, nextQuestionAt: null };
+    });
+    if (changed) saveAllBottles(healed);
   } catch (e) {}
 }
 
@@ -5161,6 +5202,7 @@ function lsInit() {
 (function init() {
   migrateOldSave();
   migrateQLifecycleSchema();
+  healPhantomParkedBottles();
   if (getAllBottles().length > 0) {
     showCellar();
   } else {
@@ -5268,7 +5310,13 @@ function getCellarWaiting(bottle) {
   // stops showing "Parked" the moment the question is actually answered — no separate wake-up
   // bookkeeping to fall out of sync with. Falls back to bottle.status only for unmigrated bottles.
   const isParked = s.qLifecycle ? s.qLifecycle === 'parked' : (bottle.status === 'dormant' || bottle.status === 'in_flight');
-  if (isParked) {
+  const hasBrief = !!(bottle.brief && (bottle.brief.question || bottle.brief.text || bottle.brief.pending));
+  const hasGrape = !!(s.answers && s.answers.M1);
+  // Same rule as openBottle(): a park with no matching real brief is stale/corrupt data,
+  // not a genuine park, and FIND is never legitimate once a grape is recorded. Rather than
+  // report a park (and a target) that isn't real, fall through to the normal label-based
+  // status below — openBottle() will self-heal the stale state next time it's opened.
+  if (isParked && (hasBrief || !hasGrape)) {
     const isInFlight = s.parkKind ? s.parkKind === 'in_flight' : bottle.status === 'in_flight';
     const target = bottle.brief?.kind === 'ask'  ? 'a question to ask'
                  : bottle.brief?.kind === 'echo' ? 'find another person'
@@ -5276,7 +5324,13 @@ function getCellarWaiting(bottle) {
     return isInFlight ? `Parked · asked, waiting on reply` : `Parked · ${target}`;
   }
 
-  if (s.thresholdDone && s.nextQuestionAt) {
+  // The rhythm countdown only means anything while there's still a Phase 1 mechanism
+  // ahead to surface — once mechIndex reaches the end, S.nextQuestionAt is just a leftover
+  // from the one-time Cellar Rhythm setup at M1 and was never recomputed since. Without
+  // this gate, a fully complete bottle (label-worthy, some elements still Clearing) would
+  // keep reporting "Question due tomorrow" forever instead of reading its actual label state.
+  const phase1Incomplete = (s.mechIndex || 0) < PHASE1_MECH_COUNT;
+  if (phase1Incomplete && s.thresholdDone && s.nextQuestionAt) {
     const next = new Date(s.nextQuestionAt);
     if (!isNaN(next.getTime())) {
       const diff = next - new Date();
@@ -5331,9 +5385,19 @@ function openBottle(id) {
     ? S.qLifecycle === 'parked'
     : (record.status === 'dormant' || record.status === 'in_flight');
   if (isParked) {
-    if (record.brief?.kind === 'ask')  return openDormantAsk(id, record);
-    if (record.brief?.kind === 'echo') return openDormantEcho(id, record);
-    return openDormantFind(id, record);
+    const hasBrief = !!(record.brief && (record.brief.question || record.brief.text || record.brief.pending));
+    const hasGrape = !!(S.answers && S.answers.M1);
+    if (hasBrief && record.brief.kind === 'ask')  return openDormantAsk(id, record);
+    if (hasBrief && record.brief.kind === 'echo') return openDormantEcho(id, record);
+    if (hasBrief && record.brief.kind === 'find') return openDormantFind(id, record);
+    // FIND is only ever legitimate when no grape has been recorded yet — never inferred
+    // from a missing/unrecognized brief kind, and never from the grape element's grade
+    // (Clearing is still a recorded grape, not an absent one). A parked state with no
+    // matching real brief is corrupt/stale park data, not a genuine park: there is no
+    // generated brief to show, so there is no park to honor — wake the bottle and fall
+    // through to its actual current mechanism instead of guessing.
+    if (!hasBrief && !hasGrape) return openDormantFind(id, record);
+    if (!hasBrief) wakeBottle(id);
   }
 
   if (mi >= M.length) {
