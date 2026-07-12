@@ -5,3 +5,4 @@ account_id = "e2e30e075a1a8ca9277c1f9df2323695"
 
 [vars]
 ANTHROPIC_MODEL = "claude-sonnet-4-6"
+ALLOWED_ORIGIN = "http://localhost:8080"
