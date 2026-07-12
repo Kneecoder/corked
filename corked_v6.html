@@ -829,6 +829,14 @@ body {
 }
 .vc-rule { width:100%; height:1px; background:var(--border); margin:1.5rem 0; }
 .vc-field { margin-bottom:1.1rem; }
+.vc-field.tappable {
+  cursor:pointer; padding:.6rem .7rem; margin:0 -.7rem 1.1rem; border-radius:6px;
+  transition:background .15s;
+}
+.vc-field.tappable:hover { background:rgba(201,165,90,.07); }
+.vc-field-tap {
+  font-size:.68rem; letter-spacing:.06em; color:var(--gold); margin-top:.4rem;
+}
 .vc-field-name {
   font-size:.7rem; letter-spacing:.22em; text-transform:uppercase;
   color:var(--wine-hi); margin-bottom:.3rem; display:flex; align-items:baseline; gap:.5rem;
@@ -1220,10 +1228,15 @@ body {
 .bottle-card--dormant { opacity:.72; }
 .bottle-card--in-flight .bottle-card-status { color:var(--clearing-col); }
 
+/* ── DEMURRAGE SAG (active bottles, behind pace, unresolved amber) ── */
+.bottle-card--sag-1 { opacity:.85; transform:translateY(2px); }
+.bottle-card--sag-2 { opacity:.7;  transform:translateY(4px); filter:saturate(.85); }
+.bottle-card--sag-3 { opacity:.55; transform:translateY(7px); filter:saturate(.7) grayscale(.15); }
+
 /* ── REAL-WORLD EXITS ── */
-#real-world-exits { display:none; }
-#rw-park-btn:disabled { opacity:.45; pointer-events:none; }
-#rw-park-btn.errand-active {
+#real-world-exits { display:none; gap:.6rem; flex-wrap:wrap; }
+#rw-park-btn:disabled, #rw-flight-btn:disabled { opacity:.45; pointer-events:none; }
+#rw-park-btn.errand-active, #rw-flight-btn.errand-active {
   background: rgba(201,165,90,.12);
   color: var(--gold);
   border: 1px solid rgba(201,165,90,.4);
@@ -1235,7 +1248,7 @@ body {
   box-shadow: 0 0 14px rgba(201,165,90,.07);
   transition: background .2s, border-color .2s, box-shadow .2s;
 }
-#rw-park-btn.errand-active:hover {
+#rw-park-btn.errand-active:hover, #rw-flight-btn.errand-active:hover {
   background: rgba(201,165,90,.2);
   border-color: rgba(201,165,90,.65);
   box-shadow: 0 0 18px rgba(201,165,90,.13);
@@ -1276,6 +1289,21 @@ body {
   border-radius:5px; transition:background .15s;
 }
 .ew-go:hover { background:var(--wine-hi); }
+
+/* ── LABEL REOPEN / RESOLVE MODAL ── */
+#label-reopen-overlay {
+  display:none; position:fixed; inset:0; z-index:9000;
+  background:rgba(0,0,0,.55); backdrop-filter:blur(4px);
+  align-items:center; justify-content:center;
+}
+#label-reopen-overlay.show { display:flex; }
+#label-reopen-box {
+  background:var(--card); border:1px solid rgba(201,165,90,.28);
+  border-radius:10px; padding:1.8rem 2rem 1.5rem;
+  max-width:480px; width:90%; box-shadow:0 12px 40px rgba(0,0,0,.55);
+  animation:landing-fade .22s ease both;
+}
+#label-reopen-box .ew-actions { flex-wrap:wrap; }
 
 /* ── WINEMASTER BRIEF ── */
 #wm-brief {
@@ -1391,6 +1419,11 @@ body {
   background:rgba(155,61,79,.08); padding:.7rem .9rem;
   border-left:2px solid var(--wine-dim);
 }
+.dormant-locked {
+  font-size:.78rem; color:var(--muted); line-height:1.65;
+  background:rgba(255,255,255,.02); padding:.7rem .9rem;
+  border-left:2px solid var(--border-hi);
+}
 </style>
 </head>
 <body>
@@ -1403,6 +1436,20 @@ body {
     <div class="ew-actions">
       <button class="ew-cancel" onclick="errandWarnClose()">Stay here</button>
       <button class="ew-go" onclick="errandWarnContinue()">Continue anyway</button>
+    </div>
+  </div>
+</div>
+
+<!-- LABEL REOPEN / RESOLVE MODAL -->
+<div id="label-reopen-overlay">
+  <div id="label-reopen-box">
+    <div class="ew-eyebrow" id="lr-eyebrow">Reopen</div>
+    <div class="review-q" id="lr-question" style="font-style:normal;margin-bottom:1rem"></div>
+    <textarea class="answer-box" id="lr-ans" placeholder="Write here. The more specific you are, the more this can work with." style="resize:vertical;height:140px;margin-bottom:1rem"></textarea>
+    <div class="ew-actions">
+      <button class="ew-cancel" onclick="closeLabelReopen()">Cancel</button>
+      <button class="ew-cancel" id="lr-park-btn" onclick="parkLabelReopenAction()">Come back to this</button>
+      <button class="ew-go" id="lr-submit-btn" onclick="submitLabelReopen()">Submit →</button>
     </div>
   </div>
 </div>
@@ -1590,6 +1637,13 @@ body {
     </div>
     <button class="btn-sm" onclick="createAndOpenBottle()">Add Spark</button>
   </div>
+  <div class="cellar-export-row" style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;padding:.75rem 2rem;border-bottom:1px solid var(--border);font-size:.72rem;color:var(--muted)">
+    <span>The cellar lives in this browser. Export to keep it safe.</span>
+    <button class="btn-ghost" style="padding:.2rem 0" onclick="cellarExport()">Export cellar</button>
+    <button class="btn-ghost" style="padding:.2rem 0" onclick="document.getElementById('cellar-import-file').click()">Import cellar</button>
+    <input type="file" id="cellar-import-file" accept="application/json" style="display:none" onchange="cellarImport(event)">
+    <span id="cellar-export-status"></span>
+  </div>
   <div class="cellar-body">
     <div class="cellar-list" id="cellar-list"></div>
   </div>
@@ -1705,6 +1759,10 @@ body {
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
       Cellar
     </button>
+    <button class="sb-back" id="sb-archive-btn" onclick="archiveBottleFromView()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/></svg>
+      Archive this spark
+    </button>
   </div>
 
   <div class="phase-main" id="phase-main">
@@ -1716,6 +1774,7 @@ body {
         <div id="spark-reminder-body"></div>
       </div>
       <div class="mech-eyebrow" id="m-label">—</div>
+      <div class="mech-hint" id="m6-interstitial" style="display:none;font-style:normal;margin-bottom:.6rem"></div>
       <div class="mech-q" id="m-q"></div>
       <div class="mech-hint" id="m-hint" style="font-style:normal"></div>
       <div id="wm-brief" style="display:none"></div>
@@ -1724,8 +1783,22 @@ body {
         <input type="text" class="field" id="m2-confirm-inp"
                style="width:100%;font-size:.88rem;padding:.6rem .85rem;background:var(--card);border:1px solid var(--border-hi);border-radius:6px;color:var(--cream)">
       </div>
+      <div id="m6-words-source" style="display:none;margin-bottom:.9rem">
+        <div class="rhythm-choices" style="grid-template-columns:repeat(2, minmax(0, 1fr))">
+          <button type="button" class="rhythm-choice" id="m6-ws-real" onclick="pickM6WordsSource('real')">Their words, from a real exchange</button>
+          <button type="button" class="rhythm-choice" id="m6-ws-recon" onclick="pickM6WordsSource('reconstructed')">Reconstructed, we have not talked in these terms</button>
+        </div>
+      </div>
       <textarea class="answer-box" id="ans" placeholder="Write here. The more specific you are, the more Phase 1 can work with."></textarea>
       <div class="obs" id="obs-box"></div>
+      <div id="swirl-panel" style="display:none;margin-top:.9rem">
+        <div class="review-mech-id" style="margin-bottom:.55rem">One more thing</div>
+        <div class="review-q" id="swirl-q" style="margin-bottom:1rem;font-style:normal"></div>
+        <textarea class="answer-box" id="swirl-ans" placeholder="Write here." style="resize:vertical;height:100px;margin-bottom:.85rem"></textarea>
+        <div style="display:flex;justify-content:flex-end">
+          <button class="btn" id="swirl-btn" onclick="submitSwirl()">Continue →</button>
+        </div>
+      </div>
       <div id="inline-errand" style="display:none"></div>
       <div class="change-block" id="change-block"></div>
       <div class="grape-judgment" id="grape-judgment">
@@ -1752,7 +1825,8 @@ body {
         <div class="mech-count" id="m-count"></div>
         <div style="display:flex;gap:1rem;align-items:center;">
           <div id="real-world-exits">
-            <button class="btn-ghost" id="rw-park-btn" onclick="parkItAction()">Come back to this</button>
+            <button class="btn-ghost" id="rw-park-btn" onclick="parkItAction('dormant')">Come back to this</button>
+            <button class="btn-ghost" id="rw-flight-btn" onclick="parkItAction('in_flight')">Asked, waiting on a reply</button>
           </div>
           <button class="btn" id="p1-btn" onclick="p1Next()">Continue →</button>
         </div>
@@ -1762,6 +1836,11 @@ body {
     <!-- Dormant / in-flight re-entry panel -->
     <div class="phase-wrap" id="dormant-panel" style="display:none">
       <div id="dormant-panel-body"></div>
+    </div>
+
+    <!-- Stalled observation panel -->
+    <div class="phase-wrap" id="stalled-panel" style="display:none">
+      <div id="stalled-panel-body"></div>
     </div>
 
     <!-- Review panel -->
@@ -1792,7 +1871,7 @@ body {
 
 <!-- VINTAGE LABEL -->
 <div id="screen-label" class="screen">
-  <div class="label-eyebrow">Vintage Label · Phase 1 Complete</div>
+  <div class="label-eyebrow" id="label-eyebrow">Vintage Label · Phase 1 Complete</div>
   <div class="label-title-main">The picture as it settled.</div>
   <div class="vintage-card" id="vc"></div>
   <div class="label-actions">
@@ -1815,6 +1894,7 @@ function freshState() {
     idea:'', grape:'', maturity:-1, progress:-1, pace:-1, notifTiming:-1,
     grape_name:'', grape_relationship:'',
     elements:{ grape:'inert', tell:'inert', vintage:'inert', gap:'inert', echo:'inert', limit:'inert' },
+    lastSource:{},
     answers:{},
     m1Fields:{ person:'', when:'', trying:'', happened:'' },
     label:{ grape:'', tell:'', vintage:'', gap:'', echo:'', limit:'' },
@@ -1824,7 +1904,8 @@ function freshState() {
     grapeStep:false,
     cellarEntryPlayed:false,
     thresholdDone:false,
-    nextQuestionAt:null
+    nextQuestionAt:null,
+    swirl_done:{}
   };
 }
 
@@ -1845,26 +1926,46 @@ function saveState() {
 function loadDoorstep() { return localStorage.getItem(DOORSTEP_KEY) || null; }
 function clearDoorstep() { localStorage.removeItem(DOORSTEP_KEY); }
 
-async function fetchFieldBrief({ mode, missing, element }) {
-  const url = v6GetWorkerUrl();
-  if (!url) throw new Error('Worker URL missing.');
-  const res = await fetch(url + '/field', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      mode,
-      user_line:          getSparkSummary(),
-      spark_parse:        S.m0?.spark_parse || null,
-      maturity_class:     S.maturity,
-      missing:            missing || null,
-      grape_name:         S.grape_name || '',
-      grape_relationship: S.grape_relationship || '',
-      confirmed_problem:  S.m2_confirmed_problem || S.m2_problem?.recovered_problem || null,
-      element:            element || null
-    })
-  });
+const WORKER_TIMEOUT_MS = 30000;
+
+async function workerFetch(path, body) {
+  const workerUrl = v6GetWorkerUrl();
+  if (!workerUrl) throw new Error('Worker URL missing.');
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), WORKER_TIMEOUT_MS);
+  let res;
+  try {
+    res = await fetch(workerUrl + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: controller.signal
+    });
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      throw new Error('The worker took too long to respond. Check your connection and try again.');
+    }
+    throw new Error('Could not reach the worker. Check your connection and Worker URL.');
+  } finally {
+    clearTimeout(timer);
+  }
   const data = await res.json();
   if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
+  return data;
+}
+
+async function fetchFieldBrief({ mode, missing, element }) {
+  const data = await workerFetch('/field', {
+    mode,
+    user_line:          getSparkSummary(),
+    spark_parse:        S.m0?.spark_parse || null,
+    maturity_class:     S.maturity,
+    missing:            missing || null,
+    grape_name:         S.grape_name || '',
+    grape_relationship: S.grape_relationship || '',
+    confirmed_problem:  S.m2_confirmed_problem || S.m2_problem?.recovered_problem || null,
+    element:            element || null
+  });
   return { ...data.brief, created_at: new Date().toISOString() };
 }
 
@@ -1886,6 +1987,62 @@ function saveAllBottles(bottles) {
   localStorage.setItem(CELLAR_KEY, JSON.stringify(bottles));
 }
 
+function cellarStorageKeys() {
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && /^corked[-_]/i.test(k)) keys.push(k);
+  }
+  return keys;
+}
+
+function cellarExport() {
+  const data = { exported_at: new Date().toISOString(), version: 1, keys: {} };
+  cellarStorageKeys().forEach(k => { data.keys[k] = localStorage.getItem(k); });
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `corked-cellar-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+
+  const status = document.getElementById('cellar-export-status');
+  if (status) { status.textContent = 'Exported.'; setTimeout(() => { status.textContent = ''; }, 2500); }
+}
+
+function cellarImport(event) {
+  const file = event.target?.files?.[0];
+  event.target.value = '';
+  if (!file) return;
+
+  const status = document.getElementById('cellar-export-status');
+  const reader = new FileReader();
+  reader.onload = () => {
+    let data;
+    try {
+      data = JSON.parse(reader.result);
+    } catch (err) {
+      if (status) status.textContent = 'Could not read this file.';
+      return;
+    }
+    if (!data || typeof data.keys !== 'object') {
+      if (status) status.textContent = 'Not a Corked cellar export file.';
+      return;
+    }
+    if (!confirm('Import will overwrite your current cellar in this browser. Continue?')) return;
+
+    Object.entries(data.keys).forEach(([k, v]) => {
+      if (/^corked[-_]/i.test(k) && typeof v === 'string') localStorage.setItem(k, v);
+    });
+    location.reload();
+  };
+  reader.readAsText(file);
+}
+
 function saveBottle(id, s, mechIdx) {
   const bottles = getAllBottles();
   const now = new Date().toISOString();
@@ -1902,14 +2059,15 @@ function loadBottle(id) {
   return getAllBottles().find(b => b.id === id) || null;
 }
 
-function parkBottleDormant(id, brief) {
+function parkBottleDormant(id, brief, status = 'dormant') {
   const bottles = getAllBottles();
   const now = new Date().toISOString();
+  const nextQuestionAt = status === 'dormant' ? computeParkNextQuestionAt(S.pace) : null;
   const i = bottles.findIndex(b => b.id === id);
   if (i >= 0) {
-    bottles[i] = { ...bottles[i], s: S, status: 'dormant', brief, updated_at: now };
+    bottles[i] = { ...bottles[i], s: S, status, brief, nextQuestionAt, updated_at: now };
   } else {
-    bottles.push({ id, created_at: now, updated_at: now, status: 'dormant', brief, s: S, mechIndex: mi });
+    bottles.push({ id, created_at: now, updated_at: now, status, brief, nextQuestionAt, s: S, mechIndex: mi });
   }
   saveAllBottles(bottles);
 }
@@ -1931,6 +2089,97 @@ function wakeBottle(id) {
     bottles[i] = { ...bottles[i], status: 'active', updated_at: new Date().toISOString() };
     saveAllBottles(bottles);
   }
+}
+
+// ── DEMURRAGE / STALL / ARCHIVE ──
+function bottleHasUnresolvedTurbid(s) {
+  const els = (s && s.elements) || {};
+  return EL_KEYS.some(k => els[k] === 'turbid');
+}
+
+function bottleHasUnresolvedAmber(s) {
+  const els = (s && s.elements) || {};
+  return EL_KEYS.some(k => els[k] === 'turbid' || els[k] === 'clearing');
+}
+
+// How many whole pace-lengths have elapsed since this bottle was last touched.
+function bottlePaceMultiples(bottle) {
+  const s = bottle.s || {};
+  if (typeof s.pace !== 'number' || s.pace < 0) return 0;
+  const dur = PACE_DURATIONS[s.pace];
+  if (!dur) return 0;
+  const last = new Date(bottle.updated_at).getTime();
+  if (!last) return 0;
+  return Math.floor((Date.now() - last) / dur);
+}
+
+// Active + behind pace + unresolved amber -> visible sag, scaling with pace multiples.
+function getSagLevel(bottle) {
+  if (bottle.status !== 'active') return 0;
+  if (!bottleHasUnresolvedAmber(bottle.s)) return 0;
+  return Math.min(3, bottlePaceMultiples(bottle));
+}
+
+// Active + behind pace + unresolved Turbid -> stalled. Never dormant/in-flight (no clock there).
+function isBottleStalled(bottle) {
+  return bottle.status === 'active'
+    && bottlePaceMultiples(bottle) >= 1
+    && bottleHasUnresolvedTurbid(bottle.s);
+}
+
+// "Once per stall, not once per visit": the ack is tied to the updated_at it was taken against.
+// A later touch (new answer) advances updated_at, so a future stall is treated as a fresh one.
+function isStallAcknowledged(bottle) {
+  return !!(bottle.stallAckAt && bottle.stallAckUpdatedAt === bottle.updated_at);
+}
+
+function markStallAcknowledged(id) {
+  const bottles = getAllBottles();
+  const i = bottles.findIndex(b => b.id === id);
+  if (i >= 0) {
+    bottles[i] = { ...bottles[i], stallAckAt: new Date().toISOString(), stallAckUpdatedAt: bottles[i].updated_at };
+    saveAllBottles(bottles);
+  }
+}
+
+function archiveBottle(id) {
+  const bottles = getAllBottles();
+  const i = bottles.findIndex(b => b.id === id);
+  if (i >= 0) {
+    bottles[i] = { ...bottles[i], status: 'rested', updated_at: new Date().toISOString() };
+    saveAllBottles(bottles);
+  }
+}
+
+function archiveBottleAction(id) {
+  archiveBottle(id);
+  showCellar();
+}
+
+function archiveBottleFromView() {
+  if (!activeBottleId) return;
+  archiveBottle(activeBottleId);
+  showCellar();
+}
+
+// A dormant bottle is locked until its standing brief's rhythm gate opens. In-flight has no clock.
+function dormantIsLocked(bottle) {
+  return bottle.status === 'dormant' && bottle.nextQuestionAt && new Date(bottle.nextQuestionAt).getTime() > Date.now();
+}
+
+// Before the rhythm gate opens: parked state + standing brief, answer entry locked.
+function renderDormantLocked(label, briefHtml, nextQuestionAt) {
+  document.getElementById('dormant-panel-body').innerHTML = `
+    <div class="mech-eyebrow" style="margin-bottom:.9rem">${escHtml(label)}</div>
+    <div class="dormant-brief">
+      ${briefHtml}
+    </div>
+    <div class="dormant-locked">This comes back to you ${escHtml(formatLockedUntil(nextQuestionAt))}. Nothing to enter yet.</div>`;
+  document.getElementById('question-panel').style.display = 'none';
+  document.getElementById('review-panel').style.display = 'none';
+  document.getElementById('stalled-panel').style.display = 'none';
+  document.getElementById('dormant-panel').style.display = 'block';
+  showScreen('phase1');
 }
 
 function deleteBottle(id, event) {
@@ -1989,7 +2238,7 @@ function writeM1FromIntake(name, relationship, data) {
     next_question:{ should_advance:true, framing:null }
   };
   S.answers.M1 = `${name} - ${relationship}`;
-  S.elements.grape = grapeState;
+  rankUp('grape', grapeState, name);
   S.label.grape = S.maturity === 2 ? 'You' : name;
   clearDoorstep();
 }
@@ -2070,57 +2319,78 @@ function buildMechs() {
     },
     {
       id:'M4', name:'Second Person',
-      // q is updated dynamically in renderMech to use the current grape name.
+      // q and hint are updated dynamically in renderMech to use the current grape name and problem.
       q: selfMode
-        ? `Set aside whoever you named before. Name one more person who has this problem. What have they actually done about it?`
-        : `Set ${grapeName} aside and set aside whoever you named before. Name one more person who has this problem. What have they actually done about it?`,
-      hint: 'Not a category. One person. Their actual behaviour.',
+        ? `You are one kind of person with this. Who is a different kind, and does it look the same for them?`
+        : `${grapeName} is one kind of person with this. Who is a different kind, and does it look the same for them?`,
+      hint: `One person, not a category. What they did about ${S.m2_confirmed_problem || 'this problem'} counts.`,
       els:['echo','vintage'],
       activeEl:'echo',
       obs: () => S.m4?.observation?.surface_text || null
     },
     {
       id:'M5', name:'The Existing Fix',
-      q:`What is the most obvious existing solution to this? It could be an app, a service, a habit, or a person. Name it. Then name the precise thing it fails to do for ${g}.`,
+      q: selfMode
+        ? `What do you use for this problem now, and exactly where does it fall short?`
+        : `What do people use for this problem now, and exactly where does it fall short?`,
       hint:'One without the other is not an answer. Both need to be specific.',
       els:['gap'],
       activeEl:'gap',
-      obs: a => {
-        if (a.trim().split(/\s+/).length < 10)
-          return "An existing solution was named without a specific failure point. The Gap requires both: what exists, and precisely where it breaks down.";
-        return "An existing solution and its failure point are both on record. The Gap has something real to stand on.";
-      }
+      obs: () => S.m5?.observation?.surface_text || null
     },
     {
       id:'M6', name:'Their Words, Not Yours',
-      q:`What has ${g} actually said about this? Use their exact words, not your interpretation. If you have not had that conversation yet, what would you need to ask them before this question can be honest?`,
+      q: selfMode
+        ? `What have you actually said or written about this, before Corked asked?`
+        : `How would ${g} describe this in their own words?`,
       hint:'Quotes over summaries. Their language over yours.',
       els:['tell','echo'],
       activeEl:'echo',
-      obs: a => {
-        if (/\b(would|probably|i think they|i imagine|i assume|i expect)\b/i.test(a))
-          return "An inference was offered, not a quote. This step is looking for their actual words, not a reconstruction of what they might say.";
-        if (a.includes('"') || a.includes('\u201c') || a.includes('\u201d'))
-          return "Direct language is present. The Echo and The Tell both have real material to draw from.";
-        return "Words were offered. Whether these are reconstruction or record is worth noting before Phase 2 opens.";
-      }
+      obs: () => S.m6?.observation?.surface_text || null
     },
     {
       id:'M7', name:'The Non-Case',
-      q:`Who should have this need, someone who fits every reasonable assumption, but probably doesn't? Describe them specifically. Why don't they have it?`,
+      q:`Who looks like they should have this problem but doesn't? Why not?`,
       hint:'This is not a weakness to explain away. It is a sharpener. The boundary makes the need real.',
       els:['limit'],
       activeEl:'limit',
-      obs: a => {
-        if (a.trim().split(/\s+/).length < 12)
-          return "A boundary was suggested but not drawn. The Limit needs a named type of person and a specific reason they do not share the need.";
-        return "A limit was drawn. The need now has edges. What lives inside them is sharper for it.";
-      }
+      obs: () => S.m7?.observation?.surface_text || null
     }
   ];
 }
 
 // ── INTAKE ──
+const MATURITY_TREE = {
+  q1: {
+    q: 'Have you spoken to a real person who has this problem?',
+    note: 'This sets how Phase 1 questions you. Claiming more than you have gains you nothing.',
+    opts: [
+      { l:'A', t:'Yes.', s:'There is a real conversation behind this.', next:'q2' },
+      { l:'B', t:'No.', s:'Not yet, or not about this.', next:'q3' }
+    ]
+  },
+  q2: {
+    q: 'Can you name them, and have you witnessed or heard them experience it firsthand?',
+    note: 'Being able to point to the moment is what separates a real case from a guess.',
+    opts: [
+      { l:'A', t:'Yes, I can name them and I know the moment.', s:'You have both the person and the moment.', cls:0 },
+      { l:'B', t:'I can name them, but I have only heard about it secondhand.', s:'You have the person. The moment still needs work.', cls:1 }
+    ]
+  },
+  q3: {
+    q: 'Are you the person with this problem yourself?',
+    note: 'Your own experience becomes the starting point.',
+    opts: [
+      { l:'A', t:'Yes. This comes from my own experience.', s:'Your own experience becomes the starting point.', cls:2 },
+      { l:'B', t:'No, no one specific yet.', s:'Then there is nothing to age yet.', cls:3 }
+    ]
+  }
+};
+
+let maturityNode = 'q1';
+let maturityHistory = [];
+let maturityLeafIdx = null;
+
 const INTAKE = [
   {
     id:'idea', eyebrow:'The Spark · 1 of 3',
@@ -2132,15 +2402,7 @@ const INTAKE = [
   },
   {
     id:'maturity', eyebrow:'The Person · 2 of 3',
-    q:'Who does this spark start from?',
-    note:'This sets how Phase 1 questions you. Claiming more than you have gains you nothing.',
     type:'opts',
-    opts:[
-      { l:'A', t:'Someone specific, and I have seen it happen.', s:'You have both the person and the moment.' },
-      { l:'B', t:'Someone specific, but I have only talked about it.', s:'You have the person. The moment still needs work.' },
-      { l:'C', t:'Me. This comes from my own experience.', s:'Your own experience becomes the starting point.' },
-      { l:'D', t:'No one specific yet.', s:'Then there is nothing to age yet.' }
-    ],
     save: v => { S.maturity = v; }
   },
   {
@@ -2157,6 +2419,7 @@ let intakeSel  = {};
 
 function showIntake() {
   intakeStep = 0; intakeSel = {};
+  maturityNode = 'q1'; maturityHistory = []; maturityLeafIdx = null;
   showScreen('intake');
   renderIntake();
 }
@@ -2165,6 +2428,14 @@ function renderIntake() {
   const step = INTAKE[intakeStep];
   const first = intakeStep === 0;
   const last  = intakeStep === INTAKE.length - 1;
+
+  // A person already extracted from the raw spark answers Q1 implicitly ("yes") — skip straight to Q2.
+  if (step.id === 'maturity' && maturityNode === 'q1' && maturityHistory.length === 0
+      && window._v6M0?.data?.person_in_spark?.grade === 'settled') {
+    maturityNode = 'q2';
+    maturityLeafIdx = 1;
+    intakeSel['maturity'] = MATURITY_TREE.q2.opts[1].cls;
+  }
 
   const segs = Array.from({length: INTAKE.length}, (_,i) =>
     `<div class="intake-prog-seg${i <= intakeStep ? ' done' : ''}"></div>`
@@ -2184,9 +2455,11 @@ function renderIntake() {
 
   const displayQ = (step.type === 'person' && S.maturity === 2) ? 'You are the grape.'
     : (step.type === 'person' && S.maturity === 3) ? 'This spark needs one real person.'
+    : (step.id === 'maturity') ? MATURITY_TREE[maturityNode].q
     : step.q;
   const displayNote = (step.type === 'person' && S.maturity === 3) ? 'The cellar cannot age what has no person behind it.'
     : (step.type === 'person' && S.maturity === 2) ? 'Your own experience can be the starting point.'
+    : (step.id === 'maturity') ? MATURITY_TREE[maturityNode].note
     : step.note;
 
   h += `<div class="step-q">${displayQ}</div>
@@ -2298,9 +2571,9 @@ function renderIntake() {
       }
     }
   } else {
-    const _pis = (step.id === 'maturity' && window._v6M0?.data?.person_in_spark?.grade === 'settled')
+    const effOpts = step.id === 'maturity' ? MATURITY_TREE[maturityNode].opts : step.opts;
+    const _pis = (step.id === 'maturity' && maturityNode === 'q2' && window._v6M0?.data?.person_in_spark?.grade === 'settled')
       ? window._v6M0.data.person_in_spark : null;
-    if (_pis && intakeSel['maturity'] === undefined) intakeSel['maturity'] = 1;
     if (_pis) {
       const rawTie = _pis.relationship_tie || '';
       const hasPoss = /^(my|our)\s+/i.test(rawTie);
@@ -2318,10 +2591,10 @@ function renderIntake() {
       h += `<div style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;padding:.55rem .85rem;background:rgba(122,46,60,.06);border-left:2px solid var(--wine-dim)">${reason}</div>`;
     }
     h += `<div class="options">`;
-    step.opts.forEach((o,i) => {
-      const sel = intakeSel[step.id] === i;
+    effOpts.forEach((o,i) => {
+      const sel = step.id === 'maturity' ? (maturityLeafIdx === i) : (intakeSel[step.id] === i);
       const dim = !!(_pis && i !== 0);
-      const likelySelf = step.id === 'maturity' && i === 2 && rawSparkHasFirstPerson();
+      const likelySelf = step.id === 'maturity' && o.cls === 2 && rawSparkHasFirstPerson();
       h += `<div class="opt${sel?' sel':''}${dim?' dim':''}" ${dim?'':'onclick="pickOpt('+i+')"'}>
               <div class="opt-letter">${o.l}</div>
               <div>
@@ -2359,7 +2632,23 @@ function renderIntake() {
 }
 
 function pickOpt(i) {
-  intakeSel[INTAKE[intakeStep].id] = i;
+  const step = INTAKE[intakeStep];
+  if (step.id === 'maturity') {
+    const opt = MATURITY_TREE[maturityNode].opts[i];
+    if (!opt) return;
+    if (opt.next) {
+      maturityHistory.push(maturityNode);
+      maturityNode = opt.next;
+      maturityLeafIdx = null;
+      intakeSel['maturity'] = undefined;
+    } else {
+      maturityLeafIdx = i;
+      intakeSel['maturity'] = opt.cls;
+    }
+    renderIntake();
+    return;
+  }
+  intakeSel[step.id] = i;
   renderIntake();
 }
 
@@ -2403,18 +2692,12 @@ async function intakeNext() {
       const btn = document.getElementById('grape-continue-btn');
       if (btn) { btn.disabled = true; btn.textContent = 'Reading person...'; }
       try {
-        const res = await fetch(workerUrl + '/m1', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            spark_summary: getSparkSummary(),
-            person_name: name,
-            relationship: rel,
-            maturity_class: S.maturity
-          })
+        const data = await workerFetch('/m1', {
+          spark_summary: getSparkSummary(),
+          person_name: name,
+          relationship: rel,
+          maturity_class: S.maturity
         });
-        const data = await res.json();
-        if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
         const grapeState = normalizeGrapeState(data.grape?.state || 'turbid');
         if (grapeState === 'turbid') {
           intakeSel['grape_error'] = data.observation?.surface_text
@@ -2446,6 +2729,14 @@ async function intakeNext() {
 }
 
 function intakeBack() {
+  const step = INTAKE[intakeStep];
+  if (step.id === 'maturity' && maturityHistory.length) {
+    maturityNode = maturityHistory.pop();
+    maturityLeafIdx = null;
+    intakeSel['maturity'] = undefined;
+    renderIntake();
+    return;
+  }
   if (intakeStep > 0) { intakeStep--; renderIntake(); }
 }
 
@@ -2678,6 +2969,7 @@ function renderMech() {
 
   document.getElementById('obs-box').style.display = 'none';
   hideInlineErrand();
+  hideSwirl();
   hideWhatChanged();
   hideGrapeJudgment();
   hideCellarRhythm();
@@ -2687,6 +2979,15 @@ function renderMech() {
   if (exitsRow) exitsRow.style.display = 'none';
   const dormantPanel = document.getElementById('dormant-panel');
   if (dormantPanel) dormantPanel.style.display = 'none';
+  const stalledPanel = document.getElementById('stalled-panel');
+  if (stalledPanel) stalledPanel.style.display = 'none';
+  const m6Interstitial = document.getElementById('m6-interstitial');
+  if (m6Interstitial) { m6Interstitial.style.display = 'none'; m6Interstitial.textContent = ''; }
+  const m6WordsSourceRow = document.getElementById('m6-words-source');
+  if (m6WordsSourceRow) m6WordsSourceRow.style.display = 'none';
+  _m6WordsSource = null;
+  document.getElementById('m6-ws-real')?.classList.remove('is-selected');
+  document.getElementById('m6-ws-recon')?.classList.remove('is-selected');
 
   obsShown = !!m.prefilled; grapeStepShown = false; curAssess = {};
   if (m.prefilled) showPhaseObservation(m.obs());
@@ -2722,20 +3023,70 @@ function renderMech() {
     if (_echoReentryAnswer !== null) triggerM3EchoReentry();
   }
 
-  // M4: update question with current grape name, show brief and exits row.
+  // M4: update question and hint with current grape name and problem, show brief and exits row.
   if (m.id === 'M4') {
     const gn4 = S.label.grape || S.grape_name || 'the person you named';
     const selfMode4 = S.maturity === 2;
     m.q = selfMode4
-      ? `Set aside whoever you named before. Name one more person who has this problem. What have they actually done about it?`
-      : `Set ${gn4} aside and set aside whoever you named before. Name one more person who has this problem. What have they actually done about it?`;
+      ? `You are one kind of person with this. Who is a different kind, and does it look the same for them?`
+      : `${gn4} is one kind of person with this. Who is a different kind, and does it look the same for them?`;
+    m.hint = `One person, not a category. What they did about ${S.m2_confirmed_problem || 'this problem'} counts.`;
     document.getElementById('m-q').textContent = m.q;
+    document.getElementById('m-hint').textContent = m.hint;
     if (wmBrief) {
-      wmBrief.textContent = `Haven't found a second person yet? Go find one. Come back with their name and what they've actually done about it.`;
+      wmBrief.textContent = `Haven't found a different kind of person yet? Go find one. Come back with their name, what they've actually done about it, and whether it looks the same for them.`;
       wmBrief.style.display = 'block';
     }
     const exitsRowM4 = document.getElementById('real-world-exits');
     if (exitsRowM4) exitsRowM4.style.display = 'flex';
+  }
+
+  // M5: show brief and exits row.
+  if (m.id === 'M5') {
+    if (wmBrief) {
+      wmBrief.textContent = `Haven't found what people use for this now? Go find out. Come back with what it is and exactly where it falls short.`;
+      wmBrief.style.display = 'block';
+    }
+    const exitsRowM5 = document.getElementById('real-world-exits');
+    if (exitsRowM5) exitsRowM5.style.display = 'flex';
+  }
+
+  // M6: interstitial nudge (classes 0/1 only, first render, dismissible), required words-source toggle, show brief and exits row.
+  if (m.id === 'M6') {
+    const gn6 = S.label.grape || S.grape_name || 'the person you named';
+    const selfMode6 = S.maturity === 2;
+    m.q = selfMode6
+      ? `What have you actually said or written about this, before Corked asked?`
+      : `How would ${gn6} describe this in their own words?`;
+    document.getElementById('m-q').textContent = m.q;
+    const showM6Nudge = (S.maturity === 0 || S.maturity === 1) && !S.m6_nudge_dismissed;
+    if (m6Interstitial) {
+      if (showM6Nudge) {
+        m6Interstitial.innerHTML = `Your grape is ${escHtml(gn6)}. M6 will ask for their exact words. A conversation before then makes that question real rather than reconstructed. <a href="#" onclick="dismissM6Nudge();return false;" style="color:var(--muted);text-decoration:underline">Got it</a>`;
+        m6Interstitial.style.display = 'block';
+      } else {
+        m6Interstitial.style.display = 'none';
+        m6Interstitial.textContent = '';
+      }
+    }
+    if (m6WordsSourceRow) m6WordsSourceRow.style.display = 'block';
+    if (S.answers.M6 && S.m6_words_source) pickM6WordsSource(S.m6_words_source);
+    if (wmBrief) {
+      wmBrief.textContent = `Haven't talked to ${gn6} in these terms yet? Go have that conversation. Come back with their exact words.`;
+      wmBrief.style.display = 'block';
+    }
+    const exitsRowM6 = document.getElementById('real-world-exits');
+    if (exitsRowM6) exitsRowM6.style.display = 'flex';
+  }
+
+  // M7: show brief and exits row.
+  if (m.id === 'M7') {
+    if (wmBrief) {
+      wmBrief.textContent = `Haven't found your non-case yet? Go find them. Come back with who they are and why they don't have this.`;
+      wmBrief.style.display = 'block';
+    }
+    const exitsRowM7 = document.getElementById('real-world-exits');
+    if (exitsRowM7) exitsRowM7.style.display = 'flex';
   }
 
   // Show review panel hidden, question panel visible
@@ -2814,12 +3165,14 @@ function showInlineErrand(briefOrText) {
   const wmBrief = document.getElementById('wm-brief');
   if (wmBrief) wmBrief.style.display = 'none';
   document.getElementById('rw-park-btn')?.classList.add('errand-active');
+  document.getElementById('rw-flight-btn')?.classList.add('errand-active');
 }
 
 function hideInlineErrand() {
   const el = document.getElementById('inline-errand');
   if (el) { el.textContent = ''; el.style.display = 'none'; }
   document.getElementById('rw-park-btn')?.classList.remove('errand-active');
+  document.getElementById('rw-flight-btn')?.classList.remove('errand-active');
 }
 
 let errandWarnPending = false;
@@ -3035,7 +3388,7 @@ function rankState(state) {
   return ({ inert:0, turbid:1, clearing:2, settled:3 })[state] || 0;
 }
 
-function applyElementState(key, state, labelValue) {
+function rankUp(key, state, labelValue) {
   const cur = S.elements[key];
   if (rankState(state) > rankState(cur)) {
     setEl(key, state);
@@ -3055,11 +3408,16 @@ function applyLocalMechanismResult(m, txt) {
     systemState = 'settled';
   }
 
-  m.els.forEach(e => applyElementState(e, systemState, txt));
+  m.els.forEach(e => rankUp(e, systemState, txt));
   showPhaseObservation(m.obs(txt));
 }
 
 // ── SHARED GRADING HELPER ──────────────────────────────────────────────────
+
+function setLastSource(key, mechId) {
+  S.lastSource = S.lastSource || {};
+  S.lastSource[key] = mechId;
+}
 
 function applyAnchoredResult(key, result, txt, changedRows, settledLabel, weakLabel) {
   const ok = ['turbid', 'clearing', 'settled'];
@@ -3069,7 +3427,7 @@ function applyAnchoredResult(key, result, txt, changedRows, settledLabel, weakLa
   const claimedSettled = state === 'settled';
   if (claimedSettled && !anchor) state = 'clearing';
 
-  applyElementState(key, state, anchor || txt);
+  rankUp(key, state, anchor || txt);
 
   const after = S.elements[key];
   if (rankState(after) <= rankState(prior) && !(claimedSettled && !anchor)) return;
@@ -3090,15 +3448,107 @@ function applyAnchoredResult(key, result, txt, changedRows, settledLabel, weakLa
   }
 }
 
+// ── THE SWIRL ────────────────────────────────────────────────────────────
+// One reopening question, first below-settled grade only, per mechanism, ever.
+
+let _pendingSwirl = null;
+
+function swirlAlreadyShown(mechId) {
+  return !!(S.swirl_done && S.swirl_done[mechId]);
+}
+
+function markSwirlShown(mechId) {
+  S.swirl_done = S.swirl_done || {};
+  S.swirl_done[mechId] = true;
+}
+
+// Returns true and shows the swirl panel when this grade should pause on a swirl question
+// instead of proceeding straight to the inline errand. Only ever fires from the normal
+// answer flow (allowSwirl left true) — reopen and resolve regrades pass allowSwirl=false.
+function maybeShowSwirl(mechId, data, originalAnswer) {
+  if (!data?.swirl?.question || data.state === 'settled' || swirlAlreadyShown(mechId)) return false;
+  markSwirlShown(mechId);
+  _pendingSwirl = { mechId, originalAnswer };
+
+  const panel = document.getElementById('swirl-panel');
+  const qEl = document.getElementById('swirl-q');
+  const ansEl = document.getElementById('swirl-ans');
+  if (qEl) qEl.textContent = data.swirl.question;
+  if (ansEl) ansEl.value = '';
+  if (panel) panel.style.display = 'block';
+  hideInlineErrand();
+  return true;
+}
+
+function hideSwirl() {
+  const panel = document.getElementById('swirl-panel');
+  if (panel) panel.style.display = 'none';
+  _pendingSwirl = null;
+}
+
+async function submitSwirl() {
+  if (!_pendingSwirl) return;
+  const ansEl = document.getElementById('swirl-ans');
+  const swirlAnswer = (ansEl?.value || '').trim();
+  if (!swirlAnswer) return;
+
+  const { mechId, originalAnswer } = _pendingSwirl;
+  const combined = `${originalAnswer} ${swirlAnswer}`.trim();
+  const btn = document.getElementById('swirl-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
+
+  try {
+    S.answers[mechId] = combined;
+    if (mechId === 'M2') {
+      const data = await callM2Worker(combined);
+      await applyM2Result(data, combined, false);
+    } else if (mechId === 'M3') {
+      const data = await callM3Worker(combined);
+      await applyM3Result(data, combined, false);
+    } else if (mechId === 'M4') {
+      const data = await callM4Worker(combined);
+      await applyM4Result(data, combined, false);
+    } else if (mechId === 'M5') {
+      const data = await callM5Worker(combined);
+      await applyM5Result(data, combined, false);
+    } else if (mechId === 'M6') {
+      const data = await callM6Worker(combined, S.m6_words_source);
+      await applyM6Result(data, combined, false);
+    } else if (mechId === 'M7') {
+      const data = await callM7Worker(combined);
+      await applyM7Result(data, combined, false);
+    }
+    const ansMain = document.getElementById('ans');
+    if (ansMain) ansMain.value = combined;
+    saveState();
+  } catch (err) {
+    showPhaseObservation('Worker error. ' + err.message);
+  } finally {
+    _pendingSwirl = null;
+    const panel = document.getElementById('swirl-panel');
+    if (panel) panel.style.display = 'none';
+    if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
+  }
+}
+
 // ── M2: THE FRICTION TEST ──────────────────────────────────────────────────
 
 let m2AwaitingConfirm = false;
 let _askReentryAnswer = null;
 
-function parkM2Ask() {
-  const question = S.m2_problem?.question || null;
-  const brief = { kind: 'ask', text: question, pending: !question, created_at: new Date().toISOString() };
-  parkBottleDormant(activeBottleId, brief);
+async function parkM2Ask(status = 'dormant') {
+  let brief = S.m2_pending_brief || null;
+  S.m2_pending_brief = null;
+  if (!brief) {
+    try {
+      const gapElement = S.m2_problem?.gap_in_play && S.elements.gap !== 'settled';
+      brief = await fetchFieldBrief({ mode: 'ask', element: gapElement ? 'gap' : 'tell' });
+    } catch (e) {
+      const question = S.m2_problem?.question || null;
+      brief = { kind: 'ask', text: question, pending: !question, created_at: new Date().toISOString() };
+    }
+  }
+  parkBottleDormant(activeBottleId, brief, status);
   showCellar();
 }
 
@@ -3116,7 +3566,7 @@ async function triggerM2PhaseA() {
     try {
       S.answers.M2 = answer;
       const data = await callM2Worker(answer);
-      applyM2Result(data, answer);
+      await applyM2Result(data, answer);
     } catch (err) {
       showPhaseObservation('Worker error. ' + err.message);
       setPhaseBusy(false);
@@ -3150,19 +3600,13 @@ async function triggerM2PhaseA() {
   setPhaseBusy(true, 'Reading moment...');
 
   try {
-    const res = await fetch(workerUrl + '/m2', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        user_line:        getSparkSummary(),
-        spark_parse:      S.m0?.spark_parse || null,
-        grape_name:       S.grape_name || '',
-        grape_relationship: S.grape_relationship || '',
-        maturity_class:   S.maturity
-      })
+    const data = await workerFetch('/m2', {
+      user_line:        getSparkSummary(),
+      spark_parse:      S.m0?.spark_parse || null,
+      grape_name:       S.grape_name || '',
+      grape_relationship: S.grape_relationship || '',
+      maturity_class:   S.maturity
     });
-    const data = await res.json();
-    if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
     applyM2PhaseAResult(data);
   } catch (err) {
     // Phase A failure: block-and-surface. No silent fallback — matching M0 behaviour.
@@ -3225,32 +3669,23 @@ function m2ConfirmProblem() {
 }
 
 async function callM2Worker(txt) {
-  const workerUrl = v6GetWorkerUrl();
-  if (!workerUrl) throw new Error('Worker URL missing.');
-
-  const res = await fetch(workerUrl + '/m2', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      user_line:          getSparkSummary(),
-      grape_name:         S.grape_name || '',
-      grape_relationship: S.grape_relationship || '',
-      maturity_class:     S.maturity,
-      confirmed_problem:  S.m2_confirmed_problem || S.m2_problem?.recovered_problem || '',
-      gap_in_play:        !!(S.m2_problem?.gap_in_play),
-      user_answer:        txt
-    })
+  return workerFetch('/m2', {
+    user_line:          getSparkSummary(),
+    grape_name:         S.grape_name || '',
+    grape_relationship: S.grape_relationship || '',
+    maturity_class:     S.maturity,
+    confirmed_problem:  S.m2_confirmed_problem || S.m2_problem?.recovered_problem || '',
+    gap_in_play:        !!(S.m2_problem?.gap_in_play),
+    user_answer:        txt
   });
-  const data = await res.json();
-  if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
-  return data;
 }
 
-function applyM2Result(data, txt) {
+async function applyM2Result(data, txt, allowSwirl = true) {
   S.m2 = data;
   const changedRows = [];
 
   applyAnchoredResult('tell', data.tell, txt, changedRows, 'Observable action', 'Partial action');
+  setLastSource('tell', 'M2');
   applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance', 'Partial moment');
   if (S.m2_problem?.gap_in_play) {
     applyAnchoredResult('gap', data.gap, txt, changedRows, 'Workaround failure', 'Partial failure point');
@@ -3258,11 +3693,21 @@ function applyM2Result(data, txt) {
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
 
-  if (data.vintage?.state === 'turbid' || data.vintage?.state === 'clearing') {
-    const briefText = S.m2_problem?.question
-      || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?`;
-    showInlineErrand(briefText);
+  if (allowSwirl && maybeShowSwirl('M2', data, txt)) return;
+
+  if (data.state !== 'settled' && !data.substitution_detected && txt.trim()) {
+    showInlineErrand(null);
+    try {
+      const gapElement = S.m2_problem?.gap_in_play && data.gap?.state !== 'settled';
+      const brief = await fetchFieldBrief({ mode: 'ask', element: gapElement ? 'gap' : 'tell' });
+      S.m2_pending_brief = brief;
+      showInlineErrand(brief.question || brief.text ? brief : S.m2_problem?.question || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?`);
+    } catch (e) {
+      S.m2_pending_brief = { kind: 'ask', text: null, pending: true, created_at: new Date().toISOString() };
+      showInlineErrand(S.m2_problem?.question || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?`);
+    }
   } else {
+    S.m2_pending_brief = null;
     hideInlineErrand();
   }
 }
@@ -3276,34 +3721,28 @@ let _reopenKey = null;
 let _reopenMechId = null;
 
 async function callM3Worker(txt) {
-  const workerUrl = v6GetWorkerUrl();
-  if (!workerUrl) throw new Error('Worker URL missing.');
-  const res = await fetch(workerUrl + '/m3', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      confirmed_problem:  S.m2_confirmed_problem || '',
-      grape_name:         S.grape_name || '',
-      grape_relationship: S.grape_relationship || '',
-      maturity_class:     S.maturity,
-      user_answer:        txt
-    })
+  return workerFetch('/m3', {
+    confirmed_problem:  S.m2_confirmed_problem || '',
+    grape_name:         S.grape_name || '',
+    grape_relationship: S.grape_relationship || '',
+    maturity_class:     S.maturity,
+    user_answer:        txt
   });
-  const data = await res.json();
-  if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
-  return data;
 }
 
-async function applyM3Result(data, txt) {
+async function applyM3Result(data, txt, allowSwirl = true) {
   S.m3 = data;
   const changedRows = [];
 
   applyAnchoredResult('echo',    data.echo,    txt, changedRows, 'Third-party confirmation', 'Partial confirmation');
+  setLastSource('echo', 'M3');
   applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance',        'Partial moment');
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
 
-  if (data.echo?.state === 'turbid' || data.echo?.state === 'clearing') {
+  if (allowSwirl && maybeShowSwirl('M3', data, txt)) return;
+
+  if (data.echo?.state !== 'settled' && !data.substitution_detected && txt.trim()) {
     showInlineErrand(null);
     try {
       const brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
@@ -3314,11 +3753,12 @@ async function applyM3Result(data, txt) {
       showInlineErrand(`Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`);
     }
   } else {
+    S.m3_pending_brief = null;
     hideInlineErrand();
   }
 }
 
-async function parkM3Echo() {
+async function parkM3Echo(status = 'dormant') {
   let brief = S.m3_pending_brief || null;
   S.m3_pending_brief = null;
   if (!brief) {
@@ -3328,16 +3768,19 @@ async function parkM3Echo() {
       brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
     }
   }
-  parkBottleDormant(activeBottleId, brief);
+  parkBottleDormant(activeBottleId, brief, status);
   showCellar();
 }
 
-async function parkItAction() {
-  const btn = document.getElementById('rw-park-btn');
+async function parkItAction(status = 'dormant') {
+  const btn = document.getElementById(status === 'in_flight' ? 'rw-flight-btn' : 'rw-park-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
-  if (M[mi].id === 'M2') await parkM2Ask();
-  else if (M[mi].id === 'M3') await parkM3Echo();
-  else if (M[mi].id === 'M4') await parkM4Echo();
+  if (M[mi].id === 'M2') await parkM2Ask(status);
+  else if (M[mi].id === 'M3') await parkM3Echo(status);
+  else if (M[mi].id === 'M4') await parkM4Echo(status);
+  else if (M[mi].id === 'M5') await parkM5Gap(status);
+  else if (M[mi].id === 'M6') await parkM6Words(status);
+  else if (M[mi].id === 'M7') await parkM7Limit(status);
 }
 
 
@@ -3351,7 +3794,7 @@ async function triggerM3EchoReentry() {
   try {
     S.answers.M3 = answer;
     const data = await callM3Worker(answer);
-    applyM3Result(data, answer);
+    await applyM3Result(data, answer);
   } catch (err) {
     showPhaseObservation('Worker error. ' + err.message);
     setPhaseBusy(false);
@@ -3368,37 +3811,31 @@ async function triggerM3EchoReentry() {
 // ── M4: SECOND PERSON ─────────────────────────────────────────────────────
 
 async function callM4Worker(txt) {
-  const workerUrl = v6GetWorkerUrl();
-  if (!workerUrl) throw new Error('Worker URL missing.');
-  const res = await fetch(workerUrl + '/m4', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      confirmed_problem:  S.m2_confirmed_problem || '',
-      grape_name:         S.grape_name || '',
-      grape_relationship: S.grape_relationship || '',
-      maturity_class:     S.maturity,
-      prior_echo_context: S.answers.M3 || '',
-      user_answer:        txt
-    })
+  return workerFetch('/m4', {
+    confirmed_problem:  S.m2_confirmed_problem || '',
+    grape_name:         S.grape_name || '',
+    grape_relationship: S.grape_relationship || '',
+    maturity_class:     S.maturity,
+    prior_echo_context: (S.answers.M3 || '').slice(0, 300),
+    user_answer:        txt
   });
-  const data = await res.json();
-  if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
-  return data;
 }
 
-async function applyM4Result(data, txt) {
+async function applyM4Result(data, txt, allowSwirl = true) {
   S.m4 = data;
   const changedRows = [];
-  applyAnchoredResult('echo',    data.echo,    txt, changedRows, 'Second confirmation', 'Partial confirmation');
+  applyAnchoredResult('echo',    data.echo,    txt, changedRows, 'Contrast', 'Partial contrast');
+  setLastSource('echo', 'M4');
   applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance',   'Partial moment');
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
 
-  if (data.echo?.state === 'turbid' || data.echo?.state === 'clearing') {
+  if (allowSwirl && maybeShowSwirl('M4', data, txt)) return;
+
+  if (data.echo?.state !== 'settled' && !data.substitution_detected && txt.trim()) {
     showInlineErrand(null);
     try {
-      const brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
+      const brief = await fetchFieldBrief({ mode: 'contrast', element: 'echo' });
       S.m4_pending_brief = brief;
       showInlineErrand(brief.question || brief.text ? brief : `Find a second person who hits this problem — not ${S.grape_name || 'the person you named'} and not whoever you named before. Ask what they've actually done about it.`);
     } catch (e) {
@@ -3406,27 +3843,213 @@ async function applyM4Result(data, txt) {
       showInlineErrand(`Find a second person who hits this problem — not ${S.grape_name || 'the person you named'} and not whoever you named before. Ask what they've actually done about it.`);
     }
   } else {
+    S.m4_pending_brief = null;
     hideInlineErrand();
   }
 }
 
-async function parkM4Echo() {
+async function parkM4Echo(status = 'dormant') {
   let brief = S.m4_pending_brief || null;
   S.m4_pending_brief = null;
   if (!brief) {
     try {
-      brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
+      brief = await fetchFieldBrief({ mode: 'contrast', element: 'echo' });
     } catch (e) {
-      brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
+      brief = { kind: 'contrast', text: null, pending: true, created_at: new Date().toISOString() };
     }
   }
-  parkBottleDormant(activeBottleId, brief);
+  parkBottleDormant(activeBottleId, brief, status);
   showCellar();
 }
 
 // ── END M4 ────────────────────────────────────────────────────────────────
 
+// ── M5: THE EXISTING FIX ──────────────────────────────────────────────────
+
+async function callM5Worker(txt) {
+  return workerFetch('/m5', {
+    confirmed_problem:  S.m2_confirmed_problem || '',
+    grape_name:         S.grape_name || '',
+    grape_relationship: S.grape_relationship || '',
+    maturity_class:     S.maturity,
+    user_answer:        txt
+  });
+}
+
+async function applyM5Result(data, txt, allowSwirl = true) {
+  S.m5 = data;
+  const changedRows = [];
+  applyAnchoredResult('gap', data.gap, txt, changedRows, 'Existing fix and failure point', 'Partial fix');
+  showPhaseObservation(data.observation?.surface_text || '');
+  showWhatChanged(changedRows);
+
+  if (allowSwirl && maybeShowSwirl('M5', data, txt)) return;
+
+  if (data.gap?.state !== 'settled' && !data.substitution_detected && txt.trim()) {
+    showInlineErrand(null);
+    try {
+      const brief = await fetchFieldBrief({ mode: 'ask', element: 'gap' });
+      S.m5_pending_brief = brief;
+      showInlineErrand(brief.question || brief.text ? brief : `Find out what people currently use for this problem and exactly where it falls short.`);
+    } catch (e) {
+      S.m5_pending_brief = { kind: 'ask', text: null, pending: true, created_at: new Date().toISOString() };
+      showInlineErrand(`Find out what people currently use for this problem and exactly where it falls short.`);
+    }
+  } else {
+    S.m5_pending_brief = null;
+    hideInlineErrand();
+  }
+}
+
+async function parkM5Gap(status = 'dormant') {
+  let brief = S.m5_pending_brief || null;
+  S.m5_pending_brief = null;
+  if (!brief) {
+    try {
+      brief = await fetchFieldBrief({ mode: 'ask', element: 'gap' });
+    } catch (e) {
+      brief = { kind: 'ask', text: null, pending: true, created_at: new Date().toISOString() };
+    }
+  }
+  parkBottleDormant(activeBottleId, brief, status);
+  showCellar();
+}
+
+// ── END M5 ────────────────────────────────────────────────────────────────
+
+// ── M6: THEIR WORDS ───────────────────────────────────────────────────────
+
+let _m6WordsSource = null;
+
+function dismissM6Nudge() {
+  S.m6_nudge_dismissed = true;
+  saveState();
+  const el = document.getElementById('m6-interstitial');
+  if (el) { el.style.display = 'none'; el.textContent = ''; }
+}
+
+function pickM6WordsSource(v) {
+  _m6WordsSource = v;
+  document.getElementById('m6-ws-real')?.classList.toggle('is-selected', v === 'real');
+  document.getElementById('m6-ws-recon')?.classList.toggle('is-selected', v === 'reconstructed');
+}
+
+async function callM6Worker(txt, wordsSourceOverride) {
+  return workerFetch('/m6', {
+    confirmed_problem:  S.m2_confirmed_problem || '',
+    grape_name:         S.grape_name || '',
+    grape_relationship: S.grape_relationship || '',
+    maturity_class:     S.maturity,
+    words_source:       wordsSourceOverride || _m6WordsSource || 'reconstructed',
+    user_answer:        txt
+  });
+}
+
+async function applyM6Result(data, txt, allowSwirl = true) {
+  S.m6 = data;
+  S.m6_words_source = _m6WordsSource;
+  const changedRows = [];
+  applyAnchoredResult('tell', data.tell, txt, changedRows, 'Filmable behaviour', 'Partial behaviour');
+  setLastSource('tell', 'M6');
+  if (data.echo) {
+    applyAnchoredResult('echo', data.echo, txt, changedRows, 'Third-party echo', 'Partial echo');
+    setLastSource('echo', 'M6');
+  }
+  showPhaseObservation(data.observation?.surface_text || '');
+  showWhatChanged(changedRows);
+
+  if (allowSwirl && maybeShowSwirl('M6', data, txt)) return;
+
+  if (data.state !== 'settled' && !data.substitution_detected && txt.trim()) {
+    showInlineErrand(null);
+    try {
+      const brief = await fetchFieldBrief({ mode: 'words', element: 'words' });
+      S.m6_pending_brief = brief;
+      showInlineErrand(brief.question || brief.text ? brief : `Talk to ${S.grape_name || 'the person you named'} and bring back their exact words about this problem.`);
+    } catch (e) {
+      S.m6_pending_brief = { kind: 'words', text: null, pending: true, created_at: new Date().toISOString() };
+      showInlineErrand(`Talk to ${S.grape_name || 'the person you named'} and bring back their exact words about this problem.`);
+    }
+  } else {
+    S.m6_pending_brief = null;
+    hideInlineErrand();
+  }
+}
+
+async function parkM6Words(status = 'dormant') {
+  let brief = S.m6_pending_brief || null;
+  S.m6_pending_brief = null;
+  if (!brief) {
+    try {
+      brief = await fetchFieldBrief({ mode: 'words', element: 'words' });
+    } catch (e) {
+      brief = { kind: 'words', text: null, pending: true, created_at: new Date().toISOString() };
+    }
+  }
+  parkBottleDormant(activeBottleId, brief, status);
+  showCellar();
+}
+
+// ── END M6 ────────────────────────────────────────────────────────────────
+
+// ── M7: THE NON-CASE ──────────────────────────────────────────────────────
+
+async function callM7Worker(txt) {
+  return workerFetch('/m7', {
+    confirmed_problem:  S.m2_confirmed_problem || '',
+    grape_name:         S.grape_name || '',
+    grape_relationship: S.grape_relationship || '',
+    maturity_class:     S.maturity,
+    user_answer:        txt
+  });
+}
+
+async function applyM7Result(data, txt, allowSwirl = true) {
+  S.m7 = data;
+  const changedRows = [];
+  applyAnchoredResult('limit', data.limit, txt, changedRows, 'Bounded exclusion and reason', 'Partial exclusion');
+  showPhaseObservation(data.observation?.surface_text || '');
+  showWhatChanged(changedRows);
+
+  if (allowSwirl && maybeShowSwirl('M7', data, txt)) return;
+
+  if (data.limit?.state !== 'settled' && !data.substitution_detected && txt.trim()) {
+    showInlineErrand(null);
+    try {
+      const brief = await fetchFieldBrief({ mode: 'limit', element: 'limit' });
+      S.m7_pending_brief = brief;
+      showInlineErrand(brief.question || brief.text ? brief : `Find someone who looks like they should have this problem but doesn't, and find out why not.`);
+    } catch (e) {
+      S.m7_pending_brief = { kind: 'limit', text: null, pending: true, created_at: new Date().toISOString() };
+      showInlineErrand(`Find someone who looks like they should have this problem but doesn't, and find out why not.`);
+    }
+  } else {
+    S.m7_pending_brief = null;
+    hideInlineErrand();
+  }
+}
+
+async function parkM7Limit(status = 'dormant') {
+  let brief = S.m7_pending_brief || null;
+  S.m7_pending_brief = null;
+  if (!brief) {
+    try {
+      brief = await fetchFieldBrief({ mode: 'limit', element: 'limit' });
+    } catch (e) {
+      brief = { kind: 'limit', text: null, pending: true, created_at: new Date().toISOString() };
+    }
+  }
+  parkBottleDormant(activeBottleId, brief, status);
+  showCellar();
+}
+
+// ── END M7 ────────────────────────────────────────────────────────────────
+
 async function p1Next(bypassErrandWarn = false) {
+  if (_pendingSwirl) {
+    document.getElementById('swirl-ans')?.focus();
+    return;
+  }
   if (!bypassErrandWarn && isErrandActive()) {
     document.getElementById('errand-warn-overlay').classList.add('show');
     return;
@@ -3447,19 +4070,32 @@ async function p1Next(bypassErrandWarn = false) {
       ans.style.borderColor='var(--wine)';
       return;
     }
+    if (m.id === 'M6' && !_m6WordsSource) {
+      document.getElementById('m6-words-source')?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      return;
+    }
 
     try {
       setPhaseBusy(true, m.id === 'M2' ? 'Reading moment...' : 'Reading answer...');
       S.answers[m.id] = txt;
       if (m.id === 'M2') {
         const data = await callM2Worker(txt);
-        applyM2Result(data, txt);
+        await applyM2Result(data, txt);
       } else if (m.id === 'M3') {
         const data = await callM3Worker(txt);
-        applyM3Result(data, txt);
+        await applyM3Result(data, txt);
       } else if (m.id === 'M4') {
         const data = await callM4Worker(txt);
-        applyM4Result(data, txt);
+        await applyM4Result(data, txt);
+      } else if (m.id === 'M5') {
+        const data = await callM5Worker(txt);
+        await applyM5Result(data, txt);
+      } else if (m.id === 'M6') {
+        const data = await callM6Worker(txt);
+        await applyM6Result(data, txt);
+      } else if (m.id === 'M7') {
+        const data = await callM7Worker(txt);
+        await applyM7Result(data, txt);
       } else {
         applyLocalMechanismResult(m, txt);
       }
@@ -3497,6 +4133,36 @@ async function p1Next(bypassErrandWarn = false) {
   }
 }
 
+
+// ── RHYTHM GATE ──
+// One config constant: ms per declared pace index (0=daily, 1=every other day, 2=weekly, 3=monthly).
+// Rhythm-test mode (?rhythmtest=1, or localStorage 'corked_rhythm_test'='1') collapses every pace
+// to a near-zero interval so the park -> locked -> open cycle can be watched inside a bench session
+// instead of waiting real days.
+const RHYTHM_TEST_MODE = new URLSearchParams(location.search).has('rhythmtest')
+  || localStorage.getItem('corked_rhythm_test') === '1';
+const PACE_DURATIONS = RHYTHM_TEST_MODE
+  ? { 0: 15000, 1: 30000, 2: 60000, 3: 120000 }
+  : { 0: 1 * 86400000, 1: 2 * 86400000, 2: 7 * 86400000, 3: 30 * 86400000 };
+
+function computeParkNextQuestionAt(pace) {
+  const dur = PACE_DURATIONS[pace] ?? PACE_DURATIONS[2];
+  return new Date(Date.now() + dur).toISOString();
+}
+
+function formatLockedUntil(iso) {
+  const date = new Date(iso);
+  if (isNaN(date.getTime())) return 'soon';
+  const diff = date - new Date();
+  if (diff <= 0) return 'now';
+  const mins = Math.round(diff / 60000);
+  if (mins < 1)  return 'in under a minute';
+  if (mins < 60) return `in ${mins} minute${mins === 1 ? '' : 's'}`;
+  const hours = Math.round(diff / 3600000);
+  if (hours < 24) return `in ${hours} hour${hours === 1 ? '' : 's'}`;
+  const days = Math.round(diff / 86400000);
+  return `in ${days} day${days === 1 ? '' : 's'}`;
+}
 
 // ── CELLAR THRESHOLD ──
 const THRESHOLD_STEPS = [
@@ -3648,14 +4314,18 @@ function restoreAnsweredMechUI(m) {
   const exitsRow = document.getElementById('real-world-exits');
   if (exitsRow) exitsRow.style.display = 'flex';
 
-  if (m.id === 'M2') {
-    if ((S.elements.tell !== 'settled' || S.elements.vintage !== 'settled') && S.m2_problem?.question) {
-      showInlineErrand(S.m2_problem.question);
-    }
+  if (m.id === 'M2' && S.m2?.state !== 'settled' && (S.m2_pending_brief?.question || S.m2_pending_brief?.text)) {
+    showInlineErrand(S.m2_pending_brief);
   } else if (m.id === 'M3' && S.elements.echo !== 'settled' && (S.m3_pending_brief?.question || S.m3_pending_brief?.text)) {
     showInlineErrand(S.m3_pending_brief);
   } else if (m.id === 'M4' && S.elements.echo !== 'settled' && (S.m4_pending_brief?.question || S.m4_pending_brief?.text)) {
     showInlineErrand(S.m4_pending_brief);
+  } else if (m.id === 'M5' && S.elements.gap !== 'settled' && (S.m5_pending_brief?.question || S.m5_pending_brief?.text)) {
+    showInlineErrand(S.m5_pending_brief);
+  } else if (m.id === 'M6' && S.m6?.state !== 'settled' && (S.m6_pending_brief?.question || S.m6_pending_brief?.text)) {
+    showInlineErrand(S.m6_pending_brief);
+  } else if (m.id === 'M7' && S.elements.limit !== 'settled' && (S.m7_pending_brief?.question || S.m7_pending_brief?.text)) {
+    showInlineErrand(S.m7_pending_brief);
   }
 }
 
@@ -3721,9 +4391,10 @@ function reviewEl(key) {
      </div>`;
   }).join('');
 
-  // Reopen path: offer re-answer if element is not yet settled
-  const REOPEN_MAP = { tell:'M2', vintage:'M2', gap:'M2', echo:'M3' };
-  const reopenMechId = REOPEN_MAP[key];
+  // Reopen path: offer re-answer if element is not yet settled.
+  // tell/echo can be sourced by more than one mechanism, so route to whichever last graded them.
+  const REOPEN_DEFAULTS = { tell:'M2', vintage:'M2', gap:'M5', echo:'M3', limit:'M7' };
+  const reopenMechId = (S.lastSource && S.lastSource[key]) || REOPEN_DEFAULTS[key];
   const reopenSection = document.getElementById('rv-reopen');
   if (reopenMechId && S.elements[key] !== 'settled' && S.answers[reopenMechId]) {
     const rm = M.find(m => m.id === reopenMechId);
@@ -3770,18 +4441,12 @@ async function submitReopen() {
     if (mechId === 'M1') {
       const workerUrl = v6GetWorkerUrl();
       if (workerUrl) {
-        const res = await fetch(workerUrl + '/m1', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            spark_summary:   getSparkSummary(),
-            person_name:     S.grape_name || '',
-            relationship:    txt,
-            maturity_class:  S.maturity
-          })
+        const data = await workerFetch('/m1', {
+          spark_summary:   getSparkSummary(),
+          person_name:     S.grape_name || '',
+          relationship:    txt,
+          maturity_class:  S.maturity
         });
-        const data = await res.json();
-        if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
         writeM1FromIntake(S.grape_name || '', txt, data);
       } else {
         writeM1FromIntake(S.grape_name || '', txt, null);
@@ -3789,11 +4454,28 @@ async function submitReopen() {
     } else if (mechId === 'M2') {
       const data = await callM2Worker(txt);
       S.answers.M2 = txt;
-      applyM2Result(data, txt);
+      await applyM2Result(data, txt, false);
     } else if (mechId === 'M3') {
       const data = await callM3Worker(txt);
       S.answers.M3 = txt;
-      applyM3Result(data, txt);
+      await applyM3Result(data, txt, false);
+    } else if (mechId === 'M4') {
+      const data = await callM4Worker(txt);
+      S.answers.M4 = txt;
+      await applyM4Result(data, txt, false);
+    } else if (mechId === 'M5') {
+      const data = await callM5Worker(txt);
+      S.answers.M5 = txt;
+      await applyM5Result(data, txt, false);
+    } else if (mechId === 'M6') {
+      // Reopen panel has no real/reconstructed toggle; force the conservative default.
+      const data = await callM6Worker(txt, 'reconstructed');
+      S.answers.M6 = txt;
+      await applyM6Result(data, txt, false);
+    } else if (mechId === 'M7') {
+      const data = await callM7Worker(txt);
+      S.answers.M7 = txt;
+      await applyM7Result(data, txt, false);
     }
     saveState();
     exitReview();
@@ -3824,14 +4506,27 @@ function showLabel() {
   const settled = Object.values(S.elements).filter(v=>v==='settled').length;
   const paceLabels = ['Daily','Any other day','Weekly','Monthly'];
 
+  const record = activeBottleId ? loadBottle(activeBottleId) : null;
+  const eyebrowEl = document.getElementById('label-eyebrow');
+  if (eyebrowEl) {
+    eyebrowEl.textContent = record?.status === 'rested'
+      ? 'Vintage Label · Archived'
+      : 'Vintage Label · Phase 1 Complete';
+  }
+
   let h = `<div class="vc-name">${S.idea.slice(0,28).toUpperCase()}</div>
             <div class="vc-year">${mo} ${yr} · Phase 1 · Observation</div>
             <div class="vc-rule"></div>`;
 
+  const archived = record?.status === 'rested';
+  const amberCount = EL_KEYS.filter(k => S.elements[k] === 'turbid' || S.elements[k] === 'clearing').length;
+
   Object.entries(EL_META).forEach(([k,m]) => {
     const st  = S.elements[k];
     const val = S.label[k];
-    h += `<div class="vc-field">
+    const amber = st === 'turbid' || st === 'clearing';
+    const tappable = !archived && amber && isElementSourced(k);
+    h += `<div class="vc-field${tappable?' tappable':''}" ${tappable?`onclick="openLabelReopen('${k}')"`:''}>
             <div class="vc-field-name">
               ${m.name}
               <span class="vc-field-desc">— ${m.desc}</span>
@@ -3840,6 +4535,7 @@ function showLabel() {
             <div class="vc-field-val${!val?' empty':''}">
               ${val ? escHtml(val) : 'Not yet settled. The answer is still being built.'}
             </div>
+            ${tappable ? `<div class="vc-field-tap">${amberCount === 1 ? 'Tap to answer the sharper question →' : 'Tap to answer again →'}</div>` : ''}
           </div>`;
   });
 
@@ -3854,6 +4550,148 @@ function showLabel() {
     : `<div class="readiness ready">All six elements settled. The bottle is ready to cork. Phase 2 is available when you are.</div>`;
 
   document.getElementById('vc').innerHTML = h;
+}
+
+// ── LABEL REOPEN / RESOLVE ──
+// Source map matches the sidebar reopen path: whichever mechanism last graded the
+// element, falling back to its canonical source when nothing has graded it yet.
+const LABEL_REOPEN_DEFAULTS = { grape:'M1', tell:'M2', vintage:'M2', gap:'M5', echo:'M3', limit:'M7' };
+
+let _labelReopenKey = null;
+let _labelReopenMechId = null;
+
+function labelSourceQuestion(mechId) {
+  if (mechId === 'M1') {
+    const gn = S.grape_name || 'this person';
+    return `How do you know ${gn}? Describe your connection and what you have seen them do.`;
+  }
+  if (mechId === 'M2') return S.m2_problem?.question || (M.find(m => m.id === 'M2')?.q || '');
+  return M.find(m => m.id === mechId)?.q || '';
+}
+
+async function openLabelReopen(key) {
+  const record = activeBottleId ? loadBottle(activeBottleId) : null;
+  if (record?.status === 'rested') return;
+  const st = S.elements[key];
+  if ((st !== 'turbid' && st !== 'clearing') || !isElementSourced(key)) return;
+
+  const mechId = (S.lastSource && S.lastSource[key]) || LABEL_REOPEN_DEFAULTS[key];
+  if (!mechId || (mechId !== 'M1' && !S.answers[mechId])) return;
+
+  _labelReopenKey = key;
+  _labelReopenMechId = mechId;
+
+  const ambers = EL_KEYS.filter(k => S.elements[k] === 'turbid' || S.elements[k] === 'clearing');
+  const overlay = document.getElementById('label-reopen-overlay');
+  const qEl = document.getElementById('lr-question');
+  const ansEl = document.getElementById('lr-ans');
+  const eyebrowEl = document.getElementById('lr-eyebrow');
+  const submitBtn = document.getElementById('lr-submit-btn');
+  const parkBtn = document.getElementById('lr-park-btn');
+
+  ansEl.value = '';
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Submit →'; }
+  if (parkBtn) parkBtn.style.display = (mechId === 'M1') ? 'none' : '';
+
+  if (ambers.length === 1) {
+    eyebrowEl.textContent = 'One thing left';
+    qEl.textContent = 'Reading the cellar…';
+    overlay.classList.add('show');
+    try {
+      const data = await workerFetch('/resolve', {
+        element: key,
+        element_state: S.elements[key],
+        source_mechanism: mechId,
+        prior_answer: S.answers[mechId] || '',
+        confirmed_problem: S.m2_confirmed_problem || S.m2_problem?.recovered_problem || '',
+        grape_name: S.grape_name || '',
+        domain: S.m0?.spark_parse?.domain || ''
+      });
+      qEl.textContent = data.question;
+    } catch (e) {
+      eyebrowEl.textContent = mechId + ' · answer again';
+      qEl.textContent = labelSourceQuestion(mechId);
+    }
+  } else {
+    eyebrowEl.textContent = mechId + ' · answer again';
+    qEl.textContent = labelSourceQuestion(mechId);
+    overlay.classList.add('show');
+  }
+}
+
+function closeLabelReopen() {
+  document.getElementById('label-reopen-overlay').classList.remove('show');
+  _labelReopenKey = null;
+  _labelReopenMechId = null;
+}
+
+async function submitLabelReopen() {
+  const txt = (document.getElementById('lr-ans')?.value || '').trim();
+  const mechId = _labelReopenMechId;
+  if (!txt || !mechId) return;
+
+  const btn = document.getElementById('lr-submit-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
+
+  try {
+    if (mechId === 'M1') {
+      const workerUrl = v6GetWorkerUrl();
+      if (workerUrl) {
+        const data = await workerFetch('/m1', {
+          spark_summary:  getSparkSummary(),
+          person_name:    S.grape_name || '',
+          relationship:   txt,
+          maturity_class: S.maturity
+        });
+        writeM1FromIntake(S.grape_name || '', txt, data);
+      } else {
+        writeM1FromIntake(S.grape_name || '', txt, null);
+      }
+    } else if (mechId === 'M2') {
+      const data = await callM2Worker(txt);
+      S.answers.M2 = txt;
+      await applyM2Result(data, txt, false);
+    } else if (mechId === 'M3') {
+      const data = await callM3Worker(txt);
+      S.answers.M3 = txt;
+      await applyM3Result(data, txt, false);
+    } else if (mechId === 'M4') {
+      const data = await callM4Worker(txt);
+      S.answers.M4 = txt;
+      await applyM4Result(data, txt, false);
+    } else if (mechId === 'M5') {
+      const data = await callM5Worker(txt);
+      S.answers.M5 = txt;
+      await applyM5Result(data, txt, false);
+    } else if (mechId === 'M6') {
+      const data = await callM6Worker(txt, 'reconstructed');
+      S.answers.M6 = txt;
+      await applyM6Result(data, txt, false);
+    } else if (mechId === 'M7') {
+      const data = await callM7Worker(txt);
+      S.answers.M7 = txt;
+      await applyM7Result(data, txt, false);
+    }
+    saveState();
+    closeLabelReopen();
+    showLabel();
+  } catch (err) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit →'; }
+    const qEl = document.getElementById('lr-question');
+    if (qEl) qEl.textContent = 'Worker error — ' + err.message;
+  }
+}
+
+async function parkLabelReopenAction() {
+  const mechId = _labelReopenMechId;
+  if (!mechId || mechId === 'M1') return;
+  closeLabelReopen();
+  if (mechId === 'M2') await parkM2Ask('dormant');
+  else if (mechId === 'M3') await parkM3Echo('dormant');
+  else if (mechId === 'M4') await parkM4Echo('dormant');
+  else if (mechId === 'M5') await parkM5Gap('dormant');
+  else if (mechId === 'M6') await parkM6Words('dormant');
+  else if (mechId === 'M7') await parkM7Limit('dormant');
 }
 
 // ── NAV / UTIL ──
@@ -4290,8 +5128,9 @@ function renderCellar() {
     const date = formatCellarDate(b.updated_at);
     const isDormant  = b.status === 'dormant';
     const isInFlight = b.status === 'in_flight';
+    const sagLevel = getSagLevel(b);
     const glow = bottleCardGlow(elements);
-    return `<div class="bottle-card${isDormant ? ' bottle-card--dormant' : ''}${isInFlight ? ' bottle-card--in-flight' : ''}" style="background:${glow}" onclick="openBottle('${b.id}')">
+    return `<div class="bottle-card${isDormant ? ' bottle-card--dormant' : ''}${isInFlight ? ' bottle-card--in-flight' : ''}${sagLevel > 0 ? ' bottle-card--sag-' + sagLevel : ''}" style="background:${glow}" onclick="openBottle('${b.id}')">
               <div class="bottle-card-line">${line}</div>
               <div class="bottle-card-lower">
                 <div class="bottle-card-dots">${dots}</div>
@@ -4323,9 +5162,10 @@ function getCellarWaiting(bottle) {
   }
 
   if (bottle.status === 'dormant') {
-    return bottle.brief?.kind === 'ask'  ? 'Waiting on you · a question to ask'
-         : bottle.brief?.kind === 'echo' ? 'Waiting on you · find another person'
-         :                                 'Waiting on you · find the person';
+    const target = bottle.brief?.kind === 'ask'  ? 'a question to ask'
+                 : bottle.brief?.kind === 'echo' ? 'find another person'
+                 :                                 'find the person';
+    return dormantIsLocked(bottle) ? `Parked · ${target}` : `Waiting on you · ${target}`;
   }
 
   if (s.thresholdDone && s.nextQuestionAt) {
@@ -4377,6 +5217,13 @@ function openBottle(id) {
   mi = record.mechIndex || 0;
   M = buildMechs();
 
+  if (record.status === 'rested') {
+    document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
+    renderElList();
+    showLabel();
+    return;
+  }
+
   if (record.status === 'dormant' || record.status === 'in_flight') {
     if (record.brief?.kind === 'ask')  return openDormantAsk(id, record);
     if (record.brief?.kind === 'echo') return openDormantEcho(id, record);
@@ -4386,6 +5233,10 @@ function openBottle(id) {
   if (mi >= M.length) {
     showLabel();
     return;
+  }
+
+  if (isBottleStalled(record) && !isStallAcknowledged(record)) {
+    return openStalledPanel(id, record);
   }
 
   document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
@@ -4399,8 +5250,56 @@ function openBottle(id) {
   });
 }
 
+// ── STALLED OBSERVATION ──
+function openStalledPanel(id, record) {
+  document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
+  renderElList();
+
+  document.getElementById('stalled-panel-body').innerHTML = `
+    <div class="mech-eyebrow" style="margin-bottom:.9rem">Stalled</div>
+    <div class="dormant-brief">
+      <div class="dormant-brief-text">This bottle has not moved.</div>
+    </div>
+    <div class="phase-row" style="margin-top:1.4rem">
+      <div></div>
+      <div style="display:flex;gap:.7rem">
+        <button class="btn-ghost" onclick="archiveBottleAction('${escHtml(id)}')">Archive</button>
+        <button class="btn" onclick="dismissStalledPanel('${escHtml(id)}')">Open the question →</button>
+      </div>
+    </div>`;
+
+  document.getElementById('question-panel').style.display = 'none';
+  document.getElementById('review-panel').style.display = 'none';
+  document.getElementById('dormant-panel').style.display = 'none';
+  document.getElementById('stalled-panel').style.display = 'block';
+  showScreen('phase1');
+}
+
+function dismissStalledPanel(id) {
+  markStallAcknowledged(id);
+  document.getElementById('stalled-panel').style.display = 'none';
+  document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
+  renderElList();
+  updateBottle();
+  showScreen('phase1');
+  renderMech();
+  document.getElementById('ans').addEventListener('input', () => {
+    clearTimeout(window._autosave);
+    window._autosave = setTimeout(saveState, 800);
+  });
+}
+
 // ── DORMANT RE-ENTRY ──
 async function openDormantFind(id, record) {
+  if (dormantIsLocked(record)) {
+    document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
+    renderElList();
+    const lockedBrief = record.brief?.question || record.brief?.text
+      ? record.brief
+      : { question: 'Find the first real person this spark draws from.', kind: 'find', target: record.brief?.target || null };
+    return renderDormantLocked('Parked · find the person', renderBriefHTML(lockedBrief, 'find', ''), record.nextQuestionAt);
+  }
+
   const brief = record.brief || {};
   const pending = brief.pending && !brief.question && !brief.text;
 
@@ -4469,18 +5368,12 @@ async function submitDormantFind(id) {
   if (workerUrl) {
     if (btn) { btn.disabled = true; btn.textContent = 'Reading person...'; }
     try {
-      const res = await fetch(workerUrl + '/m1', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          spark_summary:  getSparkSummary(),
-          person_name:    name,
-          relationship:   rel,
-          maturity_class: S.maturity
-        })
+      const data = await workerFetch('/m1', {
+        spark_summary:  getSparkSummary(),
+        person_name:    name,
+        relationship:   rel,
+        maturity_class: S.maturity
       });
-      const data = await res.json();
-      if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
       const grapeState = normalizeGrapeState(data.grape?.state || 'turbid');
       if (grapeState === 'turbid') {
         if (errEl) {
@@ -4510,6 +5403,15 @@ async function submitDormantFind(id) {
 }
 
 async function openDormantAsk(id, record) {
+  if (dormantIsLocked(record)) {
+    document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
+    renderElList();
+    const lockedBrief = record.brief?.question || record.brief?.text
+      ? record.brief
+      : { question: S.m2_problem?.question || 'Go ask the person directly. Walk them through the last time this happened.', kind: 'ask', setup: null, target: null };
+    return renderDormantLocked('Parked · a question to ask', renderBriefHTML(lockedBrief, 'ask', S.grape_name || 'the person you named'), record.nextQuestionAt);
+  }
+
   const brief = record.brief || {};
 
   if (brief.pending && !brief.question && !brief.text && v6GetWorkerUrl()) {
@@ -4575,6 +5477,17 @@ function submitDormantAsk(id) {
 }
 
 async function openDormantEcho(id, record) {
+  if (dormantIsLocked(record)) {
+    document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
+    renderElList();
+    const problemLocked = S.m2_confirmed_problem || 'this problem';
+    const grapeNameLocked = S.grape_name || 'the person you named';
+    const lockedBrief = record.brief?.question || record.brief?.text
+      ? record.brief
+      : { question: `Find someone who hits ${problemLocked} and is not ${grapeNameLocked}.`, kind: 'echo', setup: null, target: record.brief?.target || null };
+    return renderDormantLocked('Parked · find another person', renderBriefHTML(lockedBrief, 'echo', grapeNameLocked), record.nextQuestionAt);
+  }
+
   const brief = record.brief || {};
 
   if (brief.pending && !brief.question && !brief.text && v6GetWorkerUrl()) {
@@ -4719,13 +5632,7 @@ async function v6RunM0(payload, statusText, opts) {
   }
 
   try {
-    const res = await fetch(workerUrl + '/m0', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-    if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
+    const data = await workerFetch('/m0', payload);
     if (opts.rebottled) data._rebottled = true;
     window._v6M0.data = data;
     if (status) status.textContent = '';
@@ -4940,7 +5847,11 @@ async function v6BottleThis() {
   const followupAns = document.getElementById('m0-followup-ans');
   const followupAnswer = followupAns ? followupAns.value.trim() : '';
 
-  if (window._v6M0.state === 'unbottleable' && !followupAnswer) return;
+  if (window._v6M0.state === 'unbottleable' && !followupAnswer) {
+    const status = document.getElementById('v6-bottle-status');
+    if (status) status.textContent = 'Answer the question above before re-bottling.';
+    return;
+  }
 
   if (window._v6M0.needsFollowup && followupAnswer) {
     await v6RebottleFollowup();
@@ -4997,8 +5908,11 @@ function v6Rewrite() {
     inp.setSelectionRange(inp.value.length, inp.value.length);
   }
 
-  document.getElementById('m0-result').style.display = 'none';
-  document.getElementById('m0-result').classList.remove('m0-result-sealing');
+  const m0Result = document.getElementById('m0-result');
+  if (m0Result) {
+    m0Result.style.display = 'none';
+    m0Result.classList.remove('m0-result-sealing');
+  }
   const content = document.getElementById('wm-content');
   if (content) content.classList.remove('m0-has-result', 'm0-revealing');
   const intakeWm = document.getElementById('intake-wm');
