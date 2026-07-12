@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Corked Runner — chain test harness</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, Segoe UI, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 16px 20px 80px;
+    background: #fafafa;
+    color: #1a1a1a;
+  }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  h2 { font-size: 14px; margin: 22px 0 8px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+  .sub { color: #666; font-size: 12px; margin-bottom: 16px; }
+  label { display:block; font-size: 12px; font-weight: 600; margin: 10px 0 3px; }
+  input[type=text], textarea, select {
+    width: 100%; font-family: inherit; font-size: 13px; padding: 6px 8px;
+    border: 1px solid #bbb; border-radius: 4px; background:#fff; color:#111;
+  }
+  textarea { resize: vertical; }
+  .row2 { display:flex; gap: 12px; }
+  .row2 > div { flex: 1; }
+  button {
+    font-family: inherit; font-size: 12.5px; padding: 7px 12px; border-radius: 4px;
+    border: 1px solid #888; background:#fff; cursor:pointer; margin: 2px 6px 2px 0;
+  }
+  button.primary { background:#2a4; color:#fff; border-color:#193; font-weight:600; }
+  button.ghost { background:#fff; }
+  button:disabled { opacity:.5; cursor:default; }
+  button.run-btn { font-size: 14px; padding: 10px 18px; }
+
+  #tracker {
+    position: sticky; top: 0; z-index: 10;
+    display:flex; gap:8px; flex-wrap:wrap;
+    background:#fff; border:1px solid #ccc; border-radius:6px;
+    padding:10px; margin: 10px 0 18px;
+  }
+  .el-cell {
+    flex: 1 1 140px; min-width:140px; border-radius:5px; padding:8px 10px;
+    border:1px solid #ccc; background:#f2f2f2;
+  }
+  .el-name { font-weight:700; font-size:12.5px; }
+  .el-state { text-transform:uppercase; font-size:11px; font-weight:700; letter-spacing:.03em; margin-top:2px; }
+  .el-history { font-size:10.5px; color:#555; margin-top:4px; word-break:break-word; }
+  .el-source { font-size:10px; color:#777; margin-top:2px; }
+  .el-warn { margin-top:4px; font-size:11px; font-weight:800; color:#fff; background:#c00; padding:2px 5px; border-radius:3px; display:inline-block; }
+  .state-inert    { background:#eee; }
+  .state-turbid   { background:#fde3e3; border-color:#e28c8c; }
+  .state-clearing { background:#fff3cf; border-color:#e2c26e; }
+  .state-settled  { background:#e2f6e6; border-color:#7fc794; }
+  .el-regressed   { background:#ffb3b3 !important; border:2px solid #b00 !important; animation: flash 1s ease-in-out 2; }
+  @keyframes flash { 0%,100% { box-shadow:none; } 50% { box-shadow:0 0 0 4px rgba(200,0,0,.35); } }
+
+  .logcard { border:1px solid #ccc; border-radius:6px; padding:10px 12px; margin-bottom:10px; background:#fff; }
+  .logcard-head { font-weight:700; font-size:12px; color:#333; }
+  .kind-park .logcard-head, .kind-in_flight .logcard-head { color:#946200; }
+  .kind-reopen .logcard-head { color:#7a2e3c; }
+  .kind-swirl .logcard-head { color:#2a5a8a; }
+  .logcard-summary { font-size:12.5px; margin: 4px 0 6px; color:#222; }
+  details.jsonblock { margin-top:4px; }
+  details.jsonblock summary { cursor:pointer; font-size:11.5px; color:#555; }
+  details.jsonblock pre {
+    background:#f4f4f4; border:1px solid #ddd; border-radius:4px; padding:8px;
+    font-size:11px; overflow-x:auto; white-space:pre-wrap; word-break:break-word;
+  }
+
+  .action-card { border:2px solid #345; border-radius:6px; padding:12px 14px; background:#eef4fb; margin-bottom:14px; }
+  .action-card.swirl { border-color:#2a5a8a; background:#eaf1fb; }
+  .action-title { font-weight:700; font-size:13px; margin-bottom:6px; }
+  .action-question { font-size:13px; font-style:italic; margin-bottom:8px; color:#223; }
+  .answer-ta { margin-bottom:8px; }
+  .btn-row { margin-top:4px; }
+  .words-toggle { margin-bottom:8px; }
+  .toggle-btn { background:#fff; }
+  .toggle-btn.selected { background:#345; color:#fff; border-color:#123; }
+  .halt-msg { border:2px solid #b00; background:#fde3e3; border-radius:6px; padding:12px 14px; font-weight:700; }
+  .done-msg { border:2px solid #193; background:#e2f6e6; border-radius:6px; padding:12px 14px; font-weight:700; }
+
+  .reopen-panel { margin-top:12px; padding-top:10px; border-top:1px dashed #99a; }
+  .reopen-title { font-weight:700; font-size:12px; margin-bottom:6px; }
+  .reopen-select { margin-bottom:6px; }
+  .reopen-question { font-size:12.5px; font-style:italic; margin:6px 0; color:#223; }
+
+  #report-preview { height: 160px; font-size:11px; font-family: monospace; }
+  #copy-status { font-size:12px; color:#193; margin-left:8px; }
+</style>
+</head>
+<body>
+
+<h1>Corked Runner</h1>
+<div class="sub">Single-spark chain harness, separate from corked_v6.html. Calls the deployed worker directly, runs one spark end to end, and produces one copy-pasteable report.</div>
+
+<div id="tracker"></div>
+
+<h2>Run configuration</h2>
+<label>Worker URL</label>
+<input type="text" id="worker-url" value="https://corked-m1-proxy.kneebonewebdesign.workers.dev">
+
+<label>Raw spark</label>
+<textarea id="raw-spark" rows="3" placeholder="e.g. an app for freelancers to chase invoices without feeling awkward about it"></textarea>
+
+<div class="row2">
+  <div>
+    <label>Maturity class</label>
+    <select id="maturity-select">
+      <option value="0">0 — Observed firsthand (extraction)</option>
+      <option value="1">1 — Talked to them, not observed (direction)</option>
+      <option value="2">2 — Self as grape</option>
+      <option value="3">3 — No person in mind yet (idea only)</option>
+    </select>
+  </div>
+  <div>
+    <label>Name <span style="font-weight:400;color:#777">(blank for class 3)</span></label>
+    <input type="text" id="grape-name" placeholder="e.g. Sarah">
+  </div>
+  <div>
+    <label>Relationship / self-instance <span style="font-weight:400;color:#777">(blank for class 3)</span></label>
+    <input type="text" id="grape-rel" placeholder="e.g. my sister, who runs a bakery">
+  </div>
+</div>
+
+<div style="margin-top:14px">
+  <button class="primary run-btn" id="run-btn">Run →</button>
+</div>
+
+<h2>Run</h2>
+<div id="log-list"></div>
+<div id="action-area"></div>
+
+<h2>Report</h2>
+<div>
+  <button id="copy-report-btn">Copy report</button>
+  <span id="copy-status"></span>
+</div>
+<textarea id="report-preview" readonly style="margin-top:8px"></textarea>
+
+<script>
+// ── ELEMENT MODEL ──────────────────────────────────────────────────────────
+const EL_META = {
+  grape:   { name:'Grape',   desc:'Named person + real relationship' },
+  tell:    { name:'Tell',    desc:'Filmable behaviour' },
+  vintage: { name:'Vintage', desc:'Specific past moment' },
+  gap:     { name:'Gap',     desc:'Existing fix + failure point' },
+  echo:    { name:'Echo',    desc:'Third-party confirmation' },
+  limit:   { name:'Limit',   desc:'Bounded exclusion + reason' }
+};
+const EL_KEYS = Object.keys(EL_META);
+const RANK = { inert:0, turbid:1, clearing:2, settled:3 };
+const MECH_ORDER = ['M1','M2','M3','M4','M5','M6','M7'];
+
+const MECH_PROMPTS = {
+  M2: () => R.m2ProblemQuestion || 'Describe a specific moment when the grape hit this problem. What did they actually do?',
+  M3: () => `Who else, not ${R.grapeName || 'the grape'}, has hit this problem? What did they actually do about it?`,
+  M4: () => `Find a different kind of person who also hits this problem. Not ${R.grapeName || 'the grape'}, and not whoever was named in M3. What did they do?`,
+  M5: () => `What does ${R.grapeName || 'the grape'} currently use to deal with this, and exactly where does it fall short?`,
+  M6: () => `What did ${R.grapeName || 'the grape'} actually say about this, in their own words? Was it heard directly or reconstructed?`,
+  M7: () => `Who looks like they should have this problem but does not? Why not?`
+};
+
+// ── RUN STATE ────────────────────────────────────────────────────────────
+const R = {
+  workerUrl:'', raw_spark:'', maturity:0, grapeName:'', grapeRel:'',
+  m0:null, userLine:'', sparkParse:null, domain:'',
+  gapInPlay:false, confirmedProblem:'', m2ProblemQuestion:'', m2ProblemHint:'',
+  m6WordsSource:null,
+  elements:{}, answers:{}, log:[], anomalies:[], halted:false
+};
+function resetRunState() {
+  Object.assign(R, {
+    m0:null, userLine:'', sparkParse:null, domain:'',
+    gapInPlay:false, confirmedProblem:'', m2ProblemQuestion:'', m2ProblemHint:'',
+    m6WordsSource:null, answers:{}, log:[], anomalies:[], halted:false
+  });
+  EL_KEYS.forEach(k => R.elements[k] = { state:'inert', history:['inert'], mech:null, regressed:false });
+}
+resetRunState();
+
+// ── DOM HELPER ───────────────────────────────────────────────────────────
+function h(tag, props, children) {
+  const el = document.createElement(tag);
+  props = props || {};
+  for (const k in props) {
+    const v = props[k];
+    if (k === 'class') el.className = v;
+    else if (k.indexOf('on') === 0 && typeof v === 'function') el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v);
+  }
+  (Array.isArray(children) ? children : (children == null ? [] : [children])).forEach(c => {
+    if (c == null) return;
+    el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+  });
+  return el;
+}
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── NETWORK ──────────────────────────────────────────────────────────────
+async function callWorker(path, body) {
+  const url = R.workerUrl + path;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 30000);
+  try {
+    const res = await fetch(url, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(body), signal: controller.signal
+    });
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch (e) { data = { error:'Non-JSON response from worker', raw:text }; }
+    return { ok: res.ok && !data.error, status: res.status, data };
+  } catch (err) {
+    const msg = err.name === 'AbortError' ? 'Request timed out (30s).' : ('Network error: ' + err.message);
+    return { ok:false, status:0, data:{ error: msg } };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// ── LOGGING / TRACKER RENDER ─────────────────────────────────────────────
+function jsonDetails(label, obj) {
+  const det = h('details', { class:'jsonblock' });
+  det.appendChild(h('summary', {}, label));
+  const pre = h('pre', {}, JSON.stringify(obj, null, 2));
+  det.appendChild(pre);
+  return det;
+}
+function logEntry(entry) {
+  entry.ts = new Date().toISOString();
+  R.log.push(entry);
+  const card = h('div', { class:'logcard kind-' + entry.kind });
+  card.appendChild(h('div', { class:'logcard-head' }, entry.kind.toUpperCase() + ' · ' + entry.mech + ' · ' + entry.endpoint));
+  card.appendChild(h('div', { class:'logcard-summary' }, entry.summary));
+  card.appendChild(jsonDetails('Request', entry.request));
+  card.appendChild(jsonDetails('Response', entry.response));
+  document.getElementById('log-list').appendChild(card);
+  refreshReportPreview();
+}
+function renderTracker() {
+  const wrap = document.getElementById('tracker');
+  wrap.innerHTML = '';
+  EL_KEYS.forEach(k => {
+    const rec = R.elements[k];
+    const cell = h('div', { class:'el-cell state-' + rec.state + (rec.regressed ? ' el-regressed' : '') });
+    cell.appendChild(h('div', { class:'el-name' }, EL_META[k].name));
+    cell.appendChild(h('div', { class:'el-state' }, rec.state));
+    cell.appendChild(h('div', { class:'el-history' }, rec.history.join(' → ')));
+    if (rec.mech) cell.appendChild(h('div', { class:'el-source' }, 'via ' + rec.mech));
+    if (rec.regressed) cell.appendChild(h('div', { class:'el-warn' }, '⚠ REGRESSED'));
+    wrap.appendChild(cell);
+  });
+}
+renderTracker();
+
+function updateElement(key, newState, mech) {
+  if (!newState) { R.anomalies.push(mech + ': no state returned for element "' + key + '"'); return; }
+  const rec = R.elements[key];
+  const prevRank = RANK[rec.state] != null ? RANK[rec.state] : 0;
+  const newRank = RANK[newState] != null ? RANK[newState] : 0;
+  if (newRank < prevRank) {
+    rec.regressed = true;
+    R.anomalies.push('⚠ ' + EL_META[key].name + ' REGRESSED: ' + rec.state + ' → ' + newState + ' (graded by ' + mech + ')');
+  }
+  rec.state = newState;
+  rec.history.push(newState);
+  rec.mech = mech;
+  renderTracker();
+}
+
+function checkCommon(mech, data, expectSubstitution) {
+  if (expectSubstitution === undefined) expectSubstitution = true;
+  if (expectSubstitution && typeof data.substitution_detected !== 'boolean') {
+    R.anomalies.push(mech + ': missing substitution_detected field');
+  }
+  if (data.swirl) {
+    const kindOk = ['ownership','reality'].indexOf(data.swirl.kind) > -1;
+    const qOk = typeof data.swirl.question === 'string' && data.swirl.question.trim().length > 0;
+    if (!kindOk || !qOk) R.anomalies.push(mech + ': malformed swirl object — ' + JSON.stringify(data.swirl));
+  }
+}
+
+function applyEvidenceBars(mech, data, barMap) {
+  if (!data || typeof data.state === 'undefined') R.anomalies.push(mech + ': missing top-level "state" field');
+  const changed = [];
+  for (const bar in barMap) {
+    const key = barMap[bar];
+    if (key === null) continue;
+    const barObj = data[bar];
+    if (!barObj || !barObj.state) { R.anomalies.push(mech + ': missing "' + bar + '" bar in response'); continue; }
+    const before = R.elements[key].state;
+    updateElement(key, barObj.state, mech);
+    if (before !== barObj.state) changed.push(EL_META[key].name);
+  }
+  checkCommon(mech, data);
+  return changed;
+}
+
+function applyMechResult(mech, data) {
+  if (mech === 'M1') {
+    updateElement('grape', data && data.grape ? data.grape.state : null, 'M1');
+    checkCommon('M1', data, false);
+    return ['Grape'];
+  }
+  if (mech === 'M2') {
+    if (!R.gapInPlay && ('gap' in data)) R.anomalies.push('M2: gap bar present in response despite gap_in_play=false');
+    if (R.gapInPlay && !('gap' in data)) R.anomalies.push('M2: gap bar missing despite gap_in_play=true');
+    return applyEvidenceBars('M2', data, { tell:'tell', vintage:'vintage', gap: R.gapInPlay ? 'gap' : null });
+  }
+  if (mech === 'M3') return applyEvidenceBars('M3', data, { echo:'echo', vintage:'vintage' });
+  if (mech === 'M4') {
+    const c = data.contrast;
+    const triOk = c && ['true','false','unclear'].indexOf(String(c.is_different_kind)) > -1;
+    const sdOk = c && ['same','different','unclear'].indexOf(String(c.same_or_different)) > -1;
+    if (!triOk || !sdOk) R.anomalies.push('M4: missing or malformed contrast object');
+    return applyEvidenceBars('M4', data, { echo:'echo', vintage:'vintage' });
+  }
+  if (mech === 'M5') return applyEvidenceBars('M5', data, { gap:'gap' });
+  if (mech === 'M6') {
+    if (R.maturity === 2 && ('echo' in data)) R.anomalies.push('M6: echo bar present despite self mode (maturity_class 2)');
+    if (R.maturity !== 2 && !('echo' in data)) R.anomalies.push('M6: echo bar missing despite non-self mode');
+    return applyEvidenceBars('M6', data, { tell:'tell', echo: R.maturity === 2 ? null : 'echo' });
+  }
+  if (mech === 'M7') return applyEvidenceBars('M7', data, { limit:'limit' });
+}
+
+function summarize(mech, data, changed) {
+  const state = data.state || data.outcome || (data.grape && data.grape.state) || '-';
+  const sub = ('substitution_detected' in data) ? data.substitution_detected : 'n/a';
+  const swirl = data.swirl ? 'yes' : 'no';
+  return 'state=' + state + ' · substitution_detected=' + sub + ' · swirl=' + swirl +
+    ' · changed=[' + ((changed || []).join(', ') || 'none') + ']';
+}
+
+function mechEndpoint(mech) {
+  return { M1:'/m1', M2:'/m2', M3:'/m3', M4:'/m4', M5:'/m5', M6:'/m6', M7:'/m7' }[mech];
+}
+function buildMechRequest(mech, answerText, opts) {
+  opts = opts || {};
+  switch (mech) {
+    case 'M1':
+      return { spark_summary: R.userLine, person_name: R.grapeName, relationship: answerText, maturity_class: R.maturity };
+    case 'M2':
+      return { user_line: R.userLine, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, confirmed_problem: R.confirmedProblem, gap_in_play: R.gapInPlay, user_answer: answerText };
+    case 'M3':
+      return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
+    case 'M4':
+      return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, prior_echo_context: (R.answers.M3 || '').slice(0,300), user_answer: answerText };
+    case 'M5':
+      return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
+    case 'M6':
+      return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, words_source: opts.wordsSourceOverride || R.m6WordsSource || 'reconstructed', user_answer: answerText };
+    case 'M7':
+      return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
+  }
+}
+
+// ── PLACEHOLDER ANSWERS ──────────────────────────────────────────────────
+function buildPlaceholderAnswer(mech) {
+  const g = R.grapeName || 'they';
+  switch (mech) {
+    case 'M2': return 'Last Tuesday, right before a deadline, ' + g + ' tried the usual approach and it broke down at the same point it always does. ' + g + ' gave up partway through and fell back to a plain spreadsheet, because the thing they normally use for this does not catch it in time.';
+    case 'M3': return 'Last month, my colleague Jordan mentioned he hits this same thing and just pays a freelancer to sort it out whenever it comes up.';
+    case 'M4': return 'A friend named Priya, who works in a completely different setup, said she keeps a manual backup log for it, though for her it shows up a little differently.';
+    case 'M5': return 'Right now ' + g + ' uses a plain spreadsheet template to track it, but it does not catch the problem until it is already too late.';
+    case 'M6': return '"I just want this part to be boring," ' + g + ' said, when we talked about it last week.';
+    case 'M7': return 'My uncle does the same kind of work but only ever takes retainer clients, so this never happens to him. He is paid whether the job happens or not.';
+    default: return '';
+  }
+}
+function buildM0FollowupPlaceholder(data) {
+  const sp = data.spark_parse || {};
+  const person = sp.implied_person || 'a specific person';
+  const problem = sp.suspected_problem || 'something concrete keeps going wrong for them';
+  return 'The person is ' + person + '. The problem: ' + problem + '.';
+}
+
+// ── FIELD BRIEF (park / in-flight / find) ────────────────────────────────
+const FIELD_PARK_CFG = {
+  M2: function() { return { mode:'ask', element: (R.gapInPlay && R.elements.gap.state !== 'settled') ? 'gap' : 'tell' }; },
+  M3: function() { return { mode:'echo', element:'echo' }; },
+  M4: function() { return { mode:'contrast', element:'echo' }; },
+  M5: function() { return { mode:'ask', element:'gap' }; },
+  M6: function() { return { mode:'words', element:'words' }; },
+  M7: function() { return { mode:'limit', element:'limit' }; }
+};
+async function doParkFieldCall(mech, kind) {
+  const cfg = FIELD_PARK_CFG[mech]();
+  const req = { mode:cfg.mode, user_line:R.userLine, spark_parse:R.sparkParse, maturity_class:R.maturity, missing:null, grape_name:R.grapeName, grape_relationship:R.grapeRel, confirmed_problem:R.confirmedProblem, element:cfg.element };
+  const res = await callWorker('/field', req);
+  logEntry({ mech:mech, endpoint:'/field', request:req, response:res.data, kind:kind,
+    summary: res.ok ? ('brief kind=' + (res.data.brief && res.data.brief.kind) + ' · setup="' + ((res.data.brief && res.data.brief.setup) || '').slice(0,60) + '" · question="' + ((res.data.brief && res.data.brief.question) || '').slice(0,80) + '"')
+                     : ('ERROR ' + res.status + ': ' + res.data.error) });
+  if (!res.ok) R.anomalies.push(mech + ' /field (' + kind + ') returned ' + res.status + ': ' + res.data.error);
+}
+async function doFindFieldCall() {
+  const req = { mode:'find', user_line:R.userLine, spark_parse:R.sparkParse, maturity_class:R.maturity, missing:'grape', grape_name:'', grape_relationship:'', confirmed_problem:'', element:null };
+  const res = await callWorker('/field', req);
+  logEntry({ mech:'M1', endpoint:'/field', request:req, response:res.data, kind:'park',
+    summary: res.ok ? ('brief kind=' + (res.data.brief && res.data.brief.kind) + ' · target="' + ((res.data.brief && res.data.brief.target) || '') + '" · question="' + ((res.data.brief && res.data.brief.question) || '').slice(0,80) + '"')
+                     : ('ERROR ' + res.status + ': ' + res.data.error) });
+  if (!res.ok) R.anomalies.push('M1 /field (find) returned ' + res.status + ': ' + res.data.error);
+}
+
+// ── REOPEN ────────────────────────────────────────────────────────────────
+function eligibleReopenKeys(mech) {
+  const curIdx = MECH_ORDER.indexOf(mech);
+  return EL_KEYS.filter(function(k) {
+    const rec = R.elements[k];
+    if (rec.state !== 'turbid' && rec.state !== 'clearing') return false;
+    if (!rec.mech) return false;
+    const srcIdx = MECH_ORDER.indexOf(rec.mech);
+    return srcIdx > -1 && srcIdx < curIdx;
+  });
+}
+function labelSourceQuestionFallback(mech) {
+  if (mech === 'M1') return 'How do you know ' + (R.grapeName || 'this person') + '? Describe the connection and what you have seen them do.';
+  if (mech === 'M2') return R.m2ProblemQuestion || 'Describe the specific moment again, in more filmable detail.';
+  const fallback = {
+    M3:'Who else, not the grape, has hit this and what did they actually do?',
+    M4:'Find a different kind of person who also hits this. What did they do?',
+    M5:'What do people currently use for this, and where exactly does it fail?',
+    M6:'What did they say, in their own words, and was it a real exchange?',
+    M7:'Who looks like they should have this problem but does not, and why not?'
+  };
+  return fallback[mech] || 'Answer again with more specific, concrete detail.';
+}
+async function reopenElement(key) {
+  const rec = R.elements[key];
+  const srcMech = rec.mech;
+  const priorAnswer = R.answers[srcMech] || '';
+  const amberCount = EL_KEYS.filter(function(k) { return R.elements[k].state === 'turbid' || R.elements[k].state === 'clearing'; }).length;
+  if (amberCount === 1) {
+    const req = { element:key, element_state:rec.state, source_mechanism:srcMech, prior_answer:priorAnswer, confirmed_problem:R.confirmedProblem, grape_name:R.grapeName, domain:R.domain };
+    const res = await callWorker('/resolve', req);
+    logEntry({ mech:srcMech, endpoint:'/resolve', request:req, response:res.data, kind:'reopen',
+      summary: res.ok ? ('sharper question: "' + res.data.question + '"') : ('ERROR ' + res.status + ': ' + res.data.error) });
+    if (!res.ok) { R.anomalies.push('/resolve for ' + key + ' returned ' + res.status + ': ' + res.data.error); return { srcMech:srcMech, question: labelSourceQuestionFallback(srcMech) }; }
+    return { srcMech:srcMech, question: res.data.question };
+  }
+  return { srcMech:srcMech, question: labelSourceQuestionFallback(srcMech) };
+}
+async function submitReopenAnswer(key, srcMech, answerText) {
+  if (!answerText) return;
+  R.answers[srcMech] = answerText;
+  const opts = (srcMech === 'M6') ? { wordsSourceOverride:'reconstructed' } : {};
+  const req = buildMechRequest(srcMech, answerText, opts);
+  const res = await callWorker(mechEndpoint(srcMech), req);
+  if (!res.ok) {
+    logEntry({ mech:srcMech, endpoint:mechEndpoint(srcMech), request:req, response:res.data, kind:'reopen', summary:'ERROR ' + res.status + ': ' + res.data.error });
+    R.anomalies.push('reopen re-answer ' + srcMech + ' returned ' + res.status + ': ' + res.data.error);
+    return;
+  }
+  const changed = applyMechResult(srcMech, res.data);
+  logEntry({ mech:srcMech, endpoint:mechEndpoint(srcMech), request:req, response:res.data, kind:'reopen', summary: summarize(srcMech, res.data, changed) });
+}
+function buildReopenPanel(mech) {
+  const eligible = eligibleReopenKeys(mech);
+  if (!eligible.length) return null;
+  const wrap = h('div', { class:'reopen-panel' });
+  wrap.appendChild(h('div', { class:'reopen-title' }, 'Reopen an earlier element (test path)'));
+  const select = h('select', { class:'reopen-select' });
+  eligible.forEach(function(k) {
+    select.appendChild(h('option', { value:k }, EL_META[k].name + ' — currently ' + R.elements[k].state + ', via ' + R.elements[k].mech));
+  });
+  wrap.appendChild(select);
+
+  const fetchBtn = h('button', { class:'ghost', type:'button' }, 'Get sharper question');
+  const qDisplay = h('div', { class:'reopen-question' });
+  const reopenTa = h('textarea', { class:'answer-ta', rows:'3', style:'display:none' });
+  const submitBtn = h('button', { class:'ghost', type:'button', style:'display:none' }, 'Submit reopen answer');
+  let currentSrcMech = null;
+
+  fetchBtn.addEventListener('click', async function() {
+    fetchBtn.disabled = true;
+    const key = select.value;
+    const result = await reopenElement(key);
+    currentSrcMech = result.srcMech;
+    qDisplay.textContent = result.question;
+    reopenTa.style.display = '';
+    reopenTa.value = buildPlaceholderAnswer(result.srcMech) || 'Write a sharper answer here.';
+    submitBtn.style.display = '';
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit reopen answer';
+    fetchBtn.disabled = false;
+  });
+  submitBtn.addEventListener('click', async function() {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Reading…';
+    const key = select.value;
+    await submitReopenAnswer(key, currentSrcMech, reopenTa.value.trim());
+    submitBtn.textContent = 'Submitted ✓';
+  });
+
+  wrap.appendChild(fetchBtn);
+  wrap.appendChild(qDisplay);
+  wrap.appendChild(reopenTa);
+  wrap.appendChild(submitBtn);
+  return wrap;
+}
+
+// ── INTERACTIVE PROMPTS (return a Promise resolved on user action) ──────
+function presentAnswerUI(mech, placeholder, opts) {
+  opts = opts || {};
+  return new Promise(function(resolve) {
+    const area = document.getElementById('action-area');
+    area.innerHTML = '';
+    const box = h('div', { class:'action-card' });
+    box.appendChild(h('div', { class:'action-title' }, mech + ' — answer needed'));
+    if (opts.questionText) box.appendChild(h('div', { class:'action-question' }, opts.questionText));
+
+    if (opts.wordsToggle) {
+      const twrap = h('div', { class:'words-toggle' });
+      const realBtn = h('button', { class:'toggle-btn selected', type:'button' }, 'Real (heard it directly)');
+      const reconBtn = h('button', { class:'toggle-btn', type:'button' }, 'Reconstructed');
+      R.m6WordsSource = 'real';
+      realBtn.addEventListener('click', function() { R.m6WordsSource='real'; realBtn.classList.add('selected'); reconBtn.classList.remove('selected'); });
+      reconBtn.addEventListener('click', function() { R.m6WordsSource='reconstructed'; reconBtn.classList.add('selected'); realBtn.classList.remove('selected'); });
+      twrap.appendChild(realBtn); twrap.appendChild(reconBtn);
+      box.appendChild(twrap);
+    }
+
+    const ta = h('textarea', { class:'answer-ta', rows:'4' });
+    ta.value = placeholder;
+    box.appendChild(ta);
+
+    const btnRow = h('div', { class:'btn-row' });
+    const continueBtn = h('button', { class:'primary', type:'button' }, 'Use this / edit and continue →');
+    continueBtn.addEventListener('click', function() {
+      area.innerHTML = '';
+      resolve(ta.value.trim() || placeholder);
+    });
+    btnRow.appendChild(continueBtn);
+
+    if (opts.allowSideActions) {
+      const parkBtn = h('button', { class:'ghost', type:'button' }, 'Park (dormant)');
+      parkBtn.addEventListener('click', async function() {
+        parkBtn.disabled = true;
+        await doParkFieldCall(mech, 'park');
+        parkBtn.disabled = false;
+      });
+      const flightBtn = h('button', { class:'ghost', type:'button' }, 'Mark in-flight then resolve');
+      flightBtn.addEventListener('click', async function() {
+        flightBtn.disabled = true;
+        await doParkFieldCall(mech, 'in_flight');
+        area.innerHTML = '';
+        resolve(ta.value.trim() || placeholder);
+      });
+      btnRow.appendChild(parkBtn);
+      btnRow.appendChild(flightBtn);
+    }
+    box.appendChild(btnRow);
+
+    if (opts.allowSideActions) {
+      const reopenPanel = buildReopenPanel(mech);
+      if (reopenPanel) box.appendChild(reopenPanel);
+    }
+
+    area.appendChild(box);
+  });
+}
+function presentFollowupUI(question, placeholder) {
+  return new Promise(function(resolve) {
+    const area = document.getElementById('action-area');
+    area.innerHTML = '';
+    const box = h('div', { class:'action-card' });
+    box.appendChild(h('div', { class:'action-title' }, 'M0 — followup needed'));
+    box.appendChild(h('div', { class:'action-question' }, question || '(no question returned)'));
+    const ta = h('textarea', { class:'answer-ta', rows:'3' });
+    ta.value = placeholder;
+    box.appendChild(ta);
+    const btn = h('button', { class:'primary', type:'button' }, 'Use this / edit and continue →');
+    btn.addEventListener('click', function() { area.innerHTML=''; resolve(ta.value.trim() || placeholder); });
+    box.appendChild(btn);
+    area.appendChild(box);
+  });
+}
+function presentConfirmUI(recoveredProblem) {
+  return new Promise(function(resolve) {
+    const area = document.getElementById('action-area');
+    area.innerHTML = '';
+    const box = h('div', { class:'action-card' });
+    box.appendChild(h('div', { class:'action-title' }, 'M2 Phase A — confirm recovered problem'));
+    const ta = h('textarea', { class:'answer-ta', rows:'2' });
+    ta.value = recoveredProblem || '';
+    box.appendChild(ta);
+    const btn = h('button', { class:'primary', type:'button' }, "That's it, continue →");
+    btn.addEventListener('click', function() { area.innerHTML=''; resolve(ta.value.trim() || recoveredProblem); });
+    box.appendChild(btn);
+    area.appendChild(box);
+  });
+}
+function presentSwirlUI(mech, question) {
+  return new Promise(function(resolve) {
+    const area = document.getElementById('action-area');
+    area.innerHTML = '';
+    const box = h('div', { class:'action-card swirl' });
+    box.appendChild(h('div', { class:'action-title' }, mech + ' — swirl question (optional re-grade)'));
+    box.appendChild(h('div', { class:'action-question' }, question));
+    const ta = h('textarea', { class:'answer-ta', rows:'2', placeholder:'Answer to combine with the original and resubmit...' });
+    box.appendChild(ta);
+    const btnRow = h('div', { class:'btn-row' });
+    const submitBtn = h('button', { class:'primary', type:'button' }, 'Submit swirl & re-grade →');
+    submitBtn.addEventListener('click', function() { area.innerHTML=''; resolve(ta.value.trim()); });
+    const skipBtn = h('button', { class:'ghost', type:'button' }, 'Skip swirl');
+    skipBtn.addEventListener('click', function() { area.innerHTML=''; resolve(null); });
+    btnRow.appendChild(submitBtn); btnRow.appendChild(skipBtn);
+    box.appendChild(btnRow);
+    area.appendChild(box);
+  });
+}
+
+function haltChain(msg) {
+  R.halted = true;
+  const area = document.getElementById('action-area');
+  area.innerHTML = '';
+  area.appendChild(h('div', { class:'halt-msg' }, '⛔ Chain halted: ' + msg));
+  setRunButtonEnabled(true);
+  refreshReportPreview();
+}
+
+// ── MECHANISM RUNNERS ────────────────────────────────────────────────────
+async function runM0Main() {
+  const req = { raw_spark: R.raw_spark };
+  const res = await callWorker('/m0', req);
+  if (!res.ok) {
+    logEntry({ mech:'M0', endpoint:'/m0', request:req, response:res.data, kind:'main', summary:'ERROR ' + res.status + ': ' + res.data.error });
+    R.anomalies.push('M0 returned ' + res.status + ': ' + res.data.error);
+    haltChain('M0 request failed.');
+    return null;
+  }
+  const data = res.data;
+  logEntry({ mech:'M0', endpoint:'/m0', request:req, response:data, kind:'main',
+    summary: 'digestibility=' + (data.digestibility && data.digestibility.state) + ' · scope_in_scope=' + (data.scope ? data.scope.in_scope !== false : true) + ' · followup_needed=' + !!(data.followup && data.followup.needed) });
+
+  if (data.scope && data.scope.in_scope === false) {
+    R.anomalies.push('M0: spark flagged out_of_scope (non_software). Downstream mechanisms were not exercised.');
+    haltChain('Out of scope (non-software spark). This is expected worker behaviour, not a bug.');
+    return null;
+  }
+
+  R.m0 = data;
+  R.userLine = data.user_line_candidate || R.raw_spark;
+  R.sparkParse = data.spark_parse || null;
+  R.domain = (data.spark_parse && data.spark_parse.domain) || '';
+
+  if (data.followup && data.followup.needed) {
+    const placeholder = buildM0FollowupPlaceholder(data);
+    const followupAnswer = await presentFollowupUI(data.followup.question, placeholder);
+    const req2 = { raw_spark: R.raw_spark, followup_question: data.followup.question || '', followup_answer: followupAnswer, prior_digestibility: data.digestibility.state };
+    const res2 = await callWorker('/m0', req2);
+    if (!res2.ok) {
+      logEntry({ mech:'M0', endpoint:'/m0 (followup)', request:req2, response:res2.data, kind:'main', summary:'ERROR ' + res2.status + ': ' + res2.data.error });
+      R.anomalies.push('M0 followup returned ' + res2.status + ': ' + res2.data.error);
+      haltChain('M0 followup request failed.');
+      return null;
+    }
+    logEntry({ mech:'M0', endpoint:'/m0 (followup)', request:req2, response:res2.data, kind:'main', summary:'[re-bottled] digestibility=' + (res2.data.digestibility && res2.data.digestibility.state) });
+    if (res2.data.scope && res2.data.scope.in_scope === false) {
+      R.anomalies.push('M0: flagged out_of_scope after followup.');
+      haltChain('Out of scope after followup.');
+      return null;
+    }
+    R.m0 = res2.data;
+    R.userLine = res2.data.user_line_candidate || R.userLine;
+    R.sparkParse = res2.data.spark_parse || R.sparkParse;
+    R.domain = (res2.data.spark_parse && res2.data.spark_parse.domain) || R.domain;
+    if (res2.data.digestibility && res2.data.digestibility.state === 'unbottleable') {
+      R.anomalies.push('M0 remained unbottleable after followup — the real client would keep blocking here.');
+      haltChain('M0 remained unbottleable after the followup round. The real client blocks sealing in this state, so the chain stopped to match.');
+      return null;
+    }
+  }
+  return R.m0;
+}
+
+async function runM1Main() {
+  const req = { spark_summary: R.userLine, person_name: R.grapeName, relationship: R.grapeRel, maturity_class: R.maturity };
+  const res = await callWorker('/m1', req);
+  if (!res.ok) {
+    logEntry({ mech:'M1', endpoint:'/m1', request:req, response:res.data, kind:'main', summary:'ERROR ' + res.status + ': ' + res.data.error });
+    R.anomalies.push('M1 returned ' + res.status + ': ' + res.data.error);
+    haltChain('M1 request failed.');
+    return null;
+  }
+  R.answers.M1 = R.grapeRel;
+  const changed = applyMechResult('M1', res.data);
+  logEntry({ mech:'M1', endpoint:'/m1', request:req, response:res.data, kind:'main', summary: summarize('M1', res.data, changed) });
+  return res.data;
+}
+
+async function runM2PhaseA() {
+  const req = { user_line: R.userLine, spark_parse: R.sparkParse, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity };
+  const res = await callWorker('/m2', req);
+  if (!res.ok) {
+    logEntry({ mech:'M2', endpoint:'/m2 (phase A)', request:req, response:res.data, kind:'main', summary:'ERROR ' + res.status + ': ' + res.data.error });
+    R.anomalies.push('M2 phase A returned ' + res.status + ': ' + res.data.error);
+    haltChain('M2 Phase A request failed.');
+    return null;
+  }
+  const data = res.data;
+  logEntry({ mech:'M2', endpoint:'/m2 (phase A)', request:req, response:data, kind:'main',
+    summary: 'recovered_problem="' + data.recovered_problem + '" · needs_confirmation=' + data.needs_confirmation + ' · gap_in_play=' + data.gap_in_play });
+  R.gapInPlay = !!data.gap_in_play;
+  R.m2ProblemQuestion = data.question || '';
+  R.m2ProblemHint = data.hint || '';
+  if (data.needs_confirmation) {
+    R.confirmedProblem = await presentConfirmUI(data.recovered_problem);
+  } else {
+    R.confirmedProblem = data.recovered_problem;
+  }
+  return data;
+}
+
+async function runMainStep(mech, placeholder, opts) {
+  opts = opts || {};
+  const answer = await presentAnswerUI(mech, placeholder, opts);
+  R.answers[mech] = answer;
+  const req = buildMechRequest(mech, answer);
+  const res = await callWorker(mechEndpoint(mech), req);
+  if (!res.ok) {
+    logEntry({ mech:mech, endpoint:mechEndpoint(mech), request:req, response:res.data, kind:'main', summary:'ERROR ' + res.status + ': ' + res.data.error });
+    R.anomalies.push(mech + ' ' + mechEndpoint(mech) + ' returned ' + res.status + ': ' + res.data.error);
+    haltChain(mech + ' request failed.');
+    return null;
+  }
+  const data = res.data;
+  const changed = applyMechResult(mech, data);
+  logEntry({ mech:mech, endpoint:mechEndpoint(mech), request:req, response:data, kind:'main', summary: summarize(mech, data, changed) });
+
+  if (data.swirl && data.state && data.state !== 'settled') {
+    const swirlAnswer = await presentSwirlUI(mech, data.swirl.question);
+    if (swirlAnswer) {
+      const combined = (answer + ' ' + swirlAnswer).trim();
+      R.answers[mech] = combined;
+      const req2 = buildMechRequest(mech, combined);
+      const res2 = await callWorker(mechEndpoint(mech), req2);
+      if (res2.ok) {
+        const changed2 = applyMechResult(mech, res2.data);
+        logEntry({ mech:mech, endpoint:mechEndpoint(mech), request:req2, response:res2.data, kind:'swirl', summary: summarize(mech, res2.data, changed2) });
+      } else {
+        logEntry({ mech:mech, endpoint:mechEndpoint(mech), request:req2, response:res2.data, kind:'swirl', summary:'ERROR ' + res2.status + ': ' + res2.data.error });
+        R.anomalies.push(mech + ' swirl resubmit returned ' + res2.status + ': ' + res2.data.error);
+      }
+    }
+  }
+  return data;
+}
+
+// ── CHAIN ORCHESTRATOR ───────────────────────────────────────────────────
+function setRunButtonEnabled(enabled) {
+  const btn = document.getElementById('run-btn');
+  btn.disabled = !enabled;
+  btn.textContent = enabled ? 'Run →' : 'Running…';
+}
+
+async function runChain() {
+  document.getElementById('log-list').innerHTML = '';
+  document.getElementById('action-area').innerHTML = '';
+  resetRunState();
+  renderTracker();
+  refreshReportPreview();
+  setRunButtonEnabled(false);
+
+  R.workerUrl = document.getElementById('worker-url').value.trim().replace(/\/$/,'');
+  R.raw_spark = document.getElementById('raw-spark').value.trim();
+  R.maturity = parseInt(document.getElementById('maturity-select').value, 10);
+  R.grapeName = document.getElementById('grape-name').value.trim();
+  R.grapeRel = document.getElementById('grape-rel').value.trim();
+
+  if (!R.workerUrl) { haltChain('Worker URL is required.'); return; }
+  if (!R.raw_spark) { haltChain('Raw spark is required.'); return; }
+  if (R.maturity !== 3 && (!R.grapeName || !R.grapeRel)) { haltChain('Name and relationship are required unless maturity class is 3.'); return; }
+
+  try {
+    const m0data = await runM0Main();
+    if (!m0data || R.halted) return;
+
+    if (R.maturity === 3) {
+      await doFindFieldCall();
+      haltChain('Maturity class 3 (no person yet): chain stops after M0, mirroring the real client which routes straight to a "find a person" park screen. Field brief logged above.');
+      return;
+    }
+
+    const m1data = await runM1Main();
+    if (!m1data || R.halted) return;
+
+    const phaseA = await runM2PhaseA();
+    if (!phaseA || R.halted) return;
+
+    await runMainStep('M2', buildPlaceholderAnswer('M2'), { allowSideActions:true, questionText: MECH_PROMPTS.M2() });
+    if (R.halted) return;
+    await runMainStep('M3', buildPlaceholderAnswer('M3'), { allowSideActions:true, questionText: MECH_PROMPTS.M3() });
+    if (R.halted) return;
+    await runMainStep('M4', buildPlaceholderAnswer('M4'), { allowSideActions:true, questionText: MECH_PROMPTS.M4() });
+    if (R.halted) return;
+    await runMainStep('M5', buildPlaceholderAnswer('M5'), { allowSideActions:true, questionText: MECH_PROMPTS.M5() });
+    if (R.halted) return;
+    await runMainStep('M6', buildPlaceholderAnswer('M6'), { allowSideActions:true, questionText: MECH_PROMPTS.M6(), wordsToggle:true });
+    if (R.halted) return;
+    await runMainStep('M7', buildPlaceholderAnswer('M7'), { allowSideActions:true, questionText: MECH_PROMPTS.M7() });
+    if (R.halted) return;
+
+    const area = document.getElementById('action-area');
+    area.innerHTML = '';
+    area.appendChild(h('div', { class:'done-msg' }, '✅ Chain complete. Use "Copy report" below.'));
+  } catch (err) {
+    haltChain('Unexpected error: ' + ((err && err.message) || err));
+  } finally {
+    setRunButtonEnabled(true);
+    refreshReportPreview();
+  }
+}
+document.getElementById('run-btn').addEventListener('click', runChain);
+
+// ── REPORT ────────────────────────────────────────────────────────────────
+function buildReport() {
+  const lines = [];
+  lines.push('# Corked Runner Report');
+  lines.push('');
+  lines.push('Generated: ' + new Date().toISOString());
+  lines.push('Worker: ' + R.workerUrl);
+  lines.push('');
+  lines.push('## Raw Spark');
+  lines.push('```');
+  lines.push(R.raw_spark);
+  lines.push('```');
+  lines.push('');
+  lines.push('Maturity class: ' + R.maturity);
+  lines.push('Grape: ' + (R.grapeName || '(none)') + ' — ' + (R.grapeRel || '(none)'));
+  lines.push('');
+  lines.push('## Element Tracker (final state)');
+  EL_KEYS.forEach(function(k) {
+    const rec = R.elements[k];
+    lines.push('- **' + EL_META[k].name + '**: ' + rec.state + (rec.regressed ? ' ⚠ REGRESSED' : '') +
+      ' — history: ' + rec.history.join(' → ') + (rec.mech ? (' (last graded by ' + rec.mech + ')') : ''));
+  });
+  lines.push('');
+  lines.push('## Run Log');
+  R.log.forEach(function(e, i) {
+    lines.push('');
+    lines.push('### ' + (i+1) + '. [' + e.kind + '] ' + e.mech + ' · ' + e.endpoint);
+    lines.push('Summary: ' + e.summary);
+    lines.push('Request:');
+    lines.push('```json');
+    lines.push(JSON.stringify(e.request, null, 2));
+    lines.push('```');
+    lines.push('Response:');
+    lines.push('```json');
+    lines.push(JSON.stringify(e.response, null, 2));
+    lines.push('```');
+  });
+  lines.push('');
+  lines.push('## Anomalies');
+  lines.push(R.anomalies.length ? R.anomalies.map(function(a){ return '- ⚠ ' + a; }).join('\n') : '- none detected');
+  return lines.join('\n');
+}
+function refreshReportPreview() {
+  const ta = document.getElementById('report-preview');
+  if (ta) ta.value = buildReport();
+}
+async function copyReport() {
+  const text = buildReport();
+  const status = document.getElementById('copy-status');
+  try {
+    await navigator.clipboard.writeText(text);
+    if (status) { status.textContent = 'Copied.'; setTimeout(function(){ status.textContent=''; }, 2000); }
+  } catch (e) {
+    const ta = document.getElementById('report-preview');
+    if (ta) { ta.select(); document.execCommand('copy'); }
+    if (status) { status.textContent = 'Copied (fallback).'; setTimeout(function(){ status.textContent=''; }, 2000); }
+  }
+}
+document.getElementById('copy-report-btn').addEventListener('click', copyReport);
+refreshReportPreview();
+</script>
+</body>
+</html>

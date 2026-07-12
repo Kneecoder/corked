@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corked — M4 Flow Bench</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:#0C0906; --surface:#141009; --card:#1C1410; --border:#2A1F18; --border-hi:#362820;
+  --wine:#7A2E3C; --wine-hi:#9B3D4F; --wine-dim:#4A1C25;
+  --gold:#C9A55A; --cream:#EDE0C4; --cream-dim:#B8A88A; --muted:#8C7A64;
+  --settled:#5DA876; --clearing:#C9A040; --turbid:#8B7A70;
+  --fail-red:#C45B5B;
+}
+body {
+  background:var(--bg); color:var(--cream);
+  font-family:'Inter',sans-serif; font-weight:300;
+  line-height:1.6; -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.wrap { max-width:740px; margin:0 auto; padding:3.5rem 1.4rem 5rem; }
+.eyebrow { font-size:.62rem; letter-spacing:.3em; text-transform:uppercase; color:var(--muted); margin-bottom:.7rem; }
+h1 { font-family:'Playfair Display',serif; font-weight:400; font-size:1.9rem; margin-bottom:.5rem; }
+.sub { font-size:.83rem; color:var(--cream-dim); max-width:560px; margin-bottom:.5rem; }
+.rule-note {
+  font-size:.77rem; color:var(--muted); border-left:2px solid var(--border-hi);
+  padding:.55rem .9rem; margin-bottom:2.4rem; font-style:italic;
+}
+.scorebar {
+  display:flex; gap:1.6rem; align-items:center; margin-bottom:2.6rem;
+  padding:.9rem 1.2rem; background:var(--surface); border:1px solid var(--border); flex-wrap:wrap;
+}
+.pill-num { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:400; line-height:1; }
+.score-pill { display:flex; flex-direction:column; align-items:center; gap:.15rem; }
+.pill-lbl { font-size:.59rem; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); }
+.score-divider { width:1px; background:var(--border); align-self:stretch; }
+.score-msg { font-size:.78rem; color:var(--muted); flex:1; font-style:italic; }
+.score-msg b { color:var(--cream); font-style:normal; }
+
+.flow { border:1px solid var(--border); background:var(--surface); margin-bottom:1.2rem; }
+.flow-header { display:flex; align-items:flex-start; gap:1rem; padding:1.2rem 1.2rem .95rem; border-bottom:1px solid var(--border); cursor:pointer; user-select:none; }
+.flow-header:hover { background:rgba(255,255,255,.015); }
+.flow-num { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:400; color:var(--muted); flex-shrink:0; line-height:1.2; padding-top:.05rem; }
+.flow-header-right { flex:1; }
+.flow-title { font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--cream); }
+.flow-concept { font-size:.77rem; color:var(--muted); margin-top:.18rem; }
+.flow-badges { display:flex; gap:.5rem; align-items:center; margin-top:.5rem; flex-wrap:wrap; }
+.badge { font-size:.6rem; letter-spacing:.18em; text-transform:uppercase; padding:.18rem .55rem; border:1px solid; font-weight:500; }
+.badge.settled { color:var(--settled); border-color:var(--settled); }
+.badge.clearing { color:var(--clearing); border-color:var(--clearing); }
+.badge.turbid { color:var(--turbid); border-color:var(--turbid); }
+.badge.watch { color:var(--gold); border-color:var(--gold); background:rgba(201,165,90,.07); }
+.badge.wine { color:var(--wine-hi); border-color:var(--wine-dim); }
+.chevron { font-size:.8rem; color:var(--muted); margin-top:.25rem; transition:transform .2s; flex-shrink:0; }
+.flow.open .chevron { transform:rotate(180deg); }
+.result-dot { width:10px; height:10px; border-radius:50%; background:var(--border-hi); flex-shrink:0; margin-top:.55rem; transition:background .3s, box-shadow .3s; }
+.flow.settled .result-dot { background:var(--settled); box-shadow:0 0 10px rgba(93,168,118,.45); }
+.flow.clearing .result-dot { background:var(--clearing); box-shadow:0 0 10px rgba(201,160,64,.45); }
+.flow.turbid .result-dot { background:var(--turbid); box-shadow:0 0 10px rgba(139,122,112,.4); }
+.flow.wrong .result-dot { background:var(--fail-red); box-shadow:0 0 10px rgba(196,91,91,.45); }
+
+.flow-body { display:none; padding:1.2rem 1.2rem 1.4rem; }
+.flow.open .flow-body { display:block; }
+
+.step { margin-bottom:1.25rem; }
+.step-label { font-size:.6rem; letter-spacing:.25em; text-transform:uppercase; color:var(--muted); margin-bottom:.35rem; display:flex; align-items:center; gap:.5rem; }
+.step-label::after { content:''; flex:1; height:1px; background:var(--border); }
+.step-desc { font-size:.74rem; color:var(--muted); margin-bottom:.45rem; font-style:italic; }
+.copy-row { display:flex; gap:.6rem; align-items:flex-start; }
+.copy-text { flex:1; background:var(--card); border:1px solid var(--border); padding:.75rem .9rem; font-size:.82rem; color:var(--cream-dim); line-height:1.55; min-height:44px; }
+.copy-btn { background:transparent; border:1px solid var(--border); color:var(--muted); padding:.55rem .8rem; font-size:.65rem; letter-spacing:.15em; text-transform:uppercase; cursor:pointer; white-space:nowrap; transition:all .18s; flex-shrink:0; align-self:stretch; min-height:44px; }
+.copy-btn:hover { border-color:var(--gold); color:var(--gold); }
+.copy-btn.copied { border-color:var(--settled); color:var(--settled); }
+.pair-row { display:flex; gap:.7rem; }
+.pair-row .pair-item { flex:1; }
+.pair-label { font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:.3rem; }
+.watch-note { background:rgba(201,165,90,.06); border-left:2px solid var(--gold); padding:.65rem .9rem; font-size:.78rem; color:var(--cream-dim); margin-bottom:1.25rem; line-height:1.5; }
+.watch-note b { color:var(--gold); font-weight:500; }
+.q-callout { background:var(--card); border:1px solid var(--border-hi); padding:.7rem .9rem; font-size:.82rem; color:var(--cream); margin-bottom:.5rem; font-style:italic; line-height:1.5; }
+.q-callout span { color:var(--gold); font-style:normal; font-weight:500; }
+
+.result-section { margin-top:1.4rem; border-top:1px solid var(--border); padding-top:1.1rem; }
+.result-label { font-size:.6rem; letter-spacing:.25em; text-transform:uppercase; color:var(--muted); margin-bottom:.65rem; }
+.result-options { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.9rem; }
+.result-btn { border:1px solid var(--border); background:transparent; color:var(--muted); padding:.6rem 1.1rem; font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; cursor:pointer; transition:all .2s; }
+.result-btn:hover { border-color:var(--border-hi); color:var(--cream-dim); }
+.result-btn.active-settled { border-color:var(--settled); color:var(--settled); background:rgba(93,168,118,.08); }
+.result-btn.active-clearing { border-color:var(--clearing); color:var(--clearing); background:rgba(201,160,64,.08); }
+.result-btn.active-turbid { border-color:var(--turbid); color:var(--turbid); background:rgba(139,122,112,.1); }
+.result-btn.active-wrong { border-color:var(--fail-red); color:var(--fail-red); background:rgba(196,91,91,.08); }
+.result-btn.active-pass { border-color:var(--settled); color:var(--settled); background:rgba(93,168,118,.08); }
+.result-btn.active-fail { border-color:var(--fail-red); color:var(--fail-red); background:rgba(196,91,91,.08); }
+.sub-result-label { font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin:.9rem 0 .5rem; }
+
+.obs-box { margin-top:.9rem; display:none; flex-direction:column; gap:.5rem; }
+.obs-box.show { display:flex; }
+.obs-input { width:100%; background:var(--card); border:1px solid var(--border); color:var(--cream-dim); font-family:'Inter',sans-serif; font-size:.78rem; font-weight:300; padding:.7rem .9rem; resize:vertical; min-height:68px; line-height:1.5; }
+.obs-input::placeholder { color:var(--muted); }
+.obs-hint { font-size:.71rem; color:var(--muted); font-style:italic; }
+
+footer { margin-top:3.5rem; font-size:.67rem; color:var(--muted); font-style:italic; font-family:'Playfair Display',serif; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Corked · M4 · Manual Flow Bench</div>
+  <h1>A second person, a different kind.</h1>
+  <div class="sub">Run each flow end-to-end in Corked. Copy the inputs in order. Record what comes back. Mechanical verification only — payload shapes, rankUp routing, state persistence. Judgment happens later.</div>
+  <div class="rule-note">M4 rule: overall state equals Echo state. Vintage ranks up independently and never moves the bottle. M4 only renders if M3 left Echo short of settled — if M3 already settled Echo, M4 is skipped silently.</div>
+
+  <div class="scorebar" id="scorebar">
+    <div class="score-pill"><div class="pill-num total" id="sc-done">0</div><div class="pill-lbl">logged</div></div>
+    <div class="score-divider"></div>
+    <div class="score-pill"><div class="pill-num settled" id="sc-s">—</div><div class="pill-lbl">settled</div></div>
+    <div class="score-pill"><div class="pill-num clearing" id="sc-c">—</div><div class="pill-lbl">clearing</div></div>
+    <div class="score-pill"><div class="pill-num turbid" id="sc-t">—</div><div class="pill-lbl">turbid</div></div>
+    <div class="score-divider"></div>
+    <div class="score-msg" id="sc-msg">Open a flow and start filling inputs into Corked.</div>
+  </div>
+
+  <div id="flows"></div>
+
+  <footer>The Echo is the only bar that earns the verdict. Contrast and Vintage are context.</footer>
+</div>
+
+<script>
+// Shared base scenario (cases a, b, c, d, f, g1, g2, i): Priya / freelance invoice chasing.
+// Maturity path for the base scenario: Q1 Yes -> Q2 Yes (class 0).
+const BASE_STEPS = [
+  { label:'Step 1 — Spark', desc:'Paste this into the spark entry field on the home screen.', id:'spark',
+    text:'a tool that automatically chases freelance clients for overdue invoices so freelancers do not have to send awkward follow-up emails themselves' },
+  { label:'Step 2 — Maturity', desc:'Click through the person tree: "Yes" (spoken to a real person), then "Yes, I can name them and I know the moment" (class 0). No text to paste.', id:null, text:null },
+  { label:'Step 3 — Grape', desc:'When Corked asks who the problem belongs to, enter these.', id:'grape',
+    pair:[ { id:'gname', label:'Name', text:'Priya' }, { id:'grel', label:'Relationship', text:'my friend who freelances as a graphic designer' } ] },
+  { label:'Step 4 — M2 friction answer', desc:'When Corked asks about the friction Priya experiences, paste this.', id:'m2',
+    text:'Last month a client sat on an invoice for six weeks. Priya kept meaning to follow up but felt awkward about it, so she just avoided opening the client\'s emails until the money finally showed up on its own.' },
+  { label:'Step 5 — M3 answer', desc:'The app will ask: "Set Priya aside. Who else hits this? Name one person and tell me what they have actually done about it." This answer is deliberately category-only so Echo does not settle and M4 renders.', id:'m3',
+    text:'Other freelancers in my design Slack group say they usually just add late fees to their contracts and hope it discourages slow payers.' }
+];
+
+const SELF_STEPS = [
+  { label:'Step 1 — Spark', desc:'Paste this into the spark entry field on the home screen.', id:'spark',
+    text:'an app that reminds me to chase overdue invoices from my own freelance clients' },
+  { label:'Step 2 — Maturity', desc:'Click through the person tree: "No" (have not spoken to a real person), then "Yes" (this is your own experience) — class 2, self mode. No text to paste.', id:null, text:null },
+  { label:'Step 3 — Grape', desc:'Self mode — Corked asks for your first name and what makes this spark yours.', id:'grape',
+    pair:[ { id:'gname', label:'Your first name', text:'Jamie' }, { id:'grel', label:'What makes this spark yours', text:'I keep meaning to chase invoices and then avoid it for weeks.' } ] },
+  { label:'Step 4 — M2 friction answer', desc:'When Corked asks about your own friction, paste this.', id:'m2',
+    text:'Two months ago a client owed me for a full project and I kept putting off asking for it because I hated the confrontation, so I just let it slide for weeks.' },
+  { label:'Step 5 — M3 answer', desc:'Self mode M3 asks who else hits this, aside from your own experience. This answer is category-only so Echo does not settle and M4 renders.', id:'m3',
+    text:"Other freelancers I follow online say they usually just send a polite reminder email every Friday until it's paid." }
+];
+
+const SETTLED_M3_STEPS = [
+  { label:'Step 1 — Spark', desc:'Paste this into the spark entry field on the home screen.', id:'spark',
+    text:"a way to save the voice of someone who just died before everyone's phones get wiped and the voicemails are gone forever" },
+  { label:'Step 2 — Maturity', desc:'Click through the person tree: "Yes", then "Yes, I can name them and I know the moment" (class 0).', id:null, text:null },
+  { label:'Step 3 — Grape', desc:'When Corked asks who the problem belongs to, enter these.', id:'grape',
+    pair:[ { id:'gname', label:'Name', text:'Elena' }, { id:'grel', label:'Relationship', text:'my aunt' } ] },
+  { label:'Step 4 — M2 friction answer', desc:'When Corked asks about the friction Elena experiences, paste this.', id:'m2',
+    text:'She lost her husband in February and two months later accidentally deleted his last voicemail when she got a new phone. She did not realise what she was doing until it was gone.' },
+  { label:'Step 5 — M3 answer', desc:'This answer names a specific, identifiable second person doing a concrete thing — it should settle Echo on M3 itself.', id:'m3',
+    text:'My friend\'s mother Diane recorded every voicemail her son had ever left her onto a cassette player held up to the phone speaker the week after he died. She has fourteen minutes of his voice on tape now.' }
+];
+
+const FLOWS = [
+  {
+    key:'a', title:'A genuinely different kind of person', concept:'Case a — new named third party, concrete behaviour, distinct from M3\'s person',
+    target:'settled', watch:'Marcus is named, his behaviour is concrete (calls directly, threatens to pause work), and he is a different kind of person than the freelance-community category M3 named. Contrast should capture is_different_kind true / same_or_different different.',
+    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    m4Answer:'My cousin Marcus runs a small contracting business, and every time a client is late paying he calls them directly within three days and tells them he is pausing work until it clears. It works for him because he can afford to walk away from small clients, which looks completely different from how it goes for Priya.',
+    resultType:'echo-vintage'
+  },
+  {
+    key:'b', title:'Same person, rephrased', concept:'Case b — the M3 answer restated, no genuinely new individual',
+    target:'clearing', watch:'This just restates the freelance-community category from M3 in different words. No new distinct person, so Echo should not settle.',
+    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    m4Answer:'The freelancers in my design community mostly just build late fees into their contracts, like I mentioned, and hope that discourages people from paying slow.',
+    resultType:'echo-vintage'
+  },
+  {
+    key:'c', title:'More freelancers, done manually', concept:'Case c — generic category, no named individual',
+    target:'clearing', watch:'A vague plural ("more freelancers I know") with a generic workaround (a spreadsheet). No one identifiable.',
+    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    m4Answer:'More freelancers I know do it manually — they just keep a spreadsheet and remind themselves to email people when a payment is late.',
+    resultType:'echo-vintage'
+  },
+  {
+    key:'d', title:'Grape-only answer', concept:'Case d — the answer only describes the grape again',
+    target:'turbid', watch:'Grape exclusion rule: the only person in the answer is Priya herself. M4 needs a different person entirely.',
+    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    m4Answer:"Honestly it's really just Priya who deals with this. She's the one who ends up chasing every client herself whenever it happens.",
+    resultType:'echo-vintage'
+  },
+  {
+    key:'e', title:'Self mode, founder\'s own behaviour again', concept:'Case e — class 2, the answer just re-describes the founder',
+    target:'turbid', watch:'Self mode. M4 needs someone who is not the founder. This answer stays inside the founder\'s own experience, so it should read the same as a grape-only answer.',
+    steps: SELF_STEPS, m4Question:'You are one kind of person with this. Who is a different kind, and does it look the same for them?',
+    m4Answer:'Honestly it\'s really just me — when it happens I just wait it out and eventually the client pays anyway.',
+    resultType:'echo-vintage'
+  },
+  {
+    key:'f', title:'Category stacked with a real name', concept:'Case f — vague category plus one identifiable third party in the same answer',
+    target:'clearing', watch:'The answer opens with a vague category ("other freelancers... somehow") then swaps to a specific person (Marcus). Watch whether the observation surface text names the swap from category to individual.',
+    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    m4Answer:'Other freelancers I know probably deal with this differently somehow, but also my cousin Marcus, who does contracting work, just calls clients directly within a few days of a late payment.',
+    resultType:'echo-vintage'
+  },
+  {
+    key:'g1', title:'Dated moment', concept:'Case g (part 1) — same settled contrast answer as case a, with a specific date attached',
+    target:'settled', watch:'This is case a\'s content with "Last Tuesday" added. Echo should settle as before, and Vintage should rank up because the moment is now dated.',
+    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    m4Answer:'Last Tuesday my cousin Marcus, who runs a small contracting business, called a late-paying client directly and told them he was pausing work until it cleared. It worked because he can afford to walk away from small clients, unlike Priya.',
+    resultType:'echo-vintage', vintageNote:'Watch for: Vintage should rank UP here. A response vintage of "turbid" (no moment) must never move an existing settled/clearing Vintage state — but a genuine dated moment should be free to rank it up.'
+  },
+  {
+    key:'g2', title:'No moment', concept:'Case g (part 2) — same settled contrast answer as case a, with the date removed',
+    target:'settled', watch:'Same content as case a, generalised instead of dated. Echo should still settle (Marcus is still named and concrete), but Vintage should NOT rank up — no specific instance was given.',
+    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    m4Answer:'My cousin Marcus, who runs a contracting business, generally calls late-paying clients directly and tells them he\'s pausing work until it clears. He can walk away from small clients more easily than Priya can.',
+    resultType:'echo-vintage', vintageNote:'Watch for: Vintage chip should stay wherever it already was — this answer carries no dated moment, so a turbid vintage response here must not move an already-settled or clearing Vintage state backward, and must not rank an unset one up.'
+  },
+  {
+    key:'h', title:'M3 already settled Echo', concept:'Case h — chain-position skip check',
+    target:'skip', watch:'M3\'s answer names a specific, identifiable second person (Diane) doing a concrete thing (recording voicemails to cassette) and should settle Echo on its own. When Echo is already settled at M3, M4 must not render at all — Phase 1 should move straight from M3\'s element card to M5, with no M4 card shown, and this must hold even if you later reopen the Echo element (an M4 already skipped must not retroactively insert itself).',
+    steps: SETTLED_M3_STEPS, m4Question:null, m4Answer:null,
+    resultType:'skip-check'
+  },
+  {
+    key:'i', title:'Park exit from M4', concept:'Case i — CONTRAST field brief on park',
+    target:'field-brief', watch:'Instead of answering M4, click "Park it." Corked should call the worker\'s CONTRAST field mode (not the ECHO mode M3 uses) and hand back a brief naming a kind of person who is NOT Priya — a different role or context, past-behaviour anchored ("talk me through how it shows up for you" register), no pitch language, no "would you" phrasing, no mention of an app/tool/product.',
+    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    m4Answer:null,
+    resultType:'field-brief'
+  }
+];
+
+const EXPECTS = {};
+FLOWS.forEach(f => EXPECTS[f.key] = f.target);
+const results = {};
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderStep(step, flowKey, idx) {
+  if (!step.id) {
+    return `<div class="step"><div class="step-label">${step.label}</div><div class="step-desc">${step.desc}</div></div>`;
+  }
+  if (step.pair) {
+    return `<div class="step">
+      <div class="step-label">${step.label}</div>
+      <div class="step-desc">${step.desc}</div>
+      <div class="pair-row">
+        ${step.pair.map(p => `<div class="pair-item">
+          <div class="pair-label">${p.label}</div>
+          <div class="copy-row">
+            <div class="copy-text" id="${flowKey}-${p.id}">${escHtml(p.text)}</div>
+            <button class="copy-btn" onclick="cp('${flowKey}-${p.id}',this)">Copy</button>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+  return `<div class="step">
+    <div class="step-label">${step.label}</div>
+    <div class="step-desc">${step.desc}</div>
+    <div class="copy-row">
+      <div class="copy-text" id="${flowKey}-${step.id}">${escHtml(step.text)}</div>
+      <button class="copy-btn" onclick="cp('${flowKey}-${step.id}',this)">Copy</button>
+    </div>
+  </div>`;
+}
+
+function renderFlow(f, i) {
+  const n = i + 1;
+  const targetBadgeClass = ['settled','clearing','turbid'].includes(f.target) ? f.target : 'watch';
+  const targetLabel = f.target === 'skip' ? 'Target: M4 skipped'
+    : f.target === 'field-brief' ? 'Target: CONTRAST brief'
+    : 'Target: ' + f.target[0].toUpperCase() + f.target.slice(1);
+
+  let stepsHtml = f.steps.map(s => renderStep(s, f.key, i)).join('');
+
+  if (f.m4Question && f.m4Answer) {
+    stepsHtml += `<div class="step">
+      <div class="step-label">Step 6 — M4 answer</div>
+      <div class="q-callout">The app will ask: <span>${escHtml(f.m4Question)}</span></div>
+      <div class="copy-row">
+        <div class="copy-text" id="${f.key}-m4">${escHtml(f.m4Answer)}</div>
+        <button class="copy-btn" onclick="cp('${f.key}-m4',this)">Copy</button>
+      </div>
+    </div>`;
+  } else if (f.resultType === 'field-brief') {
+    stepsHtml += `<div class="step">
+      <div class="step-label">Step 6 — Park instead of answering</div>
+      <div class="q-callout">The app will ask: <span>${escHtml(f.m4Question)}</span></div>
+      <div class="step-desc">Do not answer. Click "Park it" and read the brief that comes back.</div>
+    </div>`;
+  }
+
+  let resultHtml = '';
+  if (f.resultType === 'echo-vintage') {
+    resultHtml = `<div class="result-section">
+      <div class="result-label">Echo — what did Corked return?</div>
+      <div class="result-options">
+        <button class="result-btn" onclick="setResult('${f.key}','settled',this)">Settled</button>
+        <button class="result-btn" onclick="setResult('${f.key}','clearing',this)">Clearing</button>
+        <button class="result-btn" onclick="setResult('${f.key}','turbid',this)">Turbid</button>
+        <button class="result-btn" onclick="setResult('${f.key}','wrong',this)">Something unexpected</button>
+      </div>
+      <div class="sub-result-label">Vintage — ranked up, or unchanged?</div>
+      <div class="result-options">
+        <button class="result-btn" onclick="setSubResult('${f.key}','ranked-up',this)">Ranked up</button>
+        <button class="result-btn" onclick="setSubResult('${f.key}','unchanged',this)">Unchanged</button>
+        <button class="result-btn" onclick="setSubResult('${f.key}','wrong',this)">Something unexpected</button>
+      </div>
+      ${f.vintageNote ? `<div class="watch-note" style="margin-top:.9rem;margin-bottom:0">${f.vintageNote}</div>` : ''}
+      <div class="obs-box" id="obs-${f.key}">
+        <textarea class="obs-input" placeholder="Paste the observation text from Corked here (optional but useful)" id="obs-txt-${f.key}"></textarea>
+        <div class="obs-hint">The observation is the two-sentence lab note the Winemaster writes below your answer.</div>
+      </div>
+    </div>`;
+  } else if (f.resultType === 'skip-check') {
+    resultHtml = `<div class="result-section">
+      <div class="result-label">Did M4 render?</div>
+      <div class="result-options">
+        <button class="result-btn" onclick="setResult('${f.key}','skip',this)">Correctly skipped — went straight to M5</button>
+        <button class="result-btn" onclick="setResult('${f.key}','wrong',this)">M4 rendered anyway</button>
+      </div>
+      <div class="obs-box" id="obs-${f.key}">
+        <textarea class="obs-input" placeholder="Notes — e.g. what M3's own Echo state showed, and whether reopening the Echo element later re-inserted M4" id="obs-txt-${f.key}"></textarea>
+        <div class="obs-hint">Also check: does reopening the Echo element from the label view retroactively insert M4? It should not — this is a one-way skip.</div>
+      </div>
+    </div>`;
+  } else if (f.resultType === 'field-brief') {
+    resultHtml = `<div class="result-section">
+      <div class="result-label">Did the CONTRAST brief hold the bar?</div>
+      <div class="result-options">
+        <button class="result-btn" onclick="setResult('${f.key}','field-brief',this)">Held — different kind of person, past-anchored, no pitch</button>
+        <button class="result-btn" onclick="setResult('${f.key}','wrong',this)">Failed — named Priya, was hypothetical, or pitched something</button>
+      </div>
+      <div class="obs-box" id="obs-${f.key}">
+        <textarea class="obs-input" placeholder="Paste the returned brief question here" id="obs-txt-${f.key}"></textarea>
+        <div class="obs-hint">Confirm the network call was made to /field with mode "contrast", not "echo".</div>
+      </div>
+    </div>`;
+  }
+
+  return `<div class="flow" id="flow-${f.key}">
+    <div class="flow-header" onclick="toggle('${f.key}')">
+      <div class="result-dot"></div>
+      <div class="flow-num">${String(n).padStart(2,'0')}</div>
+      <div class="flow-header-right">
+        <div class="flow-title">${escHtml(f.title)}</div>
+        <div class="flow-concept">${escHtml(f.concept)}</div>
+        <div class="flow-badges">
+          <span class="badge ${targetBadgeClass}">${targetLabel}</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="flow-body">
+      <div class="watch-note"><b>What to watch:</b> ${f.watch}</div>
+      ${stepsHtml}
+      ${resultHtml}
+    </div>
+  </div>`;
+}
+
+document.getElementById('flows').innerHTML = FLOWS.map(renderFlow).join('');
+
+function toggle(key) { document.getElementById('flow-' + key).classList.toggle('open'); }
+
+function cp(id, btn) {
+  const text = document.getElementById(id).textContent.trim();
+  navigator.clipboard.writeText(text).then(() => flashCopied(btn)).catch(() => {
+    const range = document.createRange();
+    range.selectNode(document.getElementById(id));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    flashCopied(btn);
+  });
+}
+function flashCopied(btn) {
+  btn.textContent = 'Copied';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+}
+
+function setResult(key, state, btn) {
+  if (!results[key]) results[key] = {};
+  results[key].primary = state;
+  const flow = document.getElementById('flow-' + key);
+  const obsBox = document.getElementById('obs-' + key);
+  btn.closest('.result-options').querySelectorAll('.result-btn').forEach(b => { b.className = 'result-btn'; });
+  const cls = (state === 'skip' || state === 'field-brief') ? 'pass' : state === 'wrong' ? 'wrong' : state;
+  btn.classList.add('active-' + cls);
+
+  const expected = EXPECTS[key];
+  const isCorrect = expected === 'settled' || expected === 'clearing' || expected === 'turbid'
+    ? state === expected
+    : (expected === 'skip' && state === 'skip') || (expected === 'field-brief' && state === 'field-brief');
+  flow.className = 'flow open ' + (isCorrect ? (['settled','clearing','turbid'].includes(state) ? state : 'settled') : 'wrong');
+
+  obsBox.classList.add('show');
+  updateScore();
+}
+
+function setSubResult(key, state, btn) {
+  if (!results[key]) results[key] = {};
+  results[key].sub = state;
+  btn.closest('.result-options').querySelectorAll('.result-btn').forEach(b => { b.className = 'result-btn'; });
+  btn.classList.add('active-' + (state === 'wrong' ? 'wrong' : 'pass'));
+  updateScore();
+}
+
+function updateScore() {
+  const done = Object.keys(results).filter(k => results[k].primary).length;
+  const counts = { settled:0, clearing:0, turbid:0 };
+  let wrongCount = 0;
+
+  for (const [key, r] of Object.entries(results)) {
+    if (!r.primary) continue;
+    if (r.primary === 'settled') counts.settled++;
+    else if (r.primary === 'clearing') counts.clearing++;
+    else if (r.primary === 'turbid') counts.turbid++;
+    const expected = EXPECTS[key];
+    const correct = (['settled','clearing','turbid'].includes(expected) && r.primary === expected)
+      || (expected === 'skip' && r.primary === 'skip')
+      || (expected === 'field-brief' && r.primary === 'field-brief');
+    if (!correct) wrongCount++;
+  }
+
+  document.getElementById('sc-done').textContent = done;
+  document.getElementById('sc-s').textContent = counts.settled || '—';
+  document.getElementById('sc-c').textContent = counts.clearing || '—';
+  document.getElementById('sc-t').textContent = counts.turbid || '—';
+
+  const msg = document.getElementById('sc-msg');
+  const total = FLOWS.length;
+  if (done === 0) {
+    msg.innerHTML = 'Open a flow and start filling inputs into Corked.';
+  } else if (done < total) {
+    msg.innerHTML = `${done} of ${total} logged. ${total - done} to go.`;
+  } else if (wrongCount === 0) {
+    msg.innerHTML = `<b>${total} of ${total} correct.</b> M4 rules are holding.`;
+  } else {
+    msg.innerHTML = `<b>${wrongCount} unexpected result${wrongCount>1?'s':''}.</b> Paste the observation into the box below that flow and share with Claude.`;
+  }
+}
+
+toggle('a');
+</script>
+</body>
+</html>

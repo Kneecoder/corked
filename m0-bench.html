@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corked — M0 Batch Bench</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:#0C0906; --surface:#141009; --card:#1C1410; --border:#2A1F18; --border-hi:#362820;
+  --wine:#7A2E3C; --wine-hi:#9B3D4F; --wine-dim:#4A1C25;
+  --gold:#C9A55A; --cream:#EDE0C4; --cream-dim:#B8A88A; --muted:#8C7A64;
+  --settled:#5DA876; --clearing:#C9A040; --turbid:#8B7A70; --fail-red:#C45B5B;
+}
+body {
+  background:var(--bg); color:var(--cream);
+  font-family:'Inter',system-ui,sans-serif; font-weight:300;
+  line-height:1.6; min-height:100vh;
+}
+.wrap { max-width:1180px; margin:0 auto; padding:2.6rem 1.4rem 5rem; }
+.eyebrow { font-size:.62rem; letter-spacing:.3em; text-transform:uppercase; color:var(--muted); margin-bottom:.7rem; }
+h1 { font-family:Georgia,serif; font-weight:400; font-size:1.8rem; margin-bottom:.5rem; }
+.sub { font-size:.83rem; color:var(--cream-dim); max-width:640px; margin-bottom:1.6rem; }
+
+.panel { background:var(--surface); border:1px solid var(--border); padding:1.1rem 1.3rem; margin-bottom:1.6rem; }
+label { display:block; color:var(--muted); text-transform:uppercase; letter-spacing:.14em; font-size:.65rem; margin-bottom:.4rem; }
+input, textarea {
+  width:100%; background:var(--card); color:var(--cream); border:1px solid var(--border);
+  padding:.6rem .75rem; font:inherit; font-size:.82rem; outline:none;
+}
+input:focus, textarea:focus { border-color:var(--wine); }
+button {
+  background:var(--wine); color:var(--cream); border:0; padding:.6rem 1rem;
+  text-transform:uppercase; letter-spacing:.14em; font-size:.68rem; cursor:pointer;
+  font-family:inherit;
+}
+button:hover { background:var(--wine-hi); }
+button:disabled { opacity:.45; cursor:not-allowed; }
+.btn-ghost { background:transparent; color:var(--muted); border:1px solid var(--border); }
+.btn-ghost:hover { background:transparent; color:var(--cream); border-color:var(--muted); }
+.btn-sm { padding:.4rem .7rem; font-size:.62rem; }
+
+.toprow { display:flex; gap:1rem; align-items:flex-end; flex-wrap:wrap; }
+.toprow .field { flex:1; min-width:260px; }
+.status { font-size:.75rem; color:var(--muted); margin-top:.6rem; }
+
+.rows { display:flex; flex-direction:column; gap:.9rem; }
+.row-card { border:1px solid var(--border); background:var(--surface); }
+.row-head {
+  display:flex; align-items:center; gap:.8rem; padding:.7rem 1rem;
+  cursor:pointer; user-select:none; border-bottom:1px solid transparent;
+}
+.row-head:hover { background:rgba(255,255,255,.02); }
+.row-card.open .row-head { border-bottom-color:var(--border); }
+.row-num { font-family:Georgia,serif; color:var(--muted); font-size:1.1rem; width:1.6rem; flex-shrink:0; }
+.row-spark { flex:1; font-size:.78rem; color:var(--cream-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.state-badge {
+  font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; padding:.2rem .55rem;
+  border:1px solid var(--border-hi); color:var(--muted); flex-shrink:0;
+}
+.state-badge.cellar_ready { color:var(--settled); border-color:var(--settled); }
+.state-badge.bottleable_cloudy { color:var(--clearing); border-color:var(--clearing); }
+.state-badge.unbottleable { color:var(--turbid); border-color:var(--turbid); }
+.state-badge.out_of_scope { color:var(--fail-red); border-color:var(--fail-red); }
+.state-badge.pending { color:var(--muted); }
+.state-badge.error { color:var(--fail-red); border-color:var(--fail-red); }
+.chevron { font-size:.75rem; color:var(--muted); transition:transform .15s; flex-shrink:0; }
+.row-card.open .chevron { transform:rotate(180deg); }
+
+.row-body { display:none; padding:1rem 1.1rem 1.2rem; }
+.row-card.open .row-body { display:block; }
+
+.kv { margin-bottom:.85rem; }
+.kv-label { font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:.3rem; }
+.kv-val { font-size:.8rem; color:var(--cream-dim); background:var(--card); border:1px solid var(--border); padding:.6rem .75rem; line-height:1.55; white-space:pre-wrap; }
+.flags { display:flex; gap:.4rem; flex-wrap:wrap; }
+.flag { font-size:.62rem; padding:.15rem .5rem; border:1px solid var(--border-hi); color:var(--muted); }
+.flag.true { color:var(--clearing); border-color:var(--clearing); }
+
+.expected-row { display:flex; align-items:center; gap:.6rem; margin-bottom:.85rem; }
+.expected-row label { margin-bottom:0; }
+select {
+  background:var(--card); color:var(--cream); border:1px solid var(--border);
+  padding:.4rem .6rem; font:inherit; font-size:.78rem;
+}
+.match-pill { font-size:.62rem; padding:.15rem .5rem; border:1px solid var(--border-hi); text-transform:uppercase; letter-spacing:.1em; }
+.match-pill.match { color:var(--settled); border-color:var(--settled); }
+.match-pill.mismatch { color:var(--fail-red); border-color:var(--fail-red); }
+.match-pill.unset { color:var(--muted); }
+
+.followup-block { border-top:1px solid var(--border); padding-top:.9rem; margin-top:.9rem; }
+.followup-row { display:flex; gap:.6rem; align-items:flex-start; }
+.followup-row textarea { min-height:44px; resize:vertical; }
+
+pre.raw { background:#080604; border:1px solid var(--border); color:var(--cream-dim); padding:.75rem; overflow:auto; max-height:300px; font-size:.68rem; white-space:pre-wrap; margin-top:.6rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Corked · M0 · Batch Regression Bench</div>
+  <h1>Seventeen sparks, one pass.</h1>
+  <div class="sub">Fires each spark at /m0 in sequence, about one per second. Test infra only — no product code touched, gates nothing. Judge the returned state and reason by eye; set the expected column as you go.</div>
+
+  <div class="panel">
+    <div class="toprow">
+      <div class="field">
+        <label for="workerUrl">Worker endpoint</label>
+        <input id="workerUrl" placeholder="https://your-worker.workers.dev">
+      </div>
+      <button id="runAllBtn" onclick="runAll()">Run all 17</button>
+      <button class="btn-ghost" onclick="expandAll()">Expand all</button>
+      <button class="btn-ghost" onclick="collapseAll()">Collapse all</button>
+    </div>
+    <div class="status" id="status">Ready.</div>
+  </div>
+
+  <div class="rows" id="rows"></div>
+</div>
+
+<script>
+// No canonical machine-readable regression list was found in the repo (m0-test.html
+// is a single-spark manual tester with no stored list). This is a placeholder set
+// spanning the known M0 states — swap in the real 17 if a canonical list exists.
+const SPARKS = [
+  "an app that reminds freelancers to chase overdue invoices before the client forgets who they are",
+  "something for new parents who can never remember which vaccinations their kid already had",
+  "a tool that tracks which of my houseplants I have already watered this week",
+  "an app",
+  "a way to make people happier",
+  "a physical notebook system for tracking client payments, no app, just paper and a rubber stamp",
+  "a service where a person calls freelance clients on the phone and asks for the overdue payment on your behalf",
+  "my friend Marcus, a contractor, keeps losing track of which subcontractors he has paid for which job — something that stops that",
+  "I keep forgetting to follow up with leads after a sales call and losing the deal",
+  "something that helps people who are learning a new language remember the words they keep forgetting",
+  "a tool for parents to split childcare pickup schedules with an ex without the group chat turning into a fight",
+  "an app that would probably help people feel more organized about their day I think, not totally sure what it does yet",
+  "a dashboard for tracking things",
+  "software for helping remote teams feel more connected",
+  "a tool that automatically writes thank-you notes after job interviews so candidates don't forget",
+  "I run a small landscaping business and I can never remember which client's gate code goes with which address",
+  "an app that helps people stop buying books they will never read"
+];
+
+let results = SPARKS.map(() => ({ status:'pending', data:null, error:null, expected:'' }));
+
+function workerUrl() { return document.getElementById('workerUrl').value.trim(); }
+
+const savedUrl = localStorage.getItem('corked_worker_url');
+if (savedUrl) document.getElementById('workerUrl').value = savedUrl;
+
+function renderRows() {
+  const wrap = document.getElementById('rows');
+  wrap.innerHTML = SPARKS.map((spark, i) => {
+    const r = results[i];
+    const state = r.error ? 'error' : (r.data?.digestibility?.state || (r.data?.scope?.in_scope === false ? 'out_of_scope' : 'pending'));
+    const badgeLabel = r.status === 'pending' ? 'pending' : state;
+    const expected = r.expected;
+    const match = !expected ? 'unset' : (expected === state ? 'match' : 'mismatch');
+    const flags = r.data?.server_checks ? Object.entries(r.data.server_checks) : [];
+
+    return `<div class="row-card" id="row-${i}">
+      <div class="row-head" onclick="toggleRow(${i})">
+        <div class="row-num">${String(i+1).padStart(2,'0')}</div>
+        <div class="row-spark">${escHtml(spark)}</div>
+        <div class="state-badge ${badgeLabel}">${badgeLabel.replace(/_/g,' ')}</div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="row-body">
+        <div class="expected-row">
+          <label style="margin:0">Expected state</label>
+          <select onchange="setExpected(${i}, this.value)">
+            <option value="">— unset —</option>
+            <option value="cellar_ready" ${expected==='cellar_ready'?'selected':''}>cellar_ready</option>
+            <option value="bottleable_cloudy" ${expected==='bottleable_cloudy'?'selected':''}>bottleable_cloudy</option>
+            <option value="unbottleable" ${expected==='unbottleable'?'selected':''}>unbottleable</option>
+            <option value="out_of_scope" ${expected==='out_of_scope'?'selected':''}>out_of_scope</option>
+          </select>
+          <span class="match-pill ${match}">${match === 'unset' ? 'not judged' : match}</span>
+          <button class="btn-sm btn-ghost" style="margin-left:auto" onclick="runOne(${i})">Run this one</button>
+        </div>
+
+        <div class="kv">
+          <div class="kv-label">user_line_candidate</div>
+          <div class="kv-val">${escHtml(r.data?.user_line_candidate || (r.error ? 'ERROR: ' + r.error : '—'))}</div>
+        </div>
+
+        <div class="kv">
+          <div class="kv-label">digestibility.reason</div>
+          <div class="kv-val">${escHtml(r.data?.digestibility?.reason || r.data?.scope?.reason || '—')}</div>
+        </div>
+
+        <div class="kv">
+          <div class="kv-label">server_checks</div>
+          <div class="flags">${flags.length ? flags.map(([k,v]) => `<span class="flag ${v===true}">${escHtml(k)}: ${escHtml(String(v))}</span>`).join('') : '<span class="flag">—</span>'}</div>
+        </div>
+
+        <div class="followup-block">
+          <div class="kv-label" style="margin-bottom:.5rem">Resend with a followup answer</div>
+          <div class="followup-row">
+            <textarea id="followup-${i}" placeholder="${r.data?.followup?.question ? escHtml(r.data.followup.question) : 'Followup answer (only used if this spark returned a followup question)'}"></textarea>
+            <button class="btn-sm" onclick="resend(${i})">Resend</button>
+          </div>
+        </div>
+
+        <pre class="raw">${r.data ? escHtml(JSON.stringify(r.data, null, 2)) : (r.error || 'Not run yet.')}</pre>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function toggleRow(i) { document.getElementById('row-' + i).classList.toggle('open'); }
+function expandAll() { document.querySelectorAll('.row-card').forEach(r => r.classList.add('open')); }
+function collapseAll() { document.querySelectorAll('.row-card').forEach(r => r.classList.remove('open')); }
+
+function setExpected(i, v) {
+  results[i].expected = v;
+  renderRows();
+  document.getElementById('row-' + i).classList.add('open');
+}
+
+async function callM0(payload) {
+  const url = workerUrl();
+  if (!url) throw new Error('Add your Worker endpoint first.');
+  localStorage.setItem('corked_worker_url', url);
+  const res = await fetch(url.replace(/\/$/, '') + '/m0', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) throw new Error(data.error || ('HTTP ' + res.status));
+  return data;
+}
+
+async function runOne(i) {
+  const status = document.getElementById('status');
+  results[i].status = 'running';
+  renderRows();
+  document.getElementById('row-' + i).classList.add('open');
+  try {
+    const data = await callM0({ raw_spark: SPARKS[i] });
+    results[i] = { ...results[i], status:'done', data, error:null };
+  } catch (e) {
+    results[i] = { ...results[i], status:'done', data:null, error: e.message };
+  }
+  renderRows();
+  document.getElementById('row-' + i).classList.add('open');
+}
+
+async function resend(i) {
+  const followupAnswer = document.getElementById('followup-' + i).value.trim();
+  const r = results[i];
+  const priorState = r.data?.digestibility?.state || '';
+  const payload = {
+    raw_spark: SPARKS[i],
+    followup_question: r.data?.followup?.question || '',
+    followup_answer: followupAnswer,
+    prior_digestibility: priorState
+  };
+  try {
+    const data = await callM0(payload);
+    results[i] = { ...results[i], status:'done', data, error:null };
+  } catch (e) {
+    results[i] = { ...results[i], status:'done', data:null, error: e.message };
+  }
+  renderRows();
+  document.getElementById('row-' + i).classList.add('open');
+}
+
+function wait(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+async function runAll() {
+  const btn = document.getElementById('runAllBtn');
+  const status = document.getElementById('status');
+  btn.disabled = true;
+  for (let i = 0; i < SPARKS.length; i++) {
+    status.textContent = `Running ${i+1} of ${SPARKS.length}…`;
+    await runOne(i);
+    if (i < SPARKS.length - 1) await wait(1000);
+  }
+  status.textContent = 'Done. All 17 fired.';
+  btn.disabled = false;
+}
+
+renderRows();
+</script>
+</body>
+</html>

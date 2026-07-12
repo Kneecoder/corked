@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corked — M5/M6/M7 Flow Bench</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:#0C0906; --surface:#141009; --card:#1C1410; --border:#2A1F18; --border-hi:#362820;
+  --wine:#7A2E3C; --wine-hi:#9B3D4F; --wine-dim:#4A1C25;
+  --gold:#C9A55A; --cream:#EDE0C4; --cream-dim:#B8A88A; --muted:#8C7A64;
+  --settled:#5DA876; --clearing:#C9A040; --turbid:#8B7A70;
+  --fail-red:#C45B5B;
+}
+body {
+  background:var(--bg); color:var(--cream);
+  font-family:'Inter',sans-serif; font-weight:300;
+  line-height:1.6; -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.wrap { max-width:740px; margin:0 auto; padding:3.5rem 1.4rem 5rem; }
+.eyebrow { font-size:.62rem; letter-spacing:.3em; text-transform:uppercase; color:var(--muted); margin-bottom:.7rem; }
+h1 { font-family:'Playfair Display',serif; font-weight:400; font-size:1.9rem; margin-bottom:.5rem; }
+.sub { font-size:.83rem; color:var(--cream-dim); max-width:560px; margin-bottom:.5rem; }
+.rule-note { font-size:.77rem; color:var(--muted); border-left:2px solid var(--border-hi); padding:.55rem .9rem; margin-bottom:1.6rem; font-style:italic; }
+.section-head { margin-top:3rem; margin-bottom:1.2rem; }
+.section-head:first-of-type { margin-top:0; }
+.section-eyebrow { font-size:.6rem; letter-spacing:.25em; text-transform:uppercase; color:var(--gold); margin-bottom:.4rem; }
+.section-title { font-family:'Playfair Display',serif; font-size:1.4rem; }
+.section-rule { font-size:.78rem; color:var(--muted); margin-top:.4rem; font-style:italic; max-width:560px; }
+
+.scorebar { display:flex; gap:1.6rem; align-items:center; margin-bottom:2rem; padding:.9rem 1.2rem; background:var(--surface); border:1px solid var(--border); flex-wrap:wrap; }
+.pill-num { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:400; line-height:1; }
+.score-pill { display:flex; flex-direction:column; align-items:center; gap:.15rem; }
+.pill-lbl { font-size:.59rem; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); }
+.score-divider { width:1px; background:var(--border); align-self:stretch; }
+.score-msg { font-size:.78rem; color:var(--muted); flex:1; font-style:italic; }
+.score-msg b { color:var(--cream); font-style:normal; }
+
+.flow { border:1px solid var(--border); background:var(--surface); margin-bottom:1.2rem; }
+.flow-header { display:flex; align-items:flex-start; gap:1rem; padding:1.2rem 1.2rem .95rem; border-bottom:1px solid var(--border); cursor:pointer; user-select:none; }
+.flow-header:hover { background:rgba(255,255,255,.015); }
+.flow-num { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:400; color:var(--muted); flex-shrink:0; line-height:1.2; padding-top:.05rem; }
+.flow-header-right { flex:1; }
+.flow-title { font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--cream); }
+.flow-concept { font-size:.77rem; color:var(--muted); margin-top:.18rem; }
+.flow-badges { display:flex; gap:.5rem; align-items:center; margin-top:.5rem; flex-wrap:wrap; }
+.badge { font-size:.6rem; letter-spacing:.18em; text-transform:uppercase; padding:.18rem .55rem; border:1px solid; font-weight:500; }
+.badge.settled { color:var(--settled); border-color:var(--settled); }
+.badge.clearing { color:var(--clearing); border-color:var(--clearing); }
+.badge.turbid { color:var(--turbid); border-color:var(--turbid); }
+.badge.watch { color:var(--gold); border-color:var(--gold); background:rgba(201,165,90,.07); }
+.chevron { font-size:.8rem; color:var(--muted); margin-top:.25rem; transition:transform .2s; flex-shrink:0; }
+.flow.open .chevron { transform:rotate(180deg); }
+.result-dot { width:10px; height:10px; border-radius:50%; background:var(--border-hi); flex-shrink:0; margin-top:.55rem; transition:background .3s, box-shadow .3s; }
+.flow.settled .result-dot { background:var(--settled); box-shadow:0 0 10px rgba(93,168,118,.45); }
+.flow.clearing .result-dot { background:var(--clearing); box-shadow:0 0 10px rgba(201,160,64,.45); }
+.flow.turbid .result-dot { background:var(--turbid); box-shadow:0 0 10px rgba(139,122,112,.4); }
+.flow.wrong .result-dot { background:var(--fail-red); box-shadow:0 0 10px rgba(196,91,91,.45); }
+
+.flow-body { display:none; padding:1.2rem 1.2rem 1.4rem; }
+.flow.open .flow-body { display:block; }
+
+.step { margin-bottom:1.25rem; }
+.step-label { font-size:.6rem; letter-spacing:.25em; text-transform:uppercase; color:var(--muted); margin-bottom:.35rem; display:flex; align-items:center; gap:.5rem; }
+.step-label::after { content:''; flex:1; height:1px; background:var(--border); }
+.step-desc { font-size:.74rem; color:var(--muted); margin-bottom:.45rem; font-style:italic; }
+.copy-row { display:flex; gap:.6rem; align-items:flex-start; }
+.copy-text { flex:1; background:var(--card); border:1px solid var(--border); padding:.75rem .9rem; font-size:.82rem; color:var(--cream-dim); line-height:1.55; min-height:44px; }
+.copy-btn { background:transparent; border:1px solid var(--border); color:var(--muted); padding:.55rem .8rem; font-size:.65rem; letter-spacing:.15em; text-transform:uppercase; cursor:pointer; white-space:nowrap; transition:all .18s; flex-shrink:0; align-self:stretch; min-height:44px; }
+.copy-btn:hover { border-color:var(--gold); color:var(--gold); }
+.copy-btn.copied { border-color:var(--settled); color:var(--settled); }
+.pair-row { display:flex; gap:.7rem; }
+.pair-row .pair-item { flex:1; }
+.pair-label { font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin-bottom:.3rem; }
+.watch-note { background:rgba(201,165,90,.06); border-left:2px solid var(--gold); padding:.65rem .9rem; font-size:.78rem; color:var(--cream-dim); margin-bottom:1.25rem; line-height:1.5; }
+.watch-note b { color:var(--gold); font-weight:500; }
+.q-callout { background:var(--card); border:1px solid var(--border-hi); padding:.7rem .9rem; font-size:.82rem; color:var(--cream); margin-bottom:.5rem; font-style:italic; line-height:1.5; }
+.q-callout span { color:var(--gold); font-style:normal; font-weight:500; }
+.toggle-note { font-size:.75rem; color:var(--cream-dim); background:var(--card); border:1px solid var(--border); padding:.6rem .85rem; margin-bottom:.5rem; }
+.toggle-note b { color:var(--gold); }
+
+.result-section { margin-top:1.4rem; border-top:1px solid var(--border); padding-top:1.1rem; }
+.result-label { font-size:.6rem; letter-spacing:.25em; text-transform:uppercase; color:var(--muted); margin-bottom:.65rem; }
+.result-options { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.9rem; }
+.result-btn { border:1px solid var(--border); background:transparent; color:var(--muted); padding:.6rem 1.1rem; font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; cursor:pointer; transition:all .2s; }
+.result-btn:hover { border-color:var(--border-hi); color:var(--cream-dim); }
+.result-btn.active-settled { border-color:var(--settled); color:var(--settled); background:rgba(93,168,118,.08); }
+.result-btn.active-clearing { border-color:var(--clearing); color:var(--clearing); background:rgba(201,160,64,.08); }
+.result-btn.active-turbid { border-color:var(--turbid); color:var(--turbid); background:rgba(139,122,112,.1); }
+.result-btn.active-wrong { border-color:var(--fail-red); color:var(--fail-red); background:rgba(196,91,91,.08); }
+.result-btn.active-pass { border-color:var(--settled); color:var(--settled); background:rgba(93,168,118,.08); }
+.sub-result-label { font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); margin:.9rem 0 .5rem; }
+
+.obs-box { margin-top:.9rem; display:none; flex-direction:column; gap:.5rem; }
+.obs-box.show { display:flex; }
+.obs-input { width:100%; background:var(--card); border:1px solid var(--border); color:var(--cream-dim); font-family:'Inter',sans-serif; font-size:.78rem; font-weight:300; padding:.7rem .9rem; resize:vertical; min-height:68px; line-height:1.5; }
+.obs-input::placeholder { color:var(--muted); }
+.obs-hint { font-size:.71rem; color:var(--muted); font-style:italic; }
+
+footer { margin-top:3.5rem; font-size:.67rem; color:var(--muted); font-style:italic; font-family:'Playfair Display',serif; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Corked · M5 / M6 / M7 · Manual Flow Bench</div>
+  <h1>The fix, their words, the exception.</h1>
+  <div class="sub">Run each flow end-to-end in Corked. Copy the inputs in order. Record what comes back. Mechanical verification only — payload shapes, rankUp routing, state persistence. Judgment happens later.</div>
+  <div class="rule-note">All three flows share the same base scenario through M4 (Priya, the invoice-chaser) so only the final answer changes between cases. Two cases need self mode (class 2) instead — those have their own short chain.</div>
+
+  <div class="scorebar" id="scorebar">
+    <div class="score-pill"><div class="pill-num total" id="sc-done">0</div><div class="pill-lbl">logged</div></div>
+    <div class="score-divider"></div>
+    <div class="score-pill"><div class="pill-num settled" id="sc-s">—</div><div class="pill-lbl">settled</div></div>
+    <div class="score-pill"><div class="pill-num clearing" id="sc-c">—</div><div class="pill-lbl">clearing</div></div>
+    <div class="score-pill"><div class="pill-num turbid" id="sc-t">—</div><div class="pill-lbl">turbid</div></div>
+    <div class="score-divider"></div>
+    <div class="score-msg" id="sc-msg">Open a flow and start filling inputs into Corked.</div>
+  </div>
+
+  <div class="section-head">
+    <div class="section-eyebrow">M5 · The Existing Fix</div>
+    <div class="section-title">What do people use now, and where does it fail?</div>
+    <div class="section-rule">M5 rule: overall state equals Gap state. A named fix with no failure point, or a failure point with no named fix, is not enough — both are required for settled.</div>
+  </div>
+  <div id="flows-m5"></div>
+
+  <div class="section-head">
+    <div class="section-eyebrow">M6 · Their Words, Not Yours</div>
+    <div class="section-title">Real language, or a reconstruction?</div>
+    <div class="section-rule">M6 rule: overall state equals Words state. Reconstructed words cap at clearing no matter how vivid the quote. Class 2 has no Echo bar — confirm nothing crashes and no Echo chip moves for those flows.</div>
+  </div>
+  <div id="flows-m6"></div>
+
+  <div class="section-head">
+    <div class="section-eyebrow">M7 · The Non-Case</div>
+    <div class="section-title">Who looks like they should have this, but doesn't?</div>
+    <div class="section-rule">M7 rule: overall state equals Limit state. A vague hedge ("some probably don't") is not a bounded exclusion. "Everyone has this" removes the boundary entirely.</div>
+  </div>
+  <div id="flows-m7"></div>
+
+  <footer>Gap, Words, and Limit are each the only bar that earns their verdict. Everything else in that mechanism is context.</footer>
+</div>
+
+<script>
+// Shared base chain (all non-self cases): Priya / freelance invoice chasing, through M4 settled.
+const BASE_STEPS = [
+  { label:'Step 1 — Spark', desc:'Paste this into the spark entry field on the home screen.', id:'spark',
+    text:'a tool that automatically chases freelance clients for overdue invoices so freelancers do not have to send awkward follow-up emails themselves' },
+  { label:'Step 2 — Maturity', desc:'Click through the person tree: "Yes" (spoken to a real person), then "Yes, I can name them and I know the moment" (class 0).', id:null },
+  { label:'Step 3 — Grape', desc:'When Corked asks who the problem belongs to, enter these.', id:'grape',
+    pair:[ { id:'gname', label:'Name', text:'Priya' }, { id:'grel', label:'Relationship', text:'my friend who freelances as a graphic designer' } ] },
+  { label:'Step 4 — M2 friction answer', desc:'When Corked asks about the friction Priya experiences, paste this.', id:'m2',
+    text:"Last month a client sat on an invoice for six weeks. Priya kept meaning to follow up but felt awkward about it, so she just avoided opening the client's emails until the money finally showed up on its own." },
+  { label:'Step 5 — M3 answer', desc:'Category-only answer, deliberately does not settle Echo.', id:'m3',
+    text:'Other freelancers in my design Slack group say they usually just add late fees to their contracts and hope it discourages slow payers.' },
+  { label:'Step 6 — M4 answer', desc:'The app will ask: "Priya is one kind of person with this. Who is a different kind, and does it look the same for them?" This settles Echo so the flow reaches M5.', id:'m4',
+    text:'My cousin Marcus runs a small contracting business, and every time a client is late paying he calls them directly within three days and tells them he is pausing work until it clears. It works for him because he can afford to walk away from small clients, which looks completely different from how it goes for Priya.' }
+];
+
+// Self-mode chain (class 2): founder is the grape. Used for the two class-2 cases.
+const SELF_STEPS = [
+  { label:'Step 1 — Spark', desc:'Paste this into the spark entry field on the home screen.', id:'spark',
+    text:'an app that reminds me to chase overdue invoices from my own freelance clients' },
+  { label:'Step 2 — Maturity', desc:'Click through the person tree: "No" (have not spoken to a real person), then "Yes" (this is your own experience) — class 2, self mode.', id:null },
+  { label:'Step 3 — Grape', desc:'Self mode — Corked asks for your first name and what makes this spark yours.', id:'grape',
+    pair:[ { id:'gname', label:'Your first name', text:'Jamie' }, { id:'grel', label:'What makes this spark yours', text:'I keep meaning to chase invoices and then avoid it for weeks.' } ] },
+  { label:'Step 4 — M2 friction answer', desc:'When Corked asks about your own friction, paste this.', id:'m2',
+    text:'Two months ago a client owed me for a full project and I kept putting off asking for it because I hated the confrontation, so I just let it slide for weeks.' },
+  { label:'Step 5 — M3 answer', desc:'Category-only, deliberately does not settle Echo.', id:'m3',
+    text:"Other freelancers I follow online say they usually just send a polite reminder email every Friday until it's paid." },
+  { label:'Step 6 — M4 answer', desc:'The app will ask: "You are one kind of person with this. Who is a different kind, and does it look the same for them?" This stays turbid (self again) but M6/M7 do not depend on it.', id:'m4',
+    text:"Honestly it's really just me — when it happens I just wait it out and eventually the client pays anyway." }
+];
+
+const M5_FLOWS = [
+  { key:'m5-1', title:'Named fix, precise failure', target:'settled',
+    watch:'Priya\'s actual tool is named (a Google Sheet with manual reminders) and the failure is specific (no automatic alert, twice forgot for over a month).',
+    question:'What do people use for this problem now, and exactly where does it fall short?',
+    answer:"Priya uses a basic Google Sheet to track who owes her what, with manual reminders. It falls short because there's no automatic alert — she has to remember to open it every week, and twice this year she didn't check it for over a month while a $2,000 invoice sat unpaid." },
+  { key:'m5-2', title:'Fix named, no failure', target:'clearing',
+    watch:'The tool is named but nothing is said about where it breaks down.',
+    question:'What do people use for this problem now, and exactly where does it fall short?',
+    answer:'Priya just uses a Google Sheet to track invoices.' },
+  { key:'m5-3', title:'"Nothing exists"', target:'turbid',
+    watch:'No fix is named at all, just a shrug.',
+    question:'What do people use for this problem now, and exactly where does it fall short?',
+    answer:"Honestly there isn't really a tool for this, people just kind of wing it." },
+  { key:'m5-4', title:'Founder\'s own build as the fix', target:'turbid',
+    watch:'The founder names their own prior build as the current fix. Gap should exclude it and the observation should name the swap (own build is not a valid current-fix answer).',
+    question:'What do people use for this problem now, and exactly where does it fall short?',
+    answer:"I actually built a rough version of this exact invoice-chasing tool for myself last year, and it falls short because it doesn't integrate with my accounting software." },
+  { key:'m5-5', title:'Class 2 — own spreadsheet, named failure', target:'settled', chain:'self',
+    watch:'Self mode: the founder\'s own current tool is valid Gap material here (only their own future *build* of this exact product is excluded, not their present-day workaround). Both the tool and the failure are specific.',
+    question:'What do you use for this problem now, and exactly where does it fall short?',
+    answer:'I use a basic spreadsheet to track invoices myself. It falls short because I have to remember to check it weekly, and last month I missed a $3,000 invoice that was 45 days overdue before I noticed.' }
+];
+
+const M6_FLOWS = [
+  { key:'m6-1', title:'Real exchange, direct quote', target:'settled', wordsSource:'real',
+    watch:'Toggle set to "real". A direct, specific quote in Priya\'s own words.',
+    question:'How would Priya describe this in their own words?',
+    answer:'Priya actually said to me last week, "I hate that I have to be the bad guy asking for money I already earned — it makes me feel like I\'m begging."' },
+  { key:'m6-2', title:'Reconstructed, vivid quote', target:'clearing', wordsSource:'reconstructed',
+    watch:'Toggle set to "reconstructed". Hard cap: reconstructed words can never settle, no matter how specific or vivid the imagined quote is.',
+    question:'How would Priya describe this in their own words?',
+    answer:'She would probably say something like, "I hate feeling like I have to beg for money I already earned."' },
+  { key:'m6-3', title:'Real conversation, no actual language', target:'clearing', wordsSource:'real',
+    watch:'Toggle set to "real" (a real exchange happened) but no direct quote is given — just a paraphrase of the gist.',
+    question:'How would Priya describe this in their own words?',
+    answer:"We talked about it over coffee last week and she mentioned it's stressful for her, but I don't remember her exact words." },
+  { key:'m6-4', title:'Founder framing presented as a quote', target:'turbid', wordsSource:'real',
+    watch:'The "quote" is really the founder\'s own pitch framing dressed up as something the grape said. Watch for this landing turbid despite the real toggle and quote marks.',
+    question:'How would Priya describe this in their own words?',
+    answer:'She basically said "it would be great if there was a tool for this" — which is exactly the kind of thing I want to build.' },
+  { key:'m6-5', title:'Toggle blocks submit until chosen', target:'ui-check',
+    watch:'Do not select either words-source option. Try to submit the answer below. Submission should be blocked (scrolled to the toggle) until "real" or "reconstructed" is chosen.',
+    question:'How would Priya describe this in their own words?',
+    answer:'Priya said something like this once, I do not remember exactly when.' },
+  { key:'m6-6', title:'Class 2 — no Echo field', target:'settled', chain:'self', wordsSource:'real',
+    watch:'Self mode has no Echo bar on M6 at all. Confirm the response has no echo field, no Echo chip movement, and no crash rendering the result.',
+    question:'What have you actually said or written about this, before Corked asked?',
+    answer:"I've said out loud to my partner more than once, \"I hate chasing people for money I've already earned.\"" }
+];
+
+const M7_FLOWS = [
+  { key:'m7-1', title:'Bounded person, clear reason', target:'settled',
+    watch:'A specific person is named, and the reason they are exempt is concrete (retainer clients, automatic payment).',
+    question:"Who looks like they should have this problem but doesn't? Why not?",
+    answer:"My friend Alex freelances too but never has this problem because he only works with retainer clients who pay automatically at the start of each month, so there's never anything to chase." },
+  { key:'m7-2', title:'"Some probably don\'t"', target:'clearing',
+    watch:'A hedge, not a bounded exclusion — no one specific is named, just a guess.',
+    question:"Who looks like they should have this problem but doesn't? Why not?",
+    answer:'I guess some freelancers probably don\'t have this problem, maybe the ones who only take upfront payment.' },
+  { key:'m7-3', title:'"Everyone has this"', target:'turbid',
+    watch:'The boundary is removed entirely — there is no non-case at all.',
+    question:"Who looks like they should have this problem but doesn't? Why not?",
+    answer:"Honestly I think every freelancer deals with this at some point, there's no one who's exempt." },
+  { key:'m7-4', title:'Founder\'s build as the exemption', target:'turbid',
+    watch:'The founder claims exemption because of their own build of this exact product. Limit should cap this and the observation should name the swap.',
+    question:"Who looks like they should have this problem but doesn't? Why not?",
+    answer:"I actually don't have this problem anymore since I built my own tracker for it, so I guess I'm the exception." }
+];
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderStep(step, flowKey) {
+  if (!step.id) {
+    return `<div class="step"><div class="step-label">${step.label}</div><div class="step-desc">${step.desc}</div></div>`;
+  }
+  if (step.pair) {
+    return `<div class="step">
+      <div class="step-label">${step.label}</div>
+      <div class="step-desc">${step.desc}</div>
+      <div class="pair-row">
+        ${step.pair.map(p => `<div class="pair-item">
+          <div class="pair-label">${p.label}</div>
+          <div class="copy-row">
+            <div class="copy-text" id="${flowKey}-${p.id}">${escHtml(p.text)}</div>
+            <button class="copy-btn" onclick="cp('${flowKey}-${p.id}',this)">Copy</button>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+  return `<div class="step">
+    <div class="step-label">${step.label}</div>
+    <div class="step-desc">${step.desc}</div>
+    <div class="copy-row">
+      <div class="copy-text" id="${flowKey}-${step.id}">${escHtml(step.text)}</div>
+      <button class="copy-btn" onclick="cp('${flowKey}-${step.id}',this)">Copy</button>
+    </div>
+  </div>`;
+}
+
+const EXPECTS = {};
+
+function renderFlow(f, n, mechLabel, mechStepNum) {
+  EXPECTS[f.key] = f.target;
+  const targetBadgeClass = ['settled','clearing','turbid'].includes(f.target) ? f.target : 'watch';
+  const targetLabel = f.target === 'ui-check' ? 'Target: submit blocked' : 'Target: ' + f.target[0].toUpperCase() + f.target.slice(1);
+  const baseChain = f.chain === 'self' ? SELF_STEPS : BASE_STEPS;
+
+  let stepsHtml = baseChain.map(s => renderStep(s, f.key)).join('');
+
+  if (f.wordsSource) {
+    stepsHtml += `<div class="toggle-note"><b>Words-source toggle:</b> select "${f.wordsSource === 'real' ? 'Their words, from a real exchange' : 'Reconstructed, we have not talked in these terms'}" before submitting.</div>`;
+  }
+
+  stepsHtml += `<div class="step">
+    <div class="step-label">Step ${mechStepNum} — ${mechLabel} answer</div>
+    <div class="q-callout">The app will ask: <span>${escHtml(f.question)}</span></div>
+    <div class="copy-row">
+      <div class="copy-text" id="${f.key}-ans">${escHtml(f.answer)}</div>
+      <button class="copy-btn" onclick="cp('${f.key}-ans',this)">Copy</button>
+    </div>
+  </div>`;
+
+  let resultHtml;
+  if (f.target === 'ui-check') {
+    resultHtml = `<div class="result-section">
+      <div class="result-label">Did submission stay blocked until a toggle was chosen?</div>
+      <div class="result-options">
+        <button class="result-btn" onclick="setResult('${f.key}','pass',this)">Yes — blocked and scrolled to the toggle</button>
+        <button class="result-btn" onclick="setResult('${f.key}','wrong',this)">No — it submitted anyway</button>
+      </div>
+      <div class="obs-box" id="obs-${f.key}"><textarea class="obs-input" placeholder="Notes" id="obs-txt-${f.key}"></textarea></div>
+    </div>`;
+  } else {
+    resultHtml = `<div class="result-section">
+      <div class="result-label">${mechLabel === 'M6' ? 'Words' : mechLabel === 'M7' ? 'Limit' : 'Gap'} — what did Corked return?</div>
+      <div class="result-options">
+        <button class="result-btn" onclick="setResult('${f.key}','settled',this)">Settled</button>
+        <button class="result-btn" onclick="setResult('${f.key}','clearing',this)">Clearing</button>
+        <button class="result-btn" onclick="setResult('${f.key}','turbid',this)">Turbid</button>
+        <button class="result-btn" onclick="setResult('${f.key}','wrong',this)">Something unexpected</button>
+      </div>
+      <div class="obs-box" id="obs-${f.key}">
+        <textarea class="obs-input" placeholder="Paste the observation text from Corked here (optional but useful)" id="obs-txt-${f.key}"></textarea>
+        <div class="obs-hint">${f.chain === 'self' && mechLabel === 'M6' ? 'Also confirm: no echo field in the response, no Echo chip movement, no crash.' : 'The observation is the two-sentence lab note the Winemaster writes below your answer.'}</div>
+      </div>
+    </div>`;
+  }
+
+  return `<div class="flow" id="flow-${f.key}">
+    <div class="flow-header" onclick="toggle('${f.key}')">
+      <div class="result-dot"></div>
+      <div class="flow-num">${String(n).padStart(2,'0')}</div>
+      <div class="flow-header-right">
+        <div class="flow-title">${escHtml(f.title)}</div>
+        <div class="flow-concept">${f.chain === 'self' ? 'Self mode (class 2)' : 'Base chain (class 0)'}</div>
+        <div class="flow-badges"><span class="badge ${targetBadgeClass}">${targetLabel}</span></div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="flow-body">
+      <div class="watch-note"><b>What to watch:</b> ${f.watch}</div>
+      ${stepsHtml}
+      ${resultHtml}
+    </div>
+  </div>`;
+}
+
+document.getElementById('flows-m5').innerHTML = M5_FLOWS.map((f,i) => renderFlow(f, i+1, 'M5', f.chain === 'self' ? 7 : 7)).join('');
+document.getElementById('flows-m6').innerHTML = M6_FLOWS.map((f,i) => renderFlow(f, i+1, 'M6', 7)).join('');
+document.getElementById('flows-m7').innerHTML = M7_FLOWS.map((f,i) => renderFlow(f, i+1, 'M7', 7)).join('');
+
+const results = {};
+
+function toggle(key) { document.getElementById('flow-' + key).classList.toggle('open'); }
+
+function cp(id, btn) {
+  const text = document.getElementById(id).textContent.trim();
+  navigator.clipboard.writeText(text).then(() => flashCopied(btn)).catch(() => {
+    const range = document.createRange();
+    range.selectNode(document.getElementById(id));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    flashCopied(btn);
+  });
+}
+function flashCopied(btn) {
+  btn.textContent = 'Copied';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+}
+
+function setResult(key, state, btn) {
+  results[key] = state;
+  const flow = document.getElementById('flow-' + key);
+  const obsBox = document.getElementById('obs-' + key);
+  btn.closest('.result-options').querySelectorAll('.result-btn').forEach(b => { b.className = 'result-btn'; });
+  const cls = state === 'pass' ? 'pass' : state === 'wrong' ? 'wrong' : state;
+  btn.classList.add('active-' + cls);
+
+  const expected = EXPECTS[key];
+  const isCorrect = state === expected || (expected === 'ui-check' && state === 'pass');
+  flow.className = 'flow open ' + (isCorrect ? (['settled','clearing','turbid'].includes(state) ? state : 'settled') : 'wrong');
+
+  obsBox.classList.add('show');
+  updateScore();
+}
+
+function updateScore() {
+  const total = Object.keys(EXPECTS).length;
+  const done = Object.keys(results).length;
+  const counts = { settled:0, clearing:0, turbid:0 };
+  let wrongCount = 0;
+
+  for (const [key, state] of Object.entries(results)) {
+    if (state === 'settled') counts.settled++;
+    else if (state === 'clearing') counts.clearing++;
+    else if (state === 'turbid') counts.turbid++;
+    const expected = EXPECTS[key];
+    const correct = state === expected || (expected === 'ui-check' && state === 'pass');
+    if (!correct) wrongCount++;
+  }
+
+  document.getElementById('sc-done').textContent = done;
+  document.getElementById('sc-s').textContent = counts.settled || '—';
+  document.getElementById('sc-c').textContent = counts.clearing || '—';
+  document.getElementById('sc-t').textContent = counts.turbid || '—';
+
+  const msg = document.getElementById('sc-msg');
+  if (done === 0) {
+    msg.innerHTML = 'Open a flow and start filling inputs into Corked.';
+  } else if (done < total) {
+    msg.innerHTML = `${done} of ${total} logged. ${total - done} to go.`;
+  } else if (wrongCount === 0) {
+    msg.innerHTML = `<b>${total} of ${total} correct.</b> M5/M6/M7 rules are holding.`;
+  } else {
+    msg.innerHTML = `<b>${wrongCount} unexpected result${wrongCount>1?'s':''}.</b> Paste the observation into the box below that flow and share with Claude.`;
+  }
+}
+
+toggle('m5-1');
+</script>
+</body>
+</html>

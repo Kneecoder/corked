@@ -8,3 +8,4 @@ screenshot.ps1
 .dev.vars
 .env
 .env.*
+.wrangler/
