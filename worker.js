@@ -976,6 +976,12 @@ settled:  The quoted or recounted words themselves describe or contain a specifi
 clearing: The words carry a stated feeling or complaint but no filmable action.
 turbid:   No words to assess, or words carry nothing behavioural at all.
 
+HARD RULE — no exceptions:
+If words_source is reconstructed, Tell is capped at clearing regardless of how specific or filmable the
+described action sounds. Reconstructed words carry reconstructed behaviour; a vivid invented action is not
+evidence of a real filmable moment. This rule overrides the settled bar above; do not grade Tell settled
+when words_source is reconstructed under any circumstance.
+
 ECHO BAR — third-party echo in the words (opportunistic, rank-up only, never lowers overall state,
 never blocks). Only ever gradeable when maturity_class is 0 or 1 and words_source is real:
 settled:  words_source is real AND the grape's quoted words name or reference one concrete thing a third
@@ -2054,6 +2060,11 @@ async function handleM6(request, env, corsHeaders) {
   // Hard rule: reconstructed caps words at clearing, no exceptions.
   if (wordsSource === 'reconstructed' && parsed.words.state === 'settled') {
     parsed.words.state = 'clearing';
+  }
+
+  // Hard rule: reconstructed caps tell at clearing, no exceptions.
+  if (wordsSource === 'reconstructed' && parsed.tell.state === 'settled') {
+    parsed.tell.state = 'clearing';
   }
 
   if (selfMode) {
