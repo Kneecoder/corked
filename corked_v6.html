@@ -1234,7 +1234,19 @@ body {
 .bottle-card--sag-3 { opacity:.55; transform:translateY(7px); filter:saturate(.7) grayscale(.15); }
 
 /* ── REAL-WORLD EXITS ── */
-#real-world-exits { display:none; gap:.6rem; flex-wrap:wrap; }
+#real-world-exits { display:none; gap:.6rem; flex-wrap:nowrap; flex-shrink:0; }
+#q-phase-row { flex-wrap:wrap; row-gap:.6rem; }
+#rw-park-btn, #rw-flight-btn {
+  border: 1px solid var(--border-hi);
+  border-radius: 6px;
+  padding: .6rem 1.15rem;
+  min-height: 2.4rem;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+#rw-park-btn:not(.errand-active):hover, #rw-flight-btn:not(.errand-active):hover {
+  border-color: rgba(184,168,138,.4);
+}
 #rw-park-btn:disabled, #rw-flight-btn:disabled { opacity:.45; pointer-events:none; }
 #rw-park-btn.errand-active, #rw-flight-btn.errand-active {
   background: rgba(201,165,90,.12);
@@ -3223,6 +3235,12 @@ function renderBriefHTML(brief, mode, grapeName) {
     addressing = 'Ask ' + escHtml(grape);
   } else if (mode === 'echo') {
     addressing = 'Not ' + escHtml(grape) + (target ? ' · looking for: ' + escHtml(target) : '');
+  } else if (mode === 'contrast') {
+    addressing = target ? 'Looking for: ' + escHtml(target) : '';
+  } else if (mode === 'words') {
+    addressing = 'Talk to ' + escHtml(grape) + ' · unprimed';
+  } else if (mode === 'limit') {
+    addressing = target ? 'Looking for: ' + escHtml(target) : '';
   }
 
   const cid = 'bc-' + Math.random().toString(36).slice(2, 8);
@@ -3265,6 +3283,8 @@ function showInlineErrand(briefOrText) {
 function hideInlineErrand() {
   const el = document.getElementById('inline-errand');
   if (el) { el.textContent = ''; el.style.display = 'none'; }
+  const wmBrief = document.getElementById('wm-brief');
+  if (wmBrief) wmBrief.style.display = 'none';
   document.getElementById('rw-park-btn')?.classList.remove('errand-active');
   document.getElementById('rw-flight-btn')?.classList.remove('errand-active');
 }
@@ -4473,6 +4493,9 @@ function restoreAnsweredMechUI(m) {
     showInlineErrand(S.m6_pending_brief);
   } else if (m.id === 'M7' && S.elements.limit !== 'settled' && (S.m7_pending_brief?.question || S.m7_pending_brief?.text)) {
     showInlineErrand(S.m7_pending_brief);
+  } else {
+    const wmBrief = document.getElementById('wm-brief');
+    if (wmBrief) wmBrief.style.display = 'none';
   }
 }
 
