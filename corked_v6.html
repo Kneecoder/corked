@@ -3514,7 +3514,7 @@ function setLastSource(key, mechId) {
   S.lastSource[key] = mechId;
 }
 
-function applyAnchoredResult(key, result, txt, changedRows, settledLabel, weakLabel) {
+function applyAnchoredResult(key, result, txt, changedRows, settledLabel, weakLabel, mechId) {
   const ok = ['turbid', 'clearing', 'settled'];
   const prior = S.elements[key];
   let state = ok.includes(result?.state) ? result.state : 'turbid';
@@ -3526,6 +3526,8 @@ function applyAnchoredResult(key, result, txt, changedRows, settledLabel, weakLa
 
   const after = S.elements[key];
   if (rankState(after) <= rankState(prior) && !(claimedSettled && !anchor)) return;
+
+  setLastSource(key, mechId);
 
   if (after === 'settled' && anchor) {
     changedRows.push({
@@ -3797,11 +3799,10 @@ async function applyM2Result(data, txt, allowSwirl = true) {
   S.m2 = data;
   const changedRows = [];
 
-  applyAnchoredResult('tell', data.tell, txt, changedRows, 'Observable action', 'Partial action');
-  setLastSource('tell', 'M2');
-  applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance', 'Partial moment');
+  applyAnchoredResult('tell', data.tell, txt, changedRows, 'Observable action', 'Partial action', 'M2');
+  applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance', 'Partial moment', 'M2');
   if (S.m2_problem?.gap_in_play) {
-    applyAnchoredResult('gap', data.gap, txt, changedRows, 'Workaround failure', 'Partial failure point');
+    applyAnchoredResult('gap', data.gap, txt, changedRows, 'Workaround failure', 'Partial failure point', 'M2');
   }
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
@@ -3847,9 +3848,8 @@ async function applyM3Result(data, txt, allowSwirl = true) {
   S.m3 = data;
   const changedRows = [];
 
-  applyAnchoredResult('echo',    data.echo,    txt, changedRows, 'Third-party confirmation', 'Partial confirmation');
-  setLastSource('echo', 'M3');
-  applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance',        'Partial moment');
+  applyAnchoredResult('echo',    data.echo,    txt, changedRows, 'Third-party confirmation', 'Partial confirmation', 'M3');
+  applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance',        'Partial moment', 'M3');
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
 
@@ -3969,9 +3969,8 @@ async function callM4Worker(txt) {
 async function applyM4Result(data, txt, allowSwirl = true) {
   S.m4 = data;
   const changedRows = [];
-  applyAnchoredResult('echo',    data.echo,    txt, changedRows, 'Contrast', 'Partial contrast');
-  setLastSource('echo', 'M4');
-  applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance',   'Partial moment');
+  applyAnchoredResult('echo',    data.echo,    txt, changedRows, 'Contrast', 'Partial contrast', 'M4');
+  applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance',   'Partial moment', 'M4');
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
 
@@ -4024,7 +4023,7 @@ async function callM5Worker(txt) {
 async function applyM5Result(data, txt, allowSwirl = true) {
   S.m5 = data;
   const changedRows = [];
-  applyAnchoredResult('gap', data.gap, txt, changedRows, 'Existing fix and failure point', 'Partial fix');
+  applyAnchoredResult('gap', data.gap, txt, changedRows, 'Existing fix and failure point', 'Partial fix', 'M5');
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
 
@@ -4094,11 +4093,9 @@ async function applyM6Result(data, txt, allowSwirl = true) {
   S.m6 = data;
   S.m6_words_source = _m6WordsSource;
   const changedRows = [];
-  applyAnchoredResult('tell', data.tell, txt, changedRows, 'Filmable behaviour', 'Partial behaviour');
-  setLastSource('tell', 'M6');
+  applyAnchoredResult('tell', data.tell, txt, changedRows, 'Filmable behaviour', 'Partial behaviour', 'M6');
   if (data.echo) {
-    applyAnchoredResult('echo', data.echo, txt, changedRows, 'Third-party echo', 'Partial echo');
-    setLastSource('echo', 'M6');
+    applyAnchoredResult('echo', data.echo, txt, changedRows, 'Third-party echo', 'Partial echo', 'M6');
   }
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
@@ -4152,7 +4149,7 @@ async function callM7Worker(txt) {
 async function applyM7Result(data, txt, allowSwirl = true) {
   S.m7 = data;
   const changedRows = [];
-  applyAnchoredResult('limit', data.limit, txt, changedRows, 'Bounded exclusion and reason', 'Partial exclusion');
+  applyAnchoredResult('limit', data.limit, txt, changedRows, 'Bounded exclusion and reason', 'Partial exclusion', 'M7');
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
 
@@ -5907,9 +5904,9 @@ function v6RenderM0(data) {
   const followupQ = document.getElementById('m0-followup-q');
   const followupAns = document.getElementById('m0-followup-ans');
   const stateLabel = document.getElementById('m0-state-label');
-  if (state === 'unbottleable' && needsFollowup) {
+  if (needsFollowup) {
     if (stateLabel) {
-      stateLabel.textContent = 'Not bottleable yet';
+      stateLabel.textContent = state === 'unbottleable' ? 'Not bottleable yet' : 'Bottled, but thin';
       stateLabel.style.display = 'block';
     }
     if (followupQ) followupQ.textContent = sanitizeVisibleCopy(data.followup.question, data);
