@@ -820,8 +820,8 @@ body {
   border:1px solid var(--border); pointer-events:none;
 }
 .vc-name {
-  font-family:'Playfair Display',serif; font-size:1.5rem;
-  letter-spacing:.18em; text-transform:uppercase; text-align:center; margin-bottom:.2rem;
+  font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:500;
+  line-height:1.45; text-align:center; margin-bottom:.4rem; padding:0 .5rem;
 }
 .vc-year {
   text-align:center; font-size:.7rem; letter-spacing:.3em;
@@ -1990,7 +1990,10 @@ async function workerFetch(path, body) {
     clearTimeout(timer);
   }
   const data = await res.json();
-  if (!res.ok || data.error) throw new Error(data.error || 'Worker error');
+  if (!res.ok || data.error) {
+    console.warn('[workerFetch] rejected', { path, status: res.status, error: data.error, body });
+    throw new Error(data.error || 'Worker error');
+  }
   return data;
 }
 
@@ -3481,13 +3484,14 @@ function rankState(state) {
 
 function rankUp(key, state, labelValue) {
   const cur = S.elements[key];
-  if (rankState(state) > rankState(cur)) {
+  const improved = rankState(state) > rankState(cur);
+  if (improved) {
     setEl(key, state);
   } else if (cur === 'inert') {
     setEl(key, 'turbid');
   }
-  if (state !== 'turbid' && labelValue) {
-    S.label[key] = S.label[key] || labelValue.slice(0,150);
+  if (improved && state !== 'turbid' && labelValue) {
+    S.label[key] = labelValue.length > 150 ? labelValue.slice(0,150) + '…' : labelValue;
   }
 }
 
@@ -3499,7 +3503,7 @@ function applyLocalMechanismResult(m, txt) {
     systemState = 'settled';
   }
 
-  m.els.forEach(e => rankUp(e, systemState, txt));
+  m.els.forEach(e => rankUp(e, systemState, null));
   showPhaseObservation(m.obs(txt));
 }
 
@@ -3518,7 +3522,7 @@ function applyAnchoredResult(key, result, txt, changedRows, settledLabel, weakLa
   const claimedSettled = state === 'settled';
   if (claimedSettled && !anchor) state = 'clearing';
 
-  rankUp(key, state, anchor || txt);
+  rankUp(key, state, anchor || null);
 
   const after = S.elements[key];
   if (rankState(after) <= rankState(prior) && !(claimedSettled && !anchor)) return;
@@ -4663,7 +4667,7 @@ function showLabel() {
       : 'Vintage Label · Phase 1 Complete';
   }
 
-  let h = `<div class="vc-name">${S.idea.slice(0,28).toUpperCase()}</div>
+  let h = `<div class="vc-name">${escHtml(getSparkDisplaySummary())}</div>
             <div class="vc-year">${mo} ${yr} · Phase 1 · Observation</div>
             <div class="vc-rule"></div>`;
 
