@@ -1951,7 +1951,6 @@ async function handleEvidenceMechanism(request, env, corsHeaders, cfg) {
   if (!parsed || typeof parsed !== 'object' || parsed.mechanism !== cfg.mechanism) {
     throw new Error(`Invalid ${cfg.mechanism} response`);
   }
-  if (!allowedStates.includes(parsed.state)) parsed.state = 'turbid';
   // A bar without a valid state is a failed grade, never a default Turbid.
   for (const bar of cfg.bars) {
     if (!allowedStates.includes(parsed[bar]?.state)) throw new Error(`Invalid ${cfg.mechanism} grade: ${bar} state`);
@@ -2041,7 +2040,6 @@ async function handleM6(request, env, corsHeaders) {
   if (!parsed || typeof parsed !== 'object' || parsed.mechanism !== 'M6') {
     throw new Error('Invalid M6 response');
   }
-  if (!allowedStates.includes(parsed.state)) parsed.state = 'turbid';
 
   const selfMode = maturityClass === 2;
 
@@ -2063,7 +2061,12 @@ async function handleM6(request, env, corsHeaders) {
   if (selfMode) {
     delete parsed.echo;
   } else {
-    if (!['turbid', 'settled'].includes(parsed.echo?.state)) throw new Error('Invalid M6 grade: echo state');
+    // Echo is binary on this bar. A real "clearing" folds down to turbid, as before;
+    // a missing or unknown state is a failed grade.
+    if (!allowedStates.includes(parsed.echo?.state)) throw new Error('Invalid M6 grade: echo state');
+    if (parsed.echo.state === 'clearing') {
+      parsed.echo = { state: 'turbid', anchor_span: null };
+    }
     if (wordsSource !== 'real' && parsed.echo.state !== 'turbid') {
       parsed.echo = { state: 'turbid', anchor_span: null };
     }
@@ -2125,7 +2128,6 @@ async function handleM4(request, env, corsHeaders) {
   if (!parsed || typeof parsed !== 'object' || parsed.mechanism !== 'M4') {
     throw new Error('Invalid M4 response');
   }
-  if (!allowedStates.includes(parsed.state)) parsed.state = 'turbid';
   // A bar without a valid state is a failed grade, never a default Turbid.
   for (const bar of ['echo', 'vintage']) {
     if (!allowedStates.includes(parsed[bar]?.state)) throw new Error(`Invalid M4 grade: ${bar} state`);
