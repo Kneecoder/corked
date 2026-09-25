@@ -2129,9 +2129,10 @@ function loadBottle(id) {
   return getAllBottles().find(b => b.id === id) || null;
 }
 
-function parkBottleDormant(id, brief, status = 'dormant', s = S, mechIdx = mi) {
+function parkBottleDormant(id, brief, status = 'dormant', s = S, mechIdx = mi, parkMech = null) {
   s.qLifecycle = 'parked';
   s.parkKind = status;
+  s.parkMech = parkMech;
   const bottles = getAllBottles();
   const now = new Date().toISOString();
   const nextQuestionAt = status === 'dormant' ? computeParkNextQuestionAt(s.pace) : null;
@@ -2150,14 +2151,14 @@ function parkBottleDormant(id, brief, status = 'dormant', s = S, mechIdx = mi) {
 // park is dropped rather than parking a bottle they are working in.
 const _parksInFlight = new Set();
 
-function beginPark() {
-  return { id: activeBottleId, s: S, mechIdx: mi, session: _bottleSession };
+function beginPark(mechId) {
+  return { id: activeBottleId, s: S, mechIdx: mi, mechId: mechId || null, session: _bottleSession };
 }
 
 function finishPark(park, brief, status) {
   const stillOpen = park.session === _bottleSession;
   if (!stillOpen && _sessionBottleId === park.id) return;
-  parkBottleDormant(park.id, brief, status, park.s, park.mechIdx);
+  parkBottleDormant(park.id, brief, status, park.s, park.mechIdx, park.mechId);
   if (stillOpen) showCellar();
 }
 
@@ -2183,6 +2184,7 @@ function updateBottleBrief(id, brief) {
 function wakeBottle(id) {
   setQLifecycle('active');
   S.parkKind = null;
+  S.parkMech = null;
   const bottles = getAllBottles();
   const i = bottles.findIndex(b => b.id === id);
   if (i >= 0) {
@@ -2343,7 +2345,7 @@ function healPhantomParkedBottles() {
       const hasGrape = !!(s.answers && s.answers.M1);
       if (!hasGrape) return b; // legitimately FIND-eligible; leave for openDormantFind to (re)generate
       changed = true;
-      const newS = { ...s, qLifecycle: 'active', parkKind: null };
+      const newS = { ...s, qLifecycle: 'active', parkKind: null, parkMech: null };
       return { ...b, s: newS, status: 'active', brief: null, nextQuestionAt: null };
     });
     if (changed) saveAllBottles(healed);
@@ -2811,7 +2813,7 @@ async function intakeNext() {
     if (S.maturity === 3) {
       const btn = document.getElementById('grape-continue-btn');
       if (btn) { btn.disabled = true; btn.textContent = 'Finding the question…'; }
-      const park = beginPark();
+      const park = beginPark(null);
       let brief;
       try {
         brief = await fetchFieldBrief({ mode: 'find', missing: 'grape' });
@@ -3082,7 +3084,25 @@ function updateBottle() {
   if (murk) murk.style.opacity = String(Math.max(0.08, 0.75-(settled/6)*0.67));
 }
 
-function renderMech() {
+// The question a mechanism asks, exactly as renderMech shows it.
+function mechQuestion(m) {
+  const gn = S.label.grape || S.grape_name || 'the person you named';
+  const selfMode = S.maturity === 2;
+  if (m.id === 'M3') return selfMode
+    ? `Your own experience aside — who else hits this? Name one person and tell me what they have actually done about it.`
+    : `Set ${gn} aside. Who else hits this? Name one person and tell me what they have actually done about it.`;
+  if (m.id === 'M4') return selfMode
+    ? `You are one kind of person with this. Who is a different kind, and does it look the same for them?`
+    : `${gn} is one kind of person with this. Who is a different kind, and does it look the same for them?`;
+  if (m.id === 'M6') return selfMode
+    ? `What have you actually said or written about this, before Corked asked?`
+    : `How would ${gn} describe this in their own words?`;
+  return m.q;
+}
+
+// opts.reentry: rendering a parked mechanism whose answer is about to be graded. M2 must not
+// rerun Phase A then; it shows the problem question it was parked with.
+function renderMech(opts = {}) {
   if (mi >= M.length) { showLabel(); return; }
   const m = M[mi];
 
@@ -3143,16 +3163,19 @@ function renderMech() {
   if (m.id === 'M2') {
     const gn2 = S.label.grape || S.grape_name || 'the person you named';
     if (wmBrief) wmBrief.textContent = `Haven't spoken to ${gn2} about this yet? Go have that conversation. Come back and write what they actually said.`;
-    triggerM2PhaseA();
+    if (opts.reentry) {
+      if (S.m2_problem?.question) document.getElementById('m-q').textContent = S.m2_problem.question;
+      if (S.m2_problem?.hint) document.getElementById('m-hint').textContent = S.m2_problem.hint;
+      const exitsRowM2 = document.getElementById('real-world-exits');
+      if (exitsRowM2) exitsRowM2.style.display = 'flex';
+    } else {
+      triggerM2PhaseA();
+    }
   }
 
-  // M3: inject confirmed problem into question, show brief and exit, handle echo re-entry.
+  // M3: inject confirmed problem into question, show brief and exit.
   if (m.id === 'M3') {
-    const gn = S.label.grape || S.grape_name || 'the person you named';
-    const selfMode3 = S.maturity === 2;
-    m.q = selfMode3
-      ? `Your own experience aside — who else hits this? Name one person and tell me what they have actually done about it.`
-      : `Set ${gn} aside. Who else hits this? Name one person and tell me what they have actually done about it.`;
+    m.q = mechQuestion(m);
     document.getElementById('m-q').textContent = m.q;
     if (wmBrief) {
       wmBrief.textContent = `Haven't found someone yet? Go find them. Come back with their name and what they've actually done about it.`;
@@ -3160,16 +3183,11 @@ function renderMech() {
     }
     const exitsRowM3 = document.getElementById('real-world-exits');
     if (exitsRowM3) exitsRowM3.style.display = 'flex';
-    if (_echoReentryAnswer !== null) triggerM3EchoReentry();
   }
 
   // M4: update question and hint with current grape name and problem, show brief and exits row.
   if (m.id === 'M4') {
-    const gn4 = S.label.grape || S.grape_name || 'the person you named';
-    const selfMode4 = S.maturity === 2;
-    m.q = selfMode4
-      ? `You are one kind of person with this. Who is a different kind, and does it look the same for them?`
-      : `${gn4} is one kind of person with this. Who is a different kind, and does it look the same for them?`;
+    m.q = mechQuestion(m);
     m.hint = `One person, not a category. What they did about ${S.m2_confirmed_problem || 'this problem'} counts.`;
     document.getElementById('m-q').textContent = m.q;
     document.getElementById('m-hint').textContent = m.hint;
@@ -3194,10 +3212,7 @@ function renderMech() {
   // M6: interstitial nudge (classes 0/1 only, first render, dismissible), required words-source toggle, show brief and exits row.
   if (m.id === 'M6') {
     const gn6 = S.label.grape || S.grape_name || 'the person you named';
-    const selfMode6 = S.maturity === 2;
-    m.q = selfMode6
-      ? `What have you actually said or written about this, before Corked asked?`
-      : `How would ${gn6} describe this in their own words?`;
+    m.q = mechQuestion(m);
     document.getElementById('m-q').textContent = m.q;
     const showM6Nudge = (S.maturity === 0 || S.maturity === 1) && !S.m6_nudge_dismissed;
     if (m6Interstitial) {
@@ -3632,7 +3647,7 @@ function gradeStatesValid(mechId, data) {
   return !!bars && bars.every(k => GRADE_STATES.includes(data[k]?.state));
 }
 
-async function gradeAnswer(mechId, txt, { allowSwirl = true, wordsSource, keepDraft = false } = {}) {
+async function gradeAnswer(mechId, txt, { allowSwirl = true, wordsSource, keepDraft = false, beforeStore } = {}) {
   const grader = ANSWER_GRADERS[mechId];
   if (!grader) throw new Error(`No grader for ${mechId}`);
   const session = _bottleSession;
@@ -3650,6 +3665,7 @@ async function gradeAnswer(mechId, txt, { allowSwirl = true, wordsSource, keepDr
   if (!stillOpen()) return null;
   if (!gradeStatesValid(mechId, data)) throw new Error('Invalid grade from the worker.');
 
+  if (beforeStore) beforeStore();
   S.answers[mechId] = txt;
   setAnswerDraft(mechId, '');
   // The apply step writes the grade synchronously, then may await an errand brief. Save the
@@ -3658,18 +3674,6 @@ async function gradeAnswer(mechId, txt, { allowSwirl = true, wordsSource, keepDr
   saveState();
   await applying;
   return stillOpen() ? data : null;
-}
-
-// A park re-entry answer that failed to grade goes back in the answer box, editable, so the
-// normal Continue can send it again.
-function showReentryFailure(answer, err) {
-  setQLifecycle('active');
-  const ansEl = document.getElementById('ans');
-  if (ansEl) { ansEl.value = answer; ansEl.removeAttribute('readonly'); ansEl.style.display = ''; }
-  obsShown = false;
-  showPhaseObservation('Worker error. ' + err.message);
-  document.getElementById('p1-btn').textContent = 'Try again →';
-  setPhaseBusy(false);
 }
 
 // Drafts are the ungraded text in the answer box, kept apart from S.answers (graded only).
@@ -3775,10 +3779,9 @@ async function submitSwirl() {
 // ── M2: THE FRICTION TEST ──────────────────────────────────────────────────
 
 let m2AwaitingConfirm = false;
-let _askReentryAnswer = null;
 
 async function parkM2Ask(status = 'dormant') {
-  const park = beginPark();
+  const park = beginPark('M2');
   let brief = S.m2_pending_brief || null;
   S.m2_pending_brief = null;
   if (!brief) {
@@ -3794,33 +3797,6 @@ async function parkM2Ask(status = 'dormant') {
 }
 
 async function triggerM2PhaseA() {
-  // ASK re-entry: skip Phase A, grade Phase B directly with the pending answer.
-  if (_askReentryAnswer !== null) {
-    const answer = _askReentryAnswer;
-    _askReentryAnswer = null;
-    const ansEl = document.getElementById('ans');
-    const confirmPanel2 = document.getElementById('m2-confirm');
-    if (ansEl) ansEl.style.display = 'none';
-    if (confirmPanel2) confirmPanel2.style.display = 'none';
-    document.getElementById('obs-box').style.display = 'none';
-    setPhaseBusy(true, 'Reading answer...');
-    setQLifecycle('evaluating');
-    let graded;
-    try {
-      graded = await gradeAnswer('M2', answer, { keepDraft: true });
-    } catch (err) {
-      showReentryFailure(answer, err);
-      return;
-    }
-    if (!graded) return; // the bottle was left while grading; the reply was discarded
-    if (ansEl) { ansEl.value = answer; ansEl.setAttribute('readonly', 'true'); ansEl.style.display = ''; }
-    document.getElementById('p1-btn').textContent = 'Continue →';
-    obsShown = true;
-    setQLifecycle('answered');
-    setPhaseBusy(false);
-    return;
-  }
-
   const workerUrl = v6GetWorkerUrl();
   const ans = document.getElementById('ans');
   const confirmPanel = document.getElementById('m2-confirm');
@@ -3963,7 +3939,6 @@ async function applyM2Result(data, txt, allowSwirl = true) {
 
 // ── M3: THIRD-PARTY WORKAROUNDS ───────────────────────────────────────────
 
-let _echoReentryAnswer = null;
 let _reopenKey = null;
 let _reopenMechId = null;
 
@@ -4008,7 +3983,7 @@ async function applyM3Result(data, txt, allowSwirl = true) {
 }
 
 async function parkM3Echo(status = 'dormant') {
-  const park = beginPark();
+  const park = beginPark('M3');
   let brief = S.m3_pending_brief || null;
   S.m3_pending_brief = null;
   if (!brief) {
@@ -4027,10 +4002,15 @@ async function parkItAction(status = 'dormant') {
   const btn = document.getElementById(status === 'in_flight' ? 'rw-flight-btn' : 'rw-park-btn');
   const errEl = document.getElementById('park-error');
   const otherBtn = document.getElementById(status === 'in_flight' ? 'rw-park-btn' : 'rw-flight-btn');
+  // A park for this bottle is still running: say so rather than start another. The buttons stay
+  // clickable while it runs so this can be said.
+  if (activeBottleId && _parksInFlight.has(activeBottleId)) {
+    if (errEl) { errEl.textContent = 'Still saving the last one.'; errEl.style.display = 'block'; }
+    return;
+  }
   const label = btn ? btn.textContent : '';
   if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
-  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
-  if (otherBtn) otherBtn.disabled = true;
+  if (btn) btn.textContent = 'Saving…';
 
   const m = M[mi];
   if (!m) {
@@ -4052,12 +4032,7 @@ async function parkItAction(status = 'dormant') {
   const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('This is taking too long. Check your connection and try again.')), PARK_TIMEOUT_MS));
 
   try {
-    const parked = await Promise.race([runPark(dispatch), timeout]);
-    // A park for this bottle is still running from an earlier click: leave that one to finish.
-    if (parked === false) {
-      if (btn) { btn.disabled = false; btn.textContent = label; }
-      if (otherBtn) otherBtn.disabled = false;
-    }
+    await Promise.race([runPark(dispatch), timeout]);
     // Success routes on to showCellar() inside finishPark() — nothing left to reset here.
   } catch (err) {
     if (btn) { btn.disabled = false; btn.textContent = label; }
@@ -4066,29 +4041,6 @@ async function parkItAction(status = 'dormant') {
   }
 }
 
-
-async function triggerM3EchoReentry() {
-  const answer = _echoReentryAnswer;
-  _echoReentryAnswer = null;
-  const ansEl = document.getElementById('ans');
-  if (ansEl) ansEl.style.display = 'none';
-  document.getElementById('obs-box').style.display = 'none';
-  setPhaseBusy(true, 'Reading answer...');
-  setQLifecycle('evaluating');
-  let graded;
-  try {
-    graded = await gradeAnswer('M3', answer, { keepDraft: true });
-  } catch (err) {
-    showReentryFailure(answer, err);
-    return;
-  }
-  if (!graded) return; // the bottle was left while grading; the reply was discarded
-  if (ansEl) { ansEl.value = answer; ansEl.setAttribute('readonly', 'true'); ansEl.style.display = ''; }
-  document.getElementById('p1-btn').textContent = 'Continue →';
-  obsShown = true;
-  setQLifecycle('answered');
-  setPhaseBusy(false);
-}
 
 // ── END M3 ────────────────────────────────────────────────────────────────
 
@@ -4135,7 +4087,7 @@ async function applyM4Result(data, txt, allowSwirl = true) {
 }
 
 async function parkM4Echo(status = 'dormant') {
-  const park = beginPark();
+  const park = beginPark('M4');
   let brief = S.m4_pending_brief || null;
   S.m4_pending_brief = null;
   if (!brief) {
@@ -4191,7 +4143,7 @@ async function applyM5Result(data, txt, allowSwirl = true) {
 }
 
 async function parkM5Gap(status = 'dormant') {
-  const park = beginPark();
+  const park = beginPark('M5');
   let brief = S.m5_pending_brief || null;
   S.m5_pending_brief = null;
   if (!brief) {
@@ -4267,7 +4219,7 @@ async function applyM6Result(data, txt, allowSwirl = true) {
 }
 
 async function parkM6Words(status = 'dormant') {
-  const park = beginPark();
+  const park = beginPark('M6');
   let brief = S.m6_pending_brief || null;
   S.m6_pending_brief = null;
   if (!brief) {
@@ -4323,7 +4275,7 @@ async function applyM7Result(data, txt, allowSwirl = true) {
 }
 
 async function parkM7Limit(status = 'dormant') {
-  const park = beginPark();
+  const park = beginPark('M7');
   let brief = S.m7_pending_brief || null;
   S.m7_pending_brief = null;
   if (!brief) {
@@ -4941,6 +4893,11 @@ async function submitLabelReopen() {
 async function parkLabelReopenAction() {
   const mechId = _labelReopenMechId;
   if (!mechId || mechId === 'M1') return;
+  if (activeBottleId && _parksInFlight.has(activeBottleId)) {
+    const qEl = document.getElementById('lr-question');
+    if (qEl) qEl.textContent = 'Still saving the last one.';
+    return;
+  }
   closeLabelReopen();
   await runPark(() => {
     if (mechId === 'M2') return parkM2Ask('dormant');
@@ -5411,6 +5368,35 @@ function getBottleDisplayLine(bottle) {
   return (s && s.idea) || '—';
 }
 
+// Each parkable mechanism's errand: how its brief is requested (same request its park makes),
+// the line shown when the worker can't write one, and how the cellar card names it.
+const PARK_ERRANDS = {
+  M2: { label: 'a question to ask', mode: 'ask',
+        element: () => (S.m2_problem?.gap_in_play && S.elements.gap !== 'settled') ? 'gap' : 'tell',
+        fallback: () => S.m2_problem?.question || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?` },
+  M3: { label: 'find another person', mode: 'echo', element: () => 'echo',
+        fallback: () => `Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?` },
+  M4: { label: 'find a different kind of person', mode: 'contrast', element: () => 'echo',
+        fallback: () => `Find a second person who hits this problem — not ${S.grape_name || 'the person you named'} and not whoever you named before. Ask what they've actually done about it.` },
+  M5: { label: 'find what they use now', mode: 'ask', element: () => 'gap',
+        fallback: () => `Find out what people currently use for this problem and exactly where it falls short.` },
+  M6: { label: 'their exact words', mode: 'words', element: () => 'words',
+        fallback: () => `Talk to ${S.grape_name || 'the person you named'} and bring back their exact words about this problem.` },
+  M7: { label: "find someone who doesn't have it", mode: 'limit', element: () => 'limit',
+        fallback: () => `Find someone who looks like they should have this problem but doesn't, and find out why not.` }
+};
+
+// The mechanism a parked bottle came from. Every park records it (s.parkMech). Bottles parked
+// before that were always parked at their current mechanism, so fall back to it. A label park
+// from before then can't be placed and returns null (openBottle wakes it).
+function parkedMechOf(bottle) {
+  const s = bottle.s || {};
+  if (s.parkMech) return PARK_ERRANDS[s.parkMech] ? s.parkMech : null;
+  const idx = typeof s.mechIndex === 'number' ? s.mechIndex : bottle.mechIndex;
+  const id = (typeof idx === 'number' && idx < PHASE1_MECH_COUNT) ? `M${idx + 1}` : null;
+  return PARK_ERRANDS[id] ? id : null;
+}
+
 function getCellarWaiting(bottle) {
   const s = bottle.s || {};
   const els = s.elements || {};
@@ -5426,11 +5412,11 @@ function getCellarWaiting(bottle) {
   // not a genuine park, and FIND is never legitimate once a grape is recorded. Rather than
   // report a park (and a target) that isn't real, fall through to the normal label-based
   // status below — openBottle() will self-heal the stale state next time it's opened.
-  if (isParked && (hasBrief || !hasGrape)) {
+  // The errand is named by the mechanism that parked, never by the brief's kind.
+  const parkMech = hasGrape ? parkedMechOf(bottle) : null;
+  if (isParked && (!hasGrape || (hasBrief && parkMech))) {
     const isInFlight = s.parkKind ? s.parkKind === 'in_flight' : bottle.status === 'in_flight';
-    const target = bottle.brief?.kind === 'ask'  ? 'a question to ask'
-                 : bottle.brief?.kind === 'echo' ? 'find another person'
-                 :                                 'find the person';
+    const target = hasGrape ? PARK_ERRANDS[parkMech].label : 'find the person';
     return isInFlight ? `Parked · asked, waiting on reply` : `Parked · ${target}`;
   }
 
@@ -5499,17 +5485,17 @@ function openBottle(id) {
   if (isParked) {
     const hasBrief = !!(record.brief && (record.brief.question || record.brief.text || record.brief.pending));
     const hasGrape = !!(S.answers && S.answers.M1);
-    if (hasBrief && record.brief.kind === 'ask')  return openDormantAsk(id, record);
-    if (hasBrief && record.brief.kind === 'echo') return openDormantEcho(id, record);
-    if (hasBrief && record.brief.kind === 'find') return openDormantFind(id, record);
     // FIND is only ever legitimate when no grape has been recorded yet — never inferred
     // from a missing/unrecognized brief kind, and never from the grape element's grade
-    // (Clearing is still a recorded grape, not an absent one). A parked state with no
-    // matching real brief is corrupt/stale park data, not a genuine park: there is no
-    // generated brief to show, so there is no park to honor — wake the bottle and fall
-    // through to its actual current mechanism instead of guessing.
-    if (!hasBrief && !hasGrape) return openDormantFind(id, record);
-    if (!hasBrief) wakeBottle(id);
+    // (Clearing is still a recorded grape, not an absent one).
+    if (!hasGrape) return openDormantFind(id, record);
+    // Every other park comes back to the mechanism that parked it. The brief's kind never
+    // decides where it goes, only how the brief is addressed.
+    const parkMech = parkedMechOf(record);
+    if (hasBrief && parkMech) return openParkedReentry(id, record, parkMech);
+    // A parked state with no real brief, or one that can't be placed, is stale park data,
+    // not a genuine park: wake the bottle and fall through to where it actually is.
+    wakeBottle(id);
   }
 
   if (mi >= M.length) {
@@ -5568,11 +5554,13 @@ async function openDormantFind(id, record) {
   const pending = brief.pending && !brief.question && !brief.text;
 
   if (pending && v6GetWorkerUrl()) {
+    const session = _bottleSession;
     try {
       const freshBrief = await fetchFieldBrief({ mode: 'find', missing: 'grape' });
       record.brief = freshBrief;
       updateBottleBrief(id, freshBrief);
     } catch (e) {}
+    if (session !== _bottleSession) return;
   }
 
   const finalBrief = record.brief || {};
@@ -5631,6 +5619,7 @@ async function submitDormantFind(id) {
   if (workerUrl) {
     if (btn) { btn.disabled = true; btn.textContent = 'Reading person...'; }
     setQLifecycle('evaluating');
+    const session = _bottleSession;
     try {
       const data = await workerFetch('/m1', {
         spark_summary:  getSparkSummary(),
@@ -5638,6 +5627,7 @@ async function submitDormantFind(id) {
         relationship:   rel,
         maturity_class: S.maturity
       });
+      if (session !== _bottleSession) return; // the bottle was left; discard the reply
       const grapeState = normalizeGrapeState(data.grape?.state || 'turbid');
       if (grapeState === 'turbid') {
         setQLifecycle('parked');
@@ -5651,6 +5641,7 @@ async function submitDormantFind(id) {
       wakeBottle(id);
       writeM1FromIntake(name, rel, data);
     } catch (err) {
+      if (session !== _bottleSession) return;
       setQLifecycle('parked');
       if (errEl) {
         errEl.textContent = 'Could not reach the worker. Check your Worker URL.';
@@ -5668,94 +5659,41 @@ async function submitDormantFind(id) {
   startPhase1();
 }
 
-async function openDormantAsk(id, record) {
+// ── PARKED RE-ENTRY (M2–M7) ──
+// One panel for every parked mechanism: the saved brief, then an answer box under that
+// mechanism's own question. The bottle stays parked until the answer grades; the answer is
+// passed straight to gradeAnswer(), never held anywhere another bottle could pick it up.
+async function openParkedReentry(id, record, mechId) {
+  const session = _bottleSession;
+  const errand = PARK_ERRANDS[mechId];
   const wasLocked = dormantIsLocked(record);
   const brief = record.brief || {};
 
   if (brief.pending && !brief.question && !brief.text && v6GetWorkerUrl()) {
     try {
-      const freshBrief = await fetchFieldBrief({ mode: 'ask', element: 'vintage' });
+      const freshBrief = await fetchFieldBrief({ mode: errand.mode, element: errand.element() });
       record.brief = freshBrief;
       updateBottleBrief(id, freshBrief);
     } catch (e) {}
-  }
-
-  const finalBrief    = record.brief || {};
-  const savedQuestion = S.m2_problem?.question || null;
-  const fallbackBrief = finalBrief.question || finalBrief.text
-    ? finalBrief
-    : { question: savedQuestion || (finalBrief.pending
-        ? 'The worker could not be reached. Ask the person directly: walk them through the last time this happened.'
-        : 'Go ask the person directly. Walk them through the last time this happened.'),
-        kind: 'ask', setup: null, target: null };
-  const grapeName  = S.grape_name || 'the person you named';
-  const isInFlight = record.status === 'in_flight';
-  const eyebrow    = isInFlight ? 'In flight · asked, waiting on reply' : 'Dormant · a question to ask';
-
-  document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
-  renderElList();
-
-  document.getElementById('dormant-panel-body').innerHTML = `
-    <div class="mech-eyebrow" style="margin-bottom:.9rem">${escHtml(eyebrow)}</div>
-    ${wasLocked ? `<div class="dormant-locked">This would normally wait until ${escHtml(formatLockedUntil(record.nextQuestionAt))}. Answer now instead, any time.</div>` : ''}
-    <div class="dormant-brief">
-      ${renderBriefHTML(fallbackBrief, 'ask', grapeName)}
-    </div>
-    <div style="margin-top:1.2rem;margin-bottom:1.5rem">
-      <div class="dormant-field-label">What did they say?</div>
-      <textarea class="answer-box" id="da-answer"
-                placeholder="Write what they actually said or did. Their words, their actions."
-                oninput="this.style.borderColor=''"></textarea>
-    </div>
-    <div class="dormant-error" id="da-error"></div>
-    <div class="phase-row">
-      <div></div>
-      <button class="btn" id="da-submit-btn" onclick="submitDormantAsk('${escHtml(id)}')">Answer now →</button>
-    </div>`;
-
-  showPhasePanel('dormant');
-  showScreen('phase1');
-}
-
-function submitDormantAsk(id) {
-  const ansEl  = document.getElementById('da-answer');
-  const errEl  = document.getElementById('da-error');
-  const answer = ansEl ? ansEl.value.trim() : '';
-
-  if (answer.length < 8) {
-    if (ansEl) ansEl.style.borderColor = 'var(--wine)';
-    return;
-  }
-  if (errEl) errEl.style.display = 'none';
-
-  wakeBottle(id);
-  _askReentryAnswer = answer;
-  startPhase1();
-}
-
-async function openDormantEcho(id, record) {
-  const wasLocked = dormantIsLocked(record);
-  const brief = record.brief || {};
-
-  if (brief.pending && !brief.question && !brief.text && v6GetWorkerUrl()) {
-    try {
-      const freshBrief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
-      record.brief = freshBrief;
-      updateBottleBrief(id, freshBrief);
-    } catch (e) {}
+    if (session !== _bottleSession) return;
   }
 
   const finalBrief = record.brief || {};
-  const problem    = S.m2_confirmed_problem || 'this problem';
-  const grapeName  = S.grape_name || 'the person you named';
-  const fallbackBrief = finalBrief.question || finalBrief.text
+  const shownBrief = finalBrief.question || finalBrief.text
     ? finalBrief
-    : { question: finalBrief.pending
-        ? `Find someone else who hits ${problem}. Ask them: walk me through how you handle this. The last time it happened, what did you actually do?`
-        : `Find someone who hits this problem and is not ${grapeName}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`,
-        kind: 'echo', setup: null, target: finalBrief.target || null };
-  const isInFlight = record.status === 'in_flight';
-  const eyebrow    = isInFlight ? 'In flight · waiting on their story' : 'Dormant · find another person';
+    : { question: errand.fallback(), kind: errand.mode, setup: null, target: finalBrief.target || null };
+  const addressing = finalBrief.kind || errand.mode;
+  const m = M.find(x => x.id === mechId);
+  const question = m ? mechQuestion(m) : '';
+  const draft = S.drafts?.[mechId] || '';
+  const isInFlight = (S.parkKind || record.status) === 'in_flight';
+  const eyebrow = isInFlight ? 'In flight · asked, waiting on reply' : `Dormant · ${errand.label}`;
+  const grapeName = S.grape_name || 'the person you named';
+  const wordsSourceRow = mechId === 'M6' ? `
+      <div class="rhythm-choices" id="dr-ws-row" style="grid-template-columns:repeat(2, minmax(0, 1fr));margin-bottom:.9rem">
+        <button type="button" class="rhythm-choice" id="dr-ws-real" onclick="pickParkedWordsSource('real')">Their words, from a real exchange</button>
+        <button type="button" class="rhythm-choice" id="dr-ws-recon" onclick="pickParkedWordsSource('reconstructed')">Reconstructed, we have not talked in these terms</button>
+      </div>` : '';
 
   document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
   renderElList();
@@ -5764,38 +5702,98 @@ async function openDormantEcho(id, record) {
     <div class="mech-eyebrow" style="margin-bottom:.9rem">${escHtml(eyebrow)}</div>
     ${wasLocked ? `<div class="dormant-locked">This would normally wait until ${escHtml(formatLockedUntil(record.nextQuestionAt))}. Answer now instead, any time.</div>` : ''}
     <div class="dormant-brief">
-      ${renderBriefHTML(fallbackBrief, 'echo', grapeName)}
+      ${renderBriefHTML(shownBrief, addressing, grapeName)}
     </div>
     <div style="margin-top:1.2rem;margin-bottom:1.5rem">
-      <div class="dormant-field-label">Who did you find, and what have they done about it?</div>
-      <textarea class="answer-box" id="de-answer"
-                placeholder="Describe them and walk through what they actually do or have done. Specific behaviour counts."
-                oninput="this.style.borderColor=''"></textarea>
+      <div class="mech-q">${escHtml(question)}</div>
+      ${wordsSourceRow}
+      ${draft ? `<div class="dormant-field-label">Not read yet</div>` : ''}
+      <textarea class="answer-box" id="dr-answer"
+                placeholder="Write here. The more specific you are, the more Phase 1 can work with."
+                oninput="this.style.borderColor=''">${escHtml(draft)}</textarea>
     </div>
-    <div class="dormant-error" id="de-error"></div>
+    <div class="dormant-error" id="dr-error"></div>
     <div class="phase-row">
       <div></div>
-      <button class="btn" id="de-submit-btn" onclick="submitDormantEcho('${escHtml(id)}')">Answer now →</button>
+      <button class="btn" id="dr-submit-btn" onclick="submitParkedAnswer('${escHtml(id)}', '${mechId}')">Answer now →</button>
     </div>`;
 
   showPhasePanel('dormant');
   showScreen('phase1');
 }
 
-function submitDormantEcho(id) {
-  const ansEl  = document.getElementById('de-answer');
-  const errEl  = document.getElementById('de-error');
+function pickParkedWordsSource(v) {
+  document.getElementById('dr-ws-real')?.classList.toggle('is-selected', v === 'real');
+  document.getElementById('dr-ws-recon')?.classList.toggle('is-selected', v === 'reconstructed');
+}
+
+async function submitParkedAnswer(id, mechId) {
+  if (id !== activeBottleId) return;
+  const ansEl  = document.getElementById('dr-answer');
+  const errEl  = document.getElementById('dr-error');
+  const btn    = document.getElementById('dr-submit-btn');
   const answer = ansEl ? ansEl.value.trim() : '';
 
   if (answer.length < 8) {
     if (ansEl) ansEl.style.borderColor = 'var(--wine)';
     return;
   }
+  let wordsSource;
+  if (mechId === 'M6') {
+    wordsSource = document.getElementById('dr-ws-real')?.classList.contains('is-selected') ? 'real'
+                : document.getElementById('dr-ws-recon')?.classList.contains('is-selected') ? 'reconstructed'
+                : null;
+    if (!wordsSource) {
+      document.getElementById('dr-ws-row')?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      return;
+    }
+  }
   if (errEl) errEl.style.display = 'none';
+  if (btn) { btn.disabled = true; btn.textContent = 'Reading answer...'; }
 
-  wakeBottle(id);
-  _echoReentryAnswer = answer;
-  startPhase1();
+  // A park from the label (Phase 1 already finished) returns to the label; any other park
+  // lands on its own mechanism's result.
+  const fromLabel = mi >= M.length;
+  const idx = M.findIndex(m => m.id === mechId);
+
+  let graded;
+  try {
+    graded = await gradeAnswer(mechId, answer, {
+      keepDraft: true,
+      allowSwirl: !fromLabel,
+      wordsSource,
+      // Runs only once the grade is valid, in the same step that stores it: the park ends here.
+      beforeStore: () => {
+        S.qLifecycle = 'active';
+        S.parkKind = null;
+        S.parkMech = null;
+        if (!fromLabel) {
+          mi = idx;
+          S.mechIndex = mi;
+          renderMech({ reentry: true });
+        }
+        if (mechId === 'M6') pickM6WordsSource(wordsSource);
+      }
+    });
+  } catch (err) {
+    // Nothing graded: the bottle stays parked, the brief and the text stay, and the text is
+    // kept as a draft so it's waiting under "Not read yet" next time.
+    if (errEl) { errEl.textContent = 'Worker error. ' + err.message; errEl.style.display = 'block'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Answer now →'; }
+    return;
+  }
+  if (!graded) return; // the bottle was left while grading; the reply was discarded
+
+  if (fromLabel) {
+    showLabel();
+    return;
+  }
+  const ans = document.getElementById('ans');
+  if (ans) { ans.value = answer; ans.setAttribute('readonly', 'true'); ans.style.display = ''; }
+  document.getElementById('p1-btn').textContent = 'Continue →';
+  obsShown = true;
+  if (!_pendingSwirl) setQLifecycle('answered');
+  saveState();
 }
 
 // ── M0 INTEGRATION ──
