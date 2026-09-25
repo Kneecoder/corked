@@ -3454,7 +3454,10 @@ function sanitizeVisibleCopy(text, data) {
     .replace(/\byou enters\b/ig, 'you enter')
     .replace(/\byou are present and the stated problem is\b/ig, 'your place in the spark is clear, and the stated tension is')
     .replace(/\bthe stated problem is\b/ig, 'the stated tension is')
-    .replace(/\s+/g, ' ')
+    // Collapse extra spaces within a line, but keep line breaks: the grape card is the
+    // builder's own words and Corked's reading as separate paragraphs.
+    .replace(/[^\S\n]+/g, ' ')
+    .replace(/ ?\n ?/g, '\n')
     .trim()
     .replace(/^([a-z])/, m => m.toUpperCase());
 }
