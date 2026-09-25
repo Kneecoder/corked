@@ -1909,6 +1909,7 @@ function freshState() {
     elements:{ grape:'inert', tell:'inert', vintage:'inert', gap:'inert', echo:'inert', limit:'inert' },
     lastSource:{},
     answers:{},
+    drafts:{},
     m1Fields:{ person:'', when:'', trying:'', happened:'' },
     label:{ grape:'', tell:'', vintage:'', gap:'', echo:'', limit:'' },
     m0:null,
@@ -1967,6 +1968,14 @@ const CELLAR_KEY = 'corked-cellar-v1';
 const DOORSTEP_KEY = 'corked-doorstep-v1';
 let saveTimer = null;
 let activeBottleId = null;
+
+// Bumped whenever a bottle is opened or left. A worker reply compares the value it started
+// with against this before touching anything, so a late reply can never land in whichever
+// bottle happens to be open when it arrives.
+let _bottleSession = 0;
+let _sessionBottleId = null;
+function enterBottleSession(id) { _bottleSession++; _sessionBottleId = id; }
+function leaveBottleSession() { _bottleSession++; _sessionBottleId = null; }
 
 function saveState() {
   if (activeBottleId) saveBottle(activeBottleId, S, mi);
@@ -2120,19 +2129,45 @@ function loadBottle(id) {
   return getAllBottles().find(b => b.id === id) || null;
 }
 
-function parkBottleDormant(id, brief, status = 'dormant') {
-  setQLifecycle('parked');
-  S.parkKind = status;
+function parkBottleDormant(id, brief, status = 'dormant', s = S, mechIdx = mi) {
+  s.qLifecycle = 'parked';
+  s.parkKind = status;
   const bottles = getAllBottles();
   const now = new Date().toISOString();
-  const nextQuestionAt = status === 'dormant' ? computeParkNextQuestionAt(S.pace) : null;
+  const nextQuestionAt = status === 'dormant' ? computeParkNextQuestionAt(s.pace) : null;
   const i = bottles.findIndex(b => b.id === id);
   if (i >= 0) {
-    bottles[i] = { ...bottles[i], s: S, status, brief, nextQuestionAt, updated_at: now };
+    bottles[i] = { ...bottles[i], s, status, brief, nextQuestionAt, updated_at: now };
   } else {
-    bottles.push({ id, created_at: now, updated_at: now, status, brief, nextQuestionAt, s: S, mechIndex: mi });
+    bottles.push({ id, created_at: now, updated_at: now, status, brief, nextQuestionAt, s, mechIndex: mechIdx });
   }
   saveAllBottles(bottles);
+}
+
+// Parks capture the bottle they started on, because the brief fetch can outlast the visit.
+// If the person has left by the time it lands, the park is still recorded on that bottle but
+// never pulls them back to the cellar. If they have already reopened that same bottle, the
+// park is dropped rather than parking a bottle they are working in.
+const _parksInFlight = new Set();
+
+function beginPark() {
+  return { id: activeBottleId, s: S, mechIdx: mi, session: _bottleSession };
+}
+
+function finishPark(park, brief, status) {
+  const stillOpen = park.session === _bottleSession;
+  if (!stillOpen && _sessionBottleId === park.id) return;
+  parkBottleDormant(park.id, brief, status, park.s, park.mechIdx);
+  if (stillOpen) showCellar();
+}
+
+// One park at a time per bottle. Resolves false, without starting, if one is already running.
+async function runPark(dispatch) {
+  const id = activeBottleId;
+  if (!id || _parksInFlight.has(id)) return false;
+  _parksInFlight.add(id);
+  try { await dispatch(); } finally { _parksInFlight.delete(id); }
+  return true;
 }
 
 
@@ -2776,14 +2811,14 @@ async function intakeNext() {
     if (S.maturity === 3) {
       const btn = document.getElementById('grape-continue-btn');
       if (btn) { btn.disabled = true; btn.textContent = 'Finding the question…'; }
+      const park = beginPark();
       let brief;
       try {
         brief = await fetchFieldBrief({ mode: 'find', missing: 'grape' });
       } catch (e) {
         brief = { kind: 'find', text: null, pending: true, created_at: new Date().toISOString() };
       }
-      parkBottleDormant(activeBottleId, brief);
-      showCellar();
+      finishPark(park, brief, 'dormant');
       return;
     }
 
@@ -2943,10 +2978,7 @@ function startPhase1() {
   renderMech();
   playCellarEntryIfNeeded();
   // Auto-save answer as user types
-  document.getElementById('ans').addEventListener('input', () => {
-    clearTimeout(window._autosave);
-    window._autosave = setTimeout(saveState, 800);
-  });
+  document.getElementById('ans').addEventListener('input', onAnswerInput);
 }
 
 function playCellarEntryIfNeeded() {
@@ -3072,8 +3104,8 @@ function renderMech() {
   updateSparkReminder();
 
   const ans = document.getElementById('ans');
-  // If we have a saved answer for this mechanism, restore it
-  ans.value = m.prefilled ? '' : (S.answers[m.id] || '');
+  // If we have a graded answer for this mechanism, restore it; otherwise any saved draft.
+  ans.value = m.prefilled ? '' : (S.answers[m.id] || S.drafts?.[m.id] || '');
   ans.removeAttribute('readonly');
   ans.style.borderColor = '';
   ans.style.display = m.prefilled ? 'none' : '';
@@ -3085,7 +3117,8 @@ function renderMech() {
   hideGrapeJudgment();
   hideCellarRhythm();
   document.getElementById('grape-row').style.display = 'none';
-  document.getElementById('p1-btn').textContent = 'Continue →';
+  // A reply discarded because its bottle was left never re-enables this button, so every render does.
+  setPhaseBusy(false, 'Continue →');
   const exitsRow = document.getElementById('real-world-exits');
   if (exitsRow) exitsRow.style.display = 'none';
   const m6Interstitial = document.getElementById('m6-interstitial');
@@ -3568,6 +3601,96 @@ function applyAnchoredResult(key, result, txt, changedRows, settledLabel, weakLa
 // ── THE SWIRL ────────────────────────────────────────────────────────────
 // One reopening question, first below-settled grade only, per mechanism, ever.
 
+// ── ONE ANSWER PATH ──────────────────────────────────────────────────────
+// Every M2–M7 answer, from every entry point (normal submit, swirl, park re-entry, label and
+// sidebar reopen), goes through gradeAnswer(): grade first, store second, and only ever into
+// the bottle that asked. On any failure it throws and nothing in the bottle has changed.
+// If the bottle was left while the call was out, it resolves null and touches nothing.
+const ANSWER_GRADERS = {
+  M2: { call: txt => callM2Worker(txt), apply: applyM2Result },
+  M3: { call: txt => callM3Worker(txt), apply: applyM3Result },
+  M4: { call: txt => callM4Worker(txt), apply: applyM4Result },
+  M5: { call: txt => callM5Worker(txt), apply: applyM5Result },
+  M6: { call: (txt, wordsSource) => callM6Worker(txt, wordsSource), apply: applyM6Result },
+  M7: { call: txt => callM7Worker(txt), apply: applyM7Result }
+};
+
+const GRADE_STATES = ['turbid', 'clearing', 'settled'];
+
+// Every element the mechanism grades must come back with a real state. A missing or unknown
+// state is a failed grade, never a default Turbid.
+function gradeStatesValid(mechId, data) {
+  if (!data || typeof data !== 'object' || !GRADE_STATES.includes(data.state)) return false;
+  const bars = {
+    M2: ['tell', 'vintage'].concat(S.m2_problem?.gap_in_play ? ['gap'] : []),
+    M3: ['echo', 'vintage'],
+    M4: ['echo', 'vintage'],
+    M5: ['gap'],
+    M6: ['tell'].concat(data.echo ? ['echo'] : []),
+    M7: ['limit']
+  }[mechId];
+  return !!bars && bars.every(k => GRADE_STATES.includes(data[k]?.state));
+}
+
+async function gradeAnswer(mechId, txt, { allowSwirl = true, wordsSource, keepDraft = false } = {}) {
+  const grader = ANSWER_GRADERS[mechId];
+  if (!grader) throw new Error(`No grader for ${mechId}`);
+  const session = _bottleSession;
+  const stillOpen = () => session === _bottleSession;
+
+  if (keepDraft) { setAnswerDraft(mechId, txt); saveState(); }
+
+  let data;
+  try {
+    data = await grader.call(txt, wordsSource);
+  } catch (err) {
+    if (!stillOpen()) return null;
+    throw err;
+  }
+  if (!stillOpen()) return null;
+  if (!gradeStatesValid(mechId, data)) throw new Error('Invalid grade from the worker.');
+
+  S.answers[mechId] = txt;
+  setAnswerDraft(mechId, '');
+  // The apply step writes the grade synchronously, then may await an errand brief. Save the
+  // grade straight away so it is kept even if the person leaves while the brief is loading.
+  const applying = grader.apply(data, txt, allowSwirl);
+  saveState();
+  await applying;
+  return stillOpen() ? data : null;
+}
+
+// A park re-entry answer that failed to grade goes back in the answer box, editable, so the
+// normal Continue can send it again.
+function showReentryFailure(answer, err) {
+  setQLifecycle('active');
+  const ansEl = document.getElementById('ans');
+  if (ansEl) { ansEl.value = answer; ansEl.removeAttribute('readonly'); ansEl.style.display = ''; }
+  obsShown = false;
+  showPhaseObservation('Worker error. ' + err.message);
+  document.getElementById('p1-btn').textContent = 'Try again →';
+  setPhaseBusy(false);
+}
+
+// Drafts are the ungraded text in the answer box, kept apart from S.answers (graded only).
+function setAnswerDraft(mechId, text) {
+  S.drafts = S.drafts || {};
+  if (text && text.trim()) S.drafts[mechId] = text;
+  else delete S.drafts[mechId];
+}
+
+function onAnswerInput() {
+  clearTimeout(window._autosave);
+  const session = _bottleSession;
+  window._autosave = setTimeout(() => {
+    if (session !== _bottleSession) return;
+    const m = M[mi];
+    const ans = document.getElementById('ans');
+    if (m && ans && !m.prefilled && !obsShown) setAnswerDraft(m.id, ans.value);
+    saveState();
+  }, 800);
+}
+
 let _pendingSwirl = null;
 
 function swirlAlreadyShown(mechId) {
@@ -3584,8 +3707,10 @@ function markSwirlShown(mechId) {
 // answer flow (allowSwirl left true) — reopen and resolve regrades pass allowSwirl=false.
 function maybeShowSwirl(mechId, data, originalAnswer) {
   if (!data?.swirl?.question || data.state === 'settled' || swirlAlreadyShown(mechId)) return false;
-  markSwirlShown(mechId);
+  // Marked done in submitSwirl() only once the follow-up is graded, so a failed swirl can be retried.
   _pendingSwirl = { mechId, originalAnswer };
+  const swirlBtn = document.getElementById('swirl-btn');
+  if (swirlBtn) { swirlBtn.disabled = false; swirlBtn.textContent = 'Continue →'; }
   setQLifecycle('needs_clarification');
 
   const panel = document.getElementById('swirl-panel');
@@ -3622,42 +3747,29 @@ async function submitSwirl() {
   if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
   setQLifecycle('evaluating');
 
+  let graded;
   try {
-    S.answers[mechId] = combined;
-    if (mechId === 'M2') {
-      const data = await callM2Worker(combined);
-      await applyM2Result(data, combined, false);
-    } else if (mechId === 'M3') {
-      const data = await callM3Worker(combined);
-      await applyM3Result(data, combined, false);
-    } else if (mechId === 'M4') {
-      const data = await callM4Worker(combined);
-      await applyM4Result(data, combined, false);
-    } else if (mechId === 'M5') {
-      const data = await callM5Worker(combined);
-      await applyM5Result(data, combined, false);
-    } else if (mechId === 'M6') {
-      const data = await callM6Worker(combined, S.m6_words_source);
-      await applyM6Result(data, combined, false);
-    } else if (mechId === 'M7') {
-      const data = await callM7Worker(combined);
-      await applyM7Result(data, combined, false);
-    }
-    const ansMain = document.getElementById('ans');
-    if (ansMain) ansMain.value = combined;
-    setQLifecycle('answered');
-    saveState();
+    graded = await gradeAnswer(mechId, combined, { allowSwirl: false, wordsSource: S.m6_words_source });
   } catch (err) {
+    // Nothing was stored: the swirl stays open with its text, so it can be sent again.
     setQLifecycle('needs_clarification');
     showPhaseObservation('Worker error. ' + err.message);
-  } finally {
-    _pendingSwirl = null;
-    const panel = document.getElementById('swirl-panel');
-    if (panel) panel.style.display = 'none';
-    const phaseRow = document.getElementById('q-phase-row');
-    if (phaseRow) phaseRow.style.display = '';
     if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
+    return;
   }
+  if (!graded) return; // the bottle was left while grading; the reply was discarded
+
+  markSwirlShown(mechId);
+  const ansMain = document.getElementById('ans');
+  if (ansMain) ansMain.value = combined;
+  setQLifecycle('answered');
+  saveState();
+  _pendingSwirl = null;
+  const panel = document.getElementById('swirl-panel');
+  if (panel) panel.style.display = 'none';
+  const phaseRow = document.getElementById('q-phase-row');
+  if (phaseRow) phaseRow.style.display = '';
+  if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
 }
 
 // ── M2: THE FRICTION TEST ──────────────────────────────────────────────────
@@ -3666,6 +3778,7 @@ let m2AwaitingConfirm = false;
 let _askReentryAnswer = null;
 
 async function parkM2Ask(status = 'dormant') {
+  const park = beginPark();
   let brief = S.m2_pending_brief || null;
   S.m2_pending_brief = null;
   if (!brief) {
@@ -3677,8 +3790,7 @@ async function parkM2Ask(status = 'dormant') {
       brief = { kind: 'ask', text: question, pending: !question, created_at: new Date().toISOString() };
     }
   }
-  parkBottleDormant(activeBottleId, brief, status);
-  showCellar();
+  finishPark(park, brief, status);
 }
 
 async function triggerM2PhaseA() {
@@ -3693,16 +3805,14 @@ async function triggerM2PhaseA() {
     document.getElementById('obs-box').style.display = 'none';
     setPhaseBusy(true, 'Reading answer...');
     setQLifecycle('evaluating');
+    let graded;
     try {
-      S.answers.M2 = answer;
-      const data = await callM2Worker(answer);
-      await applyM2Result(data, answer);
+      graded = await gradeAnswer('M2', answer, { keepDraft: true });
     } catch (err) {
-      setQLifecycle('active');
-      showPhaseObservation('Worker error. ' + err.message);
-      setPhaseBusy(false);
+      showReentryFailure(answer, err);
       return;
     }
+    if (!graded) return; // the bottle was left while grading; the reply was discarded
     if (ansEl) { ansEl.value = answer; ansEl.setAttribute('readonly', 'true'); ansEl.style.display = ''; }
     document.getElementById('p1-btn').textContent = 'Continue →';
     obsShown = true;
@@ -3831,12 +3941,15 @@ async function applyM2Result(data, txt, allowSwirl = true) {
 
   if (data.state !== 'settled' && !data.substitution_detected && txt.trim()) {
     showInlineErrand(null);
+    const session = _bottleSession;
     try {
       const gapElement = S.m2_problem?.gap_in_play && data.gap?.state !== 'settled';
       const brief = await fetchFieldBrief({ mode: 'ask', element: gapElement ? 'gap' : 'tell' });
+      if (session !== _bottleSession) return;
       S.m2_pending_brief = brief;
       showInlineErrand(brief.question || brief.text ? brief : S.m2_problem?.question || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?`);
     } catch (e) {
+      if (session !== _bottleSession) return;
       S.m2_pending_brief = { kind: 'ask', text: null, pending: true, created_at: new Date().toISOString() };
       showInlineErrand(S.m2_problem?.question || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?`);
     }
@@ -3877,11 +3990,14 @@ async function applyM3Result(data, txt, allowSwirl = true) {
 
   if (data.echo?.state !== 'settled' && !data.substitution_detected && txt.trim()) {
     showInlineErrand(null);
+    const session = _bottleSession;
     try {
       const brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
+      if (session !== _bottleSession) return;
       S.m3_pending_brief = brief;
       showInlineErrand(brief.question || brief.text ? brief : `Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`);
     } catch (e) {
+      if (session !== _bottleSession) return;
       S.m3_pending_brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
       showInlineErrand(`Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`);
     }
@@ -3892,6 +4008,7 @@ async function applyM3Result(data, txt, allowSwirl = true) {
 }
 
 async function parkM3Echo(status = 'dormant') {
+  const park = beginPark();
   let brief = S.m3_pending_brief || null;
   S.m3_pending_brief = null;
   if (!brief) {
@@ -3901,8 +4018,7 @@ async function parkM3Echo(status = 'dormant') {
       brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
     }
   }
-  parkBottleDormant(activeBottleId, brief, status);
-  showCellar();
+  finishPark(park, brief, status);
 }
 
 const PARK_TIMEOUT_MS = 30000;
@@ -3936,8 +4052,13 @@ async function parkItAction(status = 'dormant') {
   const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('This is taking too long. Check your connection and try again.')), PARK_TIMEOUT_MS));
 
   try {
-    await Promise.race([dispatch(), timeout]);
-    // Success routes on to showCellar() inside the parkMx* helper — nothing left to reset here.
+    const parked = await Promise.race([runPark(dispatch), timeout]);
+    // A park for this bottle is still running from an earlier click: leave that one to finish.
+    if (parked === false) {
+      if (btn) { btn.disabled = false; btn.textContent = label; }
+      if (otherBtn) otherBtn.disabled = false;
+    }
+    // Success routes on to showCellar() inside finishPark() — nothing left to reset here.
   } catch (err) {
     if (btn) { btn.disabled = false; btn.textContent = label; }
     if (otherBtn) otherBtn.disabled = false;
@@ -3954,16 +4075,14 @@ async function triggerM3EchoReentry() {
   document.getElementById('obs-box').style.display = 'none';
   setPhaseBusy(true, 'Reading answer...');
   setQLifecycle('evaluating');
+  let graded;
   try {
-    S.answers.M3 = answer;
-    const data = await callM3Worker(answer);
-    await applyM3Result(data, answer);
+    graded = await gradeAnswer('M3', answer, { keepDraft: true });
   } catch (err) {
-    setQLifecycle('active');
-    showPhaseObservation('Worker error. ' + err.message);
-    setPhaseBusy(false);
+    showReentryFailure(answer, err);
     return;
   }
+  if (!graded) return; // the bottle was left while grading; the reply was discarded
   if (ansEl) { ansEl.value = answer; ansEl.setAttribute('readonly', 'true'); ansEl.style.display = ''; }
   document.getElementById('p1-btn').textContent = 'Continue →';
   obsShown = true;
@@ -3998,11 +4117,14 @@ async function applyM4Result(data, txt, allowSwirl = true) {
 
   if (data.echo?.state !== 'settled' && !data.substitution_detected && txt.trim()) {
     showInlineErrand(null);
+    const session = _bottleSession;
     try {
       const brief = await fetchFieldBrief({ mode: 'contrast', element: 'echo' });
+      if (session !== _bottleSession) return;
       S.m4_pending_brief = brief;
       showInlineErrand(brief.question || brief.text ? brief : `Find a second person who hits this problem — not ${S.grape_name || 'the person you named'} and not whoever you named before. Ask what they've actually done about it.`);
     } catch (e) {
+      if (session !== _bottleSession) return;
       S.m4_pending_brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
       showInlineErrand(`Find a second person who hits this problem — not ${S.grape_name || 'the person you named'} and not whoever you named before. Ask what they've actually done about it.`);
     }
@@ -4013,6 +4135,7 @@ async function applyM4Result(data, txt, allowSwirl = true) {
 }
 
 async function parkM4Echo(status = 'dormant') {
+  const park = beginPark();
   let brief = S.m4_pending_brief || null;
   S.m4_pending_brief = null;
   if (!brief) {
@@ -4022,8 +4145,7 @@ async function parkM4Echo(status = 'dormant') {
       brief = { kind: 'contrast', text: null, pending: true, created_at: new Date().toISOString() };
     }
   }
-  parkBottleDormant(activeBottleId, brief, status);
-  showCellar();
+  finishPark(park, brief, status);
 }
 
 // ── END M4 ────────────────────────────────────────────────────────────────
@@ -4051,11 +4173,14 @@ async function applyM5Result(data, txt, allowSwirl = true) {
 
   if (data.gap?.state !== 'settled' && !data.substitution_detected && txt.trim()) {
     showInlineErrand(null);
+    const session = _bottleSession;
     try {
       const brief = await fetchFieldBrief({ mode: 'ask', element: 'gap' });
+      if (session !== _bottleSession) return;
       S.m5_pending_brief = brief;
       showInlineErrand(brief.question || brief.text ? brief : `Find out what people currently use for this problem and exactly where it falls short.`);
     } catch (e) {
+      if (session !== _bottleSession) return;
       S.m5_pending_brief = { kind: 'ask', text: null, pending: true, created_at: new Date().toISOString() };
       showInlineErrand(`Find out what people currently use for this problem and exactly where it falls short.`);
     }
@@ -4066,6 +4191,7 @@ async function applyM5Result(data, txt, allowSwirl = true) {
 }
 
 async function parkM5Gap(status = 'dormant') {
+  const park = beginPark();
   let brief = S.m5_pending_brief || null;
   S.m5_pending_brief = null;
   if (!brief) {
@@ -4075,8 +4201,7 @@ async function parkM5Gap(status = 'dormant') {
       brief = { kind: 'ask', text: null, pending: true, created_at: new Date().toISOString() };
     }
   }
-  parkBottleDormant(activeBottleId, brief, status);
-  showCellar();
+  finishPark(park, brief, status);
 }
 
 // ── END M5 ────────────────────────────────────────────────────────────────
@@ -4124,11 +4249,14 @@ async function applyM6Result(data, txt, allowSwirl = true) {
 
   if (data.state !== 'settled' && !data.substitution_detected && txt.trim()) {
     showInlineErrand(null);
+    const session = _bottleSession;
     try {
       const brief = await fetchFieldBrief({ mode: 'words', element: 'words' });
+      if (session !== _bottleSession) return;
       S.m6_pending_brief = brief;
       showInlineErrand(brief.question || brief.text ? brief : `Talk to ${S.grape_name || 'the person you named'} and bring back their exact words about this problem.`);
     } catch (e) {
+      if (session !== _bottleSession) return;
       S.m6_pending_brief = { kind: 'words', text: null, pending: true, created_at: new Date().toISOString() };
       showInlineErrand(`Talk to ${S.grape_name || 'the person you named'} and bring back their exact words about this problem.`);
     }
@@ -4139,6 +4267,7 @@ async function applyM6Result(data, txt, allowSwirl = true) {
 }
 
 async function parkM6Words(status = 'dormant') {
+  const park = beginPark();
   let brief = S.m6_pending_brief || null;
   S.m6_pending_brief = null;
   if (!brief) {
@@ -4148,8 +4277,7 @@ async function parkM6Words(status = 'dormant') {
       brief = { kind: 'words', text: null, pending: true, created_at: new Date().toISOString() };
     }
   }
-  parkBottleDormant(activeBottleId, brief, status);
-  showCellar();
+  finishPark(park, brief, status);
 }
 
 // ── END M6 ────────────────────────────────────────────────────────────────
@@ -4177,11 +4305,14 @@ async function applyM7Result(data, txt, allowSwirl = true) {
 
   if (data.limit?.state !== 'settled' && !data.substitution_detected && txt.trim()) {
     showInlineErrand(null);
+    const session = _bottleSession;
     try {
       const brief = await fetchFieldBrief({ mode: 'limit', element: 'limit' });
+      if (session !== _bottleSession) return;
       S.m7_pending_brief = brief;
       showInlineErrand(brief.question || brief.text ? brief : `Find someone who looks like they should have this problem but doesn't, and find out why not.`);
     } catch (e) {
+      if (session !== _bottleSession) return;
       S.m7_pending_brief = { kind: 'limit', text: null, pending: true, created_at: new Date().toISOString() };
       showInlineErrand(`Find someone who looks like they should have this problem but doesn't, and find out why not.`);
     }
@@ -4192,6 +4323,7 @@ async function applyM7Result(data, txt, allowSwirl = true) {
 }
 
 async function parkM7Limit(status = 'dormant') {
+  const park = beginPark();
   let brief = S.m7_pending_brief || null;
   S.m7_pending_brief = null;
   if (!brief) {
@@ -4201,8 +4333,7 @@ async function parkM7Limit(status = 'dormant') {
       brief = { kind: 'limit', text: null, pending: true, created_at: new Date().toISOString() };
     }
   }
-  parkBottleDormant(activeBottleId, brief, status);
-  showCellar();
+  finishPark(park, brief, status);
 }
 
 // ── END M7 ────────────────────────────────────────────────────────────────
@@ -4237,31 +4368,17 @@ async function p1Next(bypassErrandWarn = false) {
       return;
     }
 
+    let graded;
     try {
       setPhaseBusy(true, m.id === 'M2' ? 'Reading moment...' : 'Reading answer...');
       setQLifecycle('answering');
-      S.answers[m.id] = txt;
       setQLifecycle('evaluating');
-      if (m.id === 'M2') {
-        const data = await callM2Worker(txt);
-        await applyM2Result(data, txt);
-      } else if (m.id === 'M3') {
-        const data = await callM3Worker(txt);
-        await applyM3Result(data, txt);
-      } else if (m.id === 'M4') {
-        const data = await callM4Worker(txt);
-        await applyM4Result(data, txt);
-      } else if (m.id === 'M5') {
-        const data = await callM5Worker(txt);
-        await applyM5Result(data, txt);
-      } else if (m.id === 'M6') {
-        const data = await callM6Worker(txt);
-        await applyM6Result(data, txt);
-      } else if (m.id === 'M7') {
-        const data = await callM7Worker(txt);
-        await applyM7Result(data, txt);
+      if (ANSWER_GRADERS[m.id]) {
+        graded = await gradeAnswer(m.id, txt, { keepDraft: true });
       } else {
+        S.answers[m.id] = txt;
         applyLocalMechanismResult(m, txt);
+        graded = true;
       }
     } catch (err) {
       setQLifecycle('active');
@@ -4269,10 +4386,13 @@ async function p1Next(bypassErrandWarn = false) {
       ans.removeAttribute('readonly');
       document.getElementById('p1-btn').textContent = 'Try again →';
       obsShown = false;
-      return;
-    } finally {
       setPhaseBusy(false);
+      return;
     }
+    // The bottle was left while grading: the reply was discarded, and this screen now
+    // belongs to another bottle or the cellar, so touch nothing.
+    if (!graded) return;
+    setPhaseBusy(false);
 
     ans.setAttribute('readonly','true');
     document.getElementById('p1-btn').textContent = 'Continue →';
@@ -4612,6 +4732,7 @@ async function submitReopen() {
 
   try {
     if (mechId === 'M1') {
+      const session = _bottleSession;
       const workerUrl = v6GetWorkerUrl();
       if (workerUrl) {
         const data = await workerFetch('/m1', {
@@ -4620,35 +4741,15 @@ async function submitReopen() {
           relationship:    txt,
           maturity_class:  S.maturity
         });
+        if (session !== _bottleSession) return;
         writeM1FromIntake(S.grape_name || '', txt, data);
       } else {
         writeM1FromIntake(S.grape_name || '', txt, null);
       }
-    } else if (mechId === 'M2') {
-      const data = await callM2Worker(txt);
-      S.answers.M2 = txt;
-      await applyM2Result(data, txt, false);
-    } else if (mechId === 'M3') {
-      const data = await callM3Worker(txt);
-      S.answers.M3 = txt;
-      await applyM3Result(data, txt, false);
-    } else if (mechId === 'M4') {
-      const data = await callM4Worker(txt);
-      S.answers.M4 = txt;
-      await applyM4Result(data, txt, false);
-    } else if (mechId === 'M5') {
-      const data = await callM5Worker(txt);
-      S.answers.M5 = txt;
-      await applyM5Result(data, txt, false);
-    } else if (mechId === 'M6') {
-      // Reopen panel has no real/reconstructed toggle; force the conservative default.
-      const data = await callM6Worker(txt, 'reconstructed');
-      S.answers.M6 = txt;
-      await applyM6Result(data, txt, false);
-    } else if (mechId === 'M7') {
-      const data = await callM7Worker(txt);
-      S.answers.M7 = txt;
-      await applyM7Result(data, txt, false);
+    } else {
+      // Reopen has no real/reconstructed toggle; M6 is graded with the conservative default.
+      const graded = await gradeAnswer(mechId, txt, { allowSwirl: false, wordsSource: 'reconstructed' });
+      if (!graded) return;
     }
     saveState();
     exitReview();
@@ -4808,6 +4909,7 @@ async function submitLabelReopen() {
 
   try {
     if (mechId === 'M1') {
+      const session = _bottleSession;
       const workerUrl = v6GetWorkerUrl();
       if (workerUrl) {
         const data = await workerFetch('/m1', {
@@ -4816,34 +4918,15 @@ async function submitLabelReopen() {
           relationship:   txt,
           maturity_class: S.maturity
         });
+        if (session !== _bottleSession) return;
         writeM1FromIntake(S.grape_name || '', txt, data);
       } else {
         writeM1FromIntake(S.grape_name || '', txt, null);
       }
-    } else if (mechId === 'M2') {
-      const data = await callM2Worker(txt);
-      S.answers.M2 = txt;
-      await applyM2Result(data, txt, false);
-    } else if (mechId === 'M3') {
-      const data = await callM3Worker(txt);
-      S.answers.M3 = txt;
-      await applyM3Result(data, txt, false);
-    } else if (mechId === 'M4') {
-      const data = await callM4Worker(txt);
-      S.answers.M4 = txt;
-      await applyM4Result(data, txt, false);
-    } else if (mechId === 'M5') {
-      const data = await callM5Worker(txt);
-      S.answers.M5 = txt;
-      await applyM5Result(data, txt, false);
-    } else if (mechId === 'M6') {
-      const data = await callM6Worker(txt, 'reconstructed');
-      S.answers.M6 = txt;
-      await applyM6Result(data, txt, false);
-    } else if (mechId === 'M7') {
-      const data = await callM7Worker(txt);
-      S.answers.M7 = txt;
-      await applyM7Result(data, txt, false);
+    } else {
+      // Reopen has no real/reconstructed toggle; M6 is graded with the conservative default.
+      const graded = await gradeAnswer(mechId, txt, { allowSwirl: false, wordsSource: 'reconstructed' });
+      if (!graded) return;
     }
     saveState();
     closeLabelReopen();
@@ -4859,12 +4942,14 @@ async function parkLabelReopenAction() {
   const mechId = _labelReopenMechId;
   if (!mechId || mechId === 'M1') return;
   closeLabelReopen();
-  if (mechId === 'M2') await parkM2Ask('dormant');
-  else if (mechId === 'M3') await parkM3Echo('dormant');
-  else if (mechId === 'M4') await parkM4Echo('dormant');
-  else if (mechId === 'M5') await parkM5Gap('dormant');
-  else if (mechId === 'M6') await parkM6Words('dormant');
-  else if (mechId === 'M7') await parkM7Limit('dormant');
+  await runPark(() => {
+    if (mechId === 'M2') return parkM2Ask('dormant');
+    if (mechId === 'M3') return parkM3Echo('dormant');
+    if (mechId === 'M4') return parkM4Echo('dormant');
+    if (mechId === 'M5') return parkM5Gap('dormant');
+    if (mechId === 'M6') return parkM6Words('dormant');
+    if (mechId === 'M7') return parkM7Limit('dormant');
+  });
 }
 
 // ── NAV / UTIL ──
@@ -5263,6 +5348,7 @@ function lsInit() {
 
 // ── CELLAR VIEW ──
 function showCellar() {
+  leaveBottleSession();
   renderCellar();
   showScreen('cellar');
 }
@@ -5385,6 +5471,7 @@ function formatCellarDate(iso) {
 
 function createAndOpenBottle() {
   activeBottleId = generateId();
+  enterBottleSession(activeBottleId);
   S = freshState();
   mi = 0;
   showIntake();
@@ -5394,6 +5481,7 @@ function openBottle(id) {
   const record = loadBottle(id);
   if (!record) return;
   activeBottleId = id;
+  enterBottleSession(id);
   S = record.s || freshState();
   mi = record.mechIndex || 0;
   M = buildMechs();
@@ -5438,10 +5526,7 @@ function openBottle(id) {
   updateBottle();
   showScreen('phase1');
   renderMech();
-  document.getElementById('ans').addEventListener('input', () => {
-    clearTimeout(window._autosave);
-    window._autosave = setTimeout(saveState, 800);
-  });
+  document.getElementById('ans').addEventListener('input', onAnswerInput);
 }
 
 // ── STALLED OBSERVATION ──
@@ -5473,10 +5558,7 @@ function dismissStalledPanel(id) {
   updateBottle();
   showScreen('phase1');
   renderMech();
-  document.getElementById('ans').addEventListener('input', () => {
-    clearTimeout(window._autosave);
-    window._autosave = setTimeout(saveState, 800);
-  });
+  document.getElementById('ans').addEventListener('input', onAnswerInput);
 }
 
 // ── DORMANT RE-ENTRY ──

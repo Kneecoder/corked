@@ -1644,16 +1644,11 @@ function validateM2Friction(parsed, userAnswer, gapInPlay) {
     throw new Error('Invalid state');
   }
 
-  if (!parsed.tell || !allowedStates.includes(parsed.tell?.state)) {
-    parsed.tell = { state: 'turbid', anchor_span: null };
-  }
-  if (!parsed.vintage || !allowedStates.includes(parsed.vintage?.state)) {
-    parsed.vintage = { state: 'turbid', anchor_span: null };
-  }
+  // A bar without a valid state is a failed grade, never a default Turbid.
+  if (!allowedStates.includes(parsed.tell?.state)) throw new Error('Invalid M2 grade: tell state');
+  if (!allowedStates.includes(parsed.vintage?.state)) throw new Error('Invalid M2 grade: vintage state');
   if (gapInPlay) {
-    if (!parsed.gap || !allowedStates.includes(parsed.gap?.state)) {
-      parsed.gap = { state: 'turbid', anchor_span: null };
-    }
+    if (!allowedStates.includes(parsed.gap?.state)) throw new Error('Invalid M2 grade: gap state');
   } else {
     delete parsed.gap;
   }
@@ -1957,10 +1952,9 @@ async function handleEvidenceMechanism(request, env, corsHeaders, cfg) {
     throw new Error(`Invalid ${cfg.mechanism} response`);
   }
   if (!allowedStates.includes(parsed.state)) parsed.state = 'turbid';
+  // A bar without a valid state is a failed grade, never a default Turbid.
   for (const bar of cfg.bars) {
-    if (!parsed[bar] || !allowedStates.includes(parsed[bar]?.state)) {
-      parsed[bar] = { state: 'turbid', anchor_span: null };
-    }
+    if (!allowedStates.includes(parsed[bar]?.state)) throw new Error(`Invalid ${cfg.mechanism} grade: ${bar} state`);
   }
 
   const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
@@ -2051,10 +2045,9 @@ async function handleM6(request, env, corsHeaders) {
 
   const selfMode = maturityClass === 2;
 
+  // A bar without a valid state is a failed grade, never a default Turbid.
   for (const bar of ['words', 'tell']) {
-    if (!parsed[bar] || !allowedStates.includes(parsed[bar]?.state)) {
-      parsed[bar] = { state: 'turbid', anchor_span: null };
-    }
+    if (!allowedStates.includes(parsed[bar]?.state)) throw new Error(`Invalid M6 grade: ${bar} state`);
   }
 
   // Hard rule: reconstructed caps words at clearing, no exceptions.
@@ -2070,9 +2063,7 @@ async function handleM6(request, env, corsHeaders) {
   if (selfMode) {
     delete parsed.echo;
   } else {
-    if (!parsed.echo || !['turbid', 'settled'].includes(parsed.echo?.state)) {
-      parsed.echo = { state: 'turbid', anchor_span: null };
-    }
+    if (!['turbid', 'settled'].includes(parsed.echo?.state)) throw new Error('Invalid M6 grade: echo state');
     if (wordsSource !== 'real' && parsed.echo.state !== 'turbid') {
       parsed.echo = { state: 'turbid', anchor_span: null };
     }
@@ -2135,10 +2126,9 @@ async function handleM4(request, env, corsHeaders) {
     throw new Error('Invalid M4 response');
   }
   if (!allowedStates.includes(parsed.state)) parsed.state = 'turbid';
+  // A bar without a valid state is a failed grade, never a default Turbid.
   for (const bar of ['echo', 'vintage']) {
-    if (!parsed[bar] || !allowedStates.includes(parsed[bar]?.state)) {
-      parsed[bar] = { state: 'turbid', anchor_span: null };
-    }
+    if (!allowedStates.includes(parsed[bar]?.state)) throw new Error(`Invalid M4 grade: ${bar} state`);
   }
   if (parsed.contrast) {
     parsed.contrast.is_different_kind = String(parsed.contrast.is_different_kind);
