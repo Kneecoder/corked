@@ -1234,8 +1234,16 @@ body {
 .bottle-card--sag-3 { opacity:.55; transform:translateY(7px); filter:saturate(.7) grayscale(.15); }
 
 /* ── REAL-WORLD EXITS ── */
-#real-world-exits { display:none; gap:.6rem; flex-wrap:nowrap; flex-shrink:0; }
+#real-world-exits { display:none; gap:.6rem; flex-wrap:wrap; justify-content:flex-end; }
 #q-phase-row { flex-wrap:wrap; row-gap:.6rem; }
+/* Buttons never wrap inside themselves; when the row runs out of room, whole buttons move down. */
+#q-actions { display:flex; flex-wrap:wrap; gap:.6rem 1rem; align-items:center; justify-content:flex-end; margin-left:auto; }
+#q-actions button, #label-reopen-box .ew-actions button { white-space:nowrap; }
+/* The saving note and park errors get their own full-width line under the buttons,
+   so showing one moves no button. */
+.dormant-error.park-line { margin:0; }
+#q-phase-row .park-line { flex-basis:100%; }
+#label-reopen-box .park-line { margin-top:.85rem; }
 #rw-park-btn, #rw-flight-btn {
   border: 1px solid var(--border-hi);
   border-radius: 6px;
@@ -1463,6 +1471,7 @@ body {
       <button class="ew-cancel" id="lr-park-btn" onclick="parkLabelReopenAction()">Come back to this</button>
       <button class="ew-go" id="lr-submit-btn" onclick="submitLabelReopen()">Submit →</button>
     </div>
+    <div id="lr-park-note" class="dormant-error park-line">Still saving the last one.</div>
   </div>
 </div>
 
@@ -1835,14 +1844,15 @@ body {
       </div>
       <div class="phase-row" id="q-phase-row">
         <div class="mech-count" id="m-count"></div>
-        <div style="display:flex;gap:1rem;align-items:center;">
+        <div id="q-actions">
           <div id="real-world-exits">
             <button class="btn-ghost" id="rw-park-btn" onclick="parkItAction('dormant')">Come back to this</button>
             <button class="btn-ghost" id="rw-flight-btn" onclick="parkItAction('in_flight')">Asked, waiting on a reply</button>
           </div>
-          <div id="park-error" class="dormant-error" style="display:none"></div>
           <button class="btn" id="p1-btn" onclick="p1Next()">Continue →</button>
         </div>
+        <div id="park-note" class="dormant-error park-line">Still saving the last one.</div>
+        <div id="park-error" class="dormant-error park-line" style="display:none"></div>
       </div>
     </div>
 
@@ -1943,6 +1953,7 @@ function showPhasePanel(name) {
     const el = document.getElementById(`${p}-panel`);
     if (el) el.style.display = (p === name) ? 'block' : 'none';
   });
+  renderParkState();
 }
 function currentPhasePanel() {
   for (const p of PHASE_PANELS) {
@@ -2149,7 +2160,47 @@ function parkBottleDormant(id, brief, status = 'dormant', s = S, mechIdx = mi, p
 // If the person has left by the time it lands, the park is still recorded on that bottle but
 // never pulls them back to the cellar. If they have already reopened that same bottle, the
 // park is dropped rather than parking a bottle they are working in.
-const _parksInFlight = new Set();
+//
+// One record per bottle with a park running: the button that started it, and whether a second
+// click has asked for the "still saving" note. The park buttons and the note hold no state of
+// their own. renderParkState() redraws them from this record whenever it changes and whenever
+// a question view or the label overlay is shown.
+const _parksInFlight = new Map();
+
+const PARK_BUTTON_IDS = ['rw-park-btn', 'rw-flight-btn', 'lr-park-btn'];
+const PARK_NOTE_IDS = ['park-note', 'lr-park-note'];
+
+function renderParkState() {
+  const park = activeBottleId ? _parksInFlight.get(activeBottleId) : null;
+  PARK_BUTTON_IDS.forEach(id => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+    const saving = !!park && park.buttonId === id;
+    // Hold the button's width while it reads "Saving…", so the row doesn't reflow around it.
+    if (saving && !btn.style.minWidth && btn.offsetWidth) btn.style.minWidth = btn.offsetWidth + 'px';
+    if (!saving) btn.style.minWidth = '';
+    btn.textContent = saving ? 'Saving…' : btn.dataset.label;
+  });
+  // While a park runs, the note's line is kept (invisible) under the buttons, so the note
+  // appearing moves no button, even in the centred label overlay.
+  PARK_NOTE_IDS.forEach(id => {
+    const note = document.getElementById(id);
+    if (!note) return;
+    note.style.display = park ? 'block' : 'none';
+    note.style.visibility = park && park.note ? 'visible' : 'hidden';
+  });
+}
+
+// A click while this bottle's park is still running shows the note instead of starting another.
+// Returns false when nothing is running.
+function noteParkInFlight() {
+  const park = activeBottleId ? _parksInFlight.get(activeBottleId) : null;
+  if (!park) return false;
+  park.note = true;
+  renderParkState();
+  return true;
+}
 
 function beginPark(mechId) {
   return { id: activeBottleId, s: S, mechIdx: mi, mechId: mechId || null, session: _bottleSession };
@@ -2163,11 +2214,19 @@ function finishPark(park, brief, status) {
 }
 
 // One park at a time per bottle. Resolves false, without starting, if one is already running.
-async function runPark(dispatch) {
+// However the park ends (brief saved, fallback line or error), its record clears and the
+// buttons get their own labels back, whatever view is showing by then.
+async function runPark(dispatch, buttonId = null) {
   const id = activeBottleId;
   if (!id || _parksInFlight.has(id)) return false;
-  _parksInFlight.add(id);
-  try { await dispatch(); } finally { _parksInFlight.delete(id); }
+  _parksInFlight.set(id, { buttonId, note: false });
+  renderParkState();
+  try {
+    await dispatch();
+  } finally {
+    _parksInFlight.delete(id);
+    renderParkState();
+  }
   return true;
 }
 
@@ -4002,23 +4061,14 @@ async function parkM3Echo(status = 'dormant') {
 const PARK_TIMEOUT_MS = 30000;
 
 async function parkItAction(status = 'dormant') {
-  const btn = document.getElementById(status === 'in_flight' ? 'rw-flight-btn' : 'rw-park-btn');
   const errEl = document.getElementById('park-error');
-  const otherBtn = document.getElementById(status === 'in_flight' ? 'rw-park-btn' : 'rw-flight-btn');
+  if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
   // A park for this bottle is still running: say so rather than start another. The buttons stay
   // clickable while it runs so this can be said.
-  if (activeBottleId && _parksInFlight.has(activeBottleId)) {
-    if (errEl) { errEl.textContent = 'Still saving the last one.'; errEl.style.display = 'block'; }
-    return;
-  }
-  const label = btn ? btn.textContent : '';
-  if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
-  if (btn) btn.textContent = 'Saving…';
+  if (noteParkInFlight()) return;
 
   const m = M[mi];
   if (!m) {
-    if (btn) { btn.disabled = false; btn.textContent = label; }
-    if (otherBtn) otherBtn.disabled = false;
     if (errEl) { errEl.textContent = 'Lost track of the current question. Refresh and try again.'; errEl.style.display = 'block'; }
     return;
   }
@@ -4035,11 +4085,9 @@ async function parkItAction(status = 'dormant') {
   const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('This is taking too long. Check your connection and try again.')), PARK_TIMEOUT_MS));
 
   try {
-    await Promise.race([runPark(dispatch), timeout]);
-    // Success routes on to showCellar() inside finishPark() — nothing left to reset here.
+    await Promise.race([runPark(dispatch, status === 'in_flight' ? 'rw-flight-btn' : 'rw-park-btn'), timeout]);
+    // Success routes on to showCellar() inside finishPark(); runPark() puts the labels back.
   } catch (err) {
-    if (btn) { btn.disabled = false; btn.textContent = label; }
-    if (otherBtn) otherBtn.disabled = false;
     if (errEl) { errEl.textContent = (err && err.message) || 'Could not save. Try again.'; errEl.style.display = 'block'; }
   }
 }
@@ -4821,6 +4869,7 @@ async function openLabelReopen(key) {
   ansEl.value = '';
   if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Submit →'; }
   if (parkBtn) parkBtn.style.display = (mechId === 'M1') ? 'none' : '';
+  renderParkState();
 
   if (ambers.length === 1) {
     eyebrowEl.textContent = 'One thing left';
@@ -4896,11 +4945,7 @@ async function submitLabelReopen() {
 async function parkLabelReopenAction() {
   const mechId = _labelReopenMechId;
   if (!mechId || mechId === 'M1') return;
-  if (activeBottleId && _parksInFlight.has(activeBottleId)) {
-    const qEl = document.getElementById('lr-question');
-    if (qEl) qEl.textContent = 'Still saving the last one.';
-    return;
-  }
+  if (noteParkInFlight()) return;
   closeLabelReopen();
   await runPark(() => {
     if (mechId === 'M2') return parkM2Ask('dormant');
@@ -5540,7 +5585,7 @@ async function openDormantFind(id, record) {
 
   document.getElementById('dormant-panel-body').innerHTML = `
     <div class="mech-eyebrow" style="margin-bottom:.9rem">Dormant · find the person</div>
-    ${wasLocked ? `<div class="dormant-locked">This would normally wait until ${escHtml(formatLockedUntil(record.nextQuestionAt))}. Answer now instead, any time.</div>` : ''}
+    ${wasLocked ? `<div class="dormant-locked">This would normally come back ${escHtml(formatLockedUntil(record.nextQuestionAt))}. Answer now instead, any time.</div>` : ''}
     <div class="dormant-brief">
       ${renderBriefHTML(fallbackBrief, 'find', '')}
     </div>
@@ -5664,7 +5709,7 @@ async function openParkedReentry(id, record, mechId) {
 
   document.getElementById('dormant-panel-body').innerHTML = `
     <div class="mech-eyebrow" style="margin-bottom:.9rem">${escHtml(eyebrow)}</div>
-    ${wasLocked ? `<div class="dormant-locked">This would normally wait until ${escHtml(formatLockedUntil(record.nextQuestionAt))}. Answer now instead, any time.</div>` : ''}
+    ${wasLocked ? `<div class="dormant-locked">This would normally come back ${escHtml(formatLockedUntil(record.nextQuestionAt))}. Answer now instead, any time.</div>` : ''}
     <div class="dormant-brief">
       ${renderBriefHTML(shownBrief, addressing, grapeName)}
     </div>
