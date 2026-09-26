@@ -5267,45 +5267,6 @@ function lsInit() {
   });
 }
 
-// ── INIT ──
-(function init() {
-  migrateOldSave();
-  migrateQLifecycleSchema();
-  healPhantomParkedBottles();
-  if (getAllBottles().length > 0) {
-    showCellar();
-  } else {
-    showScreen('landing');
-  }
-
-  // Hover orbit: spark drifts in a slow Lissajous figure around the bottle opening.
-  // Two sin waves at different frequencies so the path never repeats quickly.
-  const cta   = document.getElementById('bottle-cta');
-  const mover = document.getElementById('spark-mover');
-  if (cta && mover) {
-    cta.addEventListener('mouseenter', () => {
-      if (corkFired) return;
-      let t0 = null;
-      const step = ts => {
-        if (!t0) t0 = ts;
-        const t = (ts - t0) / 4500;               // 4.5 s per x-cycle
-        const x = Math.sin(t * Math.PI * 2) * 7;  // ±7 px side-to-side
-        const y = Math.sin(t * Math.PI * 2 * 1.6 + 0.8) * 5; // ±5 px up-down, offset phase
-        mover.setAttribute('transform', `translate(${x}, ${y})`);
-        hoverOrbitId = requestAnimationFrame(step);
-      };
-      hoverOrbitId = requestAnimationFrame(step);
-    });
-    cta.addEventListener('mouseleave', () => {
-      cancelAnimationFrame(hoverOrbitId);
-      hoverOrbitId = null;
-      mover.setAttribute('transform', 'translate(0, 0)');
-    });
-  }
-
-  lsInit();
-})();
-
 // ── CELLAR VIEW ──
 function showCellar() {
   leaveBottleSession();
@@ -6192,6 +6153,45 @@ function v6Rewrite() {
   const status = document.getElementById('v6-bottle-status');
   if (status) status.textContent = '';
 }
+
+// ── INIT ──
+(function init() {
+  migrateOldSave();
+  migrateQLifecycleSchema();
+  healPhantomParkedBottles();
+  if (getAllBottles().length > 0) {
+    showCellar();
+  } else {
+    showScreen('landing');
+  }
+
+  // Hover orbit: spark drifts in a slow Lissajous figure around the bottle opening.
+  // Two sin waves at different frequencies so the path never repeats quickly.
+  const cta   = document.getElementById('bottle-cta');
+  const mover = document.getElementById('spark-mover');
+  if (cta && mover) {
+    cta.addEventListener('mouseenter', () => {
+      if (corkFired) return;
+      let t0 = null;
+      const step = ts => {
+        if (!t0) t0 = ts;
+        const t = (ts - t0) / 4500;               // 4.5 s per x-cycle
+        const x = Math.sin(t * Math.PI * 2) * 7;  // ±7 px side-to-side
+        const y = Math.sin(t * Math.PI * 2 * 1.6 + 0.8) * 5; // ±5 px up-down, offset phase
+        mover.setAttribute('transform', `translate(${x}, ${y})`);
+        hoverOrbitId = requestAnimationFrame(step);
+      };
+      hoverOrbitId = requestAnimationFrame(step);
+    });
+    cta.addEventListener('mouseleave', () => {
+      cancelAnimationFrame(hoverOrbitId);
+      hoverOrbitId = null;
+      mover.setAttribute('transform', 'translate(0, 0)');
+    });
+  }
+
+  lsInit();
+})();
 </script>
 </body>
 </html>
