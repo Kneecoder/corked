@@ -240,7 +240,7 @@ A scene is one real occasion in the answer: someone was trying to do something, 
 IF A SCENE IS PRESENT:
 scene_present: true.
 anchor_span: the stretch of the answer that says where it stopped working, copied exactly as written. One continuous stretch.
-problem: one sentence stating what went wrong, built only from words inside anchor_span. Besides those words, use only small framing words: can't, cannot, has trouble, hard, loses, keeps, forgets, misses, fails, struggles, finds, no way to. Do not add a cause, a cost, a feeling, a time or a place the answer did not state.
+problem: one sentence stating what went wrong, using only words that appear in anchor_span. Shorten it; add no other word. Do not add a cause, a cost, a feeling, a time or a place the answer did not state.
 gap_in_play and question: as below, for this problem.
 swirl: null.
 
@@ -1720,14 +1720,15 @@ function stemWord(w) {
 
 // The content words of `text` that `source` doesn't contain. A word counts as present when it,
 // or its plural/tense-folded stem, matches a source word (tokensMatch also lets a stem of four
-// letters or more match a longer form of itself: "cancel" and "cancels").
-function unsupportedProblemWords(text, source) {
+// letters or more match a longer form of itself: "cancel" and "cancels"). The framing words are
+// allowed for a guess from the spark; a problem built from a scene uses the scene's words only.
+function unsupportedProblemWords(text, source, { framing = true } = {}) {
   const sourceStems = [...new Set(problemTokens(source).map(stemWord))];
   const missing = [];
   for (const word of problemTokens(text)) {
-    if (PROBLEM_STOPWORDS.has(word) || PROBLEM_FRAMING_WORDS.has(word)) continue;
+    if (PROBLEM_STOPWORDS.has(word) || (framing && PROBLEM_FRAMING_WORDS.has(word))) continue;
     const stem = stemWord(word);
-    if (PROBLEM_FRAMING_WORDS.has(stem)) continue;
+    if (framing && PROBLEM_FRAMING_WORDS.has(stem)) continue;
     if (sourceStems.some(s => tokensMatch(stem, s))) continue;
     if (!missing.includes(word)) missing.push(word);
   }
@@ -1899,7 +1900,7 @@ function validateM2Scene(parsed, sceneAnswer, maturityClass, grapeName) {
   if (anchorVerified) {
     const anchor = norm(parsed.anchor_span);
     let text = typeof parsed.problem === 'string' ? parsed.problem.replace(/[—–]/g, ',').replace(/\s+/g, ' ').trim() : '';
-    const unsupported = text ? unsupportedProblemWords(text, anchor) : [];
+    const unsupported = text ? unsupportedProblemWords(text, anchor, { framing: false }) : [];
     if (!text || unsupported.length) {
       // The compression reached outside the answer's words; the anchored span itself is the
       // builder's own words, so it stands as the problem instead.
