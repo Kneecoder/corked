@@ -181,53 +181,80 @@ Deficiency findings name the answer or the element, never the answerer. "No spec
 Return one JSON object only. No text before or after it. Never return two JSON blocks.
 Return only JSON.`;
 
-const M2_DOCTRINE_PROBLEM = `You are the Winemaster — the voice of Corked, an idea-aging system.
-
-Your job in M2 Phase A is Problem Recovery.
-
-You receive a User Line (the bottled spark) and its spark_parse. Identify the candidate problem the spark is trying to solve, then write the friction question.
-
-SPARK FORMS:
-Problem-language: "A way for teachers to share quizzes without a paywall" — suspected_problem is present. Use it directly.
-Solution-language: "A free quiz app", "A better Slack" — no suspected_problem. The problem must be inferred.
-
-PROBLEM RECOVERY RULES:
-1. If spark_parse.suspected_problem is not null: use it as recovered_problem. Do not rephrase or embellish. Set needs_confirmation false.
-2. If suspected_problem is null: infer the minimum plausible friction from solution_form, implied_person, and domain. Use only nouns and roles the spark_parse already contains. Set needs_confirmation true.
-3. State the recovered_problem as what the person cannot do, or what keeps going wrong. Not a feature. Not a product capability.
-4. One sentence. The user's own language level. COMPRESS, NEVER UPGRADE: do not introduce nouns the spark did not supply.
-
-GAP DETECTION:
-Set gap_in_play true if the recovered_problem explicitly names an existing tool, service, or product AND describes how it fails.
+// Shared by Phase A and the scene route: when the recovered problem triggers a Gap check.
+const M2_GAP_DETECTION = `GAP DETECTION:
+Set gap_in_play true if the problem explicitly names an existing tool, service, or product AND describes how it fails.
 "Kahoot charges teachers for sharing, so the paywall blocks it" = gap_in_play true.
 "Teachers can't share quizzes without hitting a paywall" = gap_in_play false (no existing solution named).
 gap_in_play is a signal that a Gap evidence check is warranted in Phase B. It does not clear the Gap element — the user's answer does that.
-When in doubt, set gap_in_play false.
+When in doubt, set gap_in_play false. With no problem, set gap_in_play false.`;
 
-QUESTION:
-Write the friction question to show after the problem is confirmed.
+// Shared by Phase A and the scene route: the friction question, by maturity door.
+const M2_QUESTION_DOORS = `QUESTION:
+Write the friction question that shows once the problem is on record.
 The question door depends on maturity_class:
 
 maturity_class 0 — EXTRACTION DOOR (observed firsthand):
-Ask for the specific moment when the grape encountered this problem. Use the grape's name and the recovered_problem's nouns. Ask what they actually did — observable behaviour, not what they felt. One sentence.
+Ask for the specific moment when the grape encountered this problem. Use the grape's name and the problem's nouns. Ask what they actually did — observable behaviour, not what they felt. One sentence.
 
 maturity_class 1 — DIRECTION DOOR (talked to them, not observed):
 The founder has talked to the grape but has not watched the problem happen, so they probably do not have a specific moment in hand yet. Do not write a question that assumes they do. Never use the phrases "think of the last time," "describe the moment," "remember when," or "film if you were there" for this maturity_class. Write the question as a clear instruction to go get one real moment: have the grape walk you through the last specific time it happened, or watch for the next time it does. One sentence.
 
 maturity_class 2 — EXTRACTION DOOR (self as grape):
-Ask for the specific past instance when the speaker hit this problem themselves. One sentence.
+The builder is the person. Ask for the specific past instance when they hit this problem themselves. Address the builder as "you" throughout. Never use a name, "the speaker", he, she or they for the builder. One sentence.`;
 
-HINT:
-One sentence. What a good answer looks like for this spark and this grape, matched to the door.
-maturity_class 0 or 2: what a witnessed or lived moment looks like.
-maturity_class 1: a moment the grape describes to you counts as much as one you watch. One real instance, told or seen.
-Use domain words from the spark. Not generic.
+const M2_DOCTRINE_PROBLEM = `You are the Winemaster — the voice of Corked, an idea-aging system.
+
+Your job in M2 Phase A is Problem Recovery. Report accurately what the spark holds. You are not required to produce a problem.
+
+You receive the raw spark, the User Line (the bottled spark) and its spark_parse. Decide which of three outcomes applies.
+
+OUTCOMES:
+stated: the spark itself states a problem. Copy the words that state it into stated_span exactly as they appear in raw_spark or user_line: one continuous stretch, no word changed, added or dropped. Set problem to null.
+guessed: the spark is solution-language ("A free quiz app", "A better Slack") and states no problem, but one working guess can be written using only words already in the spark: its solution form, its person or role, its domain. Write the guess in problem: one sentence saying what the person cannot do, or what keeps going wrong. Besides the spark's own words, use only small framing words: can't, cannot, has trouble, hard, loses, keeps, forgets, misses, fails, struggles, finds, no way to. Set stated_span to null.
+insufficient: any guess would need a word the spark does not contain. Write no sentence. Set stated_span and problem to null.
+
+A guess that needs a cause, a cost, a barrier, an access issue, a feeling, a time or a place the spark did not state is insufficient. Never use the grape's name in the problem. When unsure between guessed and insufficient, choose insufficient.
+
+${M2_GAP_DETECTION}
+
+${M2_QUESTION_DOORS}
+Write the question for stated and guessed only, about that problem. For insufficient, set question to null.
 
 VOICE:
-Two short declarative sentences for observation.surface_text.
-No praise. No warmth. No coaching. No em dashes or en dashes.
-No contrast formulas. No questions in the observation.
-Do not narrate method, reasoning, or inference process in observation.surface_text. Report findings only.
+No praise. No warmth. No coaching. No em dashes or en dashes in any returned string.
+No contrast formulas. Do not narrate method, reasoning, or inference process.
+
+Return one JSON object only. No text before or after it. Never return two JSON blocks.
+Return only JSON.`;
+
+const M2_DOCTRINE_SCENE = `You are the Winemaster — the voice of Corked, an idea-aging system.
+
+M2 Phase A found no problem in the spark, so the builder was asked for a scene instead: the last time the person needed what the spark is for, what they were trying to do, and where it stopped working.
+
+You receive the User Line, the grape, the maturity class, and the builder's scene answer.
+
+SCENE TEST:
+A scene is one real occasion in the answer: someone was trying to do something, and the answer says where it stopped working. A general claim, a feeling, a habit with no occasion, an opinion about the market, or a description of the builder's own product is not a scene.
+
+IF A SCENE IS PRESENT:
+scene_present: true.
+anchor_span: the stretch of the answer that says where it stopped working, copied exactly as written. One continuous stretch.
+problem: one sentence stating what went wrong, built only from words inside anchor_span. Besides those words, use only small framing words: can't, cannot, has trouble, hard, loses, keeps, forgets, misses, fails, struggles, finds, no way to. Do not add a cause, a cost, a feeling, a time or a place the answer did not state.
+gap_in_play and question: as below, for this problem.
+swirl: null.
+
+IF NO SCENE IS PRESENT:
+scene_present: false. anchor_span, problem and question are null. gap_in_play is false.
+swirl: one follow-up question that asks once more for the scene: one occasion, what was being attempted, and where it stopped working. One sentence, using the answer's and the User Line's own nouns. For maturity_class 2, address the builder as "you"; otherwise use the grape's name.
+
+${M2_GAP_DETECTION}
+
+${M2_QUESTION_DOORS}
+
+VOICE:
+No praise. No warmth. No coaching. No em dashes or en dashes in any returned string.
+No contrast formulas. Do not narrate method, reasoning, or inference process.
 
 Return one JSON object only. No text before or after it. Never return two JSON blocks.
 Return only JSON.`;
@@ -471,38 +498,59 @@ Return exactly this JSON shape:
 }`;
 }
 
-function buildM2ProblemUserMessage(userLine, sparkParse, grapeName, grapeRel, maturityClass) {
-  const selfMode = maturityClass === 2;
-  const sp = sparkParse || {};
-  const grapeBlock = selfMode
-    ? `<grape>self (the speaker)</grape>`
+function m2GrapeBlock(grapeName, grapeRel, maturityClass) {
+  return maturityClass === 2
+    ? `<grape>self: the builder is the person</grape>`
     : `<grape_name>${grapeName}</grape_name>\n<grape_relationship>${grapeRel}</grape_relationship>`;
+}
 
-  return `<user_line>${userLine}</user_line>
+function buildM2ProblemUserMessage(rawSpark, userLine, sparkParse, grapeName, grapeRel, maturityClass) {
+  const sp = sparkParse || {};
+  return `<raw_spark>${rawSpark || userLine}</raw_spark>
+<user_line>${userLine}</user_line>
 <spark_parse>
   suspected_problem: ${sp.suspected_problem || 'null'}
   implied_person: ${sp.implied_person || 'null'}
   domain: ${sp.domain || 'null'}
   solution_form: ${sp.solution_form || 'null'}
+  triggering_situation: ${sp.triggering_situation || 'null'}
+  promised_change: ${sp.promised_change || 'null'}
 </spark_parse>
-${grapeBlock}
+${m2GrapeBlock(grapeName, grapeRel, maturityClass)}
 <maturity_class>${maturityClass}</maturity_class>
 
 Return exactly this JSON shape:
 {
-  "schema_version": "m2.v1",
+  "schema_version": "m2.v2",
   "mechanism": "M2",
   "phase": "problem",
-  "recovered_problem": "one sentence — the problem, not a solution or feature",
-  "needs_confirmation": true|false,
+  "outcome": "stated|guessed|insufficient",
+  "stated_span": "the spark's exact words that state the problem, or null",
+  "problem": "one sentence guess built from the spark's own words, or null",
   "gap_in_play": true|false,
-  "observation": {
-    "surface_text": "two sentences, lab register",
-    "problem_source": "explicit|implied"
-  },
-  "question": "one sentence — friction question tailored to this grape and this problem",
-  "hint": "one sentence — what a good friction answer looks like for this spark"
+  "question": "one sentence friction question about that problem, or null"
 }`;
+}
+
+function buildM2SceneUserMessage(userLine, grapeName, grapeRel, maturityClass, sceneAnswer) {
+  return `<user_line>${userLine}</user_line>
+${m2GrapeBlock(grapeName, grapeRel, maturityClass)}
+<maturity_class>${maturityClass}</maturity_class>
+<scene_answer>${sceneAnswer}</scene_answer>
+
+Return exactly this JSON shape:
+{
+  "schema_version": "m2.v2",
+  "mechanism": "M2",
+  "phase": "scene",
+  "scene_present": true|false,
+  "anchor_span": "verbatim from scene_answer or null",
+  "problem": "one sentence built only from anchor_span's words, or null",
+  "gap_in_play": true|false,
+  "question": "one sentence friction question about that problem, or null",
+  "swirl": { "kind": "scene", "question": "one sentence" }
+}
+Set swirl to null when scene_present is true.`;
 }
 
 function buildM2FrictionUserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer, gapInPlay) {
@@ -1591,46 +1639,310 @@ function validateM1(parsed, userAnswer) {
 
 const M2_MATURITY1_BANNED_QUESTION = /think of the last time|describe the moment|remember when|film(ed)? if you were there/i;
 
-function validateM2Problem(parsed, maturityClass, grapeName) {
-  const visiblePaths = [
-    'recovered_problem',
-    'observation.surface_text',
-    'question',
-    'hint'
-  ];
+// ── THE PROBLEM OBJECT ──
+// The problem M2 recovers is never a bare string: text, source and status travel together.
+// Confirm and edit change text and status. Nothing ever changes source.
+const PROBLEM_SOURCES = ['user_stated', 'system_hypothesis', 'scene_derived'];
+const PROBLEM_STATUSES = ['proposed', 'confirmed'];
 
+// Reads the problem a request carries. The app sends the object; the bench runners still
+// send the old bare confirmed_problem string, which arrives here with no source or status.
+function readProblem(body) {
+  const p = body && body.problem;
+  if (p && typeof p === 'object' && typeof p.text === 'string' && p.text.trim()) {
+    return {
+      text: p.text.trim(),
+      source: PROBLEM_SOURCES.includes(p.source) ? p.source : null,
+      status: PROBLEM_STATUSES.includes(p.status) ? p.status : null
+    };
+  }
+  const legacy = String((body && body.confirmed_problem) || '').trim();
+  return legacy ? { text: legacy, source: null, status: null } : null;
+}
+
+// ── M2 PHASE A: WHAT THE SPARK HOLDS ──
+// Phase A ends in one of three outcomes, and the code below decides which, not the model:
+//   stated:       the spark's own words, unrewritten (user_stated). Must appear in the spark verbatim.
+//   guessed:      a working guess built only from words already in the spark (system_hypothesis).
+//   insufficient: no sentence at all.
+// A guess that uses a word the spark doesn't hold is downgraded to insufficient, and every
+// downgrade is logged.
+
+// Function words. They carry no content, so they never count against a guess.
+const PROBLEM_STOPWORDS = new Set([
+  'a', 'an', 'the', 'and', 'or', 'but', 'nor', 'of', 'to', 'in', 'on', 'at', 'for', 'with', 'about',
+  'from', 'into', 'onto', 'over', 'under', 'up', 'down', 'out', 'off', 'by', 'as', 'than', 'then',
+  'so', 'if', 'when', 'whenever', 'while', 'where', 'who', 'whom', 'whose', 'which', 'what', 'why',
+  'how', 'that', 'this', 'these', 'those', 'it', 'its', 'they', 'them', 'their', 'theirs', 'he',
+  'him', 'his', 'she', 'her', 'hers', 'we', 'us', 'our', 'you', 'your', 'i', 'me', 'my', 'is', 'are',
+  'was', 'were', 'be', 'been', 'being', 'am', 'do', 'does', 'did', 'doing', 'done', 'have', 'has',
+  'had', 'having', 'will', 'would', 'shall', 'should', 'may', 'might', 'must', 'can', 'could', 'not',
+  'no', 'only', 'just', 'very', 'also', 'each', 'every', 'any', 'some', 'all', 'both', 'either',
+  'neither', 'own', 'same', 'other', 'such', 'there', 'here', 'before', 'after', 'until', 'because',
+  'since', 'through', 'during', 'within', 'without', 'again', 'even', 'yet', 's', 't'
+]);
+
+// The small framing words a guess may add to say what goes wrong ("has trouble", "loses",
+// "can't", "hard"). Every other word in a guess must already be in the spark.
+const PROBLEM_FRAMING_WORDS = new Set([
+  'trouble', 'hard', 'harder', 'difficult', 'cannot', 'unable', 'stuck', 'way', 'still', 'too',
+  'often', 'always', 'never', 'enough',
+  'struggle', 'struggles', 'struggled', 'struggling',
+  'lose', 'loses', 'losing', 'lost',
+  'keep', 'keeps', 'keeping', 'kept',
+  'forget', 'forgets', 'forgetting', 'forgot', 'forgotten',
+  'miss', 'misses', 'missing', 'missed',
+  'fail', 'fails', 'failing', 'failed',
+  'find', 'finds', 'finding', 'found',
+  'get', 'gets', 'getting', 'got'
+]);
+
+function problemTokens(text) {
+  return String(text || '')
+    .toLowerCase()
+    .replace(/[‘’ʼ]/g, "'")
+    .replace(/\bcan't\b/g, 'can not')
+    .replace(/\bwon't\b/g, 'will not')
+    .replace(/n't\b/g, ' not')
+    .replace(/'(s|re|ve|ll|d|m)\b/g, '')
+    .split(/[^a-z0-9]+/)
+    .filter(Boolean);
+}
+
+function stemWord(w) {
+  if (w.length > 4 && w.endsWith('ies')) return w.slice(0, -3) + 'y';
+  if (w.length > 4 && /(ches|shes|sses|xes|zes)$/.test(w)) return w.slice(0, -2);
+  if (w.length > 3 && w.endsWith('s') && !w.endsWith('ss') && !w.endsWith('us')) return w.slice(0, -1);
+  if (w.length > 5 && w.endsWith('ing')) return w.slice(0, -3);
+  if (w.length > 4 && w.endsWith('ed')) return w.slice(0, -2);
+  return w;
+}
+
+// The content words of `text` that `source` doesn't contain. A word counts as present when it,
+// or its plural/tense-folded stem, matches a source word (tokensMatch also lets a stem of four
+// letters or more match a longer form of itself: "cancel" and "cancels").
+function unsupportedProblemWords(text, source) {
+  const sourceStems = [...new Set(problemTokens(source).map(stemWord))];
+  const missing = [];
+  for (const word of problemTokens(text)) {
+    if (PROBLEM_STOPWORDS.has(word) || PROBLEM_FRAMING_WORDS.has(word)) continue;
+    const stem = stemWord(word);
+    if (PROBLEM_FRAMING_WORDS.has(stem)) continue;
+    if (sourceStems.some(s => tokensMatch(stem, s))) continue;
+    if (!missing.includes(word)) missing.push(word);
+  }
+  return missing;
+}
+
+// The exact stretch of one of `sources` that `candidate` quotes, ignoring case, spacing and the
+// punctuation at its ends. Null unless the candidate's words appear there, in order, whole.
+function findVerbatimSpan(candidate, sources) {
+  const want = String(candidate || '')
+    .toLowerCase()
+    .replace(/[‘’ʼ]/g, "'")
+    .replace(/\s+/g, ' ')
+    .replace(/^[\s"'.,;:!?]+|[\s"'.,;:!?]+$/g, '');
+  if (problemTokens(want).length < 3) return null;
+
+  for (const source of sources) {
+    const src = String(source || '');
+    // A lowercased, single-spaced copy of the source that remembers where each character came from.
+    let norm = '';
+    const at = [];
+    let lastSpace = true;
+    for (let i = 0; i < src.length; i++) {
+      let ch = src[i];
+      if (/\s/.test(ch)) {
+        if (lastSpace) continue;
+        ch = ' ';
+        lastSpace = true;
+      } else {
+        const lower = ch.toLowerCase();
+        ch = lower.length === 1 ? lower : ch;
+        if (/[‘’ʼ]/.test(ch)) ch = "'";
+        lastSpace = false;
+      }
+      norm += ch;
+      at.push(i);
+    }
+    let idx = norm.indexOf(want);
+    while (idx !== -1) {
+      const before = norm[idx - 1];
+      const after = norm[idx + want.length];
+      const wholeWords = !(before && /[a-z0-9]/.test(before)) && !(after && /[a-z0-9]/.test(after));
+      if (wholeWords) return src.slice(at[idx], at[idx + want.length - 1] + 1);
+      idx = norm.indexOf(want, idx + 1);
+    }
+  }
+  return null;
+}
+
+function logM2Downgrade(detail) {
+  console.warn(JSON.stringify({ event: 'm2_downgrade', ...detail }));
+}
+
+// Decides the Phase A outcome from the model's reply and the spark itself.
+function decideM2Outcome(parsed, { rawSpark, userLine, sparkParse }) {
+  const sp = sparkParse || {};
+  const spark = [rawSpark, userLine].filter(Boolean);
+  const vocabulary = [
+    rawSpark, userLine, sp.suspected_problem, sp.implied_person, sp.domain, sp.solution_form,
+    sp.triggering_situation, sp.promised_change
+  ].filter(Boolean).join(' ');
+  const modelOutcome = ['stated', 'guessed', 'insufficient'].includes(parsed.outcome) ? parsed.outcome : null;
+  const downgrades = [];
+
+  // Stated: the model's span, or M0's suspected_problem, counts only when the spark holds it
+  // word for word. The spark's own words are used as they appear there.
+  for (const candidate of [parsed.stated_span, sp.suspected_problem]) {
+    const span = findVerbatimSpan(candidate, spark);
+    if (span) return { outcome: 'stated', text: span, modelOutcome, downgrades, unsupported: [] };
+  }
+
+  // Anything else that names a problem is wording Corked wrote, so it is a guess and must pass
+  // the word check. A "stated" span that isn't in the spark is that kind of rewrite.
+  let guess = null;
+  if (modelOutcome === 'stated') {
+    guess = parsed.stated_span || parsed.problem || null;
+    downgrades.push({ from: 'stated', to: 'guessed', reason: 'stated_span_not_verbatim_in_spark', text: guess });
+  } else if (modelOutcome === 'guessed') {
+    guess = parsed.problem || null;
+  }
+  guess = typeof guess === 'string' ? guess.replace(/[—–]/g, ',').replace(/\s+/g, ' ').trim() : '';
+  if (!guess) {
+    if (modelOutcome && modelOutcome !== 'insufficient') {
+      downgrades.push({ from: modelOutcome, to: 'insufficient', reason: 'no_problem_text' });
+    }
+    return { outcome: 'insufficient', text: null, modelOutcome, downgrades, unsupported: [] };
+  }
+
+  const unsupported = unsupportedProblemWords(guess, vocabulary);
+  if (unsupported.length) {
+    downgrades.push({ from: 'guessed', to: 'insufficient', reason: 'words_not_in_spark', words: unsupported, text: guess });
+    return { outcome: 'insufficient', text: null, modelOutcome, downgrades, unsupported };
+  }
+  return { outcome: 'guessed', text: guess, modelOutcome, downgrades, unsupported: [] };
+}
+
+function m2FrictionQuestion(parsed, maturityClass, grapeName, problemText) {
+  if (typeof parsed.question !== 'string' || !parsed.question.trim()) return { question: null, repaired: false };
+  let question = cleanVisibleText(parsed.question);
+  if (maturityClass === 1 && M2_MATURITY1_BANNED_QUESTION.test(question)) {
+    question = `Have ${grapeName} walk you through the last specific time ${problemText} happened, or watch for the next time it does.`;
+    return { question, repaired: true };
+  }
+  return { question, repaired: false };
+}
+
+function validateM2Problem(parsed, maturityClass, grapeName, sources) {
   if (!parsed || typeof parsed !== 'object') throw new Error('Invalid JSON object');
   if (parsed.mechanism !== 'M2') throw new Error('Invalid mechanism');
   if (parsed.phase !== 'problem') throw new Error('Expected phase: problem');
-  if (!parsed.recovered_problem || typeof parsed.recovered_problem !== 'string') {
-    throw new Error('Missing recovered_problem');
-  }
 
-  parsed.needs_confirmation = !!parsed.needs_confirmation;
-  parsed.gap_in_play = !!parsed.gap_in_play;
+  const decision = decideM2Outcome(parsed, sources);
+  for (const d of decision.downgrades) logM2Downgrade({ phase: 'problem', user_line: sources.userLine, ...d });
 
-  if (!parsed.observation || typeof parsed.observation !== 'object') {
-    parsed.observation = { surface_text: '', problem_source: 'implied' };
-  }
+  const problem = decision.text
+    ? {
+        text: decision.text,
+        source: decision.outcome === 'stated' ? 'user_stated' : 'system_hypothesis',
+        // The builder's own words need no confirming; a guess waits for the builder.
+        status: decision.outcome === 'stated' ? 'confirmed' : 'proposed'
+      }
+    : null;
+  const { question, repaired } = problem
+    ? m2FrictionQuestion(parsed, maturityClass, grapeName, problem.text)
+    : { question: null, repaired: false };
+  const styleViolations = findVisibleStyleViolations({ question: parsed.question }, ['question']);
 
-  const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
-  cleanVisibleFields(parsed, visiblePaths);
-
-  let questionRepaired = false;
-  if (maturityClass === 1 && typeof parsed.question === 'string' && M2_MATURITY1_BANNED_QUESTION.test(parsed.question)) {
-    parsed.question = `Have ${grapeName} walk you through the last specific time ${parsed.recovered_problem} happened, or watch for the next time it does.`;
-    questionRepaired = true;
-  }
-
-  parsed.server_checks = {
-    schema_valid: true,
-    gap_in_play: parsed.gap_in_play,
-    needs_confirmation: parsed.needs_confirmation,
-    visible_style_violations_cleaned: styleViolations,
-    m2_question_repaired: questionRepaired
+  return {
+    schema_version: 'm2.v2',
+    mechanism: 'M2',
+    phase: 'problem',
+    outcome: decision.outcome,
+    problem,
+    gap_in_play: !!problem && parsed.gap_in_play === true,
+    question,
+    // Kept for the bench runners, which still read the old fields.
+    recovered_problem: problem ? problem.text : null,
+    needs_confirmation: decision.outcome === 'guessed',
+    server_checks: {
+      schema_valid: true,
+      model_outcome: decision.modelOutcome,
+      outcome: decision.outcome,
+      downgrades: decision.downgrades,
+      unsupported_words: decision.unsupported,
+      visible_style_violations_cleaned: styleViolations,
+      m2_question_repaired: repaired
+    }
   };
+}
 
-  return parsed;
+// The scene route: a problem built only from the builder's scene answer, anchored to the span
+// it came from with the same check the findings use.
+function validateM2Scene(parsed, sceneAnswer, maturityClass, grapeName) {
+  if (!parsed || typeof parsed !== 'object') throw new Error('Invalid JSON object');
+  if (parsed.mechanism !== 'M2') throw new Error('Invalid mechanism');
+  if (parsed.phase !== 'scene') throw new Error('Expected phase: scene');
+
+  const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
+  const anchorVerified = parsed.scene_present === true
+    && typeof parsed.anchor_span === 'string'
+    && !!norm(parsed.anchor_span)
+    && norm(sceneAnswer).includes(norm(parsed.anchor_span));
+  const downgrades = [];
+  let problem = null;
+
+  if (parsed.scene_present === true && !anchorVerified) {
+    downgrades.push({ from: 'scene', to: 'no_scene', reason: 'anchor_not_verbatim_in_answer', anchor_span: parsed.anchor_span || null });
+  }
+  if (anchorVerified) {
+    const anchor = norm(parsed.anchor_span);
+    let text = typeof parsed.problem === 'string' ? parsed.problem.replace(/[—–]/g, ',').replace(/\s+/g, ' ').trim() : '';
+    const unsupported = text ? unsupportedProblemWords(text, anchor) : [];
+    if (!text || unsupported.length) {
+      // The compression reached outside the answer's words; the anchored span itself is the
+      // builder's own words, so it stands as the problem instead.
+      downgrades.push({ from: 'scene_problem', to: 'anchor_span', reason: text ? 'words_not_in_anchor' : 'no_problem_text', words: unsupported, text: text || null });
+      text = anchor;
+    }
+    if (text.length > PROBLEM_LENGTH_CAP) {
+      downgrades.push({ from: 'scene', to: 'no_scene', reason: 'anchor_span_over_length_cap' });
+    } else {
+      problem = { text, source: 'scene_derived', status: 'proposed', anchor };
+    }
+  }
+  for (const d of downgrades) logM2Downgrade({ phase: 'scene', ...d });
+
+  const { question, repaired } = problem
+    ? m2FrictionQuestion(parsed, maturityClass, grapeName, problem.text)
+    : { question: null, repaired: false };
+
+  let swirl = null;
+  if (!problem && parsed.swirl && typeof parsed.swirl.question === 'string' && parsed.swirl.question.trim()) {
+    let q = cleanVisibleText(parsed.swirl.question);
+    if (q.length > SWIRL_QUESTION_CAP) q = q.slice(0, SWIRL_QUESTION_CAP - 3) + '...';
+    swirl = { kind: 'scene', question: q };
+  }
+
+  return {
+    schema_version: 'm2.v2',
+    mechanism: 'M2',
+    phase: 'scene',
+    scene_present: !!problem,
+    problem,
+    gap_in_play: !!problem && parsed.gap_in_play === true,
+    question,
+    swirl,
+    server_checks: {
+      schema_valid: true,
+      model_scene_present: parsed.scene_present === true,
+      anchor_verified: anchorVerified,
+      downgrades,
+      m2_question_repaired: repaired,
+      swirl_included: !!swirl
+    }
+  };
 }
 
 function validateM2Friction(parsed, userAnswer, gapInPlay) {
@@ -1692,17 +2004,22 @@ function validateM2Friction(parsed, userAnswer, gapInPlay) {
 
 async function handleM2(request, env, corsHeaders) {
   const body = await request.json();
+  const phase         = String(body.phase           || '').trim();
+  const rawSpark      = String(body.raw_spark       || '').trim();
   const userLine      = String(body.user_line       || '').trim();
   const grapeName     = String(body.grape_name      || '').trim();
   const grapeRel      = String(body.grape_relationship || '').trim();
   const maturityClass = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
+  const problem       = readProblem(body);
 
   const capViolation = checkLengthCaps(corsHeaders, [
+    { value: rawSpark, max: RAW_SPARK_LENGTH_CAP, name: 'raw_spark' },
     { value: userLine, max: FIELD_LENGTH_CAP, name: 'user_line' },
     { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
     { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
-    { value: String(body.confirmed_problem || ''), max: PROBLEM_LENGTH_CAP, name: 'confirmed_problem' },
+    { value: problem ? problem.text : '', max: PROBLEM_LENGTH_CAP, name: 'problem' },
     { value: String(body.user_answer || ''), max: ANSWER_LENGTH_CAP, name: 'user_answer' },
+    { value: String(body.scene_answer || ''), max: ANSWER_LENGTH_CAP, name: 'scene_answer' },
     ...sparkParseCapFields(body.spark_parse)
   ]);
   if (capViolation) return capViolation;
@@ -1711,43 +2028,46 @@ async function handleM2(request, env, corsHeaders) {
     return jsonResponse({ error: 'Missing user_line' }, 400, corsHeaders);
   }
 
+  if (phase === 'scene') {
+    // No problem on record: build one from the builder's scene, in the scene's own words.
+    const sceneAnswer = String(body.scene_answer || '').trim();
+    if (!sceneAnswer) {
+      return jsonResponse({ error: 'scene_answer is empty' }, 400, corsHeaders);
+    }
+    const parsed = await callClaude(
+      env,
+      M2_DOCTRINE_SCENE,
+      buildM2SceneUserMessage(userLine, grapeName, grapeRel, maturityClass, sceneAnswer),
+      600
+    );
+    return jsonResponse(validateM2Scene(parsed, sceneAnswer, maturityClass, grapeName), 200, corsHeaders);
+  }
+
   const hasUserAnswerKey = Object.prototype.hasOwnProperty.call(body, 'user_answer');
   if (hasUserAnswerKey && String(body.user_answer || '').trim() === '') {
     return jsonResponse({ error: 'user_answer is empty' }, 400, corsHeaders);
   }
 
   if (!hasUserAnswerKey) {
-    // Phase A: problem recovery — no answer yet, recover the candidate problem.
+    // Phase A: problem recovery. Reports what the spark holds: stated, guessed or insufficient.
     const sparkParse = body.spark_parse || null;
     const parsed = await callClaude(
       env,
       M2_DOCTRINE_PROBLEM,
-      buildM2ProblemUserMessage(userLine, sparkParse, grapeName, grapeRel, maturityClass),
+      buildM2ProblemUserMessage(rawSpark, userLine, sparkParse, grapeName, grapeRel, maturityClass),
       600
     );
-
-    let problemForcedVerbatim = false;
-    if (sparkParse?.suspected_problem) {
-      parsed.recovered_problem = sparkParse.suspected_problem;
-      parsed.needs_confirmation = false;
-      problemForcedVerbatim = true;
-    }
-
-    const validated = validateM2Problem(parsed, maturityClass, grapeName);
-    if (problemForcedVerbatim) {
-      validated.recovered_problem = sparkParse.suspected_problem;
-    }
-    validated.server_checks.problem_forced_verbatim = problemForcedVerbatim;
+    const validated = validateM2Problem(parsed, maturityClass, grapeName, { rawSpark, userLine, sparkParse });
     return jsonResponse(validated, 200, corsHeaders);
   }
 
-  // Phase B: friction grading — confirmed problem + user answer both present.
-  const confirmedProblem = String(body.confirmed_problem || '').trim();
+  // Phase B: friction grading — the problem on record + user answer both present.
+  const confirmedProblem = problem ? problem.text : '';
   const userAnswer       = String(body.user_answer       || '').trim();
   const gapInPlay        = !!body.gap_in_play;
 
   if (!confirmedProblem) {
-    return jsonResponse({ error: 'Missing confirmed_problem for friction phase' }, 400, corsHeaders);
+    return jsonResponse({ error: 'Missing problem for friction phase' }, 400, corsHeaders);
   }
 
   const parsed = await callClaude(
@@ -1803,7 +2123,8 @@ async function handleField(request, env, corsHeaders) {
   const missing          = String(body.missing || '').trim();
   const grapeName        = String(body.grape_name || '').trim();
   const grapeRel         = String(body.grape_relationship || '').trim();
-  const confirmedProblem = String(body.confirmed_problem || '').trim();
+  const problem          = readProblem(body);
+  const confirmedProblem = problem ? problem.text : '';
   const element          = String(body.element || '').trim();
 
   const capViolation = checkLengthCaps(corsHeaders, [
@@ -1812,7 +2133,7 @@ async function handleField(request, env, corsHeaders) {
     { value: missing, max: FIELD_LENGTH_CAP, name: 'missing' },
     { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
     { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
-    { value: confirmedProblem, max: PROBLEM_LENGTH_CAP, name: 'confirmed_problem' },
+    { value: confirmedProblem, max: PROBLEM_LENGTH_CAP, name: 'problem' },
     { value: element, max: FIELD_LENGTH_CAP, name: 'element' },
     ...sparkParseCapFields(sparkParse)
   ]);
@@ -1821,7 +2142,19 @@ async function handleField(request, env, corsHeaders) {
   if (!mode || !userLine) {
     return jsonResponse({ error: 'Missing mode or user_line' }, 400, corsHeaders);
   }
-  if ((mode === 'ask' || mode === 'echo' || mode === 'contrast') && !confirmedProblem) {
+  if (mode === 'ask' && !confirmedProblem) {
+    // No problem on record: the [problem] templates can't be used, so the errand is the open
+    // domain question. With no domain either, say so rather than invent one.
+    const domain = String(sparkParse?.domain || '').trim();
+    if (!domain) {
+      console.warn(JSON.stringify({ event: 'field_no_problem_no_domain', user_line: userLine }));
+      return jsonResponse({ error: 'no_problem_no_domain' }, 422, corsHeaders);
+    }
+    return jsonResponse({
+      brief: { kind: 'ask', setup: null, question: `What's the most annoying part of ${domain} for you right now?`, target: null }
+    }, 200, corsHeaders);
+  }
+  if ((mode === 'echo' || mode === 'contrast') && !confirmedProblem) {
     return jsonResponse({ error: 'ASK/ECHO/CONTRAST requires a confirmed problem' }, 400, corsHeaders);
   }
   if (mode === 'limit' && (!confirmedProblem || !sparkParse?.domain)) {
@@ -1881,7 +2214,7 @@ async function handleResolve(request, env, corsHeaders) {
   const elementState     = String(body.element_state || '').trim();
   const sourceMechanism  = String(body.source_mechanism || '').trim();
   const priorAnswer      = String(body.prior_answer || '').trim();
-  const confirmedProblem = String(body.confirmed_problem || '').trim();
+  const confirmedProblem = readProblem(body)?.text || '';
   const grapeName        = String(body.grape_name || '').trim();
   const domain           = String(body.domain || '').trim();
 
@@ -1922,7 +2255,7 @@ async function handleEvidenceMechanism(request, env, corsHeaders, cfg) {
     throw new Error(`Config error: primaryBar '${cfg.primaryBar}' not in bars for ${cfg.mechanism}`);
   }
   const body = await request.json();
-  const confirmedProblem = String(body.confirmed_problem || '').trim();
+  const confirmedProblem = readProblem(body)?.text || '';
   const grapeName        = String(body.grape_name || '').trim();
   const grapeRel         = String(body.grape_relationship || '').trim();
   const maturityClass    = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
@@ -2010,7 +2343,7 @@ async function handleM7(request, env, corsHeaders) {
 
 async function handleM6(request, env, corsHeaders) {
   const body = await request.json();
-  const confirmedProblem = String(body.confirmed_problem  || '').trim();
+  const confirmedProblem = readProblem(body)?.text || '';
   const grapeName        = String(body.grape_name         || '').trim();
   const grapeRel         = String(body.grape_relationship  || '').trim();
   const maturityClass    = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
@@ -2097,7 +2430,7 @@ async function handleM6(request, env, corsHeaders) {
 
 async function handleM4(request, env, corsHeaders) {
   const body = await request.json();
-  const confirmedProblem  = String(body.confirmed_problem  || '').trim();
+  const confirmedProblem  = readProblem(body)?.text || '';
   const grapeName         = String(body.grape_name         || '').trim();
   const grapeRel          = String(body.grape_relationship || '').trim();
   const maturityClass     = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;

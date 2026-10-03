@@ -1329,6 +1329,18 @@ body {
 #wm-brief {
   margin-bottom:1.1rem;
 }
+/* ── M2 PROBLEM BLOCK: the problem on record, and where it came from ── */
+#m2-problem { margin-bottom:1.3rem; }
+.m2-problem-label {
+  color:var(--muted); font-size:.72rem; text-transform:uppercase;
+  letter-spacing:.12em; margin-bottom:.45rem;
+}
+.m2-problem-text { font-size:.95rem; color:var(--cream); line-height:1.6; }
+.m2-problem-text.is-empty { color:var(--muted); }
+#m2-problem-inp {
+  width:100%; font-size:.88rem; padding:.6rem .85rem; background:var(--card);
+  border:1px solid var(--border-hi); border-radius:6px; color:var(--cream);
+}
 /* ── INLINE ERRAND ── */
 #inline-errand {
   margin-top:.85rem;
@@ -1795,15 +1807,15 @@ body {
         <div id="spark-reminder-body"></div>
       </div>
       <div class="mech-eyebrow" id="m-label">—</div>
+      <div id="m2-problem" style="display:none">
+        <div class="m2-problem-label" id="m2-problem-label"></div>
+        <div class="m2-problem-text" id="m2-problem-text"></div>
+        <input type="text" class="field" id="m2-problem-inp" maxlength="500">
+      </div>
       <div class="mech-hint" id="m6-interstitial" style="display:none;font-style:normal;margin-bottom:.6rem"></div>
       <div class="mech-q" id="m-q"></div>
       <div class="mech-hint" id="m-hint" style="font-style:normal"></div>
       <div id="wm-brief" style="display:none"></div>
-      <div id="m2-confirm" style="display:none;margin-bottom:.9rem">
-        <div style="color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;margin-bottom:.45rem">Recovered line</div>
-        <input type="text" class="field" id="m2-confirm-inp"
-               style="width:100%;font-size:.88rem;padding:.6rem .85rem;background:var(--card);border:1px solid var(--border-hi);border-radius:6px;color:var(--cream)">
-      </div>
       <div id="m6-words-source" style="display:none;margin-bottom:.9rem">
         <div class="rhythm-choices" style="grid-template-columns:repeat(2, minmax(0, 1fr))">
           <button type="button" class="rhythm-choice" id="m6-ws-real" onclick="pickM6WordsSource('real')">Their words, from a real exchange</button>
@@ -1924,6 +1936,8 @@ function freshState() {
     label:{ grape:'', tell:'', vintage:'', gap:'', echo:'', limit:'' },
     m0:null,
     m1:null,
+    // The problem M2 recovered: { text, source, status }, never a bare string. See problemOnRecord().
+    problem:null,
     mechIndex:0,
     grapeStep:false,
     cellarEntryPlayed:false,
@@ -2038,7 +2052,7 @@ async function fetchFieldBrief({ mode, missing, element }) {
     missing:            missing || null,
     grape_name:         S.grape_name || '',
     grape_relationship: S.grape_relationship || '',
-    confirmed_problem:  S.m2_confirmed_problem || S.m2_problem?.recovered_problem || null,
+    problem:            problemForWorker(),
     element:            element || null
   });
   return { ...data.brief, created_at: new Date().toISOString() };
@@ -2384,6 +2398,47 @@ function migrateQLifecycleSchema() {
   } catch (e) {}
 }
 
+// Bottles saved before the problem became an object hold it as a bare string. A string the
+// spark contains word for word is the builder's own (user_stated); anything else was Corked's
+// guess (system_hypothesis). It was confirmed either way, so it stays confirmed. An older guess
+// that was never confirmed comes across as a proposal still waiting for the builder.
+function migrateProblemSchema() {
+  try {
+    const bottles = getAllBottles();
+    let changed = false;
+    const migrated = bottles.map(b => {
+      const s = b.s;
+      if (!s) return b;
+      const legacy = typeof s.m2_confirmed_problem === 'string' ? s.m2_confirmed_problem.trim() : '';
+      const oldGuess = s.m2_problem && !s.m2_problem.outcome && typeof s.m2_problem.recovered_problem === 'string'
+        ? s.m2_problem.recovered_problem.trim() : '';
+      if (!('m2_confirmed_problem' in s) && !oldGuess) return b;
+      changed = true;
+      const { m2_confirmed_problem, ...rest } = s;
+      const text = legacy || oldGuess;
+      if (!text || (rest.problem && typeof rest.problem === 'object')) return { ...b, s: rest };
+      const stated = sparkHoldsWordForWord(s, text);
+      return {
+        ...b,
+        s: {
+          ...rest,
+          problem: { text, source: stated ? 'user_stated' : 'system_hypothesis', status: legacy || stated ? 'confirmed' : 'proposed' },
+          m2_problem: { ...(s.m2_problem || {}), outcome: stated ? 'stated' : 'guessed' }
+        }
+      };
+    });
+    if (changed) saveAllBottles(migrated);
+  } catch (e) {}
+}
+
+function sparkHoldsWordForWord(s, text) {
+  const norm = t => String(t || '').toLowerCase().replace(/[‘’]/g, "'").replace(/\s+/g, ' ')
+    .replace(/^[\s"'.,;:!?]+|[\s"'.,;:!?]+$/g, '');
+  const want = norm(text);
+  return !!want && [s.m0?.raw_spark, s.m0?.user_line, s.m0?.user_line_candidate, s.idea]
+    .some(src => src && norm(src).includes(want));
+}
+
 // Enforces two structural invariants on every load (cheap, idempotent, not gated behind
 // the one-time migration above): (1) a park with no matching real generated brief is not
 // a real park — never substitute template text for a missing generation, just heal it back
@@ -2496,14 +2551,14 @@ function buildMechs() {
     },
     {
       id:'M2', name:'The Friction Test',
-      // q and hint are populated from S.m2_problem after the Phase A worker call.
-      // Static strings below are fallbacks only — Phase A must run before M2 renders.
+      // q is the friction question Phase A (or the scene route) wrote for the problem on record.
+      // The static strings below are fallbacks only. With no problem on record, M2 asks for the
+      // scene instead: m2QuestionText() picks between them.
       q: S.m2_problem?.question || (selfMode
         ? `Stay inside the instance you just described.\n\nWhat did you actually do next? Write the observable steps. What could a camera capture?`
         : `Describe a specific moment when ${g} encountered this. What did they actually do? Write the exact behaviour you could film if you were there.`),
-      hint: S.m2_problem?.hint || (selfMode
-        ? 'Not what you felt. What happened next, step by step.'
-        : 'Not what they felt. What a camera would capture.'),
+      // No hint under the M2 question: it would explain what counts, and Corked never shows that.
+      hint: '',
       // M2 conditionally tests the gap element when Phase A flagged gap_in_play.
       // gap_in_play means the recovered problem names an existing solution + its failure.
       // The Gap element only clears from the user's friction answer (Phase B), not from spark text.
@@ -2515,7 +2570,7 @@ function buildMechs() {
     },
     {
       id:'M3', name:'Third-Party Workarounds',
-      // q is updated dynamically in renderMech once S.m2_confirmed_problem is available.
+      // q is updated dynamically in renderMech once the problem is on record.
       q: selfMode
         ? `Your own experience aside — who else hits this? Name one person and tell me what they have actually done about it.`
         : `Set ${grapeName} aside. Who else hits this? Name one person and tell me what they have actually done about it.`,
@@ -2530,7 +2585,7 @@ function buildMechs() {
       q: selfMode
         ? `You are one kind of person with this. Who is a different kind, and does it look the same for them?`
         : `${grapeName} is one kind of person with this. Who is a different kind, and does it look the same for them?`,
-      hint: `One person, not a category. What they did about ${S.m2_confirmed_problem || 'this problem'} counts.`,
+      hint: `One person, not a category. What they did about ${problemText() || 'this problem'} counts.`,
       els:['echo','vintage'],
       activeEl:'echo',
       obs: () => S.m4?.observation?.surface_text || null
@@ -3156,13 +3211,18 @@ function mechQuestion(m) {
   if (m.id === 'M6') return selfMode
     ? `What have you actually said or written about this, before Corked asked?`
     : `How would ${gn} describe this in their own words?`;
+  if (m.id === 'M2') return m2QuestionText();
   return m.q;
 }
 
-// opts.reentry: rendering a parked mechanism whose answer is about to be graded. M2 must not
-// rerun Phase A then; it shows the problem question it was parked with.
-function renderMech(opts = {}) {
+function renderMech() {
   if (mi >= M.length) { showLabel(); return; }
+  // While no problem is on record, nothing after M2 opens.
+  const m2Index = M.findIndex(x => x.id === 'M2');
+  if (m2Index >= 0 && mi > m2Index && !problemOnRecord()) {
+    mi = m2Index;
+    S.mechIndex = mi;
+  }
   const m = M[mi];
 
   // M4 conditional skip: echo already confirmed by M3, second-person question is unnecessary.
@@ -3215,21 +3275,15 @@ function renderMech(opts = {}) {
   const wmBrief = document.getElementById('wm-brief');
   if (wmBrief) { wmBrief.style.display = 'none'; wmBrief.textContent = ''; }
 
-  // M2: reset confirm state and trigger Phase A before the user can type.
+  // M2: the problem block. Phase A runs once per bottle; reopening reuses what it stored.
   m2AwaitingConfirm = false;
-  const m2ConfirmPanel = document.getElementById('m2-confirm');
-  if (m2ConfirmPanel) m2ConfirmPanel.style.display = 'none';
+  const m2ProblemBlock = document.getElementById('m2-problem');
+  if (m2ProblemBlock) m2ProblemBlock.style.display = 'none';
   if (m.id === 'M2') {
     const gn2 = S.label.grape || S.grape_name || 'the person you named';
     if (wmBrief) wmBrief.textContent = `Haven't spoken to ${gn2} about this yet? Go have that conversation. Come back and write what they actually said.`;
-    if (opts.reentry) {
-      if (S.m2_problem?.question) document.getElementById('m-q').textContent = S.m2_problem.question;
-      if (S.m2_problem?.hint) document.getElementById('m-hint').textContent = S.m2_problem.hint;
-      const exitsRowM2 = document.getElementById('real-world-exits');
-      if (exitsRowM2) exitsRowM2.style.display = 'flex';
-    } else {
-      triggerM2PhaseA();
-    }
+    if (m2Stage() === 'loading') triggerM2PhaseA();
+    else renderM2Stage();
   }
 
   // M3: inject confirmed problem into question, show brief and exit.
@@ -3247,7 +3301,7 @@ function renderMech(opts = {}) {
   // M4: update question and hint with current grape name and problem, show brief and exits row.
   if (m.id === 'M4') {
     m.q = mechQuestion(m);
-    m.hint = `One person, not a category. What they did about ${S.m2_confirmed_problem || 'this problem'} counts.`;
+    m.hint = `One person, not a category. What they did about ${problemText() || 'this problem'} counts.`;
     document.getElementById('m-q').textContent = m.q;
     document.getElementById('m-hint').textContent = m.hint;
     if (wmBrief) {
@@ -3305,6 +3359,7 @@ function renderMech(opts = {}) {
 
   showPhasePanel('question');
   setQLifecycle(m.prefilled ? 'answered' : 'active');
+  if (m.id === 'M2' && m2AwaitingConfirm) setQLifecycle('needs_clarification');
   setActiveElementThread(m.activeEl || m.els[0]);
 
   S.mechIndex = mi;
@@ -3774,7 +3829,13 @@ function markSwirlShown(mechId) {
 function maybeShowSwirl(mechId, data, originalAnswer) {
   if (!data?.swirl?.question || data.state === 'settled' || swirlAlreadyShown(mechId)) return false;
   // Marked done in submitSwirl() only once the follow-up is graded, so a failed swirl can be retried.
-  _pendingSwirl = { mechId, originalAnswer };
+  openSwirlPanel(data.swirl.question, { mechId, originalAnswer });
+  return true;
+}
+
+// pending.scene marks M2's scene follow-up: its answer goes back through the scene route.
+function openSwirlPanel(question, pending) {
+  _pendingSwirl = pending;
   const swirlBtn = document.getElementById('swirl-btn');
   if (swirlBtn) { swirlBtn.disabled = false; swirlBtn.textContent = 'Continue →'; }
   setQLifecycle('needs_clarification');
@@ -3782,7 +3843,7 @@ function maybeShowSwirl(mechId, data, originalAnswer) {
   const panel = document.getElementById('swirl-panel');
   const qEl = document.getElementById('swirl-q');
   const ansEl = document.getElementById('swirl-ans');
-  if (qEl) qEl.textContent = data.swirl.question;
+  if (qEl) qEl.textContent = question;
   if (ansEl) ansEl.value = '';
   if (panel) panel.style.display = 'block';
   // The swirl question is the only Continue while it's open — the main phase-row's
@@ -3790,7 +3851,6 @@ function maybeShowSwirl(mechId, data, originalAnswer) {
   const phaseRow = document.getElementById('q-phase-row');
   if (phaseRow) phaseRow.style.display = 'none';
   hideInlineErrand();
-  return true;
 }
 
 function hideSwirl() {
@@ -3812,6 +3872,33 @@ async function submitSwirl() {
   const btn = document.getElementById('swirl-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
   setQLifecycle('evaluating');
+
+  if (_pendingSwirl.scene) {
+    // M2's scene follow-up: the combined answer goes back through the scene route, once.
+    const session = _bottleSession;
+    let data;
+    try {
+      data = await callM2Scene(combined);
+    } catch (err) {
+      if (session !== _bottleSession) return;
+      // Nothing was stored: the swirl stays open with its text, so it can be sent again.
+      setQLifecycle('needs_clarification');
+      showPhaseObservation('Worker error. ' + err.message);
+      if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
+      return;
+    }
+    if (session !== _bottleSession) return;
+    markSwirlShown(M2_SCENE_SWIRL);
+    hideSwirl();
+    if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
+    const ansScene = document.getElementById('ans');
+    if (ansScene) ansScene.value = combined;
+    setAnswerDraft('M2', combined);
+    setQLifecycle('active');
+    applyM2SceneResult(data, combined, false);
+    saveState();
+    return;
+  }
 
   let graded;
   try {
@@ -3858,18 +3945,149 @@ async function parkM2Ask(status = 'dormant') {
   finishPark(park, brief, status);
 }
 
+// ── THE PROBLEM ON RECORD ──
+// S.problem is { text, source, status }. Source is user_stated, system_hypothesis or
+// scene_derived; status is proposed or confirmed. Confirm and edit change the text and the
+// status. Nothing ever changes the source. A problem is on record once it is confirmed, and
+// until then nothing after M2 opens.
+function problemOnRecord() {
+  return !!(S.problem && S.problem.text && S.problem.status === 'confirmed');
+}
+
+function problemText() {
+  return problemOnRecord() ? S.problem.text : '';
+}
+
+// What every later mechanism and the field generator receive: the whole object, never the text alone.
+function problemForWorker() {
+  return problemOnRecord() ? { text: S.problem.text, source: S.problem.source, status: S.problem.status } : null;
+}
+
+const M2_PROBLEM_LABELS = {
+  user_stated:       () => 'From your spark',
+  system_hypothesis: p => p.status === 'confirmed' ? 'Guessed from your spark. Wording confirmed.' : 'Guessed from your spark',
+  scene_derived:     () => 'From what you described'
+};
+
+// The scene's one follow-up uses the swirl, kept apart from M2's own friction swirl.
+const M2_SCENE_SWIRL = 'M2scene';
+
+// Where M2 stands. loading: Phase A has nothing stored yet. confirm: a wording waits for the
+// builder. scene: no problem on record, so M2 asks for the scene. friction: the problem is on record.
+function m2Stage() {
+  if (S.problem && S.problem.text) return problemOnRecord() ? 'friction' : 'confirm';
+  return S.m2_problem?.outcome === 'insufficient' ? 'scene' : 'loading';
+}
+
+// Asked instead of the friction question while no problem is on record. Copy is provisional.
+function m2SceneQuestion() {
+  const gn = S.label.grape || S.grape_name || 'the person you named';
+  if (S.maturity === 2) return 'Describe the last time you needed what your spark is for. What were you trying to do, and where did it stop working?';
+  if (S.maturity === 1) return `What has ${gn} told you about the last time they needed what your spark is for? What were they trying to do, and where did it stop working?`;
+  return `Describe the last time ${gn} needed what your spark is for. What were they trying to do, and where did it stop working?`;
+}
+
+function m2QuestionText() {
+  if (m2Stage() === 'scene') return m2SceneQuestion();
+  return S.m2_problem?.question || M.find(x => x.id === 'M2')?.q || '';
+}
+
+// The errand when no problem is on record, as the field generator writes it: the [problem]
+// templates can't be used. With no domain either, it says so instead of inventing one.
+function m2OpenErrandText() {
+  const domain = String(S.m0?.spark_parse?.domain || '').trim();
+  return domain
+    ? `What's the most annoying part of ${domain} for you right now?`
+    : 'No problem and no domain are on record yet, so there is no errand to write.';
+}
+
+// M2's errors sit on the line under the buttons.
+function showM2Error(msg) {
+  const el = document.getElementById('park-error');
+  if (el) { el.textContent = msg; el.style.display = 'block'; }
+}
+
+function hideM2Error() {
+  const el = document.getElementById('park-error');
+  if (el) { el.style.display = 'none'; el.textContent = ''; }
+}
+
+function renderM2ProblemBlock(stage) {
+  const block = document.getElementById('m2-problem');
+  const labelEl = document.getElementById('m2-problem-label');
+  const textEl = document.getElementById('m2-problem-text');
+  const inp = document.getElementById('m2-problem-inp');
+  if (!block || !labelEl || !textEl || !inp) return;
+  if (stage === 'loading') { block.style.display = 'none'; return; }
+
+  const p = S.problem;
+  const label = p && p.text && M2_PROBLEM_LABELS[p.source] ? M2_PROBLEM_LABELS[p.source](p) : '';
+  labelEl.textContent = label;
+  labelEl.style.display = label ? '' : 'none';
+  if (stage === 'confirm') {
+    textEl.style.display = 'none';
+    inp.value = p.text;
+    inp.style.display = '';
+  } else {
+    inp.style.display = 'none';
+    textEl.textContent = stage === 'scene' ? 'No problem on record yet.' : p.text;
+    textEl.classList.toggle('is-empty', stage === 'scene');
+    textEl.style.display = '';
+  }
+  block.style.display = 'block';
+}
+
+// Draws M2 for whatever it has stored. Never calls the worker.
+function renderM2Stage() {
+  const stage = m2Stage();
+  const qEl = document.getElementById('m-q');
+  const ans = document.getElementById('ans');
+  const exitsRow = document.getElementById('real-world-exits');
+  const wmBrief = document.getElementById('wm-brief');
+  m2AwaitingConfirm = stage === 'confirm';
+  renderM2ProblemBlock(stage);
+  document.getElementById('m-hint').textContent = '';
+
+  if (stage === 'confirm') {
+    if (qEl) qEl.textContent = '';
+    if (ans) ans.style.display = 'none';
+    if (exitsRow) exitsRow.style.display = 'none';
+    if (wmBrief) wmBrief.style.display = 'none';
+    setPhaseBusy(false, "That's the problem");
+    return;
+  }
+  if (qEl) qEl.textContent = m2QuestionText();
+  if (ans) ans.style.display = '';
+  setPhaseBusy(false, 'Continue →');
+  if (stage === 'scene') {
+    if (wmBrief) wmBrief.style.display = 'none';
+    // After the scene's one follow-up, the park exits stand with the errand.
+    const errandUp = swirlAlreadyShown(M2_SCENE_SWIRL) && !!S.m2_pending_brief;
+    if (errandUp) {
+      const brief = S.m2_pending_brief;
+      showInlineErrand(brief.question || brief.text ? brief : m2OpenErrandText());
+    }
+    if (exitsRow) exitsRow.style.display = errandUp ? 'flex' : 'none';
+    return;
+  }
+  if (exitsRow) exitsRow.style.display = 'flex';
+  if (wmBrief) wmBrief.style.display = 'block';
+}
+
+// Phase A runs once per bottle, when nothing is stored yet. Reopening never reruns it.
 async function triggerM2PhaseA() {
   const workerUrl = v6GetWorkerUrl();
+  const session = _bottleSession;
   const ans = document.getElementById('ans');
-  const confirmPanel = document.getElementById('m2-confirm');
   const qEl = document.getElementById('m-q');
   const hintEl = document.getElementById('m-hint');
   if (qEl) qEl.textContent = '';
   if (hintEl) hintEl.textContent = '';
 
   if (ans) ans.style.display = 'none';
-  if (confirmPanel) confirmPanel.style.display = 'none';
+  renderM2ProblemBlock('loading');
   document.getElementById('obs-box').style.display = 'none';
+  hideM2Error();
 
   if (!workerUrl) {
     showPhaseObservation('Worker URL missing. Add it in the Spark step before continuing.');
@@ -3879,76 +4097,51 @@ async function triggerM2PhaseA() {
 
   setPhaseBusy(true, 'Reading moment...');
 
+  let data;
   try {
-    const data = await workerFetch('/m2', {
-      user_line:        getSparkSummary(),
-      spark_parse:      S.m0?.spark_parse || null,
-      grape_name:       S.grape_name || '',
+    data = await workerFetch('/m2', {
+      phase:              'problem',
+      raw_spark:          S.m0?.raw_spark || S.idea || '',
+      user_line:          getSparkSummary(),
+      spark_parse:        S.m0?.spark_parse || null,
+      grape_name:         S.grape_name || '',
       grape_relationship: S.grape_relationship || '',
-      maturity_class:   S.maturity
+      maturity_class:     S.maturity
     });
-    applyM2PhaseAResult(data);
+    if (!['stated', 'guessed', 'insufficient'].includes(data?.outcome)) throw new Error('Invalid reply from the worker.');
   } catch (err) {
-    // Phase A failure: block-and-surface. No silent fallback — matching M0 behaviour.
-    showPhaseObservation('Could not recover a clear line from this spark. ' + err.message);
-    setPhaseBusy(true);
+    if (session !== _bottleSession) return;
+    // Phase A failed: say so under the buttons, and Continue tries again.
+    showM2Error('Could not recover a clear line from this spark. ' + err.message);
+    setPhaseBusy(false, 'Try again →');
+    return;
   }
+  if (session !== _bottleSession) return;
+  applyM2PhaseAResult(data);
 }
 
 function applyM2PhaseAResult(data) {
-  S.m2_problem = data;
-  m2AwaitingConfirm = false;
-
-  const qEl          = document.getElementById('m-q');
-  const hintEl       = document.getElementById('m-hint');
-  const confirmPanel = document.getElementById('m2-confirm');
-  const confirmInp   = document.getElementById('m2-confirm-inp');
-  const ans          = document.getElementById('ans');
-
-  if (data.needs_confirmation) {
-    // Hold the friction question until the user confirms the recovered problem.
-    if (qEl)    qEl.textContent    = '';
-    if (hintEl) hintEl.textContent = '';
-    if (confirmInp) confirmInp.value = data.recovered_problem || '';
-    if (confirmPanel) confirmPanel.style.display = 'block';
-    m2AwaitingConfirm = true;
-    setQLifecycle('needs_clarification');
-    setPhaseBusy(false, "That's it →");
-  } else {
-    // Problem was explicit — show friction question immediately.
-    if (qEl    && data.question) qEl.textContent    = data.question;
-    if (hintEl && data.hint)     hintEl.textContent = data.hint;
-    S.m2_confirmed_problem = data.recovered_problem;
-    if (confirmPanel) confirmPanel.style.display = 'none';
-    setQLifecycle('active');
-    if (ans) ans.style.display = '';
-    const exitsRowM2a = document.getElementById('real-world-exits');
-    if (exitsRowM2a) exitsRowM2a.style.display = 'flex';
-    const wmBriefM2a = document.getElementById('wm-brief');
-    if (wmBriefM2a) wmBriefM2a.style.display = 'block';
-    setPhaseBusy(false, 'Continue →');
-  }
+  const p = data.problem;
+  S.m2_problem = { outcome: data.outcome, question: data.question || null, gap_in_play: !!data.gap_in_play };
+  S.problem = p && typeof p.text === 'string' && p.text.trim()
+    ? { text: p.text.trim(), source: p.source, status: p.status }
+    : null;
+  renderM2Stage();
+  setQLifecycle(m2AwaitingConfirm ? 'needs_clarification' : 'active');
+  saveState();
 }
 
+// "That's the problem": the builder takes this wording. Confirm and edit change the text and the
+// status; the source stays what it was.
 function m2ConfirmProblem() {
-  const inp = document.getElementById('m2-confirm-inp');
-  S.m2_confirmed_problem = (inp ? inp.value.trim() : '') || S.m2_problem?.recovered_problem || '';
-  m2AwaitingConfirm = false;
+  if (!S.problem || !S.problem.text) return;
+  const inp = document.getElementById('m2-problem-inp');
+  const text = (inp ? inp.value.trim() : '') || S.problem.text;
+  S.problem = { ...S.problem, text, status: 'confirmed' };
+  renderM2Stage();
   setQLifecycle('active');
-
-  const qEl          = document.getElementById('m-q');
-  const hintEl       = document.getElementById('m-hint');
-  const confirmPanel = document.getElementById('m2-confirm');
-  const ans          = document.getElementById('ans');
-  if (qEl    && S.m2_problem?.question) qEl.textContent    = S.m2_problem.question;
-  if (hintEl && S.m2_problem?.hint)     hintEl.textContent = S.m2_problem.hint;
-  if (confirmPanel) confirmPanel.style.display = 'none';
-  if (ans) { ans.style.display = ''; ans.focus(); }
-  const exitsRowConfirm = document.getElementById('real-world-exits');
-  if (exitsRowConfirm) exitsRowConfirm.style.display = 'flex';
-  const wmBriefConfirm = document.getElementById('wm-brief');
-  if (wmBriefConfirm) wmBriefConfirm.style.display = 'block';
-  setPhaseBusy(false, 'Continue →');
+  saveState();
+  document.getElementById('ans')?.focus();
 }
 
 async function callM2Worker(txt) {
@@ -3957,10 +4150,88 @@ async function callM2Worker(txt) {
     grape_name:         S.grape_name || '',
     grape_relationship: S.grape_relationship || '',
     maturity_class:     S.maturity,
-    confirmed_problem:  S.m2_confirmed_problem || S.m2_problem?.recovered_problem || '',
+    problem:            problemForWorker(),
     gap_in_play:        !!(S.m2_problem?.gap_in_play),
     user_answer:        txt
   });
+}
+
+// ── M2 SCENE ROUTE ──
+// No problem in the spark: M2 asks for the scene, and the worker builds a problem from the
+// builder's own words, anchored to the span it came from. No scene in the answer: one follow-up
+// through the swirl, then the park exits stand with the errand.
+async function callM2Scene(txt) {
+  const data = await workerFetch('/m2', {
+    phase:              'scene',
+    user_line:          getSparkSummary(),
+    grape_name:         S.grape_name || '',
+    grape_relationship: S.grape_relationship || '',
+    maturity_class:     S.maturity,
+    scene_answer:       txt
+  });
+  if (typeof data?.scene_present !== 'boolean') throw new Error('Invalid reply from the worker.');
+  return data;
+}
+
+async function submitM2Scene(txt) {
+  const ans = document.getElementById('ans');
+  if (txt.length < 8) {
+    if (ans) ans.style.borderColor = 'var(--wine)';
+    return;
+  }
+  const session = _bottleSession;
+  hideM2Error();
+  setAnswerDraft('M2', txt);
+  saveState();
+  setPhaseBusy(true, 'Reading moment...');
+  let data;
+  try {
+    data = await callM2Scene(txt);
+  } catch (err) {
+    if (session !== _bottleSession) return;
+    showM2Error('Worker error. ' + err.message);
+    setPhaseBusy(false, 'Try again →');
+    return;
+  }
+  if (session !== _bottleSession) return;
+  setPhaseBusy(false, 'Continue →');
+  applyM2SceneResult(data, txt, !swirlAlreadyShown(M2_SCENE_SWIRL));
+}
+
+function applyM2SceneResult(data, txt, allowSwirl) {
+  if (data.scene_present && data.problem?.text) {
+    S.problem = { text: data.problem.text, source: 'scene_derived', status: 'proposed', anchor: data.problem.anchor || null };
+    S.m2_problem = { ...(S.m2_problem || {}), question: data.question || null, gap_in_play: !!data.gap_in_play, scene_answer: txt };
+    S.m2_pending_brief = null;
+    hideInlineErrand();
+    renderM2Stage();
+    setQLifecycle('needs_clarification');
+    saveState();
+    return;
+  }
+  if (allowSwirl) {
+    openSwirlPanel(data.swirl?.question || m2SceneQuestion(), { mechId: 'M2', originalAnswer: txt, scene: true });
+    return;
+  }
+  showM2NoProblemErrand();
+}
+
+async function showM2NoProblemErrand() {
+  const exitsRow = document.getElementById('real-world-exits');
+  if (exitsRow) exitsRow.style.display = 'flex';
+  showInlineErrand(null);
+  const session = _bottleSession;
+  try {
+    const brief = await fetchFieldBrief({ mode: 'ask', element: 'tell' });
+    if (session !== _bottleSession) return;
+    S.m2_pending_brief = brief;
+    showInlineErrand(brief.question || brief.text ? brief : m2OpenErrandText());
+  } catch (e) {
+    if (session !== _bottleSession) return;
+    S.m2_pending_brief = { kind: 'ask', text: null, pending: true, created_at: new Date().toISOString() };
+    showInlineErrand(m2OpenErrandText());
+  }
+  saveState();
 }
 
 async function applyM2Result(data, txt, allowSwirl = true) {
@@ -4006,7 +4277,7 @@ let _reopenMechId = null;
 
 async function callM3Worker(txt) {
   return workerFetch('/m3', {
-    confirmed_problem:  S.m2_confirmed_problem || '',
+    problem:            problemForWorker(),
     grape_name:         S.grape_name || '',
     grape_relationship: S.grape_relationship || '',
     maturity_class:     S.maturity,
@@ -4099,7 +4370,7 @@ async function parkItAction(status = 'dormant') {
 
 async function callM4Worker(txt) {
   return workerFetch('/m4', {
-    confirmed_problem:  S.m2_confirmed_problem || '',
+    problem:            problemForWorker(),
     grape_name:         S.grape_name || '',
     grape_relationship: S.grape_relationship || '',
     maturity_class:     S.maturity,
@@ -4157,7 +4428,7 @@ async function parkM4Echo(status = 'dormant') {
 
 async function callM5Worker(txt) {
   return workerFetch('/m5', {
-    confirmed_problem:  S.m2_confirmed_problem || '',
+    problem:            problemForWorker(),
     grape_name:         S.grape_name || '',
     grape_relationship: S.grape_relationship || '',
     maturity_class:     S.maturity,
@@ -4228,7 +4499,7 @@ function pickM6WordsSource(v) {
 
 async function callM6Worker(txt, wordsSourceOverride) {
   return workerFetch('/m6', {
-    confirmed_problem:  S.m2_confirmed_problem || '',
+    problem:            problemForWorker(),
     grape_name:         S.grape_name || '',
     grape_relationship: S.grape_relationship || '',
     maturity_class:     S.maturity,
@@ -4289,7 +4560,7 @@ async function parkM6Words(status = 'dormant') {
 
 async function callM7Worker(txt) {
   return workerFetch('/m7', {
-    confirmed_problem:  S.m2_confirmed_problem || '',
+    problem:            problemForWorker(),
     grape_name:         S.grape_name || '',
     grape_relationship: S.grape_relationship || '',
     maturity_class:     S.maturity,
@@ -4346,17 +4617,21 @@ async function p1Next(bypassErrandWarn = false) {
     document.getElementById('swirl-ans')?.focus();
     return;
   }
-  if (!bypassErrandWarn && isErrandActive()) {
-    document.getElementById('errand-warn-overlay').classList.add('show');
-    return;
-  }
   const m = M[mi];
   const ans = document.getElementById('ans');
   const txt = ans.value.trim();
 
-  // M2 confirm step: user is confirming the recovered problem, not answering friction yet.
-  if (m.id === 'M2' && m2AwaitingConfirm) {
-    m2ConfirmProblem();
+  // M2 before a problem is on record: Continue retries Phase A, takes the wording, or reads the
+  // scene. None of these moves past M2.
+  if (m.id === 'M2') {
+    const stage = m2Stage();
+    if (stage === 'loading') { triggerM2PhaseA(); return; }
+    if (stage === 'confirm') { m2ConfirmProblem(); return; }
+    if (stage === 'scene') { submitM2Scene(txt); return; }
+  }
+
+  if (!bypassErrandWarn && isErrandActive()) {
+    document.getElementById('errand-warn-overlay').classList.add('show');
     return;
   }
 
@@ -4881,7 +5156,7 @@ async function openLabelReopen(key) {
         element_state: S.elements[key],
         source_mechanism: mechId,
         prior_answer: S.answers[mechId] || '',
-        confirmed_problem: S.m2_confirmed_problem || S.m2_problem?.recovered_problem || '',
+        problem: problemForWorker(),
         grape_name: S.grape_name || '',
         domain: S.m0?.spark_parse?.domain || ''
       });
@@ -5382,7 +5657,8 @@ function getBottleDisplayLine(bottle) {
 const PARK_ERRANDS = {
   M2: { label: 'a question to ask', mode: 'ask',
         element: () => (S.m2_problem?.gap_in_play && S.elements.gap !== 'settled') ? 'gap' : 'tell',
-        fallback: () => S.m2_problem?.question || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?` },
+        fallback: () => !problemOnRecord() ? m2OpenErrandText()
+          : S.m2_problem?.question || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?` },
   M3: { label: 'find another person', mode: 'echo', element: () => 'echo',
         fallback: () => `Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?` },
   M4: { label: 'find a different kind of person', mode: 'contrast', element: () => 'echo',
@@ -5747,6 +6023,11 @@ async function submitParkedAnswer(id, mechId) {
     if (ansEl) ansEl.style.borderColor = 'var(--wine)';
     return;
   }
+  // Parked from M2 with no problem on record: the answer is a scene, not a friction answer.
+  if (mechId === 'M2' && !problemOnRecord()) {
+    await submitParkedScene(answer, errEl, btn);
+    return;
+  }
   let wordsSource;
   if (mechId === 'M6') {
     wordsSource = document.getElementById('dr-ws-real')?.classList.contains('is-selected') ? 'real'
@@ -5779,7 +6060,7 @@ async function submitParkedAnswer(id, mechId) {
         if (!fromLabel) {
           mi = idx;
           S.mechIndex = mi;
-          renderMech({ reentry: true });
+          renderMech();
         }
         if (mechId === 'M6') pickM6WordsSource(wordsSource);
       }
@@ -5802,6 +6083,36 @@ async function submitParkedAnswer(id, mechId) {
   document.getElementById('p1-btn').textContent = 'Continue →';
   obsShown = true;
   if (!_pendingSwirl) setQLifecycle('answered');
+  saveState();
+}
+
+// The bottle stays parked until the worker has read the scene; then the park ends and M2 opens
+// on the result, the same as Continue in the scene stage.
+async function submitParkedScene(answer, errEl, btn) {
+  const session = _bottleSession;
+  if (errEl) errEl.style.display = 'none';
+  if (btn) { btn.disabled = true; btn.textContent = 'Reading answer...'; }
+  setAnswerDraft('M2', answer);
+  saveState();
+  let data;
+  try {
+    data = await callM2Scene(answer);
+  } catch (err) {
+    if (session !== _bottleSession) return;
+    if (errEl) { errEl.textContent = 'Worker error. ' + err.message; errEl.style.display = 'block'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Answer now →'; }
+    return;
+  }
+  if (session !== _bottleSession) return;
+  S.qLifecycle = 'active';
+  S.parkKind = null;
+  S.parkMech = null;
+  mi = M.findIndex(m => m.id === 'M2');
+  S.mechIndex = mi;
+  renderMech();
+  const ans = document.getElementById('ans');
+  if (ans) ans.value = answer;
+  applyM2SceneResult(data, answer, !swirlAlreadyShown(M2_SCENE_SWIRL));
   saveState();
 }
 
@@ -6203,6 +6514,7 @@ function v6Rewrite() {
 (function init() {
   migrateOldSave();
   migrateQLifecycleSchema();
+  migrateProblemSchema();
   healPhantomParkedBottles();
   if (getAllBottles().length > 0) {
     showCellar();
