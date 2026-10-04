@@ -764,6 +764,13 @@ body {
   font-size:.9rem; font-weight:300; outline:none; transition:border-color .18s;
 }
 .grape-field:focus { border-color:var(--wine); }
+/* "This is me" at the person step: the builder is the person. */
+.self-choice-btn {
+  margin-top:.6rem; background:none; border:1px solid var(--border-hi); border-radius:6px;
+  color:var(--cream-dim); font-family:'Inter',sans-serif; font-size:.72rem; letter-spacing:.12em;
+  text-transform:uppercase; padding:.45rem .9rem; cursor:pointer; transition:border-color .15s, color .15s;
+}
+.self-choice-btn:hover { border-color:rgba(184,168,138,.4); color:var(--cream); }
 
 
 .phase-row {
@@ -2816,6 +2823,7 @@ function renderIntake() {
               <input type="text" class="field" id="grape-name-inp" maxlength="60"
                      placeholder="${namePh}" value="${savedName}"
                      style="font-size:.9rem" oninput="this.style.borderColor=''">
+              ${isSelf ? '' : `<button type="button" class="self-choice-btn" onclick="chooseSelfAtPersonStep()">This is me</button>`}
             </div>
             <div style="margin-top:.85rem">
               <div class="grape-input-label" style="display:block;margin-bottom:.45rem">${relLabel}</div>
@@ -2942,6 +2950,8 @@ async function intakeNext() {
     const relEl  = document.getElementById('grape-rel-inp');
     const name   = nameEl ? nameEl.value.trim() : '';
     const rel    = relEl  ? relEl.value.trim()  : '';
+    // A relationship that only says "me" means the builder named themselves: same as "This is me".
+    if (S.maturity !== 2 && relationshipMeansSelf(rel)) { chooseSelfAtPersonStep(); return; }
     if (!name) { if (nameEl) nameEl.style.borderColor = 'var(--wine)'; return; }
     if (!rel)  { if (relEl)  relEl.style.borderColor  = 'var(--wine)'; return; }
 
@@ -2988,6 +2998,31 @@ async function intakeNext() {
   if (intakeStep < INTAKE.length - 1) { intakeStep++; renderIntake(); }
   else if (!localStorage.getItem('corked_seen_phase1_intro')) showPhase1Intro();
   else startPhase1();
+}
+
+// "This is me" at the person step puts the bottle in self mode, the same as answering the setup
+// question "Are you the person with this problem yourself?" with "Yes". The name stays; the second
+// field now asks what makes the spark yours, so it starts empty.
+function chooseSelfAtPersonStep() {
+  const nameEl = document.getElementById('grape-name-inp');
+  if (nameEl) intakeSel['grape_name'] = nameEl.value.trim();
+  intakeSel['grape_rel'] = '';
+  intakeSel['grape_error'] = null;
+  maturityHistory = ['q1'];
+  maturityNode = 'q3';
+  maturityLeafIdx = MATURITY_TREE.q3.opts.findIndex(o => o.cls === 2);
+  intakeSel['maturity'] = 2;
+  S.maturity = 2;
+  renderIntake();
+}
+
+function relationshipMeansSelf(rel) {
+  const t = String(rel || '').toLowerCase()
+    .replace(/[‘’]/g, "'")
+    .replace(/[.,!"]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return /^(?:(?:it|that|this)(?:'s| is) )?(?:just )?(?:me|myself|me myself|i|i am|i'm|self)$/.test(t);
 }
 
 function intakeBack() {
@@ -3281,7 +3316,9 @@ function renderMech() {
   if (m2ProblemBlock) m2ProblemBlock.style.display = 'none';
   if (m.id === 'M2') {
     const gn2 = S.label.grape || S.grape_name || 'the person you named';
-    if (wmBrief) wmBrief.textContent = `Haven't spoken to ${gn2} about this yet? Go have that conversation. Come back and write what they actually said.`;
+    // In self mode there is no one to go and speak to.
+    if (wmBrief) wmBrief.textContent = S.maturity === 2 ? ''
+      : `Haven't spoken to ${gn2} about this yet? Go have that conversation. Come back and write what they actually said.`;
     if (m2Stage() === 'loading') triggerM2PhaseA();
     else renderM2Stage();
   }
@@ -3936,7 +3973,7 @@ async function parkM2Ask(status = 'dormant') {
   if (!brief) {
     try {
       const gapElement = S.m2_problem?.gap_in_play && S.elements.gap !== 'settled';
-      brief = await fetchFieldBrief({ mode: 'ask', element: gapElement ? 'gap' : 'tell' });
+      brief = await fetchM2Errand(gapElement ? 'gap' : 'tell');
     } catch (e) {
       const question = S.m2_problem?.question || null;
       brief = { kind: 'ask', text: question, pending: !question, created_at: new Date().toISOString() };
@@ -3993,12 +4030,23 @@ function m2QuestionText() {
 }
 
 // The errand when no problem is on record, as the field generator writes it: the [problem]
-// templates can't be used. With no domain either, it says so instead of inventing one.
+// templates can't be used. With no domain either, it asks about the week.
 function m2OpenErrandText() {
+  if (S.maturity === 2) return M2_SELF_ERRAND;
   const domain = String(S.m0?.spark_parse?.domain || '').trim();
   return domain
     ? `What's the most annoying part of ${domain} for you right now?`
-    : 'No problem and no domain are on record yet, so there is no errand to write.';
+    : "What's been the most annoying part of your week?";
+}
+
+// In self mode there is no one to ask: M2's errand is the builder's own next occurrence.
+const M2_SELF_ERRAND = 'Next time it happens, write down what you did right then.';
+
+async function fetchM2Errand(element) {
+  if (S.maturity === 2) {
+    return { kind: 'self', setup: null, question: M2_SELF_ERRAND, target: null, created_at: new Date().toISOString() };
+  }
+  return fetchFieldBrief({ mode: 'ask', element });
 }
 
 // M2's errors sit on the line under the buttons.
@@ -4071,7 +4119,7 @@ function renderM2Stage() {
     return;
   }
   if (exitsRow) exitsRow.style.display = 'flex';
-  if (wmBrief) wmBrief.style.display = 'block';
+  if (wmBrief) wmBrief.style.display = wmBrief.textContent ? 'block' : 'none';
 }
 
 // Phase A runs once per bottle, when nothing is stored yet. Reopening never reruns it.
@@ -4200,7 +4248,7 @@ async function submitM2Scene(txt) {
 
 function applyM2SceneResult(data, txt, allowSwirl) {
   if (data.scene_present && data.problem?.text) {
-    S.problem = { text: data.problem.text, source: 'scene_derived', status: 'proposed', anchor: data.problem.anchor || null };
+    S.problem = { text: data.problem.text, source: 'scene_derived', status: 'proposed', anchors: data.problem.anchors || [] };
     S.m2_problem = { ...(S.m2_problem || {}), question: data.question || null, gap_in_play: !!data.gap_in_play, scene_answer: txt };
     S.m2_pending_brief = null;
     hideInlineErrand();
@@ -4222,7 +4270,7 @@ async function showM2NoProblemErrand() {
   showInlineErrand(null);
   const session = _bottleSession;
   try {
-    const brief = await fetchFieldBrief({ mode: 'ask', element: 'tell' });
+    const brief = await fetchM2Errand('tell');
     if (session !== _bottleSession) return;
     S.m2_pending_brief = brief;
     showInlineErrand(brief.question || brief.text ? brief : m2OpenErrandText());
@@ -4253,7 +4301,7 @@ async function applyM2Result(data, txt, allowSwirl = true) {
     const session = _bottleSession;
     try {
       const gapElement = S.m2_problem?.gap_in_play && data.gap?.state !== 'settled';
-      const brief = await fetchFieldBrief({ mode: 'ask', element: gapElement ? 'gap' : 'tell' });
+      const brief = await fetchM2Errand(gapElement ? 'gap' : 'tell');
       if (session !== _bottleSession) return;
       S.m2_pending_brief = brief;
       showInlineErrand(brief.question || brief.text ? brief : S.m2_problem?.question || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?`);
@@ -5657,7 +5705,7 @@ function getBottleDisplayLine(bottle) {
 const PARK_ERRANDS = {
   M2: { label: 'a question to ask', mode: 'ask',
         element: () => (S.m2_problem?.gap_in_play && S.elements.gap !== 'settled') ? 'gap' : 'tell',
-        fallback: () => !problemOnRecord() ? m2OpenErrandText()
+        fallback: () => (!problemOnRecord() || S.maturity === 2) ? m2OpenErrandText()
           : S.m2_problem?.question || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?` },
   M3: { label: 'find another person', mode: 'echo', element: () => 'echo',
         fallback: () => `Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?` },

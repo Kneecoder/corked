@@ -329,12 +329,12 @@ function mechEndpoint(mech) {
 function buildMechRequest(mech, answerText, R) {
   switch (mech) {
     case 'M1': return { spark_summary: R.userLine, person_name: R.grapeName, relationship: answerText, maturity_class: R.maturity };
-    case 'M2': return { user_line: R.userLine, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, confirmed_problem: R.confirmedProblem, gap_in_play: R.gapInPlay, user_answer: answerText };
-    case 'M3': return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
-    case 'M4': return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, prior_echo_context: (R.answers.M3 || '').slice(0, 300), user_answer: answerText };
-    case 'M5': return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
-    case 'M6': return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, words_source: R.wordsSource, user_answer: answerText };
-    case 'M7': return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
+    case 'M2': return { user_line: R.userLine, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, problem: R.problem, gap_in_play: R.gapInPlay, user_answer: answerText };
+    case 'M3': return { problem: R.problem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
+    case 'M4': return { problem: R.problem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, prior_echo_context: (R.answers.M3 || '').slice(0, 300), user_answer: answerText };
+    case 'M5': return { problem: R.problem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
+    case 'M6': return { problem: R.problem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, words_source: R.wordsSource, user_answer: answerText };
+    case 'M7': return { problem: R.problem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
   }
 }
 
@@ -401,7 +401,7 @@ function summarize(mech, data, changed) {
 // judgment calls about prose quality are left for the human read of the
 // generated reports) ────────────────────────────────────────────────────────
 
-const VOICE_DASH_RE = /[—–]/; // em dash, en dash
+const VOICE_DASH_RE = /[—–]|--/; // em dash, en dash, double hyphen
 const VOICE_CONTRAST_RE = /\bnot\s+just\b|\bnot\b[^.?!\n]{0,80}\bbut\b/i;
 
 function scanVoiceViolations(R, mech, data) {
@@ -489,7 +489,7 @@ function makeR(cfg) {
     grapeName: cfg.grapeName || '', grapeRel: cfg.grapeRel || '',
     wordsSource: cfg.wordsSource === 'reconstructed' ? 'reconstructed' : 'real',
     m0: null, userLine: '', sparkParse: null, domain: '',
-    gapInPlay: false, confirmedProblem: '', answers: {}, log: [], anomalies: [], floorNotes: [], halted: false,
+    gapInPlay: false, problem: null, phaseAOutcome: null, answers: {}, log: [], anomalies: [], floorNotes: [], halted: false,
     elements: {}
   };
   EL_KEYS.forEach(k => R.elements[k] = { state: 'inert', history: ['inert'], mech: null });
@@ -551,7 +551,7 @@ async function runOne(cfg, idx) {
   }
 
   if (R.maturity === 3) {
-    const req = { mode: 'find', user_line: R.userLine, spark_parse: R.sparkParse, maturity_class: R.maturity, missing: 'grape', grape_name: '', grape_relationship: '', confirmed_problem: '', element: null };
+    const req = { mode: 'find', user_line: R.userLine, spark_parse: R.sparkParse, maturity_class: R.maturity, missing: 'grape', grape_name: '', grape_relationship: '', problem: null, element: null };
     const fres = await callWorker('/field', req);
     logEntry(R, { mech: 'M1', endpoint: '/field', kind: 'park', request: req, response: fres.data,
       summary: fres.ok ? ('brief target="' + ((fres.data.brief && fres.data.brief.target) || '') + '"') : ('ERROR ' + fres.status) });
@@ -572,8 +572,8 @@ async function runOne(cfg, idx) {
   logEntry(R, { mech: 'M1', endpoint: '/m1', kind: 'main', request: m1req, response: res.data, summary: summarize('M1', res.data, changed) });
   runAssertions(R, 'M1', res.data);
 
-  // M2 Phase A
-  const m2aReq = { user_line: R.userLine, spark_parse: R.sparkParse, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity };
+  // M2 Phase A: stated, guessed or insufficient. The request mirrors the app's.
+  const m2aReq = { phase: 'problem', raw_spark: (R.m0 && R.m0.raw_spark) || R.raw_spark, user_line: R.userLine, spark_parse: R.sparkParse, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity };
   res = await callWorker('/m2', m2aReq);
   if (!res.ok) {
     logEntry(R, { mech: 'M2', endpoint: '/m2 (phase A)', kind: 'main', request: m2aReq, response: res.data, summary: 'ERROR ' + res.status });
@@ -581,12 +581,19 @@ async function runOne(cfg, idx) {
     return R;
   }
   data = res.data;
+  R.phaseAOutcome = data.outcome || null;
   logEntry(R, { mech: 'M2', endpoint: '/m2 (phase A)', kind: 'main', request: m2aReq, response: data,
-    summary: 'recovered_problem="' + data.recovered_problem + '" · needs_confirmation=' + data.needs_confirmation + ' · gap_in_play=' + data.gap_in_play });
+    summary: 'outcome=' + data.outcome + ' · problem=' + (data.problem ? JSON.stringify(data.problem.text) + ' (' + data.problem.source + ')' : 'none') + ' · gap_in_play=' + data.gap_in_play });
   runAssertions(R, 'M2-phaseA', data);
+  if (!data.problem || data.outcome === 'insufficient') {
+    // No problem on record. The app asks for the scene here; the battery carries no scene answer,
+    // so the spark stops at M2 with the outcome recorded.
+    halt(R, 'M2 Phase A outcome: insufficient, no problem on record. Stopped at M2.');
+    return R;
+  }
   R.gapInPlay = !!data.gap_in_play;
-  R.confirmedProblem = data.recovered_problem; // auto-accept, mirrors "That's it, continue" — also covers the
-                                                // "Phase A: auto-confirm needs_confirmation as returned" requirement
+  // A guess is taken as worded, mirroring "That's the problem". The source stays as returned.
+  R.problem = { text: data.problem.text, source: data.problem.source, status: 'confirmed' };
 
   // M2..M7 main steps
   for (const mech of ['M2', 'M3', 'M4', 'M5', 'M6', 'M7']) {
@@ -672,6 +679,7 @@ function buildReport(R, cfg, idx) {
 }
 
 function judgeOutcome(R, cfg) {
+  if (R.phaseAOutcome === 'insufficient') return 'RECORDED (M2 Phase A insufficient: stopped at M2)';
   const expectHalt = cfg.expectHalt;
   if (expectHalt === 'maybe') return R.halted ? 'RECORDED (halted: ' + R.haltMsg + ')' : 'RECORDED (completed full chain)';
   if (expectHalt === true) return R.halted ? 'PASS (halted as expected: ' + R.haltMsg + ')' : 'FAIL (expected a halt, chain completed instead)';

@@ -239,13 +239,13 @@ A scene is one real occasion in the answer: someone was trying to do something, 
 
 IF A SCENE IS PRESENT:
 scene_present: true.
-anchor_span: the stretch of the answer that says where it stopped working, copied exactly as written. One continuous stretch.
-problem: one sentence stating what went wrong, using only words that appear in anchor_span. Shorten it; add no other word. Do not add a cause, a cost, a feeling, a time or a place the answer did not state.
+anchor_spans: the fragments of the answer the problem is built from, each copied exactly as written, in the order they appear in the answer. Take them from anywhere in the answer. Always include the fragment that says where it stopped working. When that fragment says "it", "they" or "this", also take the fragment that names what it refers to.
+problem: one sentence stating what went wrong, using only words that appear in anchor_spans. Name the thing itself instead of a pronoun when the answer names it. Shorten; add no other word. Do not add a cause, a cost, a feeling, a time or a place the answer did not state.
 gap_in_play and question: as below, for this problem.
 swirl: null.
 
 IF NO SCENE IS PRESENT:
-scene_present: false. anchor_span, problem and question are null. gap_in_play is false.
+scene_present: false. anchor_spans is an empty list. problem and question are null. gap_in_play is false.
 swirl: one follow-up question that asks once more for the scene: one occasion, what was being attempted, and where it stopped working. One sentence, using the answer's and the User Line's own nouns. For maturity_class 2, address the builder as "you"; otherwise use the grape's name.
 
 ${M2_GAP_DETECTION}
@@ -544,8 +544,8 @@ Return exactly this JSON shape:
   "mechanism": "M2",
   "phase": "scene",
   "scene_present": true|false,
-  "anchor_span": "verbatim from scene_answer or null",
-  "problem": "one sentence built only from anchor_span's words, or null",
+  "anchor_spans": ["verbatim fragment of scene_answer", "..."],
+  "problem": "one sentence built only from the words in anchor_spans, or null",
   "gap_in_play": true|false,
   "question": "one sentence friction question about that problem, or null",
   "swirl": { "kind": "scene", "question": "one sentence" }
@@ -1309,6 +1309,8 @@ const GENERIC_AI_PATTERNS = [
 ];
 
 const FIELD_LENGTH_CAP = 300;
+// The User Line is M0's compression of a raw spark of up to 500 characters, so it gets the same room.
+const USER_LINE_LENGTH_CAP = 500;
 const PROBLEM_LENGTH_CAP = 500;
 const ANSWER_LENGTH_CAP = 4000;
 const RAW_SPARK_LENGTH_CAP = 500;
@@ -1336,7 +1338,7 @@ function cleanVisibleText(value) {
   if (typeof value !== 'string') return value;
 
   let out = value
-    .replace(/[—–]/g, ',')
+    .replace(/[—–]|-{2,}/g, ',')
     .replace(/\bnot\s+just\s+/ig, '')
     .replace(/\bmore\s+than\s+just\s+/ig, '')
     .replace(/\s+/g, ' ')
@@ -1412,7 +1414,7 @@ function findVisibleStyleViolations(obj, paths) {
     const value = cur?.[parts[parts.length - 1]];
     if (typeof value !== 'string') continue;
 
-    if (/[—–]/.test(value)) violations.push(`${path}:dash`);
+    if (/[—–]|-{2,}/.test(value)) violations.push(`${path}:dash`);
     for (const pattern of GENERIC_AI_PATTERNS) {
       if (pattern.re.test(value)) violations.push(`${path}:${pattern.name}`);
     }
@@ -1778,18 +1780,28 @@ function findVerbatimSpan(candidate, sources) {
   return null;
 }
 
+// Dashes in a problem sentence become commas, as in every other visible string. Nothing else
+// changes: the sentence is checked word by word afterwards.
+function replaceDashes(text) {
+  return String(text)
+    .replace(/[—–]|-{2,}/g, ',')
+    .replace(/\s+/g, ' ')
+    .replace(/\s+,/g, ',')
+    .replace(/,\s*,+/g, ',')
+    .trim();
+}
+
 function logM2Downgrade(detail) {
   console.warn(JSON.stringify({ event: 'm2_downgrade', ...detail }));
 }
 
-// Decides the Phase A outcome from the model's reply and the spark itself.
+// Decides the Phase A outcome from the model's reply and the spark itself. The builder's words
+// are the raw spark and the sealed User Line, nothing else: the M0 parse fields are Corked's own
+// notes, so they never supply a word.
 function decideM2Outcome(parsed, { rawSpark, userLine, sparkParse }) {
   const sp = sparkParse || {};
   const spark = [rawSpark, userLine].filter(Boolean);
-  const vocabulary = [
-    rawSpark, userLine, sp.suspected_problem, sp.implied_person, sp.domain, sp.solution_form,
-    sp.triggering_situation, sp.promised_change
-  ].filter(Boolean).join(' ');
+  const vocabulary = spark.join(' ');
   const modelOutcome = ['stated', 'guessed', 'insufficient'].includes(parsed.outcome) ? parsed.outcome : null;
   const downgrades = [];
 
@@ -1809,7 +1821,7 @@ function decideM2Outcome(parsed, { rawSpark, userLine, sparkParse }) {
   } else if (modelOutcome === 'guessed') {
     guess = parsed.problem || null;
   }
-  guess = typeof guess === 'string' ? guess.replace(/[—–]/g, ',').replace(/\s+/g, ' ').trim() : '';
+  guess = typeof guess === 'string' ? replaceDashes(guess) : '';
   if (!guess) {
     if (modelOutcome && modelOutcome !== 'insufficient') {
       downgrades.push({ from: modelOutcome, to: 'insufficient', reason: 'no_problem_text' });
@@ -1879,38 +1891,53 @@ function validateM2Problem(parsed, maturityClass, grapeName, sources) {
   };
 }
 
-// The scene route: a problem built only from the builder's scene answer, anchored to the span
-// it came from with the same check the findings use.
+// The scene route: a problem built only from words in the builder's scene answer. The model names
+// the fragments it took them from, from anywhere in the answer; each fragment is checked against
+// the answer with the same check the findings use, and every word of the problem must sit in a
+// checked fragment. Still no word from outside the answer.
+const SCENE_FRAGMENT_LIMIT = 6;
+
 function validateM2Scene(parsed, sceneAnswer, maturityClass, grapeName) {
   if (!parsed || typeof parsed !== 'object') throw new Error('Invalid JSON object');
   if (parsed.mechanism !== 'M2') throw new Error('Invalid mechanism');
   if (parsed.phase !== 'scene') throw new Error('Expected phase: scene');
 
   const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
-  const anchorVerified = parsed.scene_present === true
-    && typeof parsed.anchor_span === 'string'
-    && !!norm(parsed.anchor_span)
-    && norm(sceneAnswer).includes(norm(parsed.anchor_span));
+  const normAnswer = norm(sceneAnswer);
   const downgrades = [];
   let problem = null;
 
-  if (parsed.scene_present === true && !anchorVerified) {
-    downgrades.push({ from: 'scene', to: 'no_scene', reason: 'anchor_not_verbatim_in_answer', anchor_span: parsed.anchor_span || null });
+  // A reply with a single anchor_span counts as one fragment.
+  const offered = Array.isArray(parsed.anchor_spans) ? parsed.anchor_spans
+    : typeof parsed.anchor_span === 'string' ? [parsed.anchor_span] : [];
+  const fragments = [];
+  if (parsed.scene_present === true) {
+    for (const f of offered.slice(0, SCENE_FRAGMENT_LIMIT)) {
+      const fragment = norm(f);
+      if (!fragment) continue;
+      if (normAnswer.includes(fragment)) {
+        if (!fragments.includes(fragment)) fragments.push(fragment);
+      } else {
+        downgrades.push({ from: 'fragment', to: 'dropped', reason: 'fragment_not_verbatim_in_answer', fragment: String(f) });
+      }
+    }
+    fragments.sort((a, b) => normAnswer.indexOf(a) - normAnswer.indexOf(b));
+    if (!fragments.length) downgrades.push({ from: 'scene', to: 'no_scene', reason: 'no_fragment_verbatim_in_answer' });
   }
-  if (anchorVerified) {
-    const anchor = norm(parsed.anchor_span);
-    let text = typeof parsed.problem === 'string' ? parsed.problem.replace(/[—–]/g, ',').replace(/\s+/g, ' ').trim() : '';
-    const unsupported = text ? unsupportedProblemWords(text, anchor, { framing: false }) : [];
+
+  if (fragments.length) {
+    let text = typeof parsed.problem === 'string' ? replaceDashes(parsed.problem) : '';
+    const unsupported = text ? unsupportedProblemWords(text, fragments.join(' '), { framing: false }) : [];
     if (!text || unsupported.length) {
-      // The compression reached outside the answer's words; the anchored span itself is the
-      // builder's own words, so it stands as the problem instead.
-      downgrades.push({ from: 'scene_problem', to: 'anchor_span', reason: text ? 'words_not_in_anchor' : 'no_problem_text', words: unsupported, text: text || null });
-      text = anchor;
+      // The sentence reached outside the checked fragments. The fragments are the builder's own
+      // words, so they stand as the problem instead, in the order the answer has them.
+      downgrades.push({ from: 'scene_problem', to: 'fragments', reason: text ? 'words_not_in_fragments' : 'no_problem_text', words: unsupported, text: text || null });
+      text = fragments.join(' … ');
     }
     if (text.length > PROBLEM_LENGTH_CAP) {
-      downgrades.push({ from: 'scene', to: 'no_scene', reason: 'anchor_span_over_length_cap' });
+      downgrades.push({ from: 'scene', to: 'no_scene', reason: 'problem_over_length_cap' });
     } else {
-      problem = { text, source: 'scene_derived', status: 'proposed', anchor };
+      problem = { text, source: 'scene_derived', status: 'proposed', anchors: fragments };
     }
   }
   for (const d of downgrades) logM2Downgrade({ phase: 'scene', ...d });
@@ -1938,7 +1965,7 @@ function validateM2Scene(parsed, sceneAnswer, maturityClass, grapeName) {
     server_checks: {
       schema_valid: true,
       model_scene_present: parsed.scene_present === true,
-      anchor_verified: anchorVerified,
+      fragments_verified: fragments.length,
       downgrades,
       m2_question_repaired: repaired,
       swirl_included: !!swirl
@@ -2015,7 +2042,7 @@ async function handleM2(request, env, corsHeaders) {
 
   const capViolation = checkLengthCaps(corsHeaders, [
     { value: rawSpark, max: RAW_SPARK_LENGTH_CAP, name: 'raw_spark' },
-    { value: userLine, max: FIELD_LENGTH_CAP, name: 'user_line' },
+    { value: userLine, max: USER_LINE_LENGTH_CAP, name: 'user_line' },
     { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
     { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
     { value: problem ? problem.text : '', max: PROBLEM_LENGTH_CAP, name: 'problem' },
@@ -2130,7 +2157,7 @@ async function handleField(request, env, corsHeaders) {
 
   const capViolation = checkLengthCaps(corsHeaders, [
     { value: mode, max: FIELD_LENGTH_CAP, name: 'mode' },
-    { value: userLine, max: FIELD_LENGTH_CAP, name: 'user_line' },
+    { value: userLine, max: USER_LINE_LENGTH_CAP, name: 'user_line' },
     { value: missing, max: FIELD_LENGTH_CAP, name: 'missing' },
     { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
     { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
@@ -2145,15 +2172,13 @@ async function handleField(request, env, corsHeaders) {
   }
   if (mode === 'ask' && !confirmedProblem) {
     // No problem on record: the [problem] templates can't be used, so the errand is the open
-    // domain question. With no domain either, say so rather than invent one.
+    // domain question. With no domain either, it is the open question about the week.
     const domain = String(sparkParse?.domain || '').trim();
-    if (!domain) {
-      console.warn(JSON.stringify({ event: 'field_no_problem_no_domain', user_line: userLine }));
-      return jsonResponse({ error: 'no_problem_no_domain' }, 422, corsHeaders);
-    }
-    return jsonResponse({
-      brief: { kind: 'ask', setup: null, question: `What's the most annoying part of ${domain} for you right now?`, target: null }
-    }, 200, corsHeaders);
+    if (!domain) console.warn(JSON.stringify({ event: 'field_no_problem_no_domain', user_line: userLine }));
+    const question = domain
+      ? `What's the most annoying part of ${domain} for you right now?`
+      : `What's been the most annoying part of your week?`;
+    return jsonResponse({ brief: { kind: 'ask', setup: null, question, target: null } }, 200, corsHeaders);
   }
   if ((mode === 'echo' || mode === 'contrast') && !confirmedProblem) {
     return jsonResponse({ error: 'ASK/ECHO/CONTRAST requires a confirmed problem' }, 400, corsHeaders);
@@ -2551,7 +2576,7 @@ async function handleM1(request, env, corsHeaders) {
   const maturityClass = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
 
   const capViolation = checkLengthCaps(corsHeaders, [
-    { value: sparkSummary, max: FIELD_LENGTH_CAP, name: 'spark_summary' },
+    { value: sparkSummary, max: USER_LINE_LENGTH_CAP, name: 'spark_summary' },
     { value: personName, max: FIELD_LENGTH_CAP, name: 'person_name' },
     { value: relationship, max: FIELD_LENGTH_CAP, name: 'relationship' }
   ]);
