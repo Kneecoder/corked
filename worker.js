@@ -240,7 +240,7 @@ A scene is one real occasion in the answer: someone was trying to do something, 
 IF A SCENE IS PRESENT:
 scene_present: true.
 anchor_spans: the fragments of the answer the problem is built from, each copied exactly as written, in the order they appear in the answer. Take them from anywhere in the answer. Always include the fragment that says where it stopped working. When that fragment says "it", "they" or "this", also take the fragment that names what it refers to.
-problem: one sentence stating what went wrong, using only words that appear in anchor_spans. Name the thing itself instead of a pronoun when the answer names it. Shorten; add no other word. Do not add a cause, a cost, a feeling, a time or a place the answer did not state.
+problem: one sentence stating what went wrong, using only words that appear in anchor_spans. Name the thing itself instead of a pronoun when the answer names it. Keep the answer's own pronouns: if it says I, write I. Shorten; add no other word. Do not add a cause, a cost, a feeling, a time or a place the answer did not state.
 gap_in_play and question: as below, for this problem.
 swirl: null.
 
@@ -1720,17 +1720,28 @@ function stemWord(w) {
   return w;
 }
 
+// Personal pronouns say who did it. A problem built from a scene may only use the ones the
+// scene itself used.
+const PROBLEM_PRONOUNS = new Set([
+  'i', 'me', 'my', 'you', 'your', 'he', 'him', 'his', 'she', 'her', 'hers', 'we', 'us', 'our',
+  'they', 'them', 'their', 'theirs', 'it', 'its'
+]);
+
 // The content words of `text` that `source` doesn't contain. A word counts as present when it,
 // or its plural/tense-folded stem, matches a source word (tokensMatch also lets a stem of four
-// letters or more match a longer form of itself: "cancel" and "cancels"). The framing words are
-// allowed for a guess from the spark; a problem built from a scene uses the scene's words only.
-function unsupportedProblemWords(text, source, { framing = true } = {}) {
+// letters or more match a longer form of itself: "cancel" and "cancels"). A guess from the spark
+// may add the framing words, and pronouns are grammar there. A problem built from a scene uses the
+// scene's words only: no framing words, and only the pronouns the scene used.
+function unsupportedProblemWords(text, source, { scene = false } = {}) {
   const sourceStems = [...new Set(problemTokens(source).map(stemWord))];
   const missing = [];
   for (const word of problemTokens(text)) {
-    if (PROBLEM_STOPWORDS.has(word) || (framing && PROBLEM_FRAMING_WORDS.has(word))) continue;
+    const pronoun = PROBLEM_PRONOUNS.has(word);
+    if (pronoun && !scene) continue;
+    if (!pronoun && PROBLEM_STOPWORDS.has(word)) continue;
+    if (!scene && PROBLEM_FRAMING_WORDS.has(word)) continue;
     const stem = stemWord(word);
-    if (framing && PROBLEM_FRAMING_WORDS.has(stem)) continue;
+    if (!scene && PROBLEM_FRAMING_WORDS.has(stem)) continue;
     if (sourceStems.some(s => tokensMatch(stem, s))) continue;
     if (!missing.includes(word)) missing.push(word);
   }
@@ -1927,7 +1938,7 @@ function validateM2Scene(parsed, sceneAnswer, maturityClass, grapeName) {
 
   if (fragments.length) {
     let text = typeof parsed.problem === 'string' ? replaceDashes(parsed.problem) : '';
-    const unsupported = text ? unsupportedProblemWords(text, fragments.join(' '), { framing: false }) : [];
+    const unsupported = text ? unsupportedProblemWords(text, fragments.join(' '), { scene: true }) : [];
     if (!text || unsupported.length) {
       // The sentence reached outside the checked fragments. The fragments are the builder's own
       // words, so they stand as the problem instead, in the order the answer has them.
