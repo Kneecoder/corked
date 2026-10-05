@@ -167,14 +167,14 @@ const MECH_PROMPTS = {
 const R = {
   workerUrl:'', raw_spark:'', maturity:0, grapeName:'', grapeRel:'',
   m0:null, userLine:'', sparkParse:null, domain:'',
-  gapInPlay:false, confirmedProblem:'', m2ProblemQuestion:'', m2ProblemHint:'',
+  gapInPlay:false, problem:null, phaseAOutcome:null, m2ProblemQuestion:'',
   m6WordsSource:null,
   elements:{}, answers:{}, log:[], anomalies:[], halted:false
 };
 function resetRunState() {
   Object.assign(R, {
     m0:null, userLine:'', sparkParse:null, domain:'',
-    gapInPlay:false, confirmedProblem:'', m2ProblemQuestion:'', m2ProblemHint:'',
+    gapInPlay:false, problem:null, phaseAOutcome:null, m2ProblemQuestion:'',
     m6WordsSource:null, answers:{}, log:[], anomalies:[], halted:false
   });
   EL_KEYS.forEach(k => R.elements[k] = { state:'inert', history:['inert'], mech:null, regressed:false });
@@ -344,17 +344,17 @@ function buildMechRequest(mech, answerText, opts) {
     case 'M1':
       return { spark_summary: R.userLine, person_name: R.grapeName, relationship: answerText, maturity_class: R.maturity };
     case 'M2':
-      return { user_line: R.userLine, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, confirmed_problem: R.confirmedProblem, gap_in_play: R.gapInPlay, user_answer: answerText };
+      return { user_line: R.userLine, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, problem: R.problem, gap_in_play: R.gapInPlay, user_answer: answerText };
     case 'M3':
-      return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
+      return { problem: R.problem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
     case 'M4':
-      return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, prior_echo_context: (R.answers.M3 || '').slice(0,300), user_answer: answerText };
+      return { problem: R.problem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, prior_echo_context: (R.answers.M3 || '').slice(0,300), user_answer: answerText };
     case 'M5':
-      return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
+      return { problem: R.problem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
     case 'M6':
-      return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, words_source: opts.wordsSourceOverride || R.m6WordsSource || 'reconstructed', user_answer: answerText };
+      return { problem: R.problem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, words_source: opts.wordsSourceOverride || R.m6WordsSource || 'reconstructed', user_answer: answerText };
     case 'M7':
-      return { confirmed_problem: R.confirmedProblem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
+      return { problem: R.problem, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answerText };
   }
 }
 
@@ -389,7 +389,7 @@ const FIELD_PARK_CFG = {
 };
 async function doParkFieldCall(mech, kind) {
   const cfg = FIELD_PARK_CFG[mech]();
-  const req = { mode:cfg.mode, user_line:R.userLine, spark_parse:R.sparkParse, maturity_class:R.maturity, missing:null, grape_name:R.grapeName, grape_relationship:R.grapeRel, confirmed_problem:R.confirmedProblem, element:cfg.element };
+  const req = { mode:cfg.mode, user_line:R.userLine, spark_parse:R.sparkParse, maturity_class:R.maturity, missing:null, grape_name:R.grapeName, grape_relationship:R.grapeRel, problem:R.problem, element:cfg.element };
   const res = await callWorker('/field', req);
   logEntry({ mech:mech, endpoint:'/field', request:req, response:res.data, kind:kind,
     summary: res.ok ? ('brief kind=' + (res.data.brief && res.data.brief.kind) + ' · setup="' + ((res.data.brief && res.data.brief.setup) || '').slice(0,60) + '" · question="' + ((res.data.brief && res.data.brief.question) || '').slice(0,80) + '"')
@@ -397,7 +397,7 @@ async function doParkFieldCall(mech, kind) {
   if (!res.ok) R.anomalies.push(mech + ' /field (' + kind + ') returned ' + res.status + ': ' + res.data.error);
 }
 async function doFindFieldCall() {
-  const req = { mode:'find', user_line:R.userLine, spark_parse:R.sparkParse, maturity_class:R.maturity, missing:'grape', grape_name:'', grape_relationship:'', confirmed_problem:'', element:null };
+  const req = { mode:'find', user_line:R.userLine, spark_parse:R.sparkParse, maturity_class:R.maturity, missing:'grape', grape_name:'', grape_relationship:'', problem:null, element:null };
   const res = await callWorker('/field', req);
   logEntry({ mech:'M1', endpoint:'/field', request:req, response:res.data, kind:'park',
     summary: res.ok ? ('brief kind=' + (res.data.brief && res.data.brief.kind) + ' · target="' + ((res.data.brief && res.data.brief.target) || '') + '" · question="' + ((res.data.brief && res.data.brief.question) || '').slice(0,80) + '"')
@@ -434,7 +434,7 @@ async function reopenElement(key) {
   const priorAnswer = R.answers[srcMech] || '';
   const amberCount = EL_KEYS.filter(function(k) { return R.elements[k].state === 'turbid' || R.elements[k].state === 'clearing'; }).length;
   if (amberCount === 1) {
-    const req = { element:key, element_state:rec.state, source_mechanism:srcMech, prior_answer:priorAnswer, confirmed_problem:R.confirmedProblem, grape_name:R.grapeName, domain:R.domain };
+    const req = { element:key, element_state:rec.state, source_mechanism:srcMech, prior_answer:priorAnswer, problem:R.problem, grape_name:R.grapeName, domain:R.domain };
     const res = await callWorker('/resolve', req);
     logEntry({ mech:srcMech, endpoint:'/resolve', request:req, response:res.data, kind:'reopen',
       summary: res.ok ? ('sharper question: "' + res.data.question + '"') : ('ERROR ' + res.status + ': ' + res.data.error) });
@@ -693,7 +693,9 @@ async function runM1Main() {
 }
 
 async function runM2PhaseA() {
-  const req = { user_line: R.userLine, spark_parse: R.sparkParse, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity };
+  // Mirrors the app's Phase A request, including the self answer in self mode.
+  const req = { phase: 'problem', raw_spark: (R.m0 && R.m0.raw_spark) || R.raw_spark, user_line: R.userLine, spark_parse: R.sparkParse,
+    grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, self_answer: R.maturity === 2 ? R.grapeRel : '' };
   const res = await callWorker('/m2', req);
   if (!res.ok) {
     logEntry({ mech:'M2', endpoint:'/m2 (phase A)', request:req, response:res.data, kind:'main', summary:'ERROR ' + res.status + ': ' + res.data.error });
@@ -702,16 +704,20 @@ async function runM2PhaseA() {
     return null;
   }
   const data = res.data;
+  R.phaseAOutcome = data.outcome || null;
   logEntry({ mech:'M2', endpoint:'/m2 (phase A)', request:req, response:data, kind:'main',
-    summary: 'recovered_problem="' + data.recovered_problem + '" · needs_confirmation=' + data.needs_confirmation + ' · gap_in_play=' + data.gap_in_play });
+    summary: 'outcome=' + data.outcome + ' · problem=' + (data.problem ? JSON.stringify(data.problem.text) + ' (' + data.problem.source + ')' : 'none') + ' · gap_in_play=' + data.gap_in_play });
+  if (!data.problem || data.outcome === 'insufficient') {
+    // No problem on record. The app asks for the scene here; this runner stops at M2 instead of
+    // sending Phase B a problem that isn't there.
+    haltChain('M2 Phase A outcome: insufficient, no problem on record. Stopped at M2.');
+    return null;
+  }
   R.gapInPlay = !!data.gap_in_play;
   R.m2ProblemQuestion = data.question || '';
-  R.m2ProblemHint = data.hint || '';
-  if (data.needs_confirmation) {
-    R.confirmedProblem = await presentConfirmUI(data.recovered_problem);
-  } else {
-    R.confirmedProblem = data.recovered_problem;
-  }
+  // A proposed wording waits for "That's the problem"; the source never changes.
+  const text = data.problem.status === 'proposed' ? await presentConfirmUI(data.problem.text) : data.problem.text;
+  R.problem = { text, source: data.problem.source, status: 'confirmed' };
   return data;
 }
 

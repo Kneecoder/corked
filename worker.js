@@ -228,6 +228,35 @@ No contrast formulas. Do not narrate method, reasoning, or inference process.
 Return one JSON object only. No text before or after it. Never return two JSON blocks.
 Return only JSON.`;
 
+const M2_DOCTRINE_SELF_ANSWER = `You are the Winemaster — the voice of Corked, an idea-aging system.
+
+The builder is the person this spark comes from (self mode). At the person step the builder answered "What makes this spark yours?". M2 Phase A reads that answer before it guesses a problem from the spark.
+
+You receive the User Line and the builder's answer.
+
+PROBLEM TEST:
+The answer holds a problem when it says what goes wrong for the builder: something they cannot do, keep failing at, lose, forget, wait for, or have trouble with. A description of the idea, a wish, a feature, a liking, or a reason for building it is not a problem.
+
+IF A PROBLEM IS PRESENT:
+problem_present: true.
+anchor_spans: the fragments of the answer the problem is built from, each copied exactly as written, in the order they appear in the answer. Take them from anywhere in the answer. Always include the fragment that says what goes wrong. When that fragment says "it", "they" or "this", also take the fragment that names what it refers to.
+problem: one sentence stating what goes wrong, using only words that appear in anchor_spans. Name the thing itself instead of a pronoun when the answer names it. Keep the answer's own pronouns: if it says I, write I. Shorten; add no other word. Do not add a cause, a cost, a feeling, a time or a place the answer did not state.
+gap_in_play and question: as below, for this problem.
+
+IF NO PROBLEM IS PRESENT:
+problem_present: false. anchor_spans is an empty list. problem and question are null. gap_in_play is false.
+
+${M2_GAP_DETECTION}
+
+${M2_QUESTION_DOORS}
+
+VOICE:
+No praise. No warmth. No coaching. No em dashes or en dashes in any returned string.
+No contrast formulas. Do not narrate method, reasoning, or inference process.
+
+Return one JSON object only. No text before or after it. Never return two JSON blocks.
+Return only JSON.`;
+
 const M2_DOCTRINE_SCENE = `You are the Winemaster — the voice of Corked, an idea-aging system.
 
 M2 Phase A found no problem in the spark, so the builder was asked for a scene instead: the last time the person needed what the spark is for, what they were trying to do, and where it stopped working.
@@ -532,6 +561,25 @@ Return exactly this JSON shape:
 }`;
 }
 
+function buildM2SelfAnswerUserMessage(userLine, selfAnswer) {
+  return `<user_line>${userLine}</user_line>
+${m2GrapeBlock('', '', 2)}
+<maturity_class>2</maturity_class>
+<self_answer>${selfAnswer}</self_answer>
+
+Return exactly this JSON shape:
+{
+  "schema_version": "m2.v2",
+  "mechanism": "M2",
+  "phase": "self_answer",
+  "problem_present": true|false,
+  "anchor_spans": ["verbatim fragment of self_answer", "..."],
+  "problem": "one sentence built only from the words in anchor_spans, or null",
+  "gap_in_play": true|false,
+  "question": "one sentence friction question about that problem, or null"
+}`;
+}
+
 function buildM2SceneUserMessage(userLine, grapeName, grapeRel, maturityClass, sceneAnswer) {
   return `<user_line>${userLine}</user_line>
 ${m2GrapeBlock(grapeName, grapeRel, maturityClass)}
@@ -595,8 +643,12 @@ Return exactly this JSON shape:
 Omit swirl entirely when state is settled.`;
 }
 
-function buildFieldUserMessage(mode, userLine, sparkParse, missing, grapeName, grapeRel, confirmedProblem, element) {
+function buildFieldUserMessage(mode, userLine, sparkParse, missing, grapeName, grapeRel, confirmedProblem, element, maturityClass) {
   const sp = sparkParse || {};
+  // Self mode: the grape is the builder, so the brief never names them in the third person.
+  const grapeBlock = maturityClass === 2
+    ? `<grape>self: the builder is the person. Refer to the builder as "you", never by name.</grape>`
+    : `<grape_name>${grapeName || ''}</grape_name>\n<grape_relationship>${grapeRel || ''}</grape_relationship>`;
   return `<mode>${mode}</mode>
 <missing>${missing || ''}</missing>
 <user_line>${userLine}</user_line>
@@ -606,8 +658,7 @@ function buildFieldUserMessage(mode, userLine, sparkParse, missing, grapeName, g
   domain: ${sp.domain || 'null'}
   solution_form: ${sp.solution_form || 'null'}
 </spark_parse>
-<grape_name>${grapeName || ''}</grape_name>
-<grape_relationship>${grapeRel || ''}</grape_relationship>
+${grapeBlock}
 <confirmed_problem>${confirmedProblem || ''}</confirmed_problem>
 <element>${element || ''}</element>`;
 }
@@ -1858,12 +1909,21 @@ function m2FrictionQuestion(parsed, maturityClass, grapeName, problemText) {
   return { question, repaired: false };
 }
 
-function validateM2Problem(parsed, maturityClass, grapeName, sources) {
+// Phase A, first match wins: the spark states a problem; then, in self mode, the builder's answer
+// to "What makes this spark yours?" holds one (built like a scene answer); then a guess from the
+// spark, or nothing. `selfInput` is that answer and the model's reading of it, or null.
+function validateM2Problem(parsed, maturityClass, grapeName, sources, selfInput = null) {
   if (!parsed || typeof parsed !== 'object') throw new Error('Invalid JSON object');
   if (parsed.mechanism !== 'M2') throw new Error('Invalid mechanism');
   if (parsed.phase !== 'problem') throw new Error('Expected phase: problem');
 
   const decision = decideM2Outcome(parsed, sources);
+
+  if (decision.outcome !== 'stated' && selfInput) {
+    const fromSelf = m2ProblemFromSelfAnswer(selfInput, grapeName);
+    if (fromSelf) return fromSelf;
+  }
+
   for (const d of decision.downgrades) logM2Downgrade({ phase: 'problem', user_line: sources.userLine, ...d });
 
   const problem = decision.text
@@ -1902,19 +1962,15 @@ function validateM2Problem(parsed, maturityClass, grapeName, sources) {
   };
 }
 
-// The scene route: a problem built only from words in the builder's scene answer. The model names
-// the fragments it took them from, from anywhere in the answer; each fragment is checked against
-// the answer with the same check the findings use, and every word of the problem must sit in a
-// checked fragment. Still no word from outside the answer.
+// A problem built only from words in one of the builder's own answers (a scene, or the self
+// answer). The model names the fragments it took them from, from anywhere in the answer; each
+// fragment is checked against the answer with the same check the findings use, and every word of
+// the problem must sit in a checked fragment. Still no word from outside the answer.
 const SCENE_FRAGMENT_LIMIT = 6;
 
-function validateM2Scene(parsed, sceneAnswer, maturityClass, grapeName) {
-  if (!parsed || typeof parsed !== 'object') throw new Error('Invalid JSON object');
-  if (parsed.mechanism !== 'M2') throw new Error('Invalid mechanism');
-  if (parsed.phase !== 'scene') throw new Error('Expected phase: scene');
-
+function problemFromAnswer(parsed, answer, present) {
   const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
-  const normAnswer = norm(sceneAnswer);
+  const normAnswer = norm(answer);
   const downgrades = [];
   let problem = null;
 
@@ -1922,7 +1978,7 @@ function validateM2Scene(parsed, sceneAnswer, maturityClass, grapeName) {
   const offered = Array.isArray(parsed.anchor_spans) ? parsed.anchor_spans
     : typeof parsed.anchor_span === 'string' ? [parsed.anchor_span] : [];
   const fragments = [];
-  if (parsed.scene_present === true) {
+  if (present) {
     for (const f of offered.slice(0, SCENE_FRAGMENT_LIMIT)) {
       const fragment = norm(f);
       if (!fragment) continue;
@@ -1933,7 +1989,7 @@ function validateM2Scene(parsed, sceneAnswer, maturityClass, grapeName) {
       }
     }
     fragments.sort((a, b) => normAnswer.indexOf(a) - normAnswer.indexOf(b));
-    if (!fragments.length) downgrades.push({ from: 'scene', to: 'no_scene', reason: 'no_fragment_verbatim_in_answer' });
+    if (!fragments.length) downgrades.push({ from: 'answer', to: 'no_problem', reason: 'no_fragment_verbatim_in_answer' });
   }
 
   if (fragments.length) {
@@ -1942,15 +1998,55 @@ function validateM2Scene(parsed, sceneAnswer, maturityClass, grapeName) {
     if (!text || unsupported.length) {
       // The sentence reached outside the checked fragments. The fragments are the builder's own
       // words, so they stand as the problem instead, in the order the answer has them.
-      downgrades.push({ from: 'scene_problem', to: 'fragments', reason: text ? 'words_not_in_fragments' : 'no_problem_text', words: unsupported, text: text || null });
+      downgrades.push({ from: 'answer_problem', to: 'fragments', reason: text ? 'words_not_in_fragments' : 'no_problem_text', words: unsupported, text: text || null });
       text = fragments.join(' … ');
     }
     if (text.length > PROBLEM_LENGTH_CAP) {
-      downgrades.push({ from: 'scene', to: 'no_scene', reason: 'problem_over_length_cap' });
+      downgrades.push({ from: 'answer', to: 'no_problem', reason: 'problem_over_length_cap' });
     } else {
       problem = { text, source: 'scene_derived', status: 'proposed', anchors: fragments };
     }
   }
+  return { problem, fragments, downgrades };
+}
+
+// Self mode: the answer to "What makes this spark yours?", read the scene way. No swirl: with no
+// problem in it, Phase A carries on with the spark.
+function m2ProblemFromSelfAnswer({ parsed, answer }, grapeName) {
+  if (!parsed || typeof parsed !== 'object' || parsed.mechanism !== 'M2' || parsed.phase !== 'self_answer') {
+    if (parsed) logM2Downgrade({ phase: 'self_answer', from: 'self_answer', to: 'skipped', reason: 'invalid_reply' });
+    return null;
+  }
+  const { problem, fragments, downgrades } = problemFromAnswer(parsed, answer, parsed.problem_present === true);
+  for (const d of downgrades) logM2Downgrade({ phase: 'self_answer', ...d });
+  if (!problem) return null;
+  const { question, repaired } = m2FrictionQuestion(parsed, 2, grapeName, problem.text);
+  return {
+    schema_version: 'm2.v2',
+    mechanism: 'M2',
+    phase: 'problem',
+    outcome: 'self_answer',
+    problem,
+    gap_in_play: parsed.gap_in_play === true,
+    question,
+    recovered_problem: problem.text,
+    needs_confirmation: true,
+    server_checks: {
+      schema_valid: true,
+      outcome: 'self_answer',
+      fragments_verified: fragments.length,
+      downgrades,
+      m2_question_repaired: repaired
+    }
+  };
+}
+
+function validateM2Scene(parsed, sceneAnswer, maturityClass, grapeName) {
+  if (!parsed || typeof parsed !== 'object') throw new Error('Invalid JSON object');
+  if (parsed.mechanism !== 'M2') throw new Error('Invalid mechanism');
+  if (parsed.phase !== 'scene') throw new Error('Expected phase: scene');
+
+  const { problem, fragments, downgrades } = problemFromAnswer(parsed, sceneAnswer, parsed.scene_present === true);
   for (const d of downgrades) logM2Downgrade({ phase: 'scene', ...d });
 
   const { question, repaired } = problem
@@ -2059,6 +2155,7 @@ async function handleM2(request, env, corsHeaders) {
     { value: problem ? problem.text : '', max: PROBLEM_LENGTH_CAP, name: 'problem' },
     { value: String(body.user_answer || ''), max: ANSWER_LENGTH_CAP, name: 'user_answer' },
     { value: String(body.scene_answer || ''), max: ANSWER_LENGTH_CAP, name: 'scene_answer' },
+    { value: String(body.self_answer || ''), max: ANSWER_LENGTH_CAP, name: 'self_answer' },
     ...sparkParseCapFields(body.spark_parse)
   ]);
   if (capViolation) return capViolation;
@@ -2088,15 +2185,27 @@ async function handleM2(request, env, corsHeaders) {
   }
 
   if (!hasUserAnswerKey) {
-    // Phase A: problem recovery. Reports what the spark holds: stated, guessed or insufficient.
+    // Phase A: problem recovery. Reports what the spark holds: stated, guessed or insufficient. In
+    // self mode the builder's answer to "What makes this spark yours?" is read in the same pass.
     const sparkParse = body.spark_parse || null;
-    const parsed = await callClaude(
-      env,
-      M2_DOCTRINE_PROBLEM,
-      buildM2ProblemUserMessage(rawSpark, userLine, sparkParse, grapeName, grapeRel, maturityClass),
-      600
-    );
-    const validated = validateM2Problem(parsed, maturityClass, grapeName, { rawSpark, userLine, sparkParse });
+    const selfAnswer = maturityClass === 2 ? String(body.self_answer || '').trim() : '';
+    const [parsed, selfParsed] = await Promise.all([
+      callClaude(
+        env,
+        M2_DOCTRINE_PROBLEM,
+        buildM2ProblemUserMessage(rawSpark, userLine, sparkParse, grapeName, grapeRel, maturityClass),
+        600
+      ),
+      selfAnswer
+        ? callClaude(env, M2_DOCTRINE_SELF_ANSWER, buildM2SelfAnswerUserMessage(userLine, selfAnswer), 600)
+            .catch(() => {
+              logM2Downgrade({ phase: 'self_answer', from: 'self_answer', to: 'skipped', reason: 'self_answer_call_failed' });
+              return null;
+            })
+        : null
+    ]);
+    const validated = validateM2Problem(parsed, maturityClass, grapeName, { rawSpark, userLine, sparkParse },
+      selfParsed ? { parsed: selfParsed, answer: selfAnswer } : null);
     return jsonResponse(validated, 200, corsHeaders);
   }
 
@@ -2165,6 +2274,7 @@ async function handleField(request, env, corsHeaders) {
   const problem          = readProblem(body);
   const confirmedProblem = problem ? problem.text : '';
   const element          = String(body.element || '').trim();
+  const maturityClass    = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
 
   const capViolation = checkLengthCaps(corsHeaders, [
     { value: mode, max: FIELD_LENGTH_CAP, name: 'mode' },
@@ -2201,7 +2311,7 @@ async function handleField(request, env, corsHeaders) {
     return jsonResponse({ error: 'WORDS requires a domain' }, 400, corsHeaders);
   }
 
-  let content = buildFieldUserMessage(mode, userLine, sparkParse, missing, grapeName, grapeRel, confirmedProblem, element);
+  let content = buildFieldUserMessage(mode, userLine, sparkParse, missing, grapeName, grapeRel, confirmedProblem, element, maturityClass);
   const maxAttempts = 2;
   let parsed, setup, question;
 

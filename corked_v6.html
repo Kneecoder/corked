@@ -1347,6 +1347,7 @@ body {
 #m2-problem-inp {
   width:100%; font-size:.88rem; padding:.6rem .85rem; background:var(--card);
   border:1px solid var(--border-hi); border-radius:6px; color:var(--cream);
+  font-family:inherit; line-height:1.55; resize:none; overflow-y:auto; box-sizing:border-box;
 }
 /* ── INLINE ERRAND ── */
 #inline-errand {
@@ -1817,7 +1818,7 @@ body {
       <div id="m2-problem" style="display:none">
         <div class="m2-problem-label" id="m2-problem-label"></div>
         <div class="m2-problem-text" id="m2-problem-text"></div>
-        <input type="text" class="field" id="m2-problem-inp" maxlength="500">
+        <textarea class="field" id="m2-problem-inp" maxlength="500" rows="2" oninput="autosizeProblemField(this)"></textarea>
       </div>
       <div class="mech-hint" id="m6-interstitial" style="display:none;font-style:normal;margin-bottom:.6rem"></div>
       <div class="mech-q" id="m-q"></div>
@@ -2438,6 +2439,23 @@ function migrateProblemSchema() {
   } catch (e) {}
 }
 
+// Self-mode bottles from before the Grape stopped being graded in self mode: a name plus "This is
+// me" settles the Grape, with no note, so there is nothing left to retry.
+function migrateSelfGrape() {
+  try {
+    const bottles = getAllBottles();
+    let changed = false;
+    const migrated = bottles.map(b => {
+      const s = b.s;
+      if (!s || s.maturity !== 2 || !s.grape_name || !s.answers?.M1) return b;
+      if (s.elements?.grape === 'settled' && !s.m1?.observation?.surface_text) return b;
+      changed = true;
+      return { ...b, s: { ...s, elements: { ...s.elements, grape: 'settled' }, m1: selfGrapeRecord(s.grape_name) } };
+    });
+    if (changed) saveAllBottles(migrated);
+  } catch (e) {}
+}
+
 function sparkHoldsWordForWord(s, text) {
   const norm = t => String(t || '').toLowerCase().replace(/[‘’]/g, "'").replace(/\s+/g, ' ')
     .replace(/^[\s"'.,;:!?]+|[\s"'.,;:!?]+$/g, '');
@@ -2493,6 +2511,18 @@ function normalizeGrapeState(state) {
   return ['settled', 'clearing', 'turbid'].includes(state) ? state : 'turbid';
 }
 
+// Self mode: the Grape is the builder, named. Nothing is graded and no note is kept.
+function selfGrapeRecord(name) {
+  return {
+    schema_version:'m1.v1',
+    mechanism:'M1',
+    outcome:'settled',
+    grape:{ state:'settled', named_person:name, person_kind:'self' },
+    observation:{ surface_text:'', anchor_span:null },
+    next_question:{ should_advance:true, framing:null }
+  };
+}
+
 function writeM1FromIntake(name, relationship, data) {
   const grapeState = normalizeGrapeState(data?.grape?.state || 'settled');
   S.grape_name = name;
@@ -2531,7 +2561,9 @@ function buildMechs() {
   const grapeState = normalizeGrapeState(S.elements.grape);
   const grapeName = S.label.grape || S.grape_name || (selfMode ? 'You' : 'The person you named');
   const grapeRelation = S.grape_relationship || 'No relationship recorded.';
-  const grapeObservation = sanitizeBeforeMomentCopy(S.m1?.observation?.surface_text || 'The Grape has been answered during intake.');
+  // Self mode keeps no note on the Grape: the builder named themselves and nothing was graded.
+  const grapeObservation = selfMode && !S.m1?.observation?.surface_text ? ''
+    : sanitizeBeforeMomentCopy(S.m1?.observation?.surface_text || 'The Grape has been answered during intake.');
   const grapeQ = selfMode
     ? `You are the person this spark must answer to.`
     : `${grapeName} is the person this spark must answer to.`;
@@ -2827,7 +2859,7 @@ function renderIntake() {
             </div>
             <div style="margin-top:.85rem">
               <div class="grape-input-label" style="display:block;margin-bottom:.45rem">${relLabel}</div>
-              <textarea class="field" id="grape-rel-inp" rows="2"
+              <textarea class="field" id="grape-rel-inp" rows="2" ${isSelf ? 'maxlength="300"' : ''}
                         placeholder="${relPh}"
                         style="min-height:80px;resize:none"
                         oninput="this.style.borderColor=''">${savedRel}</textarea>
@@ -2960,7 +2992,11 @@ async function intakeNext() {
     intakeSel['grape_error'] = null;
 
     const workerUrl = v6GetWorkerUrl();
-    if (workerUrl) {
+    if (S.maturity === 2) {
+      // Self mode: a name plus "This is me" settles the Grape. No grading call, no note, no retry.
+      // A past instance is M2's bar, and the self answer goes to M2 Phase A.
+      writeM1FromIntake(name, rel, selfGrapeRecord(name));
+    } else if (workerUrl) {
       const btn = document.getElementById('grape-continue-btn');
       if (btn) { btn.disabled = true; btn.textContent = 'Reading person...'; }
       try {
@@ -3295,6 +3331,9 @@ function renderMech() {
   setPhaseBusy(false, 'Continue →');
   const exitsRow = document.getElementById('real-world-exits');
   if (exitsRow) exitsRow.style.display = 'none';
+  // A self errand is parked only: there is no one to ask, so no reply to wait on.
+  const flightBtn = document.getElementById('rw-flight-btn');
+  if (flightBtn) flightBtn.style.display = selfErrandFor(m.id) ? 'none' : '';
   const m6Interstitial = document.getElementById('m6-interstitial');
   if (m6Interstitial) { m6Interstitial.style.display = 'none'; m6Interstitial.textContent = ''; }
   const m6WordsSourceRow = document.getElementById('m6-words-source');
@@ -3376,7 +3415,8 @@ function renderMech() {
     }
     if (m6WordsSourceRow) m6WordsSourceRow.style.display = 'block';
     if (S.answers.M6 && S.m6_words_source) pickM6WordsSource(S.m6_words_source);
-    if (wmBrief) {
+    // In self mode there is no one to go and talk to.
+    if (wmBrief && S.maturity !== 2) {
       wmBrief.textContent = `Haven't talked to ${gn6} in these terms yet? Go have that conversation. Come back with their exact words.`;
       wmBrief.style.display = 'block';
     }
@@ -3425,10 +3465,13 @@ function renderBriefHTML(brief, mode, grapeName) {
   const question = isLegacy ? brief.text : (brief.question || '');
   const setup    = isLegacy ? '' : (brief.setup || '');
   const target   = brief.target || '';
-  const grape    = grapeName || 'the person you named';
+  // Self mode: the grape is the builder, so a heading never names them in the third person.
+  const grape    = S.maturity === 2 ? 'you' : (grapeName || 'the person you named');
 
   let addressing = '';
-  if (mode === 'find') {
+  if (mode === 'self') {
+    addressing = 'You · in the moment';
+  } else if (mode === 'find') {
     addressing = target ? 'Looking for: ' + escHtml(target) : '';
   } else if (mode === 'ask') {
     addressing = 'Ask ' + escHtml(grape);
@@ -3447,7 +3490,8 @@ function renderBriefHTML(brief, mode, grapeName) {
     + (setup ? `<div class="brief-setup">${escHtml(setup)}</div>` : '')
     + `<div class="brief-quote">`
     +   `<div class="brief-q-text" id="${cid}-t">${escHtml(question)}</div>`
-    +   `<button class="brief-copy-btn" id="${cid}-b" onclick="copyBriefQ('${cid}')">Copy question</button>`
+    // The self errand is a note to the builder, not a question to hand anyone.
+    +   (mode === 'self' ? '' : `<button class="brief-copy-btn" id="${cid}-b" onclick="copyBriefQ('${cid}')">Copy question</button>`)
     + `</div>`;
 }
 
@@ -3973,7 +4017,7 @@ async function parkM2Ask(status = 'dormant') {
   if (!brief) {
     try {
       const gapElement = S.m2_problem?.gap_in_play && S.elements.gap !== 'settled';
-      brief = await fetchM2Errand(gapElement ? 'gap' : 'tell');
+      brief = await fetchMechErrand('M2', { mode: 'ask', element: gapElement ? 'gap' : 'tell' });
     } catch (e) {
       const question = S.m2_problem?.question || null;
       brief = { kind: 'ask', text: question, pending: !question, created_at: new Date().toISOString() };
@@ -4032,21 +4076,33 @@ function m2QuestionText() {
 // The errand when no problem is on record, as the field generator writes it: the [problem]
 // templates can't be used. With no domain either, it asks about the week.
 function m2OpenErrandText() {
-  if (S.maturity === 2) return M2_SELF_ERRAND;
+  if (selfErrandFor('M2')) return SELF_ERRAND;
   const domain = String(S.m0?.spark_parse?.domain || '').trim();
   return domain
     ? `What's the most annoying part of ${domain} for you right now?`
     : "What's been the most annoying part of your week?";
 }
 
-// In self mode there is no one to ask: M2's errand is the builder's own next occurrence.
-const M2_SELF_ERRAND = 'Next time it happens, write down what you did right then.';
+// M2, M5 and M6 point at the grape. In self mode the grape is the builder, so their errand is the
+// builder's own next occurrence: parked only, with no reply to wait on and nothing to copy.
+const SELF_ERRAND_MECHS = ['M2', 'M5', 'M6'];
+const SELF_ERRAND = 'Next time it happens, write down what you did right then.';
 
-async function fetchM2Errand(element) {
-  if (S.maturity === 2) {
-    return { kind: 'self', setup: null, question: M2_SELF_ERRAND, target: null, created_at: new Date().toISOString() };
+function selfErrandFor(mechId) {
+  return S.maturity === 2 && SELF_ERRAND_MECHS.includes(mechId);
+}
+
+// A mechanism's errand: the self errand where it applies, otherwise the field generator's brief.
+async function fetchMechErrand(mechId, fieldRequest) {
+  if (selfErrandFor(mechId)) {
+    return { kind: 'self', setup: null, question: SELF_ERRAND, target: null, created_at: new Date().toISOString() };
   }
-  return fetchFieldBrief({ mode: 'ask', element });
+  return fetchFieldBrief(fieldRequest);
+}
+
+// How copy refers to the grape: by name, or as "you" when the builder is the grape.
+function grapeRef() {
+  return S.maturity === 2 ? 'you' : (S.grape_name || 'the person you named');
 }
 
 // M2's errors sit on the line under the buttons.
@@ -4076,6 +4132,10 @@ function renderM2ProblemBlock(stage) {
     textEl.style.display = 'none';
     inp.value = p.text;
     inp.style.display = '';
+    block.style.display = 'block';
+    autosizeProblemField(inp);
+    // The panel may still be hidden while M2 renders; size the field again once it shows.
+    requestAnimationFrame(() => autosizeProblemField(inp));
   } else {
     inp.style.display = 'none';
     textEl.textContent = stage === 'scene' ? 'No problem on record yet.' : p.text;
@@ -4083,6 +4143,14 @@ function renderM2ProblemBlock(stage) {
     textEl.style.display = '';
   }
   block.style.display = 'block';
+}
+
+// The problem field grows with its text, so a long problem can be read in full before
+// "That's the problem".
+function autosizeProblemField(el) {
+  if (!el) return;
+  el.style.height = 'auto';
+  if (el.scrollHeight) el.style.height = el.scrollHeight + 'px';
 }
 
 // Draws M2 for whatever it has stored. Never calls the worker.
@@ -4154,9 +4222,11 @@ async function triggerM2PhaseA() {
       spark_parse:        S.m0?.spark_parse || null,
       grape_name:         S.grape_name || '',
       grape_relationship: S.grape_relationship || '',
-      maturity_class:     S.maturity
+      maturity_class:     S.maturity,
+      // Self mode: the answer to "What makes this spark yours?" is read for a problem.
+      self_answer:        S.maturity === 2 ? (S.grape_relationship || '') : ''
     });
-    if (!['stated', 'guessed', 'insufficient'].includes(data?.outcome)) throw new Error('Invalid reply from the worker.');
+    if (!['stated', 'self_answer', 'guessed', 'insufficient'].includes(data?.outcome)) throw new Error('Invalid reply from the worker.');
   } catch (err) {
     if (session !== _bottleSession) return;
     // Phase A failed: say so under the buttons, and Continue tries again.
@@ -4172,7 +4242,7 @@ function applyM2PhaseAResult(data) {
   const p = data.problem;
   S.m2_problem = { outcome: data.outcome, question: data.question || null, gap_in_play: !!data.gap_in_play };
   S.problem = p && typeof p.text === 'string' && p.text.trim()
-    ? { text: p.text.trim(), source: p.source, status: p.status }
+    ? { text: p.text.trim(), source: p.source, status: p.status, ...(p.anchors ? { anchors: p.anchors } : {}) }
     : null;
   renderM2Stage();
   setQLifecycle(m2AwaitingConfirm ? 'needs_clarification' : 'active');
@@ -4184,7 +4254,7 @@ function applyM2PhaseAResult(data) {
 function m2ConfirmProblem() {
   if (!S.problem || !S.problem.text) return;
   const inp = document.getElementById('m2-problem-inp');
-  const text = (inp ? inp.value.trim() : '') || S.problem.text;
+  const text = (inp ? inp.value.replace(/\s+/g, ' ').trim() : '') || S.problem.text;
   S.problem = { ...S.problem, text, status: 'confirmed' };
   renderM2Stage();
   setQLifecycle('active');
@@ -4270,7 +4340,7 @@ async function showM2NoProblemErrand() {
   showInlineErrand(null);
   const session = _bottleSession;
   try {
-    const brief = await fetchM2Errand('tell');
+    const brief = await fetchMechErrand('M2', { mode: 'ask', element: 'tell' });
     if (session !== _bottleSession) return;
     S.m2_pending_brief = brief;
     showInlineErrand(brief.question || brief.text ? brief : m2OpenErrandText());
@@ -4301,7 +4371,7 @@ async function applyM2Result(data, txt, allowSwirl = true) {
     const session = _bottleSession;
     try {
       const gapElement = S.m2_problem?.gap_in_play && data.gap?.state !== 'settled';
-      const brief = await fetchM2Errand(gapElement ? 'gap' : 'tell');
+      const brief = await fetchMechErrand('M2', { mode: 'ask', element: gapElement ? 'gap' : 'tell' });
       if (session !== _bottleSession) return;
       S.m2_pending_brief = brief;
       showInlineErrand(brief.question || brief.text ? brief : S.m2_problem?.question || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?`);
@@ -4351,11 +4421,11 @@ async function applyM3Result(data, txt, allowSwirl = true) {
       const brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
       if (session !== _bottleSession) return;
       S.m3_pending_brief = brief;
-      showInlineErrand(brief.question || brief.text ? brief : `Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`);
+      showInlineErrand(brief.question || brief.text ? brief : `Find someone who hits this problem and is not ${grapeRef()}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`);
     } catch (e) {
       if (session !== _bottleSession) return;
       S.m3_pending_brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
-      showInlineErrand(`Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`);
+      showInlineErrand(`Find someone who hits this problem and is not ${grapeRef()}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`);
     }
   } else {
     S.m3_pending_brief = null;
@@ -4444,11 +4514,11 @@ async function applyM4Result(data, txt, allowSwirl = true) {
       const brief = await fetchFieldBrief({ mode: 'contrast', element: 'echo' });
       if (session !== _bottleSession) return;
       S.m4_pending_brief = brief;
-      showInlineErrand(brief.question || brief.text ? brief : `Find a second person who hits this problem — not ${S.grape_name || 'the person you named'} and not whoever you named before. Ask what they've actually done about it.`);
+      showInlineErrand(brief.question || brief.text ? brief : `Find a second person who hits this problem — not ${grapeRef()} and not whoever you named before. Ask what they've actually done about it.`);
     } catch (e) {
       if (session !== _bottleSession) return;
       S.m4_pending_brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
-      showInlineErrand(`Find a second person who hits this problem — not ${S.grape_name || 'the person you named'} and not whoever you named before. Ask what they've actually done about it.`);
+      showInlineErrand(`Find a second person who hits this problem — not ${grapeRef()} and not whoever you named before. Ask what they've actually done about it.`);
     }
   } else {
     S.m4_pending_brief = null;
@@ -4497,7 +4567,7 @@ async function applyM5Result(data, txt, allowSwirl = true) {
     showInlineErrand(null);
     const session = _bottleSession;
     try {
-      const brief = await fetchFieldBrief({ mode: 'ask', element: 'gap' });
+      const brief = await fetchMechErrand('M5', { mode: 'ask', element: 'gap' });
       if (session !== _bottleSession) return;
       S.m5_pending_brief = brief;
       showInlineErrand(brief.question || brief.text ? brief : `Find out what people currently use for this problem and exactly where it falls short.`);
@@ -4518,7 +4588,7 @@ async function parkM5Gap(status = 'dormant') {
   S.m5_pending_brief = null;
   if (!brief) {
     try {
-      brief = await fetchFieldBrief({ mode: 'ask', element: 'gap' });
+      brief = await fetchMechErrand('M5', { mode: 'ask', element: 'gap' });
     } catch (e) {
       brief = { kind: 'ask', text: null, pending: true, created_at: new Date().toISOString() };
     }
@@ -4573,7 +4643,7 @@ async function applyM6Result(data, txt, allowSwirl = true) {
     showInlineErrand(null);
     const session = _bottleSession;
     try {
-      const brief = await fetchFieldBrief({ mode: 'words', element: 'words' });
+      const brief = await fetchMechErrand('M6', { mode: 'words', element: 'words' });
       if (session !== _bottleSession) return;
       S.m6_pending_brief = brief;
       showInlineErrand(brief.question || brief.text ? brief : `Talk to ${S.grape_name || 'the person you named'} and bring back their exact words about this problem.`);
@@ -4594,7 +4664,7 @@ async function parkM6Words(status = 'dormant') {
   S.m6_pending_brief = null;
   if (!brief) {
     try {
-      brief = await fetchFieldBrief({ mode: 'words', element: 'words' });
+      brief = await fetchMechErrand('M6', { mode: 'words', element: 'words' });
     } catch (e) {
       brief = { kind: 'words', text: null, pending: true, created_at: new Date().toISOString() };
     }
@@ -5705,16 +5775,16 @@ function getBottleDisplayLine(bottle) {
 const PARK_ERRANDS = {
   M2: { label: 'a question to ask', mode: 'ask',
         element: () => (S.m2_problem?.gap_in_play && S.elements.gap !== 'settled') ? 'gap' : 'tell',
-        fallback: () => (!problemOnRecord() || S.maturity === 2) ? m2OpenErrandText()
+        fallback: () => (!problemOnRecord() || selfErrandFor('M2')) ? m2OpenErrandText()
           : S.m2_problem?.question || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?` },
   M3: { label: 'find another person', mode: 'echo', element: () => 'echo',
-        fallback: () => `Find someone who hits this problem and is not ${S.grape_name || 'the person you named'}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?` },
+        fallback: () => `Find someone who hits this problem and is not ${grapeRef()}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?` },
   M4: { label: 'find a different kind of person', mode: 'contrast', element: () => 'echo',
-        fallback: () => `Find a second person who hits this problem — not ${S.grape_name || 'the person you named'} and not whoever you named before. Ask what they've actually done about it.` },
+        fallback: () => `Find a second person who hits this problem — not ${grapeRef()} and not whoever you named before. Ask what they've actually done about it.` },
   M5: { label: 'find what they use now', mode: 'ask', element: () => 'gap',
-        fallback: () => `Find out what people currently use for this problem and exactly where it falls short.` },
+        fallback: () => selfErrandFor('M5') ? SELF_ERRAND : `Find out what people currently use for this problem and exactly where it falls short.` },
   M6: { label: 'their exact words', mode: 'words', element: () => 'words',
-        fallback: () => `Talk to ${S.grape_name || 'the person you named'} and bring back their exact words about this problem.` },
+        fallback: () => selfErrandFor('M6') ? SELF_ERRAND : `Talk to ${S.grape_name || 'the person you named'} and bring back their exact words about this problem.` },
   M7: { label: "find someone who doesn't have it", mode: 'limit', element: () => 'limit',
         fallback: () => `Find someone who looks like they should have this problem but doesn't, and find out why not.` }
 };
@@ -6004,7 +6074,7 @@ async function openParkedReentry(id, record, mechId) {
 
   if (brief.pending && !brief.question && !brief.text && v6GetWorkerUrl()) {
     try {
-      const freshBrief = await fetchFieldBrief({ mode: errand.mode, element: errand.element() });
+      const freshBrief = await fetchMechErrand(mechId, { mode: errand.mode, element: errand.element() });
       record.brief = freshBrief;
       updateBottleBrief(id, freshBrief);
     } catch (e) {}
@@ -6563,6 +6633,7 @@ function v6Rewrite() {
   migrateOldSave();
   migrateQLifecycleSchema();
   migrateProblemSchema();
+  migrateSelfGrape();
   healPhantomParkedBottles();
   if (getAllBottles().length > 0) {
     showCellar();
