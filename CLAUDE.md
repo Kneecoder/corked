@@ -3,9 +3,9 @@
 Corked is an idea-aging app for solo software builders. You cork a spark, it ages through honest questions, and you find out whether there is something real behind it. Jamie owns the product and isn't a developer. Claude in claude.ai writes the briefs. You build them.
 
 ## Source of truth
-- Corked_Concept_Document_v47.md is the doctrine. Where a brief and v47 disagree, stop and say so before building.
-- Corked_The_Object_v3.md holds the next big design requirement: the sidebar record.
-- Never edit doctrine files unless a brief says to.
+- docs/Corked_Concept_Document_v47.md is the doctrine. Where a brief and v47 disagree, stop and say so before building.
+- docs/Corked_The_Object_v3.md holds the next big design requirement: the sidebar record.
+- Never edit doctrine files unless a brief says to. New versions are written in claude.ai and replace the ones in docs/ only when a brief says so.
 
 ## How we work
 - Do what the brief says. Everything under DO NOT TOUCH is off limits.
@@ -18,14 +18,14 @@ Corked is an idea-aging app for solo software builders. You cork a spark, it age
 - Reports in plain words and short sentences.
 
 ## Product rules that break most easily
-- Corked records. It never invents. Every line on the record is the builder's own words, anchored to the answer it came from. No generated sentence stands on the record.
+- Corked records. It never invents. Every line on the label is the builder's own words, anchored to the answer it came from. A problem Corked built or guessed always shows where it came from.
 - Not on record means not on record. It never means it doesn't exist.
 - A confirm click records that the builder agrees with a wording. It never upgrades evidence, and provenance survives it.
 - A system guess never settles an element.
 - Element states only move up. A weaker answer never lowers one.
 - Never explain what counts. No hints about what a good answer contains.
-- Field questions follow The Mom Test: about the person's own past, never about the idea. A field question that pitches is a bug.
-- In self mode the builder is the person. Everything is in the second person, with every sentence written out, never a name swapped for "you". The builder can never be their own Echo.
+- Field questions follow The Mom Test: about the person's own life and what actually happened, never about the idea or what they would do. A field question that pitches is a bug.
+- In self mode the builder is the person. Everything is in the second person, and every sentence has to read right as a whole. The builder can never be their own Echo.
 - "Cork another spark" is never the main action.
 
 ## Copy register
@@ -36,11 +36,15 @@ Corked is an idea-aging app for solo software builders. You cork a spark, it age
 
 ## Model and tests
 - The worker's model is pinned in ANTHROPIC_MODEL. Don't change it.
-- Any change to M0 runs the 17-spark regression suite before deploying.
-- Any change to M2 Phase A runs the Phase A spark battery.
+- Any change to M0 needs the 17-spark suite, m0-bench.html, which is a browser page. Stop and tell Jamie before deploying one.
+- Any change to M2 Phase A runs the 20-spark battery: node scripts/run-corked-batch.mjs.
 
 ## Don't build unless a brief asks
 Scores, streaks or counts. Accounts, payments, push or email delivery, sharing. Phase 2 or Phase 3.
+
+## Known gaps, scheduled, don't patch
+- The label screen: "Cork another spark" as the main action, "Phase 1 Complete" and the settled count. The end of Phase 1 and the Object replace it.
+- The "element 3 of 7" counts. They go in the Object pass.
 
 ## Repo map
 The repo is `C:\Users\James\Desktop\ClaudeCodeTest`. GitHub: Kneecoder/corked, branch `main`.
@@ -55,8 +59,8 @@ The repo is `C:\Users\James\Desktop\ClaudeCodeTest`. GitHub: Kneecoder/corked, b
 - `docs/Corked_The_Object_v1.md`, `docs/Corked_The_Object_v2.md`: design notes for the record.
 
 ### Doctrine files
-- `Corked_Concept_Document_v47.md` is not in the repo. It lives in `C:\Users\James\Downloads\`. A second, identical copy there is `Corked_Concept_Document_v47 (1).md`.
-- The Object notes v1 and v2 are in `docs/` and in Downloads. There is no v3 in either place yet.
+- `docs/Corked_Concept_Document_v47.md`: the doctrine. Copied from Downloads, where the newest copy was `Corked_Concept_Document_v47 (1).md`.
+- `docs/Corked_The_Object_v3.md`: the sidebar record. It replaces Object v1 and v2. Those two are still in `docs/`.
 
 ### Worker routes
 All POST, JSON in and out, at https://orked-m1-proxy.kneebonewebdesign.workers.dev
