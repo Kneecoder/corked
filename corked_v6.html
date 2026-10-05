@@ -1862,6 +1862,7 @@ body {
         <div class="grape-input-label">Their first name</div>
         <input type="text" class="grape-field" id="grape-field" placeholder="e.g. Sarah" maxlength="40">
       </div>
+      <div class="dormant-locked" id="pace-line" style="display:none;margin-top:1rem"></div>
       <div class="phase-row" id="q-phase-row">
         <div class="mech-count" id="m-count"></div>
         <div id="q-actions">
@@ -1950,7 +1951,8 @@ function freshState() {
     grapeStep:false,
     cellarEntryPlayed:false,
     thresholdDone:false,
-    nextQuestionAt:null,
+    // When the next new question opens. See markReading().
+    questionOpensAt:null,
     swirl_done:{},
     // Canonical per-question lifecycle. One field, everything else reads it.
     // active -> parked -> answering -> evaluating -> answered | needs_clarification
@@ -2295,13 +2297,23 @@ function bottleHasUnresolvedAmber(s) {
   return EL_KEYS.some(k => els[k] === 'turbid' || els[k] === 'clearing');
 }
 
-// How many whole pace-lengths have elapsed since this bottle was last touched.
+// When the bottle's question opened. Demurrage and the stalled panel count from here, never from
+// the answer before it. Null while the next question is still held, so a held bottle never sags.
+// Bottles from before paced returns have no opening time and count from their last save.
+function questionClockStart(bottle) {
+  const s = bottle.s || {};
+  if (nextQuestionHeldUntil(s)) return null;
+  return s.questionOpensAt || bottle.updated_at || null;
+}
+
+// How many whole pace-lengths have elapsed since the bottle's question opened.
 function bottlePaceMultiples(bottle) {
   const s = bottle.s || {};
   if (typeof s.pace !== 'number' || s.pace < 0) return 0;
   const dur = PACE_DURATIONS[s.pace];
   if (!dur) return 0;
-  const last = new Date(bottle.updated_at).getTime();
+  const start = questionClockStart(bottle);
+  const last = start ? new Date(start).getTime() : 0;
   if (!last) return 0;
   return Math.floor((Date.now() - last) / dur);
 }
@@ -2320,17 +2332,18 @@ function isBottleStalled(bottle) {
     && bottleHasUnresolvedTurbid(bottle.s);
 }
 
-// "Once per stall, not once per visit": the ack is tied to the updated_at it was taken against.
-// A later touch (new answer) advances updated_at, so a future stall is treated as a fresh one.
+// "Once per stall, not once per visit": the ack is tied to the clock it was taken against.
+// A question that opens later starts a new clock, so a future stall is treated as a fresh one.
+// Older acks were taken against updated_at.
 function isStallAcknowledged(bottle) {
-  return !!(bottle.stallAckAt && bottle.stallAckUpdatedAt === bottle.updated_at);
+  return !!(bottle.stallAckAt && (bottle.stallAckClock ?? bottle.stallAckUpdatedAt) === questionClockStart(bottle));
 }
 
 function markStallAcknowledged(id) {
   const bottles = getAllBottles();
   const i = bottles.findIndex(b => b.id === id);
   if (i >= 0) {
-    bottles[i] = { ...bottles[i], stallAckAt: new Date().toISOString(), stallAckUpdatedAt: bottles[i].updated_at };
+    bottles[i] = { ...bottles[i], stallAckAt: new Date().toISOString(), stallAckClock: questionClockStart(bottles[i]) };
     saveAllBottles(bottles);
   }
 }
@@ -3454,6 +3467,7 @@ function renderMech() {
 
   // Re-entry: if this mechanism was already answered, restore post-answer UI
   restoreAnsweredMechUI(m);
+  renderPaceHold();
 }
 
 function setPhaseBusy(isBusy, label) {
@@ -3931,6 +3945,7 @@ async function gradeAnswer(mechId, txt, { allowSwirl = true, wordsSource, keepDr
     logAnswer({ mech: mechId, kind: log.kind, question: log.question, answer: typed, moves,
       ...(typed !== txt ? { read_as: txt } : {}) });
   }
+  markReading(mechId);
   saveState();
   await applying;
   return stillOpen() ? data : null;
@@ -4069,6 +4084,7 @@ async function submitSwirl() {
   const phaseRow = document.getElementById('q-phase-row');
   if (phaseRow) phaseRow.style.display = '';
   if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
+  renderPaceHold();
 }
 
 // ── M2: THE FRICTION TEST ──────────────────────────────────────────────────
@@ -4819,6 +4835,12 @@ async function p1Next(bypassErrandWarn = false) {
     if (stage === 'scene') { submitM2Scene(txt); return; }
   }
 
+  // The next question is still held: the main button goes back to the cellar.
+  if (obsShown && nextQuestionHeldUntil(S)) {
+    showCellar();
+    return;
+  }
+
   if (!bypassErrandWarn && isErrandActive()) {
     document.getElementById('errand-warn-overlay').classList.add('show');
     return;
@@ -4867,6 +4889,7 @@ async function p1Next(bypassErrandWarn = false) {
     obsShown = true;
     if (S.qLifecycle === 'evaluating') setQLifecycle('answered');
     saveState();
+    renderPaceHold();
 
   } else {
     // Step 2: advance to next mechanism
@@ -4916,6 +4939,56 @@ function formatLockedUntil(iso) {
   if (hours < 24) return `in ${hours} hour${hours === 1 ? '' : 's'}`;
   const days = Math.round(diff / 86400000);
   return `in ${days} day${days === 1 ? '' : 's'}`;
+}
+
+// ── PACED RETURNS ──
+// A reading of the bottle's current question holds its next new question for one pace-length,
+// with the durations parking uses. S.questionOpensAt is when that question opens. Only the next
+// new question waits: the swirl, the scene question, reopens, replies and parked errands never do.
+function markReading(mechId) {
+  if (M[mi]?.id !== mechId || nextNewMechIndex(S, mi) < 0) return;
+  S.questionOpensAt = computeParkNextQuestionAt(S.pace);
+}
+
+// The first unanswered question after idx, or -1. M4 is passed over once Echo has settled.
+function nextNewMechIndex(s, idx) {
+  for (let j = idx + 1; j < PHASE1_MECH_COUNT; j++) {
+    const id = `M${j + 1}`;
+    if (id === 'M4' && s.elements?.echo === 'settled') continue;
+    if (!s.answers?.[id]) return j;
+  }
+  return -1;
+}
+
+// When the next new question opens, while it is still held. Null when nothing waits on the pace.
+function nextQuestionHeldUntil(s) {
+  const idx = s.mechIndex || 0;
+  if (idx >= PHASE1_MECH_COUNT || !s.answers?.[`M${idx + 1}`]) return null;
+  if (nextNewMechIndex(s, idx) < 0 || !s.questionOpensAt) return null;
+  return new Date(s.questionOpensAt).getTime() > Date.now() ? s.questionOpensAt : null;
+}
+
+// The cellar card's wording for when a question is due. The bottle uses the same words.
+function questionDueWording(iso) {
+  const due = new Date(iso);
+  if (isNaN(due.getTime()) || due.getTime() <= Date.now()) return 'Question ready';
+  const day = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const days = Math.round((day(due) - day(new Date())) / 86400000);
+  if (days <= 0) return 'Question due today';
+  if (days === 1) return 'Question due tomorrow';
+  return `Question in ${days} days`;
+}
+
+// While the next question is held, after a reading: one line says when it is due, and the main
+// button goes back to the cellar.
+function renderPaceHold() {
+  const line = document.getElementById('pace-line');
+  const until = obsShown && !_pendingSwirl ? nextQuestionHeldUntil(S) : null;
+  if (line) {
+    line.textContent = until ? questionDueWording(until) : '';
+    line.style.display = until ? 'block' : 'none';
+  }
+  if (until) setPhaseBusy(false, 'Back to the cellar');
 }
 
 // ── CELLAR THRESHOLD ──
@@ -5005,22 +5078,14 @@ function completeCellarRhythm() {
   S.pace = thresholdSel.pace;
   S.notifTiming = thresholdSel.notifTiming;
   S.thresholdDone = true;
-  S.nextQuestionAt = computeNextQuestionAt(S.pace, S.notifTiming);
+  // The first question after intake opens straight away.
+  S.questionOpensAt = new Date().toISOString();
   saveState();
   hideCellarRhythm();
   mi = 1;
   S.mechIndex = mi;
   saveState();
   renderMech();
-}
-
-function computeNextQuestionAt(pace, timing) {
-  const days = THRESHOLD_STEPS[0].opts[pace]?.days || 7;
-  const hours = [9, 13, 18, 22][timing] || 9;
-  const next = new Date();
-  next.setDate(next.getDate() + days);
-  next.setHours(hours, 0, 0, 0);
-  return next.toISOString();
 }
 
 function formatNextQuestion(iso, timing) {
@@ -5904,21 +5969,13 @@ function getCellarWaiting(bottle) {
     return isInFlight ? `Parked · asked, waiting on reply` : `Parked · ${target}`;
   }
 
-  // The rhythm countdown only means anything while there's still a Phase 1 mechanism
-  // ahead to surface — once mechIndex reaches the end, S.nextQuestionAt is just a leftover
-  // from the one-time Cellar Rhythm setup at M1 and was never recomputed since. Without
-  // this gate, a fully complete bottle (label-worthy, some elements still Clearing) would
-  // keep reporting "Question due tomorrow" forever instead of reading its actual label state.
-  const phase1Incomplete = (s.mechIndex || 0) < PHASE1_MECH_COUNT;
-  if (phase1Incomplete && s.thresholdDone && s.nextQuestionAt) {
-    const next = new Date(s.nextQuestionAt);
-    if (!isNaN(next.getTime())) {
-      const diff = next - new Date();
-      if (diff <= 0) return 'Question ready';
-      const days = Math.ceil(diff / 86400000);
-      if (days === 1) return 'Question due tomorrow';
-      if (days <= 7) return `Question in ${days} days`;
-    }
+  // While Phase 1 has a question to open, the card reads the same hold the bottle obeys, in the
+  // same words, so the two always agree. A finished Phase 1 reads its label state instead.
+  const idx = s.mechIndex || 0;
+  if (idx < PHASE1_MECH_COUNT && s.thresholdDone) {
+    const heldUntil = nextQuestionHeldUntil(s);
+    if (heldUntil) return questionDueWording(heldUntil);
+    if (!s.answers?.[`M${idx + 1}`] || nextNewMechIndex(s, idx) >= 0) return 'Question ready';
   }
 
   const remaining = EL_KEYS.filter(k => els[k] !== 'settled').length;
@@ -6298,6 +6355,7 @@ async function submitParkedAnswer(id, mechId) {
   obsShown = true;
   if (!_pendingSwirl) setQLifecycle('answered');
   saveState();
+  renderPaceHold();
 }
 
 // The bottle stays parked until the worker has read the scene; then the park ends and M2 opens
