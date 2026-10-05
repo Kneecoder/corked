@@ -2536,7 +2536,7 @@ function writeM1FromIntake(name, relationship, data) {
     observation:{ surface_text:'The Grape is on record.', anchor_span:name },
     next_question:{ should_advance:true, framing:null }
   };
-  S.answers.M1 = `${name} - ${relationship}`;
+  S.answers.M1 = `${name} · ${relationship}`;
   rankUp('grape', grapeState, name);
   S.label.grape = S.maturity === 2 ? 'You' : name;
   clearDoorstep();
@@ -2584,7 +2584,7 @@ function buildMechs() {
       activeEl:'grape',
       prefilled:true,
       obs: () => [
-        `${grapeName} - ${grapeRelation}`,
+        `${grapeName} · ${grapeRelation}`,
         grapeObservation
       ].filter(Boolean).join('\n\n')
     },
@@ -2611,20 +2611,20 @@ function buildMechs() {
       id:'M3', name:'Third-Party Workarounds',
       // q is updated dynamically in renderMech once the problem is on record.
       q: selfMode
-        ? `Your own experience aside — who else hits this? Name one person and tell me what they have actually done about it.`
+        ? `Set your own experience aside. Who else hits this? Name one person and tell me what they have actually done about it.`
         : `Set ${grapeName} aside. Who else hits this? Name one person and tell me what they have actually done about it.`,
-      hint: 'A workaround, a tool, a habit, nothing at all. Any real behaviour counts.',
+      hint: '',
       els:['echo','vintage'],
       activeEl:'echo',
       obs: () => S.m3?.observation?.surface_text || null
     },
     {
       id:'M4', name:'Second Person',
-      // q and hint are updated dynamically in renderMech to use the current grape name and problem.
+      // q is updated dynamically in renderMech to use the current grape name and problem.
       q: selfMode
         ? `You are one kind of person with this. Who is a different kind, and does it look the same for them?`
         : `${grapeName} is one kind of person with this. Who is a different kind, and does it look the same for them?`,
-      hint: `One person, not a category. What they did about ${problemText() || 'this problem'} counts.`,
+      hint: '',
       els:['echo','vintage'],
       activeEl:'echo',
       obs: () => S.m4?.observation?.surface_text || null
@@ -2634,7 +2634,7 @@ function buildMechs() {
       q: selfMode
         ? `What do you use for this problem now, and exactly where does it fall short?`
         : `What do people use for this problem now, and exactly where does it fall short?`,
-      hint:'One without the other is not an answer. Both need to be specific.',
+      hint: '',
       els:['gap'],
       activeEl:'gap',
       obs: () => S.m5?.observation?.surface_text || null
@@ -2644,7 +2644,7 @@ function buildMechs() {
       q: selfMode
         ? `What have you actually said or written about this, before Corked asked?`
         : `How would ${g} describe this in their own words?`,
-      hint:'Quotes over summaries. Their language over yours.',
+      hint: '',
       els:['tell','echo'],
       activeEl:'echo',
       obs: () => S.m6?.observation?.surface_text || null
@@ -2652,7 +2652,7 @@ function buildMechs() {
     {
       id:'M7', name:'The Non-Case',
       q:`Who looks like they should have this problem but doesn't? Why not?`,
-      hint:'This is not a weakness to explain away. It is a sharpener. The boundary makes the need real.',
+      hint: '',
       els:['limit'],
       activeEl:'limit',
       obs: () => S.m7?.observation?.surface_text || null
@@ -3274,7 +3274,7 @@ function mechQuestion(m) {
   const gn = S.label.grape || S.grape_name || 'the person you named';
   const selfMode = S.maturity === 2;
   if (m.id === 'M3') return selfMode
-    ? `Your own experience aside — who else hits this? Name one person and tell me what they have actually done about it.`
+    ? `Set your own experience aside. Who else hits this? Name one person and tell me what they have actually done about it.`
     : `Set ${gn} aside. Who else hits this? Name one person and tell me what they have actually done about it.`;
   if (m.id === 'M4') return selfMode
     ? `You are one kind of person with this. Who is a different kind, and does it look the same for them?`
@@ -3374,12 +3374,10 @@ function renderMech() {
     if (exitsRowM3) exitsRowM3.style.display = 'flex';
   }
 
-  // M4: update question and hint with current grape name and problem, show brief and exits row.
+  // M4: update question with current grape name and problem, show brief and exits row.
   if (m.id === 'M4') {
     m.q = mechQuestion(m);
-    m.hint = `One person, not a category. What they did about ${problemText() || 'this problem'} counts.`;
     document.getElementById('m-q').textContent = m.q;
-    document.getElementById('m-hint').textContent = m.hint;
     if (wmBrief) {
       wmBrief.textContent = `Haven't found a different kind of person yet? Go find one. Come back with their name, what they've actually done about it, and whether it looks the same for them.`;
       wmBrief.style.display = 'block';
@@ -3738,7 +3736,7 @@ function updateSparkReminder() {
   body.appendChild(makeRow('The spark', spark, false));
 
   if (S.grape_name) {
-    body.appendChild(makeRow('The person', S.grape_name, true));
+    body.appendChild(makeRow('The person', S.maturity === 2 ? 'You' : S.grape_name, true));
   }
 
   rem.style.display = 'block';
@@ -4514,11 +4512,11 @@ async function applyM4Result(data, txt, allowSwirl = true) {
       const brief = await fetchFieldBrief({ mode: 'contrast', element: 'echo' });
       if (session !== _bottleSession) return;
       S.m4_pending_brief = brief;
-      showInlineErrand(brief.question || brief.text ? brief : `Find a second person who hits this problem — not ${grapeRef()} and not whoever you named before. Ask what they've actually done about it.`);
+      showInlineErrand(brief.question || brief.text ? brief : `Find a second person who hits this problem, someone other than ${grapeRef()} and whoever you named before. Ask what they've actually done about it.`);
     } catch (e) {
       if (session !== _bottleSession) return;
       S.m4_pending_brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
-      showInlineErrand(`Find a second person who hits this problem — not ${grapeRef()} and not whoever you named before. Ask what they've actually done about it.`);
+      showInlineErrand(`Find a second person who hits this problem, someone other than ${grapeRef()} and whoever you named before. Ask what they've actually done about it.`);
     }
   } else {
     S.m4_pending_brief = null;
@@ -5031,7 +5029,7 @@ function reviewEl(key) {
     const observation = S.m1?.observation?.surface_text || '';
     const grapeState = S.elements.grape;
     const stateNote = grapeState === 'clearing'
-      ? 'Grape is clearing — the person is named but not yet anchored to a specific moment. The mechanisms ahead will develop this.'
+      ? 'Grape is clearing. The person is named but not yet anchored to a specific moment. The mechanisms ahead will develop this.'
       : '';
     document.getElementById('rv-blocks').innerHTML =
       `<div class="review-block">
@@ -5045,7 +5043,7 @@ function reviewEl(key) {
     const reopenSection = document.getElementById('rv-reopen');
     if (grapeState !== 'settled') {
       const gn = S.grape_name || 'this person';
-      document.getElementById('rv-reopen-mech').textContent = 'M1 · The Grape — describe again';
+      document.getElementById('rv-reopen-mech').textContent = 'M1 · The Grape · describe again';
       document.getElementById('rv-reopen-q').textContent = `How do you know ${gn}? Describe your connection and what you have seen them do.`;
       document.getElementById('rv-reopen-ans').value = S.grape_relationship || '';
       const btn = document.getElementById('rv-reopen-btn');
@@ -5091,7 +5089,7 @@ function reviewEl(key) {
     const q = reopenMechId === 'M2'
       ? (S.m2_problem?.question || rm?.q || '')
       : (rm?.q || '');
-    document.getElementById('rv-reopen-mech').textContent = reopenMechId + ' · ' + (rm?.name || reopenMechId) + ' — answer again';
+    document.getElementById('rv-reopen-mech').textContent = reopenMechId + ' · ' + (rm?.name || reopenMechId) + ' · answer again';
     document.getElementById('rv-reopen-q').textContent = q;
     document.getElementById('rv-reopen-ans').value = '';
     const btn = document.getElementById('rv-reopen-btn');
@@ -5152,7 +5150,7 @@ async function submitReopen() {
   } catch (err) {
     if (btn) { btn.disabled = false; btn.textContent = 'Submit →'; }
     const qEl = document.getElementById('rv-reopen-q');
-    if (qEl) qEl.textContent = 'Worker error — ' + err.message;
+    if (qEl) qEl.textContent = 'Worker error · ' + err.message;
   }
 }
 
@@ -5199,7 +5197,7 @@ function showLabel() {
     h += `<div class="vc-field${tappable?' tappable':''}" ${tappable?`onclick="openLabelReopen('${k}')"`:''}>
             <div class="vc-field-name">
               ${m.name}
-              <span class="vc-field-desc">— ${m.desc}</span>
+              <span class="vc-field-desc">· ${m.desc}</span>
               <span class="state-pill ${st}">${st}</span>
             </div>
             <div class="vc-field-val${!val?' empty':''}">
@@ -5331,7 +5329,7 @@ async function submitLabelReopen() {
   } catch (err) {
     if (btn) { btn.disabled = false; btn.textContent = 'Submit →'; }
     const qEl = document.getElementById('lr-question');
-    if (qEl) qEl.textContent = 'Worker error — ' + err.message;
+    if (qEl) qEl.textContent = 'Worker error · ' + err.message;
   }
 }
 
@@ -5780,7 +5778,7 @@ const PARK_ERRANDS = {
   M3: { label: 'find another person', mode: 'echo', element: () => 'echo',
         fallback: () => `Find someone who hits this problem and is not ${grapeRef()}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?` },
   M4: { label: 'find a different kind of person', mode: 'contrast', element: () => 'echo',
-        fallback: () => `Find a second person who hits this problem — not ${grapeRef()} and not whoever you named before. Ask what they've actually done about it.` },
+        fallback: () => `Find a second person who hits this problem, someone other than ${grapeRef()} and whoever you named before. Ask what they've actually done about it.` },
   M5: { label: 'find what they use now', mode: 'ask', element: () => 'gap',
         fallback: () => selfErrandFor('M5') ? SELF_ERRAND : `Find out what people currently use for this problem and exactly where it falls short.` },
   M6: { label: 'their exact words', mode: 'words', element: () => 'words',
@@ -5788,6 +5786,11 @@ const PARK_ERRANDS = {
   M7: { label: "find someone who doesn't have it", mode: 'limit', element: () => 'limit',
         fallback: () => `Find someone who looks like they should have this problem but doesn't, and find out why not.` }
 };
+
+// How a parked errand is named. A self errand has no one to ask, so it names the moment.
+function parkErrandLabel(mechId, maturity) {
+  return maturity === 2 && SELF_ERRAND_MECHS.includes(mechId) ? 'in the moment' : PARK_ERRANDS[mechId].label;
+}
 
 // The mechanism a parked bottle came from. Every park records it (s.parkMech). Bottles parked
 // before that were always parked at their current mechanism, so fall back to it. A label park
@@ -5819,7 +5822,7 @@ function getCellarWaiting(bottle) {
   const parkMech = hasGrape ? parkedMechOf(bottle) : null;
   if (isParked && (!hasGrape || (hasBrief && parkMech))) {
     const isInFlight = s.parkKind ? s.parkKind === 'in_flight' : bottle.status === 'in_flight';
-    const target = hasGrape ? PARK_ERRANDS[parkMech].label : 'find the person';
+    const target = hasGrape ? parkErrandLabel(parkMech, s.maturity) : 'find the person';
     return isInFlight ? `Parked · asked, waiting on reply` : `Parked · ${target}`;
   }
 
@@ -6090,7 +6093,7 @@ async function openParkedReentry(id, record, mechId) {
   const question = m ? mechQuestion(m) : '';
   const draft = S.drafts?.[mechId] || '';
   const isInFlight = (S.parkKind || record.status) === 'in_flight';
-  const eyebrow = isInFlight ? 'In flight · asked, waiting on reply' : `Dormant · ${errand.label}`;
+  const eyebrow = isInFlight ? 'In flight · asked, waiting on reply' : `Dormant · ${parkErrandLabel(mechId, S.maturity)}`;
   const grapeName = S.grape_name || 'the person you named';
   const wordsSourceRow = mechId === 'M6' ? `
       <div class="rhythm-choices" id="dr-ws-row" style="grid-template-columns:repeat(2, minmax(0, 1fr));margin-bottom:.9rem">

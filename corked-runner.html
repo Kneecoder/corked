@@ -678,6 +678,17 @@ async function runM0Main() {
 }
 
 async function runM1Main() {
+  // Self mode is not graded, as in the app: the builder is the grape, settled.
+  if (R.maturity === 2) {
+    const selfGrape = { schema_version:'m1.v1', mechanism:'M1', outcome:'settled',
+      grape:{ state:'settled', named_person:R.grapeName, person_kind:'self' },
+      observation:{ surface_text:'', anchor_span:null },
+      next_question:{ should_advance:true, framing:null } };
+    R.answers.M1 = R.grapeRel;
+    const changed = applyMechResult('M1', selfGrape);
+    logEntry({ mech:'M1', endpoint:'none (self mode, not graded)', request:null, response:selfGrape, kind:'main', summary: summarize('M1', selfGrape, changed) });
+    return selfGrape;
+  }
   const req = { spark_summary: R.userLine, person_name: R.grapeName, relationship: R.grapeRel, maturity_class: R.maturity };
   const res = await callWorker('/m1', req);
   if (!res.ok) {

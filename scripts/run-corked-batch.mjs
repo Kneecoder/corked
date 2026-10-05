@@ -559,18 +559,28 @@ async function runOne(cfg, idx) {
     return R;
   }
 
-  // M1
-  const m1req = { spark_summary: R.userLine, person_name: R.grapeName, relationship: R.grapeRel, maturity_class: R.maturity };
-  res = await callWorker('/m1', m1req);
-  if (!res.ok) {
-    logEntry(R, { mech: 'M1', endpoint: '/m1', kind: 'main', request: m1req, response: res.data, summary: 'ERROR ' + res.status });
-    halt(R, 'M1 request failed.');
-    return R;
-  }
+  // M1. Self mode is not graded, as in the app: the builder is the grape, settled.
+  let changed;
   R.answers.M1 = R.grapeRel;
-  let changed = applyMechResult('M1', res.data, R);
-  logEntry(R, { mech: 'M1', endpoint: '/m1', kind: 'main', request: m1req, response: res.data, summary: summarize('M1', res.data, changed) });
-  runAssertions(R, 'M1', res.data);
+  if (R.maturity === 2) {
+    const selfGrape = { schema_version: 'm1.v1', mechanism: 'M1', outcome: 'settled',
+      grape: { state: 'settled', named_person: R.grapeName, person_kind: 'self' },
+      observation: { surface_text: '', anchor_span: null },
+      next_question: { should_advance: true, framing: null } };
+    changed = applyMechResult('M1', selfGrape, R);
+    logEntry(R, { mech: 'M1', endpoint: 'none (self mode, not graded)', kind: 'main', request: null, response: selfGrape, summary: summarize('M1', selfGrape, changed) });
+  } else {
+    const m1req = { spark_summary: R.userLine, person_name: R.grapeName, relationship: R.grapeRel, maturity_class: R.maturity };
+    res = await callWorker('/m1', m1req);
+    if (!res.ok) {
+      logEntry(R, { mech: 'M1', endpoint: '/m1', kind: 'main', request: m1req, response: res.data, summary: 'ERROR ' + res.status });
+      halt(R, 'M1 request failed.');
+      return R;
+    }
+    changed = applyMechResult('M1', res.data, R);
+    logEntry(R, { mech: 'M1', endpoint: '/m1', kind: 'main', request: m1req, response: res.data, summary: summarize('M1', res.data, changed) });
+    runAssertions(R, 'M1', res.data);
+  }
 
   // M2 Phase A: stated, guessed or insufficient. The request mirrors the app's.
   const m2aReq = { phase: 'problem', raw_spark: (R.m0 && R.m0.raw_spark) || R.raw_spark, user_line: R.userLine, spark_parse: R.sparkParse, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity };
