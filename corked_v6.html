@@ -1955,7 +1955,11 @@ function freshState() {
     // Canonical per-question lifecycle. One field, everything else reads it.
     // active -> parked -> answering -> evaluating -> answered | needs_clarification
     qLifecycle:'active',
-    parkKind:null
+    parkKind:null,
+    // The bottle's history: append only, never edited. See appendLog().
+    log:[],
+    // Each restatement of the idea, { at, text }. Nothing asks for one yet.
+    restatements:[]
   };
 }
 
@@ -2538,7 +2542,7 @@ function writeM1FromIntake(name, relationship, data) {
   };
   S.answers.M1 = `${name} · ${relationship}`;
   rankUp('grape', grapeState, name);
-  S.label.grape = S.maturity === 2 ? 'You' : name;
+  setLabel('grape', S.maturity === 2 ? 'You' : name);
   clearDoorstep();
 }
 
@@ -2990,12 +2994,18 @@ async function intakeNext() {
     intakeSel['grape_name']  = name;
     intakeSel['grape_rel']   = rel;
     intakeSel['grape_error'] = null;
+    const labels = [...document.querySelectorAll('#intake-body .grape-input-label')].map(el => el.textContent.trim());
+    const grapeLog = {
+      kind: 'first_answer',
+      question: labels[1] || '',
+      fields: [{ label: labels[0] || '', value: name }, { label: labels[1] || '', value: rel }]
+    };
 
     const workerUrl = v6GetWorkerUrl();
     if (S.maturity === 2) {
       // Self mode: a name plus "This is me" settles the Grape. No grading call, no note, no retry.
       // A past instance is M2's bar, and the self answer goes to M2 Phase A.
-      writeM1FromIntake(name, rel, selfGrapeRecord(name));
+      writeM1Logged(name, rel, selfGrapeRecord(name), grapeLog);
     } else if (workerUrl) {
       const btn = document.getElementById('grape-continue-btn');
       if (btn) { btn.disabled = true; btn.textContent = 'Reading person...'; }
@@ -3008,13 +3018,14 @@ async function intakeNext() {
         });
         const grapeState = normalizeGrapeState(data.grape?.state || 'turbid');
         if (grapeState === 'turbid') {
+          logAnswer({ mech: 'M1', ...grapeLog, answer: rel });
           intakeSel['grape_error'] = data.observation?.surface_text
             || 'A more specific person is needed. Name them and state your connection to them.';
           if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
           renderIntake();
           return;
         }
-        writeM1FromIntake(name, rel, data);
+        writeM1Logged(name, rel, data, grapeLog);
       } catch (err) {
         intakeSel['grape_error'] = 'Could not reach the worker. Check your Worker URL in the spark step.';
         if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
@@ -3022,7 +3033,7 @@ async function intakeNext() {
         return;
       }
     } else {
-      writeM1FromIntake(name, rel, null);
+      writeM1Logged(name, rel, null, grapeLog);
     }
     step.save();
 
@@ -3755,8 +3766,53 @@ function rankUp(key, state, labelValue) {
     setEl(key, 'turbid');
   }
   if (improved && state !== 'turbid' && labelValue) {
-    S.label[key] = labelValue.length > 150 ? labelValue.slice(0,150) + '…' : labelValue;
+    setLabel(key, labelValue);
   }
+}
+
+// ── HISTORY LOG ──
+// Every bottle keeps a log in S.log, carried with the bottle by export and import. Append only:
+// an entry is never edited or removed, and a later answer adds an entry. Bottles from before the
+// log start theirs with their next answer; nothing is backfilled and no date is ever invented.
+function appendLog(entry) {
+  if (!Array.isArray(S.log)) S.log = [];
+  S.log.push({ at: new Date().toISOString(), ...entry });
+}
+
+// What a reading did to the record: every element it moved, the state before and after, and the
+// words that went on record for it. Opened just before a reading is applied, closed right after.
+let _recordCapture = null;
+function openRecordCapture() {
+  _recordCapture = { before: { ...S.elements }, words: {} };
+}
+function closeRecordCapture() {
+  const cap = _recordCapture;
+  _recordCapture = null;
+  if (!cap) return [];
+  return EL_KEYS.filter(k => cap.before[k] !== S.elements[k])
+    .map(k => ({ element: k, from: cap.before[k], to: S.elements[k], words: cap.words[k] ?? null }));
+}
+
+// Every span is stored whole. Anything that has to look short is shortened on screen only.
+function setLabel(key, value) {
+  S.label[key] = value;
+  if (_recordCapture) _recordCapture.words[key] = value;
+}
+
+// kind: first_answer, follow_up, reopen or reply. question: exactly as it was shown.
+function logAnswer({ mech, kind, question, answer, moves, ...extra }) {
+  appendLog({ type: 'answer', mech, kind, question: question || '', answer, moved: moves || [], ...extra });
+}
+
+// The grape step and its reopens: the record change writeM1FromIntake makes, logged with the answer.
+function writeM1Logged(name, rel, data, log) {
+  openRecordCapture();
+  writeM1FromIntake(name, rel, data);
+  logAnswer({ mech: 'M1', ...log, answer: rel, moves: closeRecordCapture() });
+}
+
+function shortOnScreen(text, max = 150) {
+  return text.length > max ? text.slice(0, max) + '…' : text;
 }
 
 function applyLocalMechanismResult(m, txt) {
@@ -3843,7 +3899,8 @@ function gradeStatesValid(mechId, data) {
   return !!bars && bars.every(k => GRADE_STATES.includes(data[k]?.state));
 }
 
-async function gradeAnswer(mechId, txt, { allowSwirl = true, wordsSource, keepDraft = false, beforeStore } = {}) {
+// log: { kind, question, answer }. answer is what the builder typed, when it differs from txt (a follow-up).
+async function gradeAnswer(mechId, txt, { allowSwirl = true, wordsSource, keepDraft = false, beforeStore, log } = {}) {
   const grader = ANSWER_GRADERS[mechId];
   if (!grader) throw new Error(`No grader for ${mechId}`);
   const session = _bottleSession;
@@ -3866,7 +3923,14 @@ async function gradeAnswer(mechId, txt, { allowSwirl = true, wordsSource, keepDr
   setAnswerDraft(mechId, '');
   // The apply step writes the grade synchronously, then may await an errand brief. Save the
   // grade straight away so it is kept even if the person leaves while the brief is loading.
+  openRecordCapture();
   const applying = grader.apply(data, txt, allowSwirl);
+  const moves = closeRecordCapture();
+  if (log) {
+    const typed = log.answer ?? txt;
+    logAnswer({ mech: mechId, kind: log.kind, question: log.question, answer: typed, moves,
+      ...(typed !== txt ? { read_as: txt } : {}) });
+  }
   saveState();
   await applying;
   return stillOpen() ? data : null;
@@ -3948,6 +4012,7 @@ async function submitSwirl() {
 
   const { mechId, originalAnswer } = _pendingSwirl;
   const combined = `${originalAnswer} ${swirlAnswer}`.trim();
+  const swirlQ = document.getElementById('swirl-q')?.textContent || '';
   const btn = document.getElementById('swirl-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
   setQLifecycle('evaluating');
@@ -3967,6 +4032,7 @@ async function submitSwirl() {
       return;
     }
     if (session !== _bottleSession) return;
+    logAnswer({ mech: 'M2', part: 'scene', kind: 'follow_up', question: swirlQ, answer: swirlAnswer, read_as: combined });
     markSwirlShown(M2_SCENE_SWIRL);
     hideSwirl();
     if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
@@ -3981,7 +4047,8 @@ async function submitSwirl() {
 
   let graded;
   try {
-    graded = await gradeAnswer(mechId, combined, { allowSwirl: false, wordsSource: S.m6_words_source });
+    graded = await gradeAnswer(mechId, combined, { allowSwirl: false, wordsSource: S.m6_words_source,
+      log: { kind: 'follow_up', question: swirlQ, answer: swirlAnswer } });
   } catch (err) {
     // Nothing was stored: the swirl stays open with its text, so it can be sent again.
     setQLifecycle('needs_clarification');
@@ -4242,6 +4309,7 @@ function applyM2PhaseAResult(data) {
   S.problem = p && typeof p.text === 'string' && p.text.trim()
     ? { text: p.text.trim(), source: p.source, status: p.status, ...(p.anchors ? { anchors: p.anchors } : {}) }
     : null;
+  if (S.problem) appendLog({ type: 'problem_recorded', text: S.problem.text, source: S.problem.source, status: S.problem.status });
   renderM2Stage();
   setQLifecycle(m2AwaitingConfirm ? 'needs_clarification' : 'active');
   saveState();
@@ -4254,6 +4322,7 @@ function m2ConfirmProblem() {
   const inp = document.getElementById('m2-problem-inp');
   const text = (inp ? inp.value.replace(/\s+/g, ' ').trim() : '') || S.problem.text;
   S.problem = { ...S.problem, text, status: 'confirmed' };
+  appendLog({ type: 'problem_confirmed', text, source: S.problem.source });
   renderM2Stage();
   setQLifecycle('active');
   saveState();
@@ -4296,6 +4365,7 @@ async function submitM2Scene(txt) {
     return;
   }
   const session = _bottleSession;
+  const shownQ = document.getElementById('m-q')?.textContent || '';
   hideM2Error();
   setAnswerDraft('M2', txt);
   saveState();
@@ -4311,12 +4381,15 @@ async function submitM2Scene(txt) {
   }
   if (session !== _bottleSession) return;
   setPhaseBusy(false, 'Continue →');
+  logAnswer({ mech: 'M2', part: 'scene', kind: 'first_answer', question: shownQ, answer: txt });
+  saveState();
   applyM2SceneResult(data, txt, !swirlAlreadyShown(M2_SCENE_SWIRL));
 }
 
 function applyM2SceneResult(data, txt, allowSwirl) {
   if (data.scene_present && data.problem?.text) {
     S.problem = { text: data.problem.text, source: 'scene_derived', status: 'proposed', anchors: data.problem.anchors || [] };
+    appendLog({ type: 'problem_recorded', text: S.problem.text, source: S.problem.source, status: S.problem.status });
     S.m2_problem = { ...(S.m2_problem || {}), question: data.question || null, gap_in_play: !!data.gap_in_play, scene_answer: txt };
     S.m2_pending_brief = null;
     hideInlineErrand();
@@ -4768,7 +4841,8 @@ async function p1Next(bypassErrandWarn = false) {
       setQLifecycle('answering');
       setQLifecycle('evaluating');
       if (ANSWER_GRADERS[m.id]) {
-        graded = await gradeAnswer(m.id, txt, { keepDraft: true });
+        const shownQ = document.getElementById('m-q')?.textContent || '';
+        graded = await gradeAnswer(m.id, txt, { keepDraft: true, log: { kind: 'first_answer', question: shownQ } });
       } else {
         S.answers[m.id] = txt;
         applyLocalMechanismResult(m, txt);
@@ -5121,6 +5195,7 @@ async function submitReopen() {
 
   const key = _reopenKey;
   const mechId = _reopenMechId;
+  const shownQ = document.getElementById('rv-reopen-q')?.textContent || '';
   const btn = document.getElementById('rv-reopen-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
 
@@ -5136,13 +5211,14 @@ async function submitReopen() {
           maturity_class:  S.maturity
         });
         if (session !== _bottleSession) return;
-        writeM1FromIntake(S.grape_name || '', txt, data);
+        writeM1Logged(S.grape_name || '', txt, data, { kind: 'reopen', question: shownQ });
       } else {
-        writeM1FromIntake(S.grape_name || '', txt, null);
+        writeM1Logged(S.grape_name || '', txt, null, { kind: 'reopen', question: shownQ });
       }
     } else {
       // Reopen has no real/reconstructed toggle; M6 is graded with the conservative default.
-      const graded = await gradeAnswer(mechId, txt, { allowSwirl: false, wordsSource: 'reconstructed' });
+      const graded = await gradeAnswer(mechId, txt, { allowSwirl: false, wordsSource: 'reconstructed',
+        log: { kind: 'reopen', question: shownQ } });
       if (!graded) return;
     }
     saveState();
@@ -5201,7 +5277,7 @@ function showLabel() {
               <span class="state-pill ${st}">${st}</span>
             </div>
             <div class="vc-field-val${!val?' empty':''}">
-              ${val ? escHtml(val) : 'Not yet settled. The answer is still being built.'}
+              ${val ? escHtml(shortOnScreen(val)) : 'Not yet settled. The answer is still being built.'}
             </div>
             ${tappable ? `<div class="vc-field-tap">${amberCount === 1 ? 'Tap to answer the sharper question →' : 'Tap to answer again →'}</div>` : ''}
           </div>`;
@@ -5299,6 +5375,7 @@ async function submitLabelReopen() {
   const mechId = _labelReopenMechId;
   if (!txt || !mechId) return;
 
+  const shownQ = document.getElementById('lr-question')?.textContent || '';
   const btn = document.getElementById('lr-submit-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
 
@@ -5314,13 +5391,14 @@ async function submitLabelReopen() {
           maturity_class: S.maturity
         });
         if (session !== _bottleSession) return;
-        writeM1FromIntake(S.grape_name || '', txt, data);
+        writeM1Logged(S.grape_name || '', txt, data, { kind: 'reopen', question: shownQ });
       } else {
-        writeM1FromIntake(S.grape_name || '', txt, null);
+        writeM1Logged(S.grape_name || '', txt, null, { kind: 'reopen', question: shownQ });
       }
     } else {
       // Reopen has no real/reconstructed toggle; M6 is graded with the conservative default.
-      const graded = await gradeAnswer(mechId, txt, { allowSwirl: false, wordsSource: 'reconstructed' });
+      const graded = await gradeAnswer(mechId, txt, { allowSwirl: false, wordsSource: 'reconstructed',
+        log: { kind: 'reopen', question: shownQ } });
       if (!graded) return;
     }
     saveState();
@@ -6020,6 +6098,12 @@ async function submitDormantFind(id) {
   if (!name) { if (nameEl) nameEl.style.borderColor = 'var(--wine)'; return; }
   if (!rel)  { if (relEl)  relEl.style.borderColor  = 'var(--wine)'; return; }
   if (errEl) errEl.style.display = 'none';
+  const labels = [...document.querySelectorAll('#dormant-panel-body .dormant-field-label')].map(el => el.textContent.trim());
+  const grapeLog = {
+    kind: 'first_answer',
+    question: labels[1] || '',
+    fields: [{ label: labels[0] || '', value: name }, { label: labels[1] || '', value: rel }]
+  };
 
   const workerUrl = v6GetWorkerUrl();
   if (workerUrl) {
@@ -6036,7 +6120,9 @@ async function submitDormantFind(id) {
       if (session !== _bottleSession) return; // the bottle was left; discard the reply
       const grapeState = normalizeGrapeState(data.grape?.state || 'turbid');
       if (grapeState === 'turbid') {
+        logAnswer({ mech: 'M1', ...grapeLog, answer: rel });
         setQLifecycle('parked');
+        saveBottle(id, S, mi);
         if (errEl) {
           errEl.textContent = data.observation?.surface_text || 'A more specific person is needed.';
           errEl.style.display = 'block';
@@ -6045,7 +6131,7 @@ async function submitDormantFind(id) {
         return;
       }
       wakeBottle(id);
-      writeM1FromIntake(name, rel, data);
+      writeM1Logged(name, rel, data, grapeLog);
     } catch (err) {
       if (session !== _bottleSession) return;
       setQLifecycle('parked');
@@ -6058,7 +6144,7 @@ async function submitDormantFind(id) {
     }
   } else {
     wakeBottle(id);
-    writeM1FromIntake(name, rel, null);
+    writeM1Logged(name, rel, null, grapeLog);
   }
 
   if (S.maturity === 3) S.maturity = 1;
@@ -6144,9 +6230,15 @@ async function submitParkedAnswer(id, mechId) {
     if (ansEl) ansEl.style.borderColor = 'var(--wine)';
     return;
   }
+  // A reply answers a question that was asked and waited on. A parked errand answered is the
+  // mechanism's first answer, or a reopen when it was parked from the label.
+  const log = {
+    kind: S.parkKind === 'in_flight' ? 'reply' : (S.answers[mechId] ? 'reopen' : 'first_answer'),
+    question: document.querySelector('#dormant-panel-body .mech-q')?.textContent || ''
+  };
   // Parked from M2 with no problem on record: the answer is a scene, not a friction answer.
   if (mechId === 'M2' && !problemOnRecord()) {
-    await submitParkedScene(answer, errEl, btn);
+    await submitParkedScene(answer, errEl, btn, log);
     return;
   }
   let wordsSource;
@@ -6173,6 +6265,7 @@ async function submitParkedAnswer(id, mechId) {
       keepDraft: true,
       allowSwirl: !fromLabel,
       wordsSource,
+      log,
       // Runs only once the grade is valid, in the same step that stores it: the park ends here.
       beforeStore: () => {
         S.qLifecycle = 'active';
@@ -6209,7 +6302,7 @@ async function submitParkedAnswer(id, mechId) {
 
 // The bottle stays parked until the worker has read the scene; then the park ends and M2 opens
 // on the result, the same as Continue in the scene stage.
-async function submitParkedScene(answer, errEl, btn) {
+async function submitParkedScene(answer, errEl, btn, log) {
   const session = _bottleSession;
   if (errEl) errEl.style.display = 'none';
   if (btn) { btn.disabled = true; btn.textContent = 'Reading answer...'; }
@@ -6225,6 +6318,7 @@ async function submitParkedScene(answer, errEl, btn) {
     return;
   }
   if (session !== _bottleSession) return;
+  logAnswer({ mech: 'M2', part: 'scene', ...log, answer });
   S.qLifecycle = 'active';
   S.parkKind = null;
   S.parkMech = null;
