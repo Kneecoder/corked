@@ -4926,6 +4926,8 @@ const PACE_DURATIONS = RHYTHM_TEST_MODE
 // Local hour each part of the day starts, by notifTiming: morning, midday, evening, late.
 const PART_OF_DAY_HOURS = [9, 13, 18, 22];
 const RHYTHM_TEST_RETURN_MS = 2 * 60000;
+// Before this local hour, an answer or park counts as the previous day.
+const DAY_STARTS_HOUR = 5;
 
 // When a question comes back, for held questions and parked returns alike: the due day (today
 // plus the pace's days, local time) at the start of the builder's part of the day. No pace yet
@@ -4934,6 +4936,7 @@ function computeNextQuestionAt(pace, timing) {
   if (RHYTHM_TEST_MODE) return new Date(Date.now() + RHYTHM_TEST_RETURN_MS).toISOString();
   const days = THRESHOLD_STEPS[0].opts[pace]?.days || 7;
   const next = new Date();
+  if (next.getHours() < DAY_STARTS_HOUR) next.setDate(next.getDate() - 1);
   next.setDate(next.getDate() + days);
   next.setHours(PART_OF_DAY_HOURS[timing] ?? PART_OF_DAY_HOURS[0], 0, 0, 0);
   return next.toISOString();
