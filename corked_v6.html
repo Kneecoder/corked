@@ -2174,7 +2174,7 @@ function parkBottleDormant(id, brief, status = 'dormant', s = S, mechIdx = mi, p
   s.parkMech = parkMech;
   const bottles = getAllBottles();
   const now = new Date().toISOString();
-  const nextQuestionAt = status === 'dormant' ? computeParkNextQuestionAt(s.pace) : null;
+  const nextQuestionAt = status === 'dormant' ? computeNextQuestionAt(s.pace, s.notifTiming) : null;
   const i = bottles.findIndex(b => b.id === id);
   if (i >= 0) {
     bottles[i] = { ...bottles[i], s, status, brief, nextQuestionAt, updated_at: now };
@@ -4913,18 +4913,30 @@ async function p1Next(bypassErrandWarn = false) {
 
 // ── RHYTHM GATE ──
 // One config constant: ms per declared pace index (0=daily, 1=every other day, 2=weekly, 3=monthly).
-// Rhythm-test mode (?rhythmtest=1, or localStorage 'corked_rhythm_test'='1') collapses every pace
-// to a near-zero interval so the park -> locked -> open cycle can be watched inside a bench session
-// instead of waiting real days.
+// Demurrage counts in these lengths. Rhythm-test mode (?rhythmtest=1, or localStorage
+// 'corked_rhythm_test'='1') collapses every pace to a near-zero interval, and brings every
+// question back after two minutes, so the park -> locked -> open cycle can be watched inside a
+// bench session instead of waiting real days.
 const RHYTHM_TEST_MODE = new URLSearchParams(location.search).has('rhythmtest')
   || localStorage.getItem('corked_rhythm_test') === '1';
 const PACE_DURATIONS = RHYTHM_TEST_MODE
   ? { 0: 15000, 1: 30000, 2: 60000, 3: 120000 }
   : { 0: 1 * 86400000, 1: 2 * 86400000, 2: 7 * 86400000, 3: 30 * 86400000 };
 
-function computeParkNextQuestionAt(pace) {
-  const dur = PACE_DURATIONS[pace] ?? PACE_DURATIONS[2];
-  return new Date(Date.now() + dur).toISOString();
+// Local hour each part of the day starts, by notifTiming: morning, midday, evening, late.
+const PART_OF_DAY_HOURS = [9, 13, 18, 22];
+const RHYTHM_TEST_RETURN_MS = 2 * 60000;
+
+// When a question comes back, for held questions and parked returns alike: the due day (today
+// plus the pace's days, local time) at the start of the builder's part of the day. No pace yet
+// counts as weekly, no part of the day as morning. Rhythm-test mode: two minutes, any time of day.
+function computeNextQuestionAt(pace, timing) {
+  if (RHYTHM_TEST_MODE) return new Date(Date.now() + RHYTHM_TEST_RETURN_MS).toISOString();
+  const days = THRESHOLD_STEPS[0].opts[pace]?.days || 7;
+  const next = new Date();
+  next.setDate(next.getDate() + days);
+  next.setHours(PART_OF_DAY_HOURS[timing] ?? PART_OF_DAY_HOURS[0], 0, 0, 0);
+  return next.toISOString();
 }
 
 function formatLockedUntil(iso) {
@@ -4942,12 +4954,12 @@ function formatLockedUntil(iso) {
 }
 
 // ── PACED RETURNS ──
-// A reading of the bottle's current question holds its next new question for one pace-length,
-// with the durations parking uses. S.questionOpensAt is when that question opens. Only the next
+// A reading of the bottle's current question holds its next new question until it comes back,
+// by the same rule parking uses. S.questionOpensAt is when that question opens. Only the next
 // new question waits: the swirl, the scene question, reopens, replies and parked errands never do.
 function markReading(mechId) {
   if (M[mi]?.id !== mechId || nextNewMechIndex(S, mi) < 0) return;
-  S.questionOpensAt = computeParkNextQuestionAt(S.pace);
+  S.questionOpensAt = computeNextQuestionAt(S.pace, S.notifTiming);
 }
 
 // The first unanswered question after idx, or -1. M4 is passed over once Echo has settled.
@@ -4969,14 +4981,10 @@ function nextQuestionHeldUntil(s) {
 }
 
 // The cellar card's wording for when a question is due. The bottle uses the same words.
-function questionDueWording(iso) {
+function questionDueWording(iso, timing) {
   const due = new Date(iso);
   if (isNaN(due.getTime()) || due.getTime() <= Date.now()) return 'Question ready';
-  const day = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-  const days = Math.round((day(due) - day(new Date())) / 86400000);
-  if (days <= 0) return 'Question due today';
-  if (days === 1) return 'Question due tomorrow';
-  return `Question in ${days} days`;
+  return `Next question ${formatNextQuestion(iso, timing)}`;
 }
 
 // While the next question is held, after a reading: one line says when it is due, and the main
@@ -4985,7 +4993,7 @@ function renderPaceHold() {
   const line = document.getElementById('pace-line');
   const until = obsShown && !_pendingSwirl ? nextQuestionHeldUntil(S) : null;
   if (line) {
-    line.textContent = until ? questionDueWording(until) : '';
+    line.textContent = until ? questionDueWording(until, S.notifTiming) : '';
     line.style.display = until ? 'block' : 'none';
   }
   if (until) setPhaseBusy(false, 'Back to the cellar');
@@ -5088,13 +5096,27 @@ function completeCellarRhythm() {
   renderMech();
 }
 
+// When a held question opens: the day, counted from today, with the part of the day the sidebar
+// names. A time that is not the start of the builder's part of the day (a question held before
+// parts of the day were kept) gets the day alone. Rhythm-test mode counts the last hour in minutes.
+const NEXT_QUESTION_TODAY    = ['this morning', 'today at midday', 'this evening', 'late today'];
+const NEXT_QUESTION_TOMORROW = ['tomorrow morning', 'tomorrow at midday', 'tomorrow evening', 'late tomorrow'];
+const NEXT_QUESTION_LATER    = ['in the morning', 'at midday', 'in the evening', 'late'];
+
 function formatNextQuestion(iso, timing) {
-  if (!iso) return 'on rhythm';
   const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return 'on rhythm';
-  const day = date.toLocaleDateString(undefined, { weekday:'long' });
-  const time = ['morning', 'midday', 'evening', 'late'][timing] || '';
-  return `${day}${time ? ' ' + time : ''}`;
+  const diff = date.getTime() - Date.now();
+  if (RHYTHM_TEST_MODE && diff < 3600000) {
+    const mins = Math.max(1, Math.ceil(diff / 60000));
+    return `in ${mins} minute${mins === 1 ? '' : 's'}`;
+  }
+  const dayStart = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const days = Math.round((dayStart(date) - dayStart(new Date())) / 86400000);
+  const onPart = PART_OF_DAY_HOURS[timing] !== undefined
+    && date.getHours() === PART_OF_DAY_HOURS[timing] && date.getMinutes() === 0;
+  if (days <= 0) return onPart ? NEXT_QUESTION_TODAY[timing] : 'today';
+  if (days === 1) return onPart ? NEXT_QUESTION_TOMORROW[timing] : 'tomorrow';
+  return `in ${days} days${onPart ? ', ' + NEXT_QUESTION_LATER[timing] : ''}`;
 }
 
 function buildRhythmSummary(pace, timing) {
@@ -5903,6 +5925,21 @@ function renderCellar() {
               <button class="bottle-card-del" onclick="deleteBottle('${b.id}',event)" title="Remove spark">×</button>
             </div>`;
   }).join('');
+  scheduleRackRefresh(bottles);
+}
+
+// The rack redraws itself when the next held question opens, while the cellar is showing.
+let _rackRefreshTimer = null;
+function scheduleRackRefresh(bottles) {
+  clearTimeout(_rackRefreshTimer);
+  const opens = bottles.map(b => nextQuestionHeldUntil(b.s || {})).filter(Boolean)
+    .map(iso => new Date(iso).getTime());
+  if (!opens.length) return;
+  // Capped at six hours: a browser timer can't run for a month.
+  const wait = Math.min(Math.min(...opens) - Date.now() + 500, 6 * 3600000);
+  _rackRefreshTimer = setTimeout(() => {
+    if (document.getElementById('screen-cellar')?.classList.contains('active')) renderCellar();
+  }, Math.max(wait, 500));
 }
 
 function getBottleDisplayLine(bottle) {
@@ -5974,7 +6011,7 @@ function getCellarWaiting(bottle) {
   const idx = s.mechIndex || 0;
   if (idx < PHASE1_MECH_COUNT && s.thresholdDone) {
     const heldUntil = nextQuestionHeldUntil(s);
-    if (heldUntil) return questionDueWording(heldUntil);
+    if (heldUntil) return questionDueWording(heldUntil, s.notifTiming);
     if (!s.answers?.[`M${idx + 1}`] || nextNewMechIndex(s, idx) >= 0) return 'Question ready';
   }
 
