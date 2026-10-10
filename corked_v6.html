@@ -192,16 +192,11 @@ body {
 .wm-intake-content.m0-has-result #m0-result { order:1; }
 .wm-intake-content.m0-has-result .spark-source-row { order:2; margin-top:18px; padding-top:18px; border-top:1px solid var(--border); }
 .wm-intake-content.m0-has-result #f-inp { order:3; }
-.wm-intake-content.m0-has-result #m0-wm-result { order:4; }
 .wm-intake-content.m0-has-result #m0-action-row { order:5; }
 .wm-intake-content.m0-has-result #m0-config { order:6; }
 .wm-section.m0-hidden { display:none; }
 .wm-intake-content.m0-revealing #m0-result {
   animation:m0-bottle-reveal 1.05s cubic-bezier(.32,0,.24,1) both;
-}
-.wm-intake-content.m0-revealing #m0-wm-result {
-  animation:m0-winemaster-reveal .95s cubic-bezier(.32,0,.24,1) both;
-  animation-delay:1.1s;
 }
 .wm-intake-content.m0-revealing .spark-source-row,
 .wm-intake-content.m0-revealing #f-inp {
@@ -952,14 +947,6 @@ body {
   border-left-width:2px;
   padding:22px 24px 20px;
 }
-.m0-stamp.state-cloudy {
-  border-left-color:var(--clearing-col);
-  background:linear-gradient(180deg, rgba(201,160,64,.04), var(--surface));
-}
-.m0-stamp.state-ready {
-  border-left-color:var(--settled-col);
-  background:linear-gradient(180deg, rgba(93,168,118,.04), var(--surface));
-}
 .m0-stamp.state-blocked {
   border-left-color:var(--wine-dim);
   background:linear-gradient(180deg, rgba(155,61,79,.05), var(--surface));
@@ -976,17 +963,6 @@ body {
   top:5px; left:5px; right:5px; bottom:5px;
   border:1px solid var(--border);
   pointer-events:none;
-}
-.m0-section-label {
-  display:flex;
-  align-items:center;
-  gap:.65rem;
-  font-size:.68rem;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  color:var(--muted);
-  margin:0 0 .7rem;
-  -webkit-font-smoothing:antialiased;
 }
 .m0-stamp-eyebrow {
   font-size:.7rem;
@@ -1012,15 +988,6 @@ body {
   opacity:.28;
   pointer-events:none;
 }
-.m0-secondary { padding:18px 0 0; }
-.m0-wm-section {
-  margin:22px 0 0;
-  padding:0 0 18px;
-  border-bottom:1px solid var(--border);
-}
-.m0-wm-section .wm-bubble {
-  min-height:0;
-}
 .m0-obs-label {
   font-size:.7rem;
   letter-spacing:.18em;
@@ -1028,12 +995,6 @@ body {
   color:var(--muted);
   margin-bottom:5px;
   -webkit-font-smoothing:antialiased;
-}
-.m0-obs-text {
-  font-size:.78rem;
-  color:var(--muted);
-  line-height:1.65;
-  white-space:pre-wrap;
 }
 .m0-original {
   margin-top:18px;
@@ -1056,10 +1017,6 @@ body {
   42%  { opacity:1; transform:translateY(0); filter:brightness(1.06); }
   100% { opacity:1; transform:translateY(0); filter:brightness(1); }
 }
-@keyframes m0-winemaster-reveal {
-  0%   { opacity:0; transform:translateY(10px); }
-  100% { opacity:1; transform:translateY(0); }
-}
 @keyframes m0-source-settle {
   0%   { opacity:.28; transform:translateY(-10px); filter:brightness(.82); }
   100% { opacity:1; transform:translateY(0); filter:brightness(1); }
@@ -1067,70 +1024,6 @@ body {
 @keyframes m0-action-reveal {
   from { opacity:0; transform:translateY(8px); }
   to   { opacity:1; transform:translateY(0); }
-}
-.m0-state-label {
-  display:none;
-  font-size:.7rem;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:var(--gold);
-  margin-bottom:7px;
-  -webkit-font-smoothing:antialiased;
-}
-@keyframes m0-line-revised {
-  0% {
-    border-top-color:var(--border);
-    border-right-color:var(--border);
-    border-bottom-color:var(--border);
-    box-shadow:0 0 0 rgba(201,165,90,0);
-  }
-  18% {
-    border-top-color:rgba(201,165,90,.62);
-    border-right-color:rgba(201,165,90,.62);
-    border-bottom-color:rgba(201,165,90,.62);
-    box-shadow:0 0 24px rgba(201,165,90,.08);
-  }
-  100% {
-    border-top-color:var(--border-hi);
-    border-right-color:var(--border-hi);
-    border-bottom-color:var(--border-hi);
-    box-shadow:0 0 0 rgba(201,165,90,0);
-  }
-}
-.m0-stamp.line-revised {
-  animation:m0-line-revised 1.6s ease-out both;
-}
-@keyframes m0-cellar-seal {
-  0%   { transform:translateY(0); opacity:1; filter:brightness(1); }
-  28%  { transform:translateY(0); opacity:1; filter:brightness(1.12); }
-  72%  { transform:translateY(-4px); opacity:.94; filter:brightness(.98); }
-  100% { transform:translateY(10px); opacity:0; filter:brightness(.86); }
-}
-.m0-result-sealing {
-  pointer-events:none;
-  animation:m0-cellar-seal 1.15s cubic-bezier(.32,0,.24,1) forwards;
-}
-.m0-result-sealing .m0-stamp {
-  border-bottom-color:rgba(201,165,90,.34);
-}
-.m0-process-note {
-  display:none;
-  margin-top:12px;
-  padding-top:12px;
-  border-top:1px solid var(--border);
-  font-size:.72rem;
-  color:var(--cream-dim);
-  line-height:1.65;
-  letter-spacing:.02em;
-}
-.m0-cellar-note {
-  display:none;
-  margin-top:10px;
-  font-size:.7rem;
-  color:var(--cream-dim);
-  opacity:.55;
-  line-height:1.6;
-  letter-spacing:.025em;
 }
 .m0-actions {
   display:flex;
@@ -2808,32 +2701,13 @@ function renderIntake() {
                oninput="v6SaveWorkerUrl()" onblur="v6SaveWorkerUrl()">
       </div>
       <div id="m0-result" style="display:none;margin-top:16px">
-        <div class="m0-section-label" id="m0-section-label">Bottled as</div>
-        <div class="m0-stamp">
+        <div class="m0-stamp state-blocked">
           <svg class="m0-seal" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="14" cy="14" r="12.5" stroke="currentColor" stroke-width=".75"/>
             <circle cx="14" cy="14" r="8.5" stroke="currentColor" stroke-width=".5"/>
           </svg>
-          <div class="m0-stamp-eyebrow" id="m0-eyebrow">BOTTLED AS</div>
+          <div class="m0-stamp-eyebrow" id="m0-eyebrow"></div>
           <div class="m0-stamp-line" id="m0-entry-line"></div>
-        </div>
-      </div>
-      <div class="m0-secondary m0-wm-result" id="m0-wm-result" style="display:none">
-        <div class="wm-section m0-wm-section">
-          <div class="wm-avatar">
-            <div class="wm-circle"></div>
-            <div class="wm-label">The Winemaster</div>
-          </div>
-          <div class="wm-bubble">
-            <div class="m0-obs-text" id="m0-wm-text"></div>
-            <div class="m0-cellar-note" id="m0-cellar-note"></div>
-            <div class="m0-process-note" id="m0-process-note"></div>
-          </div>
-        </div>
-        <div id="m0-followup" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-          <div class="m0-state-label" id="m0-state-label">One thing is cloudy</div>
-          <div id="m0-followup-q" style="font-size:.82rem;color:var(--cream-dim);line-height:1.65;margin-bottom:10px"></div>
-          <textarea id="m0-followup-ans" class="field" rows="2" placeholder="Your answer…" oninput="v6FollowupChange()" style="font-size:.85rem"></textarea>
         </div>
       </div>
       `;
@@ -3601,12 +3475,22 @@ function showWhatChanged(rows) {
   el.classList.add('is-visible');
 }
 
+// What the worker reads as the idea's line. Still M0's line, so the mechanisms read what they
+// read before; the builder never sees it.
 function getSparkSummary() {
   return S.m0?.user_line || S.m0?.user_line_candidate || S.idea;
 }
 
 function getSparkDisplaySummary() {
-  return S.m0 ? visibleBottleLine(S.m0) : (S.idea || '');
+  return bottleLine(S);
+}
+
+// The line a bottle shows: the spark as typed (s.idea). Bottles sealed before the spark became
+// the line keep the M0 line they were shown.
+function bottleLine(s) {
+  if (!s) return '';
+  if (s.lineIsSpark || !s.m0) return s.idea || '';
+  return visibleBottleLine(s.m0);
 }
 
 function sparkLooksSelfAuthored(data) {
@@ -3634,29 +3518,6 @@ function visibleBottleLine(data) {
       .replace(/\bthem\b/ig, 'you');
   }
   return line.replace(/\s+/g, ' ').trim();
-}
-
-function m0CanSeal(data) {
-  const state = data?.digestibility?.state || 'unbottleable';
-  if (typeof data?.digestibility?.can_seal === 'boolean') return data.digestibility.can_seal;
-  return state === 'cellar_ready' || state === 'bottleable_cloudy';
-}
-
-function m0RequiresFollowupBeforeSeal(data) {
-  const state = data?.digestibility?.state || 'unbottleable';
-  if (typeof data?.digestibility?.requires_followup_before_seal === 'boolean') {
-    return data.digestibility.requires_followup_before_seal;
-  }
-  return state === 'unbottleable';
-}
-
-function m0MissingDebtLine(data) {
-  const missing = Array.isArray(data?.digestibility?.missing) ? data.digestibility.missing : [];
-  const clean = missing
-    .map(x => String(x || '').replace(/[_-]+/g, ' ').trim().toLowerCase())
-    .filter(Boolean);
-  if (!clean.length) return '';
-  return `Missing: ${clean.join(', ')}.`;
 }
 
 function sanitizeVisibleCopy(text, data) {
@@ -5946,9 +5807,7 @@ function scheduleRackRefresh(bottles) {
 }
 
 function getBottleDisplayLine(bottle) {
-  const s = bottle.s;
-  if (s && s.m0) return visibleBottleLine(s.m0);
-  return (s && s.idea) || '—';
+  return bottleLine(bottle.s) || '—';
 }
 
 // Each parkable mechanism's errand: how its brief is requested (same request its park makes),
@@ -6430,7 +6289,7 @@ async function submitParkedScene(answer, errEl, btn, log) {
 }
 
 // ── M0 INTEGRATION ──
-window._v6M0 = { data: null, state: null, needsFollowup: false, editableLine: null };
+window._v6M0 = { data: null, state: null, spark: '' };
 
 function v6GetWorkerUrl() {
   const inp = document.getElementById('v6-worker-url');
@@ -6452,324 +6311,110 @@ function showOriginalSparkLabel() {
   label.classList.add('visible');
 }
 
-function setM0ResultShellVisible() {
+// After Bottle your spark the field locks, Edit spark shows and the input screen's Winemaster
+// steps back. Nothing M0 writes is shown. A spark that bottles shows itself once, with Edit spark
+// and Seal this line. One that doesn't bottle shows the cellar's no above it, with Edit spark.
+function showM0Result(bottles) {
   showOriginalSparkLabel();
+  const inp = document.getElementById('f-inp');
+  if (inp) {
+    inp.setAttribute('readonly', '');
+    // Under the stamp the field is the source, so it is dimmed. On its own it is the line.
+    inp.classList.toggle('spark-provenance', !bottles);
+  }
   const sparkRow = document.querySelector('.spark-source-row');
   if (sparkRow) sparkRow.classList.add('active');
-  const content = document.getElementById('wm-content');
-  if (content) {
-    content.classList.remove('m0-revealing');
-    content.classList.add('m0-has-result');
-  }
   const intakeWm = document.getElementById('intake-wm');
   if (intakeWm) intakeWm.classList.add('m0-hidden');
   const bar = document.getElementById('v6-bottom-bar');
   if (bar) bar.style.display = 'none';
-  const sectionLabel = document.getElementById('m0-section-label');
-  if (sectionLabel) sectionLabel.style.display = 'none';
   const actionRow = document.getElementById('m0-action-row');
-  if (actionRow) actionRow.style.display = 'flex';
-  const wmResult = document.getElementById('m0-wm-result');
-  if (wmResult) wmResult.style.display = 'block';
-  return content;
-}
-
-function revealM0Result(content) {
+  if (actionRow) actionRow.style.display = bottles ? 'flex' : 'none';
   const result = document.getElementById('m0-result');
-  if (result) result.style.display = 'block';
+  if (result) result.style.display = bottles ? 'none' : 'block';
+  const rewriteBtn = document.getElementById('m0-rewrite-btn');
+  if (rewriteBtn) { rewriteBtn.style.display = 'inline-flex'; rewriteBtn.disabled = false; }
+  const bottleBtn = document.getElementById('m0-bottle-btn');
+  if (bottleBtn) { bottleBtn.style.display = bottles ? '' : 'none'; bottleBtn.disabled = false; }
+
+  const content = document.getElementById('wm-content');
   if (!content) return;
+  content.classList.remove('m0-revealing');
+  content.classList.add('m0-has-result');
   void content.offsetWidth;
   content.classList.add('m0-revealing');
   setTimeout(() => content.classList.remove('m0-revealing'), 2300);
 }
 
-async function v6RunM0(payload, statusText, opts) {
-  opts = opts || {};
-  const workerUrl = v6GetWorkerUrl();
-  const status = document.getElementById('v6-bottle-status');
-  const btn = document.getElementById('v6-bottle-btn');
-  const panelBtn = document.getElementById('m0-bottle-btn');
-  const rewriteBtn = document.getElementById('m0-rewrite-btn');
-  const note = document.getElementById('m0-process-note');
-
-  if (!workerUrl) {
-    const cfg = document.getElementById('m0-config');
-    if (cfg) { cfg.style.display = 'block'; document.getElementById('v6-worker-url').focus(); }
-    if (status) status.textContent = 'Enter Worker URL above.';
-    return null;
-  }
-
-  if (btn) btn.disabled = true;
-  if (panelBtn) panelBtn.disabled = true;
-  if (rewriteBtn) rewriteBtn.disabled = true;
-  if (status) status.textContent = statusText || 'Bottling spark...';
-  if (note && opts.note) {
-    note.textContent = opts.note;
-    note.style.display = 'block';
-  }
-
-  try {
-    const data = await workerFetch('/m0', payload);
-    if (opts.rebottled) data._rebottled = true;
-    window._v6M0.data = data;
-    if (status) status.textContent = '';
-    v6RenderM0(data);
-    return data;
-  } catch (err) {
-    if (status) status.textContent = 'Error: ' + err.message;
-    if (panelBtn) panelBtn.disabled = false;
-    return null;
-  } finally {
-    if (btn) btn.disabled = false;
-    if (rewriteBtn) rewriteBtn.disabled = false;
-  }
-}
-
 async function v6BottleSpark() {
   const inp = document.getElementById('f-inp');
-  const spark = (inp || {}).value || '';
+  const spark = ((inp || {}).value || '').trim();
+  const status = document.getElementById('v6-bottle-status');
+  const btn = document.getElementById('v6-bottle-btn');
 
-  if (spark.trim().length < 5) {
-    const status = document.getElementById('v6-bottle-status');
+  if (spark.length < 5) {
     if (status) status.textContent = 'Write a spark first.';
     return;
   }
 
-  await v6RunM0({ raw_spark: spark.trim() }, 'Bottling spark...');
+  const workerUrl = v6GetWorkerUrl();
+  if (!workerUrl) {
+    const cfg = document.getElementById('m0-config');
+    if (cfg) { cfg.style.display = 'block'; document.getElementById('v6-worker-url').focus(); }
+    if (status) status.textContent = 'Enter Worker URL above.';
+    return;
+  }
+
+  if (btn) btn.disabled = true;
+  if (status) status.textContent = 'Bottling spark...';
+  try {
+    const data = await workerFetch('/m0', { raw_spark: spark });
+    window._v6M0.data = data;
+    window._v6M0.spark = spark;
+    if (status) status.textContent = '';
+    v6RenderM0(data);
+  } catch (err) {
+    if (status) status.textContent = 'Error: ' + err.message;
+  } finally {
+    if (btn) btn.disabled = false;
+  }
 }
 
+// M0 decides two things: is it software, and is there anything to bottle. Its parse stays with
+// the bottle for routing. The field shows the spark exactly as it went to M0.
 function v6RenderM0(data) {
-  // Scope gate: wrong cellar — show message, suppress all action paths
-  if (data.scope?.in_scope === false) {
-    const inp = document.getElementById('f-inp');
-    if (inp) { inp.setAttribute('readonly', ''); inp.classList.add('spark-provenance'); }
-    const content = setM0ResultShellVisible();
+  const spark = window._v6M0.spark || '';
+  const inp = document.getElementById('f-inp');
+  if (inp) inp.value = spark;
 
-    document.getElementById('m0-eyebrow').textContent = 'WRONG CELLAR';
-    document.getElementById('m0-entry-line').textContent = visibleBottleLine(data);
-    const stamp = document.querySelector('.m0-stamp');
-    if (stamp) { stamp.classList.remove('state-cloudy', 'state-ready', 'state-blocked', 'line-revised'); stamp.classList.add('state-blocked'); }
-    v6TypeOut(document.getElementById('m0-wm-text'), sanitizeVisibleCopy(data.scope.reason, data));
-    const cellarNote = document.getElementById('m0-cellar-note');
-    if (cellarNote) { cellarNote.textContent = ''; cellarNote.style.display = 'none'; }
-    const note = document.getElementById('m0-process-note');
-    if (note) { note.textContent = ''; note.style.display = 'none'; }
-    const followupBlock = document.getElementById('m0-followup');
-    if (followupBlock) followupBlock.style.display = 'none';
-    const stateLabel = document.getElementById('m0-state-label');
-    if (stateLabel) stateLabel.style.display = 'none';
-
-    revealM0Result(content);
-    const rewriteBtn = document.getElementById('m0-rewrite-btn');
-    if (rewriteBtn) { rewriteBtn.style.display = 'inline-flex'; rewriteBtn.disabled = false; }
-    const bottleBtn = document.getElementById('m0-bottle-btn');
-    if (bottleBtn) bottleBtn.style.display = 'none';
-
-    window._v6M0.state = 'out_of_scope';
-    window._v6M0.needsFollowup = false;
-    window._v6M0.editableLine = '';
-    return;
-  }
-
-  const state = data.digestibility?.state || 'unbottleable';
-  const needsFollowup = !!(data.followup?.needed && data.followup?.question);
-  const canSeal = m0CanSeal(data);
-  const requiresFollowupBeforeSeal = m0RequiresFollowupBeforeSeal(data);
+  const outOfScope = data.scope?.in_scope === false;
+  const state = outOfScope ? 'out_of_scope' : (data.digestibility?.state || 'unbottleable');
   window._v6M0.state = state;
-  window._v6M0.needsFollowup = needsFollowup;
-  window._v6M0.canSeal = canSeal;
-  window._v6M0.requiresFollowupBeforeSeal = requiresFollowupBeforeSeal;
-  window._v6M0.editableLine = data.user_line_candidate || data.raw_spark || '';
-
-  // Lock the spark field
-  const inp = document.getElementById('f-inp');
-  if (inp) {
-    inp.setAttribute('readonly', '');
-    inp.classList.add('spark-provenance');
+  const bottles = state !== 'out_of_scope' && state !== 'unbottleable';
+  if (!bottles) {
+    document.getElementById('m0-eyebrow').textContent = outOfScope ? 'WRONG CELLAR' : 'CANNOT BE BOTTLED';
+    document.getElementById('m0-entry-line').textContent = spark;
   }
-  const content = setM0ResultShellVisible();
-  
-
-  // Hide bottom action bar — panel is now the only action zone
-  const bar = document.getElementById('v6-bottom-bar');
-  if (bar) bar.style.display = 'none';
-  const actionRow = document.getElementById('m0-action-row');
-  if (actionRow) actionRow.style.display = 'flex';
-  const wmResult = document.getElementById('m0-wm-result');
-  if (wmResult) wmResult.style.display = 'block';
-
-  // Populate result panel
-  const sectionLabel = document.getElementById('m0-section-label');
-  if (sectionLabel) sectionLabel.style.display = 'none';
-  document.getElementById('m0-eyebrow').textContent = state === 'unbottleable' ? 'CANNOT BE BOTTLED' : 'BOTTLED AS';
-  document.getElementById('m0-entry-line').textContent = visibleBottleLine(data);
-  const stamp = document.querySelector('.m0-stamp');
-  if (stamp) {
-    stamp.classList.remove('state-cloudy', 'state-ready', 'state-blocked', 'line-revised');
-    stamp.classList.add(state === 'cellar_ready' ? 'state-ready' : state === 'unbottleable' ? 'state-blocked' : 'state-cloudy');
-    if (data._rebottled) {
-      void stamp.offsetWidth;
-      stamp.classList.add('line-revised');
-    }
-  }
-  v6TypeOut(document.getElementById('m0-wm-text'), sanitizeVisibleCopy(data.digestibility?.reason || '', data));
-  const cellarNote = document.getElementById('m0-cellar-note');
-  if (cellarNote) {
-    const debtLine = m0MissingDebtLine(data);
-    if (state === 'bottleable_cloudy' && debtLine) {
-      cellarNote.textContent = debtLine;
-      cellarNote.style.display = 'block';
-    } else {
-      cellarNote.textContent = '';
-      cellarNote.style.display = 'none';
-    }
-  }
-  const note = document.getElementById('m0-process-note');
-  if (note) {
-    if (data._rebottled) {
-      note.textContent = 'Your follow-up named the missing tension. The line now says why the signal matters.';
-      note.style.display = 'block';
-    } else {
-      note.textContent = '';
-      note.style.display = 'none';
-    }
-  }
-
-  // Followup block — shown for thin/unusable when followup present
-  const followupBlock = document.getElementById('m0-followup');
-  const followupQ = document.getElementById('m0-followup-q');
-  const followupAns = document.getElementById('m0-followup-ans');
-  const stateLabel = document.getElementById('m0-state-label');
-  if (needsFollowup) {
-    if (stateLabel) {
-      stateLabel.textContent = state === 'unbottleable' ? 'Not bottleable yet' : 'Bottled, but thin';
-      stateLabel.style.display = 'block';
-    }
-    if (followupQ) followupQ.textContent = sanitizeVisibleCopy(data.followup.question, data);
-    if (followupAns) followupAns.value = '';
-    if (followupBlock) followupBlock.style.display = 'block';
-  } else {
-    if (stateLabel) stateLabel.style.display = 'none';
-    if (followupBlock) followupBlock.style.display = 'none';
-  }
-
-  // Show panel, show action buttons
-  revealM0Result(content);
-  const rewriteBtn = document.getElementById('m0-rewrite-btn');
-  const bottleBtn = document.getElementById('m0-bottle-btn');
-  if (rewriteBtn) {
-    rewriteBtn.style.display = 'inline-flex';
-  }
-  if (bottleBtn) {
-    bottleBtn.style.display = '';
-    if (state === 'unbottleable') {
-      bottleBtn.textContent = 'Re-bottle';
-      bottleBtn.disabled = true;
-    } else {
-      bottleBtn.textContent = 'Seal this line';
-      bottleBtn.disabled = false;
-    }
-  }
+  showM0Result(bottles);
 }
 
-function v6FollowupChange() {
-  const ans = document.getElementById('m0-followup-ans');
-  const btn = document.getElementById('m0-bottle-btn');
-  const hasAnswer = !!(ans && ans.value.trim());
-  if (!btn) return;
-  if (window._v6M0.state === 'unbottleable') {
-    btn.disabled = !hasAnswer;
-    btn.textContent = 'Re-bottle';
-    return;
-  }
-  if (window._v6M0.needsFollowup) {
-    btn.disabled = false;
-    btn.textContent = hasAnswer ? 'Re-bottle' : 'Seal this line';
-  }
-}
-
-function v6TypeOut(el, text, speed) {
-  if (!el) return;
-  speed = speed || 18;
-  el.textContent = '';
-  let i = 0;
-  function tick() { if (i < text.length) { el.textContent += text[i++]; setTimeout(tick, speed); } }
-  tick();
-}
-
-function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function v6RebottleFollowup() {
+// Seal: the spark as typed is the line. intakeNext() records it as S.idea from the field.
+function v6BottleThis() {
   const data = window._v6M0.data;
-  if (!data) return;
-
-  const followupAns = document.getElementById('m0-followup-ans');
-  const followupAnswer = followupAns ? followupAns.value.trim() : '';
-  if (!followupAnswer) return;
-
-  await v6RunM0({
-    raw_spark: data.raw_spark,
-    followup_question: data.followup?.question || '',
-    followup_answer: followupAnswer,
-    prior_digestibility: data.digestibility?.state
-  }, 'Folding in the missing tension…', {
-    rebottled: true,
-    note: 'Folding the missing tension into the line.'
-  });
-}
-
-async function v6BottleThis() {
-  const followupAns = document.getElementById('m0-followup-ans');
-  const followupAnswer = followupAns ? followupAns.value.trim() : '';
-
-  if (window._v6M0.state === 'unbottleable' && !followupAnswer) {
-    const status = document.getElementById('v6-bottle-status');
-    if (status) status.textContent = 'Answer the question above before re-bottling.';
-    return;
-  }
-
-  if (window._v6M0.needsFollowup && followupAnswer) {
-    await v6RebottleFollowup();
-    return;
-  }
-
-  const data = window._v6M0.data;
-  if (!data) return;
+  const state = window._v6M0.state;
+  if (!data || state === 'out_of_scope' || state === 'unbottleable') return;
 
   const inp = document.getElementById('f-inp');
   if (inp) {
-    inp.value = data.user_line_candidate || '';
     inp.removeAttribute('readonly');
     inp.classList.remove('spark-provenance');
   }
 
   S.m0 = data;
+  S.lineIsSpark = true;
 
-  localStorage.setItem('corked_m0_saved', JSON.stringify({
-    spark: data.raw_spark,
-    user_line: data.user_line_candidate,
-    followup_answer: followupAnswer || null,
-    m0: data
-  }));
-
-  const result = document.getElementById('m0-result');
-  const note = document.getElementById('m0-process-note');
-  const bottleBtn = document.getElementById('m0-bottle-btn');
-  const rewriteBtn = document.getElementById('m0-rewrite-btn');
-  if (bottleBtn) bottleBtn.disabled = true;
-  if (rewriteBtn) rewriteBtn.disabled = true;
-  if (note) {
-    note.textContent = 'Line sealed.';
-    note.style.display = 'block';
-  }
-  if (result) {
-    result.classList.remove('m0-result-sealing');
-    void result.offsetWidth;
-    result.classList.add('m0-result-sealing');
-    await wait(1050);
-  }
+  const spark = window._v6M0.spark || '';
+  localStorage.setItem('corked_m0_saved', JSON.stringify({ spark, user_line: spark, m0: data }));
 
   intakeNext();
 }
@@ -6780,22 +6425,16 @@ function v6Rewrite() {
     inp.removeAttribute('readonly');
     inp.classList.remove('spark-provenance');
     if (window._v6M0.state === 'unbottleable') inp.value = '';
-    else inp.value = window._v6M0.editableLine || inp.value;
     inp.focus();
     inp.setSelectionRange(inp.value.length, inp.value.length);
   }
 
   const m0Result = document.getElementById('m0-result');
-  if (m0Result) {
-    m0Result.style.display = 'none';
-    m0Result.classList.remove('m0-result-sealing');
-  }
+  if (m0Result) m0Result.style.display = 'none';
   const content = document.getElementById('wm-content');
   if (content) content.classList.remove('m0-has-result', 'm0-revealing');
   const intakeWm = document.getElementById('intake-wm');
   if (intakeWm) intakeWm.classList.remove('m0-hidden');
-  const wmResult = document.getElementById('m0-wm-result');
-  if (wmResult) wmResult.style.display = 'none';
   const sparkLabel = document.getElementById('spark-field-label');
   if (sparkLabel) sparkLabel.classList.remove('visible');
   const sparkRow = document.querySelector('.spark-source-row');
@@ -6804,11 +6443,6 @@ function v6Rewrite() {
   if (rewriteBtn) {
     rewriteBtn.style.display = 'none';
     rewriteBtn.disabled = false;
-  }
-  const note = document.getElementById('m0-process-note');
-  if (note) {
-    note.textContent = '';
-    note.style.display = 'none';
   }
 
   const bar = document.getElementById('v6-bottom-bar');

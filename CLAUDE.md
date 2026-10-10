@@ -4,6 +4,7 @@ Corked is an idea-aging app for solo software builders. You cork a spark, it age
 
 ## Source of truth
 - docs/Corked_Concept_Document_v47.md is the doctrine. Where a brief and v47 disagree, stop and say so before building.
+- docs/v48_calls.md overrides v47 where they disagree.
 - docs/Corked_The_Object_v3.md holds the next big design requirement: the sidebar record.
 - Never edit doctrine files unless a brief says to. New versions are written in claude.ai and replace the ones in docs/ only when a brief says so.
 
