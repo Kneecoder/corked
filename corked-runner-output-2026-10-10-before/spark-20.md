@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 20
 
-Generated: 2026-10-10T13:07:38.996Z
+Generated: 2026-10-10T12:56:47.317Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -15,7 +15,7 @@ Maturity class: 3
 Grape: (none) — (none)
 expect_halt: true
 
-Line sent to the worker (the spark as typed): "A mobile app for allotment gardeners to swap surplus vegetables."
+Line sent to the worker (M0's line): "A mobile app for allotment gardeners to swap surplus vegetables."
 
 M0's line (verbatim, not shown in the app): "A mobile app for allotment gardeners to swap surplus vegetables."
 
@@ -67,18 +67,18 @@ Response:
   },
   "followup": {
     "needed": true,
-    "question": "What problem are allotment gardeners having with their surplus vegetables?"
+    "question": "What problem are allotment gardeners having with surplus vegetables?"
   },
   "m1_setup": {
-    "question": "Name the specific allotment gardener this starts from and the moment they were sitting with surplus vegetables and no good way to swap them.",
-    "hint": "A good answer names one gardener and a concrete moment, such as a glut of courgettes at the end of the week with no one nearby to take them.",
+    "question": "Name the specific allotment gardener this starts from and the moment they were sitting with surplus vegetables they could not move.",
+    "hint": "A good answer names one gardener and describes a concrete moment when the surplus built up and swapping felt impossible or awkward.",
     "person_label": "Allotment gardener",
-    "person_placeholder": "e.g. Janet, allotment plot holder",
+    "person_placeholder": "e.g. Priya, allotment plot holder",
     "when_label": "When the surplus appeared",
-    "when_placeholder": "e.g. end of August when the courgettes came in all at once",
-    "trying_label": "What she was trying to do with the surplus",
+    "when_placeholder": "e.g. end of August when the courgettes came all at once",
+    "trying_label": "What they were trying to do with the surplus",
     "trying_placeholder": null,
-    "happened_label": "What actually happened to the vegetables",
+    "happened_label": "What actually happened",
     "happened_placeholder": null
   },
   "person_in_spark": {
@@ -102,7 +102,7 @@ Response:
 ```
 
 ### 2. [park] M1 · /field
-Summary: brief target="allotment gardener with surplus"
+Summary: brief target="allotment gardener, surplus veg"
 Request:
 ```json
 {
@@ -130,9 +130,9 @@ Response:
 {
   "brief": {
     "kind": "find",
-    "setup": "Find an allotment gardener who has had surplus vegetables to deal with.",
-    "question": "Walk me through how you handle surplus vegetables at the end of a growing week, and tell me about the last time it caused you a headache.",
-    "target": "allotment gardener with surplus"
+    "setup": "Find an allotment gardener who has ended a season with surplus vegetables.",
+    "question": "Walk me through what you did with the surplus, and the last time that became a problem for you.",
+    "target": "allotment gardener, surplus veg"
   }
 }
 ```

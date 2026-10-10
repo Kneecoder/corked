@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 12
 
-Generated: 2026-10-10T13:02:35.259Z
+Generated: 2026-10-10T12:51:36.326Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -15,7 +15,7 @@ Maturity class: 2
 Grape: Jamie — Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.
 expect_halt: false
 
-Line sent to the worker (the spark as typed): "An app to stop myself doomchecking my bank balance at the end of every month."
+Line sent to the worker (M0's line): "An app for someone to stop doomchecking their bank balance at the end of every month."
 
 M0's line (verbatim, not shown in the app): "An app for someone to stop doomchecking their bank balance at the end of every month."
 
@@ -53,16 +53,16 @@ Response:
   "spark_parse": {
     "solution_form": "app",
     "implied_person": "the speaker",
-    "suspected_problem": "doomchecking bank balance at the end of every month",
+    "suspected_problem": "doomchecking their bank balance at the end of every month",
     "triggering_situation": "end of every month",
-    "promised_change": "stop doomchecking bank balance",
+    "promised_change": "stop doomchecking",
     "domain": "bank balance",
     "solution_is_software": "software"
   },
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The speaker is visible, the stated problem is doomchecking their bank balance at the end of every month, and the triggering situation is named. It enters cleanly.",
+    "reason": "Cellar-ready. The speaker and the stated problem are both present. The compulsive bank balance checking at month end enters cleanly.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -71,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name the specific person and the moment they found themselves doomchecking their bank balance.",
-    "hint": "A good answer names who it was, when in the month it happened, what they were trying to do, and what the doomcheck actually looked like.",
+    "question": "Name the specific person and the moment just before they opened their banking app at the end of a month.",
+    "hint": "A good answer says who this person is and what was happening that made the doomcheck feel unavoidable.",
     "person_label": "Account holder",
-    "person_placeholder": "Jamie, salaried in their late twenties",
-    "when_label": "When in the month",
-    "when_placeholder": "the night before rent came out",
+    "person_placeholder": "Jamie, freelance designer",
+    "when_label": "When they checked",
+    "when_placeholder": "last day of the month, after a slow week of work",
     "trying_label": "What they were trying to do",
-    "trying_placeholder": "get through the week without thinking about money",
-    "happened_label": "What the doomcheck looked like",
-    "happened_placeholder": "opened the banking app three times before midnight, each time expecting the number to be worse than it was"
+    "trying_placeholder": "get through the end of the month without looking",
+    "happened_label": "What actually happened",
+    "happened_placeholder": "opened the banking app anyway, saw the balance, felt worse than before"
   },
   "person_in_spark": {
     "grade": "none",
@@ -137,13 +137,13 @@ Request:
 {
   "phase": "problem",
   "raw_spark": "An app to stop myself doomchecking my bank balance at the end of every month.",
-  "user_line": "An app to stop myself doomchecking my bank balance at the end of every month.",
+  "user_line": "An app for someone to stop doomchecking their bank balance at the end of every month.",
   "spark_parse": {
     "solution_form": "app",
     "implied_person": "the speaker",
-    "suspected_problem": "doomchecking bank balance at the end of every month",
+    "suspected_problem": "doomchecking their bank balance at the end of every month",
     "triggering_situation": "end of every month",
-    "promised_change": "stop doomchecking bank balance",
+    "promised_change": "stop doomchecking",
     "domain": "bank balance",
     "solution_is_software": "software"
   },
@@ -165,7 +165,7 @@ Response:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "question": "Walk me through the last specific time you doomchecked your bank balance at the end of the month: what did you actually do, step by step?",
+  "question": "Walk me through the last time you doomchecked your bank balance at the end of the month: what did you actually do, step by step?",
   "recovered_problem": "doomchecking my bank balance at the end of every month",
   "needs_confirmation": false,
   "server_checks": {
@@ -185,7 +185,7 @@ Summary: state=settled · substitution_detected=false · swirl=no · changed=[Te
 Request:
 ```json
 {
-  "user_line": "An app to stop myself doomchecking my bank balance at the end of every month.",
+  "user_line": "An app for someone to stop doomchecking their bank balance at the end of every month.",
   "grape_name": "Jamie",
   "grape_relationship": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.",
   "maturity_class": 2,
@@ -214,8 +214,8 @@ Response:
     "anchor_span": "Last month on the 28th, right before rent was due"
   },
   "observation": {
-    "surface_text": "The answer names a specific observable action: repeated app opens followed by closing without completing the balance check or the invoice. The moment is anchored to a single instance on the 28th of last month with a concrete situational trigger.",
-    "anchor_span": "Last month on the 28th, right before rent was due, I opened my banking app for the eleventh time that day"
+    "surface_text": "The answer names a specific observable action: repeated app opens followed by closing without completing the invoice or the check. The moment is anchored to a single named date and financial context.",
+    "anchor_span": "Last month on the 28th, right before rent was due"
   },
   "substitution_detected": false,
   "server_checks": {
@@ -261,13 +261,13 @@ Response:
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer describes the founder's own build and behaviour, with no separate person present; this is a self-as-grape case and the Echo is turbid. The Vintage bar finds no specific anchored moment, only a general current habit.",
-    "anchor_span": "I built a spreadsheet that projects the month forward, I check that instead now"
+    "surface_text": "The answer describes the founder's own build and current behaviour, with no separate person present. M3 is maturity class 2 and the grape is the founder, so no third-party echo exists here.",
+    "anchor_span": "I built a spreadsheet that projects the month forward, I check that instead now."
   },
   "substitution_detected": true,
   "swirl": {
     "kind": "reality",
-    "question": "Is there a specific person outside this conversation who has run into the same dread at month-end and done something concrete about it?"
+    "question": "Is there a specific person, not the speaker, who has complained about dreading their end-of-month balance check or built something to avoid it?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -315,13 +315,13 @@ Response:
     "anchor_span": "freelances in video"
   },
   "observation": {
-    "surface_text": "The answer names Daniel, a video freelancer, but his response to the problem is a structural payment policy change rather than a behaviour around checking balances, leaving the connection to the confirmed problem indirect. A specific past instance is anchored to April.",
+    "surface_text": "The answer names Daniel, a video freelancer, but his behaviour addresses cash flow timing rather than the act of doomchecking a balance, making the problem-match indirect rather than confirmed. A specific moment is present via the April disclosure, but the workaround described is a structural payment change, not a response to end-of-month balance anxiety.",
     "anchor_span": "told me in April he moved every client to 50 percent upfront after one late payer wrecked his rent month"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Does Daniel doomcheck his balance the way you described, or did he sidestep the anxiety by fixing the payment terms before the month-end moment arrives?"
+    "question": "Does Daniel actually experience the same dread of checking his balance at month-end, or did the 50-percent shift remove that moment entirely from his life?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -359,7 +359,7 @@ Response:
     "anchor_span": "I use a budgeting app, but it only shows last month's picture, nothing about the invoice that has not landed yet."
   },
   "observation": {
-    "surface_text": "The answer names an existing solution: a budgeting app currently in use. The precise failure point is stated: it reflects past transactions only and cannot account for outstanding invoices not yet received.",
+    "surface_text": "The answer names an existing solution: a budgeting app currently in use. The precise failure point is stated: it reflects historical data only and does not account for outstanding invoices.",
     "anchor_span": "it only shows last month's picture, nothing about the invoice that has not landed yet."
   },
   "substitution_detected": false,
@@ -401,10 +401,10 @@ Response:
   },
   "tell": {
     "state": "settled",
-    "anchor_span": "I caught myself saying out loud, \"I can't look at it again until the Bakker invoice lands.\""
+    "anchor_span": "I caught myself saying out loud"
   },
   "observation": {
-    "surface_text": "The answer supplies a direct, attributed quote from a real exchange, words_source confirmed real. The quoted words describe a filmable moment: the speaker catching themselves vocalising an avoidance rule tied to a named invoice.",
+    "surface_text": "The answer provides direct quoted language from a real exchange, attributed to the grape, with words_source confirmed real. The quoted words describe a specific, filmable moment of avoidance behavior anchored to a named external event.",
     "anchor_span": "I caught myself saying out loud, \"I can't look at it again until the Bakker invoice lands.\""
   },
   "substitution_detected": false,
@@ -444,7 +444,7 @@ Response:
     "anchor_span": "only takes retainer clients, so his balance is flat and boring. He is paid whether the work moves or not"
   },
   "observation": {
-    "surface_text": "The answer names a bounded individual and a specific structural arrangement that removes income variability. The reason for immunity is present and concrete: retainer billing decouples payment from project activity, eliminating the month-end uncertainty.",
+    "surface_text": "The answer names a bounded individual and a specific structural arrangement that eliminates variable income. The reason for immunity is present and concrete: retainer billing decouples payment from work completion, removing the uncertainty that drives doomchecking.",
     "anchor_span": "only takes retainer clients, so his balance is flat and boring. He is paid whether the work moves or not"
   },
   "substitution_detected": false,

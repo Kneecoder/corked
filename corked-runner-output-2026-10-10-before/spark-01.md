@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 01
 
-Generated: 2026-10-10T12:57:24.454Z
+Generated: 2026-10-10T12:46:24.150Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -15,9 +15,9 @@ Maturity class: 0
 Grape: Lena — my cousin, she shoots weddings
 expect_halt: false
 
-Line sent to the worker (the spark as typed): "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot."
+Line sent to the worker (M0's line): "A way for wedding photographers to not lose their deposit when couples cancel two days before the shoot."
 
-M0's line (verbatim, not shown in the app): "A way for wedding photographers to handle losing their deposit when couples cancel two days before the shoot."
+M0's line (verbatim, not shown in the app): "A way for wedding photographers to not lose their deposit when couples cancel two days before the shoot."
 
 ## Element Tracker (final state, floor-enforced like corked_v6.html's rankUp — see "raw grades" for what each mechanism actually offered before the floor was applied)
 - **Grape**: settled — history: inert → settled (last raised by M1)
@@ -25,7 +25,7 @@ M0's line (verbatim, not shown in the app): "A way for wedding photographers to 
 - **Tell**: settled — history: inert → settled (last raised by M6)
   raw grades: M2=settled, M6=clearing
 - **Vintage**: settled — history: inert → settled (last raised by M4)
-  raw grades: M2=settled, M3=settled, M4=clearing
+  raw grades: M2=settled, M3=settled, M4=turbid
 - **Gap**: settled — history: inert → settled (last raised by M5)
   raw grades: M5=settled
 - **Echo**: settled — history: inert → settled (last raised by M6)
@@ -49,7 +49,7 @@ Response:
   "schema_version": "m0.v1",
   "mechanism": "M0",
   "raw_spark": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
-  "user_line_candidate": "A way for wedding photographers to handle losing their deposit when couples cancel two days before the shoot.",
+  "user_line_candidate": "A way for wedding photographers to not lose their deposit when couples cancel two days before the shoot.",
   "spark_parse": {
     "solution_form": "app",
     "implied_person": "wedding photographers",
@@ -62,7 +62,7 @@ Response:
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The role is wedding photographers and the stated problem is deposit loss on late cancellations. Both enter cleanly.",
+    "reason": "Cellar-ready. The role is wedding photographers and the problem is stated clearly: deposit loss when couples cancel two days before the shoot.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -71,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name the specific wedding photographer and the moment a couple cancelled close to the shoot date.",
-    "hint": "A good answer names the photographer, when the cancellation came in, what they were counting on that deposit for, and what actually happened when it disappeared.",
+    "question": "Name the specific wedding photographer this starts from and the moment a couple cancelled on them.",
+    "hint": "A good answer names the photographer, how close to the shoot the cancellation came, and what happened to the deposit.",
     "person_label": "Photographer",
-    "person_placeholder": "Priya, freelance wedding photographer",
-    "when_label": "When the cancellation came in",
-    "when_placeholder": "two days before a Saturday shoot she had blocked off for six months",
+    "person_placeholder": "Diane, freelance wedding photographer",
+    "when_label": "When the cancellation came",
+    "when_placeholder": "two days before a booked Saturday shoot",
     "trying_label": "What she was counting on",
-    "trying_placeholder": "cover equipment rental she had already booked for the day",
-    "happened_label": "What happened when the deposit was gone",
-    "happened_placeholder": "she had no contract clause to enforce and the couple stopped replying"
+    "trying_placeholder": "the deposit covering her equipment rental for that weekend",
+    "happened_label": "What happened with the deposit",
+    "happened_placeholder": "the couple disputed the deposit and she had no contract clause to enforce it"
   },
   "person_in_spark": {
     "grade": "none",
@@ -107,7 +107,7 @@ Summary: state=settled · substitution_detected=n/a · swirl=no · changed=[Grap
 Request:
 ```json
 {
-  "spark_summary": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+  "spark_summary": "A way for wedding photographers to not lose their deposit when couples cancel two days before the shoot.",
   "person_name": "Lena",
   "relationship": "my cousin, she shoots weddings",
   "maturity_class": 0
@@ -126,7 +126,7 @@ Response:
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "A named individual is present with a stated real relationship. The grape is settled.",
+    "surface_text": "A named individual is present. A stated occupational relationship confirms a real tie.",
     "anchor_span": "my cousin, she shoots weddings"
   },
   "next_question": {
@@ -148,7 +148,7 @@ Request:
 {
   "phase": "problem",
   "raw_spark": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
-  "user_line": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+  "user_line": "A way for wedding photographers to not lose their deposit when couples cancel two days before the shoot.",
   "spark_parse": {
     "solution_form": "app",
     "implied_person": "wedding photographers",
@@ -176,7 +176,7 @@ Response:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "question": "Walk me through the last time Lena lost a deposit after a couple canceled close to the shoot date: what did she do when she found out, and what steps did she take to try to recover it?",
+  "question": "Walk me through the last time Lena lost a deposit after a couple canceled close to the shoot date, what did she do when she found out the booking was off?",
   "recovered_problem": "lose their deposit when couples cancel two days before the shoot",
   "needs_confirmation": false,
   "server_checks": {
@@ -185,7 +185,9 @@ Response:
     "outcome": "stated",
     "downgrades": [],
     "unsupported_words": [],
-    "visible_style_violations_cleaned": [],
+    "visible_style_violations_cleaned": [
+      "question:dash"
+    ],
     "m2_question_repaired": false
   }
 }
@@ -196,7 +198,7 @@ Summary: state=settled · substitution_detected=false · swirl=no · changed=[Te
 Request:
 ```json
 {
-  "user_line": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+  "user_line": "A way for wedding photographers to not lose their deposit when couples cancel two days before the shoot.",
   "grape_name": "Lena",
   "grape_relationship": "my cousin, she shoots weddings",
   "maturity_class": 0,
@@ -225,7 +227,7 @@ Response:
     "anchor_span": "Last Saturday a couple cancelled on Thursday night"
   },
   "observation": {
-    "surface_text": "Lena's behaviour is observable: she re-read the contract clause, wrote off the deposit, and blocked the date. The moment is anchored to a specific instance: a Thursday-night cancellation preceding last Saturday.",
+    "surface_text": "Lena's behaviour is observable: she re-read the contract clause, wrote off the deposit, and blocked the date. The moment is anchored to a specific cancellation on Thursday night before last Saturday's shoot.",
     "anchor_span": "Last Saturday a couple cancelled on Thursday night"
   },
   "substitution_detected": false,
@@ -272,7 +274,7 @@ Response:
     "anchor_span": "after a March cancellation burned him"
   },
   "observation": {
-    "surface_text": "The Echo bar finds one identifiable person separate from the grape, Jordan, with a concrete workaround: taking half the fee upfront via a payment link. The Vintage bar finds a specific triggering instance anchored to a named month, a March cancellation.",
+    "surface_text": "The Echo bar finds one identifiable separate person, Jordan, a named colleague distinct from Lena and the founder, who responded to a deposit loss by adopting a half-upfront payment link. The Vintage bar finds a specific past event anchoring the behaviour.",
     "anchor_span": "after a March cancellation burned him"
   },
   "substitution_detected": false,
@@ -313,16 +315,16 @@ Response:
     "anchor_span": "Priya, a wedding caterer I met at a market, keeps a paper deposit ledger per event"
   },
   "vintage": {
-    "state": "clearing",
-    "anchor_span": "cancellations inside 48 hours"
+    "state": "turbid",
+    "anchor_span": null
   },
   "contrast": {
     "is_different_kind": "true",
     "same_or_different": "same",
-    "anchor_span": "wedding caterer"
+    "anchor_span": "For her the pain is cancellations inside 48 hours, the payment part is fine"
   },
   "observation": {
-    "surface_text": "The answer names Priya, a wedding caterer distinct from Lena and Jordan, and describes a concrete workaround: a paper deposit ledger per event tracking late cancellations. No specific past instance is anchored; the behaviour reads as a recurring practice.",
+    "surface_text": "A named individual distinct from Lena and Jordan is present, with a concrete behaviour: maintaining a paper deposit ledger per event. No specific past instance is anchored; the behaviour is described as an ongoing practice.",
     "anchor_span": "keeps a paper deposit ledger per event"
   },
   "substitution_detected": false,
@@ -362,8 +364,8 @@ Response:
     "anchor_span": "HoneyBook contract template, but it stores no card on file, so when the couple ghosted there was nothing to charge"
   },
   "observation": {
-    "surface_text": "The answer names HoneyBook contract templates as the existing solution Lena uses. The precise failure point is present: no card on file means no charge is possible when a couple goes silent.",
-    "anchor_span": "it stores no card on file, so when the couple ghosted there was nothing to charge"
+    "surface_text": "The answer names an existing solution: a HoneyBook contract template. The precise failure point is present: it stores no card on file, leaving no payment method to charge when the couple ghosted.",
+    "anchor_span": "HoneyBook contract template, but it stores no card on file, so when the couple ghosted there was nothing to charge"
   },
   "substitution_detected": false,
   "server_checks": {
@@ -411,7 +413,7 @@ Response:
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "Words is settled: a direct quote from a real exchange attributes specific language to Lena about the deposit problem. The words carry a stated feeling but no filmable action, and no third-party reference is present.",
+    "surface_text": "Words is settled: a direct quote from a real exchange is present, attributing specific language to Lena about the deposit problem. The quoted words carry a stated emotional position but no filmable action, and no third-party reference appears.",
     "anchor_span": "I am done being the bad guy about deposits"
   },
   "substitution_detected": false,
@@ -451,7 +453,7 @@ Response:
     "anchor_span": "Rob shoots corporate headshots on retainer for two agencies. Cancellations cost him nothing because the retainer bills monthly whether shoots happen or not."
   },
   "observation": {
-    "surface_text": "The answer names a bounded individual with a specific work arrangement that excludes the problem. The reason for immunity is present and mechanically specific: a monthly retainer billing cycle decouples payment from individual shoot occurrence.",
+    "surface_text": "The answer names a bounded individual with a specific billing arrangement that removes deposit exposure entirely. The reason for immunity is present and mechanistically precise: monthly retainer billing decouples revenue from whether any single shoot occurs.",
     "anchor_span": "the retainer bills monthly whether shoots happen or not"
   },
   "substitution_detected": false,
@@ -468,6 +470,6 @@ Response:
 - none detected
 
 ## Floor notes (informational — a later mechanism offered a lower grade for an opportunistic bar; the floor correctly held, no action needed)
-- M4 offered clearing for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
+- M4 offered turbid for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
 - M6 offered clearing for Tell, held at floor settled (opportunistic grading correctly did not lower it).
 - M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it).

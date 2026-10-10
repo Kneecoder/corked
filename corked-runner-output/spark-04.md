@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 04
 
-Generated: 2026-07-11T18:21:50.246Z
+Generated: 2026-10-10T12:58:25.509Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -15,7 +15,9 @@ Maturity class: 1
 Grape: (none) — (none)
 expect_halt: true
 
-User Line candidate (verbatim from M0): (none — halted before M0 returned one)
+Line sent to the worker (the spark as typed): (none — halted before M0 returned one)
+
+M0's line (verbatim, not shown in the app): (none)
 
 ## Element Tracker (final state, floor-enforced like corked_v6.html's rankUp — see "raw grades" for what each mechanism actually offered before the floor was applied)
 - **Grape**: inert — history: inert

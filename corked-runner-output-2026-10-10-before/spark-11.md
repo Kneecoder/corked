@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 11
 
-Generated: 2026-10-10T13:01:57.589Z
+Generated: 2026-10-10T12:51:00.822Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -15,7 +15,7 @@ Maturity class: 0
 Grape: Femke — my sister-in-law, photographer
 expect_halt: false
 
-Line sent to the worker (the spark as typed): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
+Line sent to the worker (M0's line): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
 
 M0's line (verbatim, not shown in the app): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
 
@@ -25,7 +25,7 @@ M0's line (verbatim, not shown in the app): "An app for one-man trade businesses
 - **Tell**: clearing — history: inert → clearing (last raised by M6)
   raw grades: M2=clearing, M6=clearing
 - **Vintage**: settled — history: inert → settled (last raised by M4)
-  raw grades: M2=settled, M3=settled, M4=clearing
+  raw grades: M2=settled, M3=clearing, M4=clearing
 - **Gap**: settled — history: inert → settled (last raised by M5)
   raw grades: M5=settled
 - **Echo**: clearing — history: inert → turbid → clearing (last raised by M6)
@@ -54,15 +54,15 @@ Response:
     "solution_form": "app",
     "implied_person": "one-man trade businesses",
     "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
-    "triggering_situation": "when the money is a problem",
+    "triggering_situation": "unpaid invoices left unchased until money is a problem",
     "promised_change": null,
-    "domain": "unpaid invoices",
+    "domain": "invoices",
     "solution_is_software": "software"
   },
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The role is clear, one-man trade businesses, and the stated problem is forgetting to chase unpaid invoices until the money is already a problem.",
+    "reason": "Cellar-ready. The role is clear and the stated problem is forgetting to chase unpaid invoices until the money is already a problem. Both are present and usable.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -71,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name the specific tradesperson and the moment when they realised an unpaid invoice had been sitting too long.",
-    "hint": "A good answer names a real person, the trade they work in, and the point when the money being short made them notice the invoice.",
+    "question": "Name the specific one-man trade business owner this starts from, and the moment they realised the money had become a problem.",
+    "hint": "A good answer names the person and the trade, and describes the moment they noticed the unpaid invoices had piled up, not the day they decided to fix it.",
     "person_label": "Tradesperson",
-    "person_placeholder": "Dave, self-employed plumber",
-    "when_label": "When they noticed",
-    "when_placeholder": "when rent was due and three invoices were still unpaid",
+    "person_placeholder": "Danny, self-employed electrician",
+    "when_label": "When the money became a problem",
+    "when_placeholder": "end of the month, short on rent, three invoices still unpaid from six weeks ago",
     "trying_label": "What they were trying to do",
-    "trying_placeholder": "cover the month's costs without chasing clients",
+    "trying_placeholder": "cover the month's costs after a quiet few weeks",
     "happened_label": "What actually happened",
-    "happened_placeholder": "he found invoices from six weeks ago he had never followed up on"
+    "happened_placeholder": "he realised he had never followed up on two jobs he finished in October and the clients had gone quiet"
   },
   "person_in_spark": {
     "grade": "none",
@@ -126,7 +126,7 @@ Response:
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "A named individual is present. A real stated relationship ties her to the respondent.",
+    "surface_text": "A named individual is present. A real stated relationship ties her to the founder.",
     "anchor_span": "my sister-in-law, photographer"
   },
   "next_question": {
@@ -153,9 +153,9 @@ Request:
     "solution_form": "app",
     "implied_person": "one-man trade businesses",
     "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
-    "triggering_situation": "when the money is a problem",
+    "triggering_situation": "unpaid invoices left unchased until money is a problem",
     "promised_change": null,
-    "domain": "unpaid invoices",
+    "domain": "invoices",
     "solution_is_software": "software"
   },
   "grape_name": "Femke",
@@ -176,7 +176,7 @@ Response:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "question": "Walk me through the last time Femke forgot to chase an unpaid invoice and the money had already become a problem: what did she actually do when she realised it?",
+  "question": "Walk me through the last time Femke forgot to chase an unpaid invoice and only noticed when the money became a problem: what did she do when she realised it had slipped?",
   "recovered_problem": "forget to chase unpaid invoices until the money is a problem",
   "needs_confirmation": false,
   "server_checks": {
@@ -225,13 +225,13 @@ Response:
     "anchor_span": "Last month Femke finished a wedding shoot"
   },
   "observation": {
-    "surface_text": "The vintage is anchored to a specific past shoot last month. The tell names a delayed action but stops at absence of invoicing rather than a filmable behaviour Femke performed instead.",
+    "surface_text": "The moment is anchored to a specific past event. The answer names an omission rather than a filmable action: no observable behaviour of Femke's is captured, only the absence of invoicing and a stated consequence about the couple's budget.",
     "anchor_span": "didn't invoice until three weeks later"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "ownership",
-    "question": "When the three weeks passed without an invoice, whose hand was on the delay, Femke's own habit, a missing system, or something else in her workflow?"
+    "question": "When Femke realised the invoice was overdue, what did she actually do with that realisation?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -269,20 +269,20 @@ Response:
   "state": "turbid",
   "echo": {
     "state": "turbid",
-    "anchor_span": "Femke started adding a 30 percent booking fee in January after two no-shows in one month"
+    "anchor_span": "Femke started adding a 30 percent booking fee in January after two no-shows in one month."
   },
   "vintage": {
-    "state": "settled",
+    "state": "clearing",
     "anchor_span": "in January after two no-shows in one month"
   },
   "observation": {
-    "surface_text": "The answer describes only Femke's behaviour, and Femke is the named grape. No person separate from the grape is present.",
-    "anchor_span": "Femke started adding a 30 percent booking fee in January after two no-shows in one month"
+    "surface_text": "The answer describes only the grape's own behaviour, with no separate third party present. The Vintage carries a specific anchoring moment but the Grape Exclusion Rule makes Echo turbid regardless.",
+    "anchor_span": "Femke started adding a 30 percent booking fee in January after two no-shows in one month."
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is there a second photographer, someone entirely outside this situation, who has run into the same chasing problem and done something about it?"
+    "question": "Is there another photographer or small-business owner, someone other than Femke, who has run into this same invoice-chasing problem and done something concrete about it?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -330,13 +330,13 @@ Response:
     "anchor_span": "For her it is deposits going missing, the chasing part she has under control."
   },
   "observation": {
-    "surface_text": "Priya is a real named third party distinct from Femke, but the confirmed problem is forgetting to chase unpaid invoices and the answer states chasing is not her problem, placing her outside the confirmed problem. The whiteboard detail anchors a recent encounter but not a specific instance of the confirmed problem.",
-    "anchor_span": "the chasing part she has under control."
+    "surface_text": "The answer names Priya, a distinct person, but her problem is deposits going missing rather than forgetting to chase unpaid invoices, so the confirmed problem is not confirmed for her. The whiteboard sighting is time-anchored but describes a tracking system, not a behaviour around the confirmed problem.",
+    "anchor_span": "For her it is deposits going missing, the chasing part she has under control."
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "ownership",
-    "question": "Does Priya ever let a payment slip entirely, or is the whiteboard holding the line so that forgetting to chase has never actually cost her?"
+    "question": "Who in Priya's situation actually owns the chasing of unpaid amounts, and does that ever slip the way the confirmed problem describes?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -371,11 +371,11 @@ Response:
   "state": "settled",
   "gap": {
     "state": "settled",
-    "anchor_span": "basic invoicing app, but it has no automatic reminders, so nothing chases the client but her own memory"
+    "anchor_span": "uses a basic invoicing app, but it has no automatic reminders, so nothing chases the client but her own memory"
   },
   "observation": {
-    "surface_text": "The answer names a basic invoicing app as the existing solution Femke currently uses. The precise failure point is identified: the app has no automatic reminders, leaving follow-up dependent on her memory alone.",
-    "anchor_span": "basic invoicing app, but it has no automatic reminders, so nothing chases the client but her own memory"
+    "surface_text": "The answer names a basic invoicing app as the existing solution Femke currently uses. The precise failure point is stated: the app has no automatic reminders, leaving follow-up dependent on her own memory.",
+    "anchor_span": "it has no automatic reminders, so nothing chases the client but her own memory"
   },
   "substitution_detected": false,
   "server_checks": {
@@ -423,7 +423,7 @@ Response:
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "A direct quote from a flagged real exchange is present, meeting the Words settled bar. The quoted words carry a stated feeling about the act of asking but no filmable action, placing Tell at clearing.",
+    "surface_text": "A direct quote from a flagged real exchange is present, attributing language to Femke about the act of requesting payment. The words carry a stated aversion but no filmable action, and no third-party reference appears.",
     "anchor_span": "I hate having to be the one who asks for money"
   },
   "substitution_detected": false,
@@ -463,8 +463,8 @@ Response:
     "anchor_span": "Owen works only through an agency that invoices clients on his behalf. Chasing payments never happens to him because the agency handles it."
   },
   "observation": {
-    "surface_text": "The answer names a bounded individual, Owen, working exclusively through an agency that absorbs the invoicing function. The reason for exemption is specific: the agency handles client billing, so the problem of forgotten chasing never reaches him.",
-    "anchor_span": "the agency handles it"
+    "surface_text": "The answer names a bounded individual, Owen, whose arrangement with an agency removes invoice chasing from his responsibility entirely. The reason for immunity is specific: the agency invoices and collects on his behalf, so the problem never reaches him.",
+    "anchor_span": "Owen works only through an agency that invoices clients on his behalf. Chasing payments never happens to him because the agency handles it."
   },
   "substitution_detected": false,
   "server_checks": {
@@ -480,5 +480,6 @@ Response:
 - none detected
 
 ## Floor notes (informational — a later mechanism offered a lower grade for an opportunistic bar; the floor correctly held, no action needed)
+- M3 offered clearing for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
 - M4 offered clearing for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
 - M6 offered turbid for Echo, held at floor clearing (opportunistic grading correctly did not lower it).

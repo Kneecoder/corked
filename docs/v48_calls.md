@@ -9,3 +9,4 @@
 ## 10 Oct
 - Held questions and parked returns come back on the due day at the start of the builder's picked part of the day. An answer or park before 05:00 counts as the previous day.
 - The door: the spark as typed is the User Line v1, recorded permanently. M0 parses for routing and decides only two things: is it software, and is there anything to bottle. Nothing M0 writes is shown: no line, no grade, no question at the door. The first session proves Corked at the grape step and M2's first question, not with a compressed line. This replaces the v47 M0 sentences that say it produces the User Line and that the first session shows the compressed Line.
+- The maturity questions ask about the person the spark comes from, never "this problem".

@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 15
 
-Generated: 2026-07-11T18:28:09.554Z
+Generated: 2026-10-10T13:04:36.956Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -15,7 +15,9 @@ Maturity class: 0
 Grape: Noor — my friend, runs a one-woman landscaping business
 expect_halt: false
 
-User Line candidate (verbatim from M0): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
+Line sent to the worker (the spark as typed): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
+
+M0's line (verbatim, not shown in the app): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
 
 ## Element Tracker (final state, floor-enforced like corked_v6.html's rankUp — see "raw grades" for what each mechanism actually offered before the floor was applied)
 - **Grape**: settled — history: inert → settled (last raised by M1)
@@ -52,7 +54,7 @@ Response:
     "solution_form": "app",
     "implied_person": "one-man trade businesses",
     "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
-    "triggering_situation": "money becomes a problem",
+    "triggering_situation": "unpaid invoices left unchased until the money is a problem",
     "promised_change": null,
     "domain": "unpaid invoices",
     "solution_is_software": "software"
@@ -60,7 +62,7 @@ Response:
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The role is clear and the stated problem is present: one-man trade businesses who forget unpaid invoices until cash runs short.",
+    "reason": "Cellar-ready. The role is clear and the problem is stated in the user's own words: forgetting to chase unpaid invoices until the money is a problem.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -69,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name a specific one-man trade business owner and the moment they realised an unpaid invoice had become a money problem.",
-    "hint": "A good answer names the trade, the person, and the point when the forgotten invoice surfaced as a cash shortfall.",
+    "question": "Name a specific one-man trade business owner and the moment they realised an unpaid invoice had gone too long without being chased.",
+    "hint": "A good answer names the person by trade, and describes the moment the money shortage made the forgotten invoice visible.",
     "person_label": "Tradesperson",
-    "person_placeholder": "Dean, sole-trader electrician",
-    "when_label": "When the money became a problem",
-    "when_placeholder": "end of the month when he checked his account before paying a supplier",
+    "person_placeholder": "Gary, self-employed electrician",
+    "when_label": "When did it surface",
+    "when_placeholder": "when his rent was due and three invoices were still unpaid",
     "trying_label": "What he was trying to do",
-    "trying_placeholder": "cover his supplier bill and realised the cash was short",
+    "trying_placeholder": "cover his monthly costs without chasing clients",
     "happened_label": "What actually happened",
-    "happened_placeholder": "found three invoices from six weeks ago still unpaid, none of them chased"
+    "happened_placeholder": "he found three invoices he had never followed up, one over 60 days old, and had to make awkward calls while short on cash"
   },
   "person_in_spark": {
     "grade": "none",
@@ -124,7 +126,7 @@ Response:
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "A named individual is present. The relationship is concrete and specific.",
+    "surface_text": "A named individual is present. The relationship is specific and real: a friend who runs a one-woman landscaping business.",
     "anchor_span": "my friend, runs a one-woman landscaping business"
   },
   "next_question": {
@@ -140,16 +142,18 @@ Response:
 ```
 
 ### 3. [main] M2 · /m2 (phase A)
-Summary: recovered_problem="forgetting to chase unpaid invoices until the money is a problem" · needs_confirmation=false · gap_in_play=false
+Summary: outcome=stated · problem="forget to chase unpaid invoices until the money is a problem" (user_stated) · gap_in_play=false
 Request:
 ```json
 {
+  "phase": "problem",
+  "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
   "user_line": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
   "spark_parse": {
     "solution_form": "app",
     "implied_person": "one-man trade businesses",
     "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
-    "triggering_situation": "money becomes a problem",
+    "triggering_situation": "unpaid invoices left unchased until the money is a problem",
     "promised_change": null,
     "domain": "unpaid invoices",
     "solution_is_software": "software"
@@ -162,28 +166,27 @@ Request:
 Response:
 ```json
 {
-  "schema_version": "m2.v1",
+  "schema_version": "m2.v2",
   "mechanism": "M2",
   "phase": "problem",
-  "recovered_problem": "forgetting to chase unpaid invoices until the money is a problem",
-  "needs_confirmation": false,
-  "gap_in_play": false,
-  "observation": {
-    "surface_text": "The spark names the problem directly: Noor forgets to chase unpaid invoices until cash is already tight. The implied person matches the grape.",
-    "problem_source": "explicit"
+  "outcome": "stated",
+  "problem": {
+    "text": "forget to chase unpaid invoices until the money is a problem",
+    "source": "user_stated",
+    "status": "confirmed"
   },
-  "question": "Think of the last time Noor realized a landscaping invoice had gone unpaid long enough to hurt her cash, what did she actually do when she noticed it?",
-  "hint": "A strong answer names a specific job, how long the invoice sat, and what Noor did next, called, ignored it, sent a text, not how she felt about it.",
+  "gap_in_play": false,
+  "question": "Tell me about the last time Noor forgot to chase an unpaid invoice and describe exactly what she did when she finally noticed the money was short.",
+  "recovered_problem": "forget to chase unpaid invoices until the money is a problem",
+  "needs_confirmation": false,
   "server_checks": {
     "schema_valid": true,
-    "gap_in_play": false,
-    "needs_confirmation": false,
-    "visible_style_violations_cleaned": [
-      "question:dash",
-      "hint:dash"
-    ],
-    "m2_question_repaired": false,
-    "problem_forced_verbatim": true
+    "model_outcome": "stated",
+    "outcome": "stated",
+    "downgrades": [],
+    "unsupported_words": [],
+    "visible_style_violations_cleaned": [],
+    "m2_question_repaired": false
   }
 }
 ```
@@ -197,7 +200,11 @@ Request:
   "grape_name": "Noor",
   "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
-  "confirmed_problem": "forgetting to chase unpaid invoices until the money is a problem",
+  "problem": {
+    "text": "forget to chase unpaid invoices until the money is a problem",
+    "source": "user_stated",
+    "status": "confirmed"
+  },
   "gap_in_play": false,
   "user_answer": "She gets really stressed about it whenever a client goes quiet, and usually she just puts off looking at the numbers."
 }
@@ -218,22 +225,20 @@ Response:
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The Tell names a deferred action but frames it as a recurring pattern rather than a filmed moment. No specific instance is named in the answer, no date, event, or single occasion grounds the behaviour in time.",
+    "surface_text": "The Tell contains an inferred pattern rather than a specific observable action a camera would capture. The Vintage bar finds no named moment, date, or single instance in the answer.",
     "anchor_span": "puts off looking at the numbers"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is there one specific client going quiet that Noor is sitting with right now, or is this a pattern assembled from several different episodes?"
+    "question": "When did Noor last mention a client going quiet to you, and what did she actually do in that conversation?"
   },
   "server_checks": {
     "schema_valid": true,
     "tell_anchor_verified": true,
     "vintage_anchor_verified": false,
     "obs_anchor_verified": true,
-    "visible_style_violations_cleaned": [
-      "observation.surface_text:dash"
-    ],
+    "visible_style_violations_cleaned": [],
     "overall_state_is_floor": true,
     "swirl_included": true
   }
@@ -245,7 +250,11 @@ Summary: state=settled · substitution_detected=false · swirl=no · changed=[Ec
 Request:
 ```json
 {
-  "confirmed_problem": "forgetting to chase unpaid invoices until the money is a problem",
+  "problem": {
+    "text": "forget to chase unpaid invoices until the money is a problem",
+    "source": "user_stated",
+    "status": "confirmed"
+  },
   "grape_name": "Noor",
   "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
@@ -264,10 +273,10 @@ Response:
   },
   "vintage": {
     "state": "clearing",
-    "anchor_span": "whenever it comes up"
+    "anchor_span": "Last month"
   },
   "observation": {
-    "surface_text": "The Echo bar finds one identifiable separate person, Jordan, with a concrete workaround: paying a freelancer to handle it. The Vintage bar finds a recurring pattern anchored to no single instance.",
+    "surface_text": "The Echo bar is settled: a named third party, Jordan, distinct from Noor and the founder, is identified hitting the same problem and paying a freelancer to handle it. The Vintage bar finds a time marker for the conversation but the workaround itself is described as a recurring pattern, not a single anchored instance.",
     "anchor_span": "my colleague Jordan mentioned he hits this same thing and just pays a freelancer to sort it out whenever it comes up"
   },
   "substitution_detected": false,
@@ -285,7 +294,11 @@ Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[
 Request:
 ```json
 {
-  "confirmed_problem": "forgetting to chase unpaid invoices until the money is a problem",
+  "problem": {
+    "text": "forget to chase unpaid invoices until the money is a problem",
+    "source": "user_stated",
+    "status": "confirmed"
+  },
   "grape_name": "Noor",
   "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
@@ -313,13 +326,13 @@ Response:
     "anchor_span": "for her it shows up a little differently"
   },
   "observation": {
-    "surface_text": "The answer names Priya and a concrete workaround but provides no detail on her role or context sufficient to establish her as an identifiable individual rather than a named stand-in. No specific past instance is present, only an ongoing behaviour.",
+    "surface_text": "The answer names a person and a concrete behaviour but provides no role, context, or setup detail sufficient to confirm Priya as an identifiable individual distinct from a constructed stand-in. No specific past instance is present, only a described recurring practice.",
     "anchor_span": "A friend named Priya, who works in a completely different setup, said she keeps a manual backup log for it"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is Priya someone who could be reached and asked about this directly, and what field or kind of work does she actually do?"
+    "question": "Is Priya a real specific person the Winemaster could ask a follow-up question about, or a composite drawn from a general sense of others who handle this?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -335,7 +348,11 @@ Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[
 Request:
 ```json
 {
-  "confirmed_problem": "forgetting to chase unpaid invoices until the money is a problem",
+  "problem": {
+    "text": "forget to chase unpaid invoices until the money is a problem",
+    "source": "user_stated",
+    "status": "confirmed"
+  },
   "grape_name": "Noor",
   "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
@@ -353,18 +370,18 @@ Response:
     "anchor_span": "plain spreadsheet template to track it"
   },
   "observation": {
-    "surface_text": "The answer names an existing solution: a plain spreadsheet template. The failure point given is that it does not catch the problem until too late, which states a timing shortfall but does not identify the precise mechanism that fails, such as no alerts, no due-date flags, or no automated reminder.",
+    "surface_text": "The answer names an existing solution: a plain spreadsheet template. The failure point given is vague, 'too late' describes a timing sentiment, not a specific thing the spreadsheet fails to do.",
     "anchor_span": "it does not catch the problem until it is already too late"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "When Noor last had an overdue invoice go unnoticed, was she checking that spreadsheet and still missed it, or had she stopped opening it entirely?"
+    "question": "When Noor last had an overdue invoice, what specifically did the spreadsheet show her, or fail to show her, at that moment?"
   },
   "server_checks": {
     "schema_valid": true,
     "visible_style_violations_cleaned": [
-      "observation.surface_text:not_x_but_y"
+      "observation.surface_text:dash"
     ],
     "overall_state_is_primary": true,
     "swirl_included": true
@@ -377,7 +394,11 @@ Summary: state=settled · substitution_detected=false · swirl=no · changed=[no
 Request:
 ```json
 {
-  "confirmed_problem": "forgetting to chase unpaid invoices until the money is a problem",
+  "problem": {
+    "text": "forget to chase unpaid invoices until the money is a problem",
+    "source": "user_stated",
+    "status": "confirmed"
+  },
   "grape_name": "Noor",
   "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
@@ -397,14 +418,14 @@ Response:
   },
   "tell": {
     "state": "clearing",
-    "anchor_span": null
+    "anchor_span": "\"I just want this part to be boring,\" Noor said, when we talked about it last week."
   },
   "echo": {
     "state": "turbid",
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer provides a direct quote from a named real exchange, satisfying the Words bar. The quoted words carry a stated sentiment about the problem but no filmable action, and no third-party reference is present.",
+    "surface_text": "Words is settled: a direct quote from Noor is present and words_source is real. The quote carries a stated sentiment about the problem but no filmable action, and no third-party reference appears.",
     "anchor_span": "\"I just want this part to be boring,\" Noor said, when we talked about it last week."
   },
   "substitution_detected": false,
@@ -422,7 +443,11 @@ Summary: state=settled · substitution_detected=false · swirl=no · changed=[Li
 Request:
 ```json
 {
-  "confirmed_problem": "forgetting to chase unpaid invoices until the money is a problem",
+  "problem": {
+    "text": "forget to chase unpaid invoices until the money is a problem",
+    "source": "user_stated",
+    "status": "confirmed"
+  },
   "grape_name": "Noor",
   "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
@@ -440,7 +465,7 @@ Response:
     "anchor_span": "only ever takes retainer clients, so this never happens to him. He is paid whether the job happens or not."
   },
   "observation": {
-    "surface_text": "The answer names a bounded individual and a specific arrangement that removes invoice-chasing from the equation. The reason is present and concrete: retainer billing decouples payment from job occurrence, eliminating the lag that creates the problem.",
+    "surface_text": "The answer names a bounded individual who does not have the problem: an uncle running the same kind of work on a retainer-only model. The reason for his immunity is specific and present: retainer billing collects payment regardless of whether a job occurs, eliminating the chase.",
     "anchor_span": "only ever takes retainer clients, so this never happens to him. He is paid whether the job happens or not."
   },
   "substitution_detected": false,
@@ -454,7 +479,7 @@ Response:
 ```
 
 ## Anomalies (automated mechanical checks — substitution_detected typing, gap-bar/echo-bar consistency, overall-state-equals-primary-bar, voice/em-dash/contrast-formula scan, anchor fabrication)
-- ⚠ VOICE: contrast-formula ("not X but Y" / "not just X") found at M5.observation.surface_text: "The answer names an existing solution: a plain spreadsheet template. The failure point given is that it does not catch the problem until too late, which states a timing shortfall but does not identify the precise mechanism that fails, such as no alerts, no due-date flags, or no automated reminder."
+- none detected
 
 ## Floor notes (informational — a later mechanism offered a lower grade for an opportunistic bar; the floor correctly held, no action needed)
 - M4 offered clearing for Echo, held at floor settled (opportunistic grading correctly did not lower it).

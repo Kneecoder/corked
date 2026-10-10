@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 08
 
-Generated: 2026-10-10T12:59:53.886Z
+Generated: 2026-10-10T12:48:54.777Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -15,7 +15,7 @@ Maturity class: 0
 Grape: Bram — my uncle, owns four rental flats
 expect_halt: false
 
-Line sent to the worker (the spark as typed): "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile."
+Line sent to the worker (M0's line): "A tool for landlords when tenants pay in random partial chunks nobody can reconcile."
 
 M0's line (verbatim, not shown in the app): "A tool for landlords when tenants pay in random partial chunks nobody can reconcile."
 
@@ -25,7 +25,7 @@ M0's line (verbatim, not shown in the app): "A tool for landlords when tenants p
 - **Tell**: settled — history: inert → settled (last raised by M6)
   raw grades: M2=settled, M6=clearing
 - **Vintage**: settled — history: inert → settled (last raised by M4)
-  raw grades: M2=settled, M3=settled, M4=turbid
+  raw grades: M2=settled, M3=clearing, M4=turbid
 - **Gap**: settled — history: inert → settled (last raised by M5)
   raw grades: M5=settled
 - **Echo**: settled — history: inert → settled (last raised by M6)
@@ -62,7 +62,7 @@ Response:
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The role is landlords and the stated problem is tenant payments arriving as random partial chunks that cannot be reconciled. Both are present and the Spark enters cleanly.",
+    "reason": "Cellar-ready. The role is landlords and the stated problem is tenant payments arriving in random partial chunks that nobody can reconcile. Both are in the Spark.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -71,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name the specific landlord this Spark starts from and the moment the partial payment problem became impossible to ignore.",
-    "hint": "A good answer names one landlord and describes a specific rent cycle when the chunks stopped adding up cleanly.",
+    "question": "Name the specific landlord and the moment when the partial payment problem became real for them.",
+    "hint": "A good answer names one landlord and one moment: a specific month, a specific tenant, a specific pile of partial payments that did not add up.",
     "person_label": "Landlord",
-    "person_placeholder": "Derek, residential landlord with four units",
-    "when_label": "When it broke down",
-    "when_placeholder": "end of month when three tenants had each sent two or three transfers",
-    "trying_label": "What they were trying to do",
-    "trying_placeholder": "confirm which tenants had paid in full for the month",
-    "happened_label": "What they found instead",
-    "happened_placeholder": "six partial transfers across different amounts with no clear way to match them to specific tenants or months"
+    "person_placeholder": "Ray, residential landlord with four units",
+    "when_label": "When the payments stopped making sense",
+    "when_placeholder": "end of month when three partial transfers came in from the same tenant",
+    "trying_label": "What they were trying to work out",
+    "trying_placeholder": "whether the tenant had paid in full or still owed a balance",
+    "happened_label": "What they were looking at",
+    "happened_placeholder": "four separate transfers in different amounts across ten days, no reference numbers, no way to match them to the balance"
   },
   "person_in_spark": {
     "grade": "none",
@@ -107,7 +107,7 @@ Summary: state=settled · substitution_detected=n/a · swirl=no · changed=[Grap
 Request:
 ```json
 {
-  "spark_summary": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+  "spark_summary": "A tool for landlords when tenants pay in random partial chunks nobody can reconcile.",
   "person_name": "Bram",
   "relationship": "my uncle, owns four rental flats",
   "maturity_class": 0
@@ -126,7 +126,7 @@ Response:
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "A named individual is present. A real stated relationship ties him to the problem domain.",
+    "surface_text": "A named individual is present. The stated relationship is familial and specific to a landlord context.",
     "anchor_span": "my uncle, owns four rental flats"
   },
   "next_question": {
@@ -148,7 +148,7 @@ Request:
 {
   "phase": "problem",
   "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
-  "user_line": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+  "user_line": "A tool for landlords when tenants pay in random partial chunks nobody can reconcile.",
   "spark_parse": {
     "solution_form": "tool",
     "implied_person": "landlords",
@@ -176,7 +176,7 @@ Response:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "question": "Walk me through the last time Bram received a set of partial payments he could not reconcile: what did he actually do with each chunk as it came in?",
+  "question": "Walk me through the last time Bram received one of these partial payments and describe exactly what he did with it from the moment it landed in his account.",
   "recovered_problem": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
   "needs_confirmation": false,
   "server_checks": {
@@ -196,7 +196,7 @@ Summary: state=settled · substitution_detected=false · swirl=no · changed=[Te
 Request:
 ```json
 {
-  "user_line": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+  "user_line": "A tool for landlords when tenants pay in random partial chunks nobody can reconcile.",
   "grape_name": "Bram",
   "grape_relationship": "my uncle, owns four rental flats",
   "maturity_class": 0,
@@ -225,7 +225,7 @@ Response:
     "anchor_span": "Last month a tenant sent three separate partial payments across two weeks"
   },
   "observation": {
-    "surface_text": "Tell is settled: a specific observable action is named. Vintage is settled: the behaviour is anchored to a single instance last month across a defined two-week window.",
+    "surface_text": "Bram's behaviour is observable: manual matching of bank transfers to a lease spreadsheet by hand. The moment is anchored to a specific recent instance across two weeks last month.",
     "anchor_span": "Last month a tenant sent three separate partial payments across two weeks, and Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand"
   },
   "substitution_detected": false,
@@ -268,11 +268,11 @@ Response:
     "anchor_span": "My neighbor Tom, who rents out a duplex, told me last month he started asking for one lump sum only after a similar reconciling headache."
   },
   "vintage": {
-    "state": "settled",
-    "anchor_span": "last month he started asking for one lump sum only after a similar reconciling headache"
+    "state": "clearing",
+    "anchor_span": "last month he started asking for one lump sum only"
   },
   "observation": {
-    "surface_text": "The Echo bar finds one identifiable third party, Tom, distinct from Bram and from the founder, who changed his payment policy in response to a reconciliation problem. The Vintage bar finds a specific anchored moment: last month, triggered by a concrete event.",
+    "surface_text": "The Echo bar finds one identifiable separate person, Tom, a neighbor who rents out a duplex, with a concrete behavioural response to the same reconciliation problem. The Vintage bar finds a recurring policy change anchored loosely to last month but no single discrete past instance.",
     "anchor_span": "My neighbor Tom, who rents out a duplex, told me last month he started asking for one lump sum only after a similar reconciling headache."
   },
   "substitution_detected": false,
@@ -322,7 +322,7 @@ Response:
     "anchor_span": "For her the pain is chasing the balance down, the reconciling part is fine"
   },
   "observation": {
-    "surface_text": "The answer names Priya, a storage business operator distinct from Bram and from Tom, with a concrete behaviour: manual ledger for partial payments. No specific past instance is anchored; the behaviour is described as ongoing practice.",
+    "surface_text": "The answer names Priya, a storage unit operator distinct from Bram and Tom, who keeps a manual ledger for partial payments. No specific past instance is given; the behaviour is described as a recurring practice.",
     "anchor_span": "Priya, who runs a small storage unit business, keeps a manual ledger for partial payments too"
   },
   "substitution_detected": false,
@@ -362,7 +362,7 @@ Response:
     "anchor_span": "a shared spreadsheet to track rent, but it has no way to flag a partial payment against the wrong month"
   },
   "observation": {
-    "surface_text": "The answer names a shared spreadsheet as the existing solution Bram currently uses. A precise failure point is present: it cannot flag a partial payment attributed to the wrong month, causing mismatches to accumulate.",
+    "surface_text": "The answer names a shared spreadsheet as the existing solution Bram uses today. A precise failure point is present: it cannot flag a partial payment attributed to the wrong month, causing mismatches to accumulate.",
     "anchor_span": "it has no way to flag a partial payment against the wrong month, so mismatches pile up"
   },
   "substitution_detected": false,
@@ -411,7 +411,7 @@ Response:
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer supplies a direct quote from a real exchange with Bram, and words_source is flagged real, meeting the settled bar. The words carry a stated frustration but no filmable action; the phrase \"after the Sunday one\" implies a recurring event without describing it visibly.",
+    "surface_text": "A direct quote from a real exchange is present and words_source is real, placing Words at settled. The words carry a stated frustration but no filmable action; the phrase \"after the Sunday one\" gestures at a recurring event without describing observable behaviour.",
     "anchor_span": "I just want one number a month, not a puzzle"
   },
   "substitution_detected": false,
@@ -451,7 +451,7 @@ Response:
     "anchor_span": "Owen only rents to corporate tenants on annual leases paid in full upfront"
   },
   "observation": {
-    "surface_text": "The answer names a bounded individual with a specific lease structure that eliminates partial payments. The reason for immunity is present and concrete: full annual billing forecloses the partial-chunk scenario entirely.",
+    "surface_text": "The answer names a bounded individual, Owen, with a specific lease arrangement that eliminates partial payments by design. The reason for immunity is present and precise: full-year billing upfront forecloses the partial-chunk dynamic entirely.",
     "anchor_span": "the whole year is billed at once"
   },
   "substitution_detected": false,
@@ -470,6 +470,7 @@ Response:
 - ⚠ VOICE: contrast-formula ("not X but Y" / "not just X") found at M2-phaseA.problem.text: "tenants do not just pay late, they pay in random partial chunks nobody can reconcile"
 
 ## Floor notes (informational — a later mechanism offered a lower grade for an opportunistic bar; the floor correctly held, no action needed)
+- M3 offered clearing for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
 - M4 offered turbid for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
 - M6 offered clearing for Tell, held at floor settled (opportunistic grading correctly did not lower it).
 - M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it).

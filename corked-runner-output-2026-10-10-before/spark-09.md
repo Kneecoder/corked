@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 09
 
-Generated: 2026-10-10T13:00:35.884Z
+Generated: 2026-10-10T12:49:38.536Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -15,9 +15,9 @@ Maturity class: 0
 Grape: Ilse — my physio, runs a two-person practice
 expect_halt: false
 
-Line sent to the worker (the spark as typed): "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week."
+Line sent to the worker (M0's line): "A tool for physiotherapists in small practices to handle the multi-step manual work every time an insurer rejects a claim over a mismatched treatment code."
 
-M0's line (verbatim, not shown in the app): "A tool for physiotherapists in small practices to handle the multi-step process of digging out referral letters, cross-checking codes, rewriting claims in the insurer portal, and following up, when an insurer rejects a claim over a mismatched treatment code."
+M0's line (verbatim, not shown in the app): "A tool for physiotherapists in small practices to handle the multi-step manual work every time an insurer rejects a claim over a mismatched treatment code."
 
 ## Element Tracker (final state, floor-enforced like corked_v6.html's rankUp — see "raw grades" for what each mechanism actually offered before the floor was applied)
 - **Grape**: settled — history: inert → settled (last raised by M1)
@@ -49,20 +49,20 @@ Response:
   "schema_version": "m0.v1",
   "mechanism": "M0",
   "raw_spark": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.",
-  "user_line_candidate": "A tool for physiotherapists in small practices to handle the multi-step process of digging out referral letters, cross-checking codes, rewriting claims in the insurer portal, and following up, when an insurer rejects a claim over a mismatched treatment code.",
+  "user_line_candidate": "A tool for physiotherapists in small practices to handle the multi-step manual work every time an insurer rejects a claim over a mismatched treatment code.",
   "spark_parse": {
     "solution_form": "tool",
     "implied_person": "physiotherapists in small practices",
-    "suspected_problem": "every insurer rejection over a mismatched treatment code triggers a multi-step manual process across multiple systems, plus a two-week follow-up, and nobody in a two-person practice has a spare afternoon for that every single week",
-    "triggering_situation": "an insurer rejects a claim over a mismatched treatment code",
+    "suspected_problem": "every time an insurer rejects a claim over a mismatched treatment code, the physio has to dig the referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and follow up two weeks later, and nobody in a two-person practice has a spare afternoon for that every single week",
+    "triggering_situation": "insurer rejects a claim over a mismatched treatment code",
     "promised_change": null,
-    "domain": "insurer claim rejections and treatment codes",
+    "domain": "insurance claim resubmission",
     "solution_is_software": "software"
   },
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The role is physiotherapists in small practices, the problem is the recurring manual workload each time an insurer rejects a claim over a mismatched treatment code, and the triggering situation is stated in full. Nothing is missing at this stage.",
+    "reason": "Cellar-ready. The role is physiotherapists in small practices, and the stated problem is the repeated multi-system manual process triggered each time an insurer rejects a claim over a mismatched treatment code. Both are present and specific.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -71,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name the specific physiotherapist and the moment an insurer rejection landed and set off that whole process.",
-    "hint": "A good answer names one physio, the practice size, and what they were doing when the rejection came in and the multi-step process started.",
+    "question": "Name the specific physiotherapist this starts from and the moment a rejected claim landed on their desk.",
+    "hint": "A good answer names one physio, their practice size, and the specific rejection they were staring at when the manual process began.",
     "person_label": "Physiotherapist",
-    "person_placeholder": "Renata, physio in a two-person practice",
+    "person_placeholder": "Elena, physiotherapist in a two-person practice",
     "when_label": "When the rejection arrived",
-    "when_placeholder": "a Tuesday afternoon mid-patient schedule when the insurer flagged a mismatched code",
+    "when_placeholder": "a Tuesday afternoon when the insurer rejected a claim over a mismatched code for a knee rehabilitation session",
     "trying_label": "What they were trying to do",
-    "trying_placeholder": "get the rejected claim resubmitted and a follow-up scheduled without losing the afternoon",
-    "happened_label": "What actually happened",
-    "happened_placeholder": "she pulled the referral letter from one system, opened the code list in a second, rewrote the claim line by line in the insurer portal, and set a manual reminder to check back in two weeks"
+    "trying_placeholder": "get the resubmitted claim through before the insurer's resubmission window closed",
+    "happened_label": "What the process actually looked like",
+    "happened_placeholder": "she opened three systems across two screens, typed the same patient details twice, and put a reminder in her phone to check the portal in two weeks"
   },
   "person_in_spark": {
     "grade": "none",
@@ -107,7 +107,7 @@ Summary: state=settled · substitution_detected=n/a · swirl=no · changed=[Grap
 Request:
 ```json
 {
-  "spark_summary": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.",
+  "spark_summary": "A tool for physiotherapists in small practices to handle the multi-step manual work every time an insurer rejects a claim over a mismatched treatment code.",
   "person_name": "Ilse",
   "relationship": "my physio, runs a two-person practice",
   "maturity_class": 0
@@ -126,7 +126,7 @@ Response:
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "A named individual is present. The relationship is specific and real: a physiotherapist who runs a two-person practice.",
+    "surface_text": "A named individual is present. A real operational relationship is stated.",
     "anchor_span": "my physio, runs a two-person practice"
   },
   "next_question": {
@@ -148,14 +148,14 @@ Request:
 {
   "phase": "problem",
   "raw_spark": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.",
-  "user_line": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.",
+  "user_line": "A tool for physiotherapists in small practices to handle the multi-step manual work every time an insurer rejects a claim over a mismatched treatment code.",
   "spark_parse": {
     "solution_form": "tool",
     "implied_person": "physiotherapists in small practices",
-    "suspected_problem": "every insurer rejection over a mismatched treatment code triggers a multi-step manual process across multiple systems, plus a two-week follow-up, and nobody in a two-person practice has a spare afternoon for that every single week",
-    "triggering_situation": "an insurer rejects a claim over a mismatched treatment code",
+    "suspected_problem": "every time an insurer rejects a claim over a mismatched treatment code, the physio has to dig the referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and follow up two weeks later, and nobody in a two-person practice has a spare afternoon for that every single week",
+    "triggering_situation": "insurer rejects a claim over a mismatched treatment code",
     "promised_change": null,
-    "domain": "insurer claim rejections and treatment codes",
+    "domain": "insurance claim resubmission",
     "solution_is_software": "software"
   },
   "grape_name": "Ilse",
@@ -176,7 +176,7 @@ Response:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "question": "Walk me through the last time Ilse got a rejection over a mismatched treatment code: which system did she open first, and what did she actually do before she got to the insurer portal?",
+  "question": "Walk me through the last time Ilse had an insurer reject a claim over a mismatched treatment code: which system did she go to first, and what did she actually do before she got to the resubmission in the portal?",
   "recovered_problem": "every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week",
   "needs_confirmation": false,
   "server_checks": {
@@ -196,7 +196,7 @@ Summary: state=settled · substitution_detected=false · swirl=no · changed=[Te
 Request:
 ```json
 {
-  "user_line": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.",
+  "user_line": "A tool for physiotherapists in small practices to handle the multi-step manual work every time an insurer rejects a claim over a mismatched treatment code.",
   "grape_name": "Ilse",
   "grape_relationship": "my physio, runs a two-person practice",
   "maturity_class": 0,
@@ -225,7 +225,7 @@ Response:
     "anchor_span": "Last Tuesday an insurer rejected a claim over a mismatched code"
   },
   "observation": {
-    "surface_text": "The answer names a specific observable sequence: Ilse retrieved the referral letter and rewrote the claim line by line in the portal. The moment is anchored to a single named instance last Tuesday.",
+    "surface_text": "The answer names a specific observable sequence: digging out the referral letter and rewriting the claim line by line in the portal. The moment is anchored to a single named instance: last Tuesday, triggered by a specific rejection event.",
     "anchor_span": "Last Tuesday an insurer rejected a claim over a mismatched code, and Ilse spent her lunch break digging out the referral letter and rewriting the claim line by line in the portal"
   },
   "substitution_detected": false,
@@ -272,7 +272,7 @@ Response:
     "anchor_span": "last month he started keeping a printed code cheat-sheet"
   },
   "observation": {
-    "surface_text": "The Echo bar finds one identifiable separate person, Jordan, distinct from Ilse and the founder, who took a concrete workaround action in response to a code-mismatch rejection. The Vintage bar finds a time reference of last month but no single anchored instance, only the onset of a recurring habit.",
+    "surface_text": "The Echo bar finds one identifiable separate person, Jordan, distinct from Ilse and the founder, with a concrete workaround behaviour in response to a similar rejection. The Vintage bar finds a time reference, last month, anchoring the start of the behaviour but describing an ongoing habit rather than a single discrete instance.",
     "anchor_span": "My friend Jordan, who runs a small dental practice, told me last month he started keeping a printed code cheat-sheet after a similar rejection"
   },
   "substitution_detected": false,
@@ -322,7 +322,7 @@ Response:
     "anchor_span": "For her the pain is the follow-up timing, the coding part is fine"
   },
   "observation": {
-    "surface_text": "A named person distinct from Ilse and Jordan is present, with one concrete workaround behaviour described. No specific past instance is anchored; the folder-keeping reads as an ongoing practice rather than a single moment.",
+    "surface_text": "The answer names a distinct person, Priya, not the grape and not Jordan, with a concrete workaround: a folder of approved claims used as copy templates. No specific past instance is anchored; the behaviour is described as an ongoing practice.",
     "anchor_span": "Priya, a massage therapist I met at a conference, keeps a folder of past approved claims to copy from"
   },
   "substitution_detected": false,
@@ -362,7 +362,7 @@ Response:
     "anchor_span": "Ilse uses the insurer's own portal to resubmit claims, but it has no way to flag which codes were previously rejected"
   },
   "observation": {
-    "surface_text": "The answer names a specific existing solution: the insurer's own portal used for claim resubmission. A precise failure point is present: the portal cannot flag previously rejected codes, allowing the same mismatch to recur.",
+    "surface_text": "The answer names an existing solution: the insurer's own portal, used for claim resubmission. A precise failure point is present: the portal does not flag previously rejected codes, allowing the same mismatch to recur.",
     "anchor_span": "it has no way to flag which codes were previously rejected, so the same mismatch can happen twice"
   },
   "substitution_detected": false,
@@ -400,7 +400,7 @@ Response:
   "state": "settled",
   "words": {
     "state": "settled",
-    "anchor_span": "I don't have a spare afternoon for this every week"
+    "anchor_span": "\"I don't have a spare afternoon for this every week,\" she said after the Tuesday one."
   },
   "tell": {
     "state": "settled",
@@ -411,8 +411,8 @@ Response:
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "A direct quote from a real exchange is present, and words_source is real. The phrase 'after the Tuesday one' anchors the words to a specific, filmable occasion rather than a general sentiment.",
-    "anchor_span": "she said after the Tuesday one"
+    "surface_text": "The answer contains a direct quote from a real exchange, attributed to Ilse by name and tied to a specific occasion. The phrase \"after the Tuesday one\" places the words at a filmable moment following an identifiable event.",
+    "anchor_span": "\"I don't have a spare afternoon for this every week,\" she said after the Tuesday one."
   },
   "substitution_detected": false,
   "server_checks": {
@@ -451,7 +451,7 @@ Response:
     "anchor_span": "Owen works purely on a cash-pay basis with no insurance billing at all"
   },
   "observation": {
-    "surface_text": "The answer names a bounded individual and a specific operational arrangement that removes insurance billing entirely. The reason for immunity is present and precise: no claims exist to be rejected.",
+    "surface_text": "The answer names a bounded individual and assigns him a specific structural arrangement that removes insurance billing entirely. The reason for immunity is present and concrete: no claims are submitted, so no rejections can occur.",
     "anchor_span": "Claim rejections never happen to him because there are no claims to submit"
   },
   "substitution_detected": false,

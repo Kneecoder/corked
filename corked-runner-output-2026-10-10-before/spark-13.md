@@ -1,10 +1,10 @@
-# Corked Runner Report — spark 16
+# Corked Runner Report — spark 13
 
-Generated: 2026-10-10T13:05:19.486Z
+Generated: 2026-10-10T12:52:19.639Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
-M5 one leg — with secondary M7 probe. Expect: M5 gap clearing — named solution, no failure point. M7 limit clearing — a who without a why, and a loose category rather than a bounded group. (m2, m3, m4, m6 not specified by the brief — left on generic settled-quality placeholders.)
+Substitution rule, M2 — with secondary M6 probe. Expect: M2 substitution_detected true, tell turbid (no grape behaviour referenced at all), overall turbid. Observation names what was described and what was asked for, nothing more — no interpretation, no named avoidance. Secondary: M6 words turbid — the builder's framing presented as the grape's meaning is not language from the grape.
 
 ## Raw Spark
 ```
@@ -12,24 +12,24 @@ An app for one-man trade businesses who forget to chase unpaid invoices until th
 ```
 
 Maturity class: 0
-Grape: Noor — my friend, runs a one-woman landscaping business
+Grape: Daan — my former colleague, wedding DJ
 expect_halt: false
 
-Line sent to the worker (the spark as typed): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
+Line sent to the worker (M0's line): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
 
 M0's line (verbatim, not shown in the app): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
 
 ## Element Tracker (final state, floor-enforced like corked_v6.html's rankUp — see "raw grades" for what each mechanism actually offered before the floor was applied)
 - **Grape**: settled — history: inert → settled (last raised by M1)
   raw grades: M1=settled
-- **Tell**: clearing — history: inert → clearing (last raised by M6)
-  raw grades: M2=clearing, M6=clearing
-- **Vintage**: settled — history: inert → settled (last raised by M4)
-  raw grades: M2=settled, M3=clearing, M4=turbid
+- **Tell**: turbid — history: inert → turbid (last raised by M6)
+  raw grades: M2=turbid, M6=turbid
+- **Vintage**: turbid — history: inert → turbid (last raised by M4)
+  raw grades: M2=turbid, M3=turbid, M4=turbid
 - **Gap**: clearing — history: inert → clearing (last raised by M5)
   raw grades: M5=clearing
-- **Echo**: settled — history: inert → settled (last raised by M6)
-  raw grades: M3=settled, M4=clearing, M6=turbid
+- **Echo**: turbid — history: inert → turbid (last raised by M6)
+  raw grades: M3=turbid, M4=turbid, M6=turbid
 - **Limit**: clearing — history: inert → clearing (last raised by M7)
   raw grades: M7=clearing
 
@@ -54,7 +54,7 @@ Response:
     "solution_form": "app",
     "implied_person": "one-man trade businesses",
     "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
-    "triggering_situation": null,
+    "triggering_situation": "unpaid invoices left unchased until money becomes a problem",
     "promised_change": null,
     "domain": "unpaid invoices",
     "solution_is_software": "software"
@@ -62,7 +62,7 @@ Response:
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The role is clear and the stated problem is forgetting to chase unpaid invoices until it becomes a money problem. Both enter cleanly.",
+    "reason": "Cellar-ready. The role is clear and the stated problem, forgetting to chase unpaid invoices until the money is already a problem, is present and usable.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -71,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name a specific one-man trade business owner and the moment they realised an unpaid invoice had become a money problem.",
-    "hint": "A good answer names the person and the exact moment they noticed the money was short, not a general habit.",
+    "question": "Name a specific one-man trade business owner and the moment they realised an unpaid invoice had been sitting too long.",
+    "hint": "A good answer names the person and describes the exact moment the money shortage surfaced, before they had done anything about the invoice.",
     "person_label": "Tradesperson",
     "person_placeholder": "Danny, sole-trader electrician",
-    "when_label": "When the money became a problem",
-    "when_placeholder": "when he checked his account the week before a materials payment was due",
-    "trying_label": "What he was trying to do",
-    "trying_placeholder": "cover the next month's costs without dipping into savings",
-    "happened_label": "What he found",
-    "happened_placeholder": "three invoices from the previous month still unpaid and no record of him chasing any of them"
+    "when_label": "When the invoice problem surfaced",
+    "when_placeholder": "six weeks after finishing the job, when rent was due",
+    "trying_label": "What they were trying to do",
+    "trying_placeholder": "cover the month's expenses without chasing the client",
+    "happened_label": "What actually happened",
+    "happened_placeholder": "He checked his account and realised the invoice had never been followed up and the client had gone quiet."
   },
   "person_in_spark": {
     "grade": "none",
@@ -108,8 +108,8 @@ Request:
 ```json
 {
   "spark_summary": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
-  "person_name": "Noor",
-  "relationship": "my friend, runs a one-woman landscaping business",
+  "person_name": "Daan",
+  "relationship": "my former colleague, wedding DJ",
   "maturity_class": 0
 }
 ```
@@ -121,13 +121,13 @@ Response:
   "outcome": "settled",
   "grape": {
     "state": "settled",
-    "named_person": "Noor",
+    "named_person": "Daan",
     "person_kind": "named_individual",
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "A named individual is present. The stated relationship is a real, specific tie to the spark domain.",
-    "anchor_span": "my friend, runs a one-woman landscaping business"
+    "surface_text": "A named individual is present. A real stated relationship ties him to the submitter.",
+    "anchor_span": "my former colleague, wedding DJ"
   },
   "next_question": {
     "should_advance": true,
@@ -153,13 +153,13 @@ Request:
     "solution_form": "app",
     "implied_person": "one-man trade businesses",
     "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
-    "triggering_situation": null,
+    "triggering_situation": "unpaid invoices left unchased until money becomes a problem",
     "promised_change": null,
     "domain": "unpaid invoices",
     "solution_is_software": "software"
   },
-  "grape_name": "Noor",
-  "grape_relationship": "my friend, runs a one-woman landscaping business",
+  "grape_name": "Daan",
+  "grape_relationship": "my former colleague, wedding DJ",
   "maturity_class": 0
 }
 ```
@@ -176,7 +176,7 @@ Response:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "question": "Tell me about the last specific time Noor forgot to chase an unpaid invoice and the money had already become a problem, what did she actually do when she noticed?",
+  "question": "Walk me through the last time Daan forgot to chase an unpaid invoice and then hit a money problem: what did he actually do, and what did he do next?",
   "recovered_problem": "forget to chase unpaid invoices until the money is a problem",
   "needs_confirmation": false,
   "server_checks": {
@@ -185,22 +185,20 @@ Response:
     "outcome": "stated",
     "downgrades": [],
     "unsupported_words": [],
-    "visible_style_violations_cleaned": [
-      "question:dash"
-    ],
+    "visible_style_violations_cleaned": [],
     "m2_question_repaired": false
   }
 }
 ```
 
 ### 4. [main] M2 · /m2
-Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[Tell, Vintage]
+Summary: state=turbid · substitution_detected=true · swirl=yes · changed=[Tell, Vintage]
 Request:
 ```json
 {
   "user_line": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
-  "grape_name": "Noor",
-  "grape_relationship": "my friend, runs a one-woman landscaping business",
+  "grape_name": "Daan",
+  "grape_relationship": "my former colleague, wedding DJ",
   "maturity_class": 0,
   "problem": {
     "text": "forget to chase unpaid invoices until the money is a problem",
@@ -208,7 +206,7 @@ Request:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "user_answer": "Last Tuesday, right before a deadline, Noor tried the usual approach and it broke down at the same point it always does. Noor gave up partway through and fell back to a plain spreadsheet, because the thing they normally use for this does not catch it in time."
+  "user_answer": "I would build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice before the date frees up."
 }
 ```
 Response:
@@ -217,28 +215,28 @@ Response:
   "schema_version": "m2.v1",
   "mechanism": "M2",
   "phase": "friction",
-  "state": "clearing",
+  "state": "turbid",
   "tell": {
-    "state": "clearing",
-    "anchor_span": "gave up partway through and fell back to a plain spreadsheet"
+    "state": "turbid",
+    "anchor_span": "I would build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice"
   },
   "vintage": {
-    "state": "settled",
-    "anchor_span": "Last Tuesday, right before a deadline"
+    "state": "turbid",
+    "anchor_span": null
   },
   "observation": {
-    "surface_text": "Vintage is anchored to a specific moment. The Tell names a retreat to a spreadsheet but the action that broke down is described only as 'the usual approach' collapsing at 'the same point it always does,' which is a pattern rather than a filmable behaviour.",
-    "anchor_span": "gave up partway through and fell back to a plain spreadsheet"
+    "surface_text": "The answer describes the founder's intended build stack in place of any observable action by Daan. No specific instance of Daan forgetting to chase an invoice is named in the answer.",
+    "anchor_span": "I would build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice"
   },
-  "substitution_detected": false,
+  "substitution_detected": true,
   "swirl": {
     "kind": "reality",
-    "question": "Is this account of last Tuesday drawn from something Noor described directly, or is it reconstructed from a general sense of how her process tends to go?"
+    "question": "Has Daan ever described a moment when a specific unpaid invoice caught him off guard, or is the forgetting inferred from what you imagine a wedding DJ must experience?"
   },
   "server_checks": {
     "schema_valid": true,
     "tell_anchor_verified": true,
-    "vintage_anchor_verified": true,
+    "vintage_anchor_verified": false,
     "obs_anchor_verified": true,
     "visible_style_violations_cleaned": [],
     "overall_state_is_floor": true,
@@ -248,7 +246,7 @@ Response:
 ```
 
 ### 5. [main] M3 · /m3
-Summary: state=settled · substitution_detected=false · swirl=no · changed=[Echo]
+Summary: state=turbid · substitution_detected=false · swirl=yes · changed=[Echo]
 Request:
 ```json
 {
@@ -257,10 +255,10 @@ Request:
     "source": "user_stated",
     "status": "confirmed"
   },
-  "grape_name": "Noor",
-  "grape_relationship": "my friend, runs a one-woman landscaping business",
+  "grape_name": "Daan",
+  "grape_relationship": "my former colleague, wedding DJ",
   "maturity_class": 0,
-  "user_answer": "Last month, my colleague Jordan mentioned he hits this same thing and just pays a freelancer to sort it out whenever it comes up."
+  "user_answer": "My friend Owen, another wedding DJ, told me last month he started requiring signed contracts after a similar cancellation dispute."
 }
 ```
 Response:
@@ -268,31 +266,35 @@ Response:
 {
   "schema_version": "m3.v1",
   "mechanism": "M3",
-  "state": "settled",
+  "state": "turbid",
   "echo": {
-    "state": "settled",
-    "anchor_span": "my colleague Jordan mentioned he hits this same thing and just pays a freelancer to sort it out whenever it comes up"
+    "state": "turbid",
+    "anchor_span": null
   },
   "vintage": {
-    "state": "clearing",
-    "anchor_span": "whenever it comes up"
+    "state": "turbid",
+    "anchor_span": null
   },
   "observation": {
-    "surface_text": "The Echo bar finds one identifiable person separate from the grape and the founder, Jordan, with a concrete workaround of paying a freelancer to handle chasing. The Vintage bar finds a recurring pattern rather than a single anchored instance.",
-    "anchor_span": "my colleague Jordan mentioned he hits this same thing and just pays a freelancer to sort it out whenever it comes up"
+    "surface_text": "The answer names Owen and describes a behaviour around signed contracts after a cancellation dispute, which does not connect to the confirmed problem of forgetting to chase unpaid invoices. No third party is present whose behaviour addresses the invoice-chasing problem.",
+    "anchor_span": "he started requiring signed contracts after a similar cancellation dispute"
   },
   "substitution_detected": false,
+  "swirl": {
+    "kind": "reality",
+    "question": "Has Owen ever mentioned what happens to his unpaid invoices specifically, or is the signed-contract detail the full extent of what you know about how he handles money owed to him?"
+  },
   "server_checks": {
     "schema_valid": true,
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
-    "swirl_included": false
+    "swirl_included": true
   }
 }
 ```
 
 ### 6. [main] M4 · /m4
-Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[none]
+Summary: state=turbid · substitution_detected=false · swirl=yes · changed=[none]
 Request:
 ```json
 {
@@ -301,11 +303,11 @@ Request:
     "source": "user_stated",
     "status": "confirmed"
   },
-  "grape_name": "Noor",
-  "grape_relationship": "my friend, runs a one-woman landscaping business",
+  "grape_name": "Daan",
+  "grape_relationship": "my former colleague, wedding DJ",
   "maturity_class": 0,
-  "prior_echo_context": "Last month, my colleague Jordan mentioned he hits this same thing and just pays a freelancer to sort it out whenever it comes up.",
-  "user_answer": "A friend named Priya, who works in a completely different setup, said she keeps a manual backup log for it, though for her it shows up a little differently."
+  "prior_echo_context": "My friend Owen, another wedding DJ, told me last month he started requiring signed contracts after a similar cancellation dispute.",
+  "user_answer": "Priya, a wedding florist I met through a vendor group, keeps a deposit tracking spreadsheet too. For her the pain is last-minute order changes, the deposit part is fine."
 }
 ```
 Response:
@@ -313,10 +315,10 @@ Response:
 {
   "schema_version": "m4.v1",
   "mechanism": "M4",
-  "state": "clearing",
+  "state": "turbid",
   "echo": {
-    "state": "clearing",
-    "anchor_span": "A friend named Priya, who works in a completely different setup, said she keeps a manual backup log for it"
+    "state": "turbid",
+    "anchor_span": null
   },
   "vintage": {
     "state": "turbid",
@@ -324,17 +326,17 @@ Response:
   },
   "contrast": {
     "is_different_kind": "unclear",
-    "same_or_different": "different",
-    "anchor_span": "for her it shows up a little differently"
+    "same_or_different": "unclear",
+    "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer names Priya and attributes one concrete behaviour to her, but her role, context, and relationship to the problem are not described, leaving her identity too thin to confirm as a distinct real individual. No specific past instance is present, only a recurring practice.",
-    "anchor_span": "A friend named Priya, who works in a completely different setup, said she keeps a manual backup log for it"
+    "surface_text": "The answer introduces Priya but explicitly states the deposit tracking is not her pain point, placing her outside the confirmed problem of forgetting to chase unpaid invoices. No concrete behaviour toward the confirmed problem is present for any new third party.",
+    "anchor_span": "the deposit part is fine"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is Priya a specific person the Winemaster could look up by name and context, or is she a stand-in for a type of person who probably does this?"
+    "question": "Does Priya ever lose track of whether a deposit was actually collected, or is the invoice-chasing problem one the Winemaster should be looking for in a different person entirely?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -355,10 +357,10 @@ Request:
     "source": "user_stated",
     "status": "confirmed"
   },
-  "grape_name": "Noor",
-  "grape_relationship": "my friend, runs a one-woman landscaping business",
+  "grape_name": "Daan",
+  "grape_relationship": "my former colleague, wedding DJ",
   "maturity_class": 0,
-  "user_answer": "She uses Moneybird."
+  "user_answer": "Daan uses a plain email thread to track bookings and cancellations, but nothing flags when a cancellation actually happens, so he has to notice it himself."
 }
 ```
 Response:
@@ -369,22 +371,20 @@ Response:
   "state": "clearing",
   "gap": {
     "state": "clearing",
-    "anchor_span": "She uses Moneybird."
+    "anchor_span": "Daan uses a plain email thread to track bookings and cancellations"
   },
   "observation": {
-    "surface_text": "The answer names an existing solution, Moneybird. No failure point is stated, the answer does not say what Moneybird fails to do for Noor in relation to chasing unpaid invoices.",
-    "anchor_span": "She uses Moneybird."
+    "surface_text": "The answer names an existing solution: a plain email thread used to track bookings and cancellations. The failure described concerns cancellation detection, not the confirmed problem of chasing unpaid invoices.",
+    "anchor_span": "nothing flags when a cancellation actually happens"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "When Noor opens Moneybird and an invoice sits unpaid past its due date, what specifically happens next, does the tool alert her, does she notice it herself, or does it go unseen until something else surfaces it?"
+    "question": "When Daan last forgot to chase an unpaid invoice, what did he actually look at or reach for in the moment he realized money was missing?"
   },
   "server_checks": {
     "schema_valid": true,
-    "visible_style_violations_cleaned": [
-      "observation.surface_text:dash"
-    ],
+    "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": true
   }
@@ -392,7 +392,7 @@ Response:
 ```
 
 ### 8. [main] M6 · /m6
-Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[none]
+Summary: state=turbid · substitution_detected=true · swirl=yes · changed=[none]
 Request:
 ```json
 {
@@ -401,11 +401,11 @@ Request:
     "source": "user_stated",
     "status": "confirmed"
   },
-  "grape_name": "Noor",
-  "grape_relationship": "my friend, runs a one-woman landscaping business",
+  "grape_name": "Daan",
+  "grape_relationship": "my former colleague, wedding DJ",
   "maturity_class": 0,
   "words_source": "real",
-  "user_answer": "\"I just want this part to be boring,\" Noor said, when we talked about it last week."
+  "user_answer": "What she basically means is that the admin side makes her feel unprofessional."
 }
 ```
 Response:
@@ -413,27 +413,27 @@ Response:
 {
   "schema_version": "m6.v1",
   "mechanism": "M6",
-  "state": "clearing",
+  "state": "turbid",
   "words": {
-    "state": "clearing",
-    "anchor_span": "I just want this part to be boring"
+    "state": "turbid",
+    "anchor_span": null
   },
   "tell": {
-    "state": "clearing",
-    "anchor_span": "I just want this part to be boring"
+    "state": "turbid",
+    "anchor_span": null
   },
   "echo": {
     "state": "turbid",
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer supplies real attributed language from Noor with words_source flagged real, but the quote carries a sentiment rather than a filmable action. No third-party detail appears in the words.",
-    "anchor_span": "I just want this part to be boring"
+    "surface_text": "The answer supplies the founder's own interpretive gloss rather than any language attributed to Daan, though words_source is real. No filmable behaviour or third-party reference is present to assess.",
+    "anchor_span": "What she basically means is that the admin side makes her feel unprofessional."
   },
-  "substitution_detected": false,
+  "substitution_detected": true,
   "swirl": {
     "kind": "reality",
-    "question": "What was the specific moment or trigger that brought Noor to say this, was she looking at an overdue invoice, describing a past situation, or speaking in the abstract about the work in general?"
+    "question": "When the conversation with Daan happened, what words did he use to describe why the unpaid invoices felt like a problem?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -454,10 +454,10 @@ Request:
     "source": "user_stated",
     "status": "confirmed"
   },
-  "grape_name": "Noor",
-  "grape_relationship": "my friend, runs a one-woman landscaping business",
+  "grape_name": "Daan",
+  "grape_relationship": "my former colleague, wedding DJ",
   "maturity_class": 0,
-  "user_answer": "Agency photographers probably don't have this."
+  "user_answer": "Jordan only DJs corporate events booked through an agency on annual contract. Cancellations never cost him anything because the agency guarantees the booking."
 }
 ```
 Response:
@@ -468,16 +468,16 @@ Response:
   "state": "clearing",
   "limit": {
     "state": "clearing",
-    "anchor_span": "Agency photographers probably don't have this."
+    "anchor_span": "Jordan only DJs corporate events booked through an agency on annual contract"
   },
   "observation": {
-    "surface_text": "The answer names a loose category without a bounded individual or specific arrangement. No reason for immunity is given, leaving the exclusion without a mechanism.",
-    "anchor_span": "Agency photographers probably don't have this."
+    "surface_text": "The answer names a bounded person and a specific arrangement. The immunity reason addresses cancellation cost, not the confirmed problem of forgetting to chase unpaid invoices.",
+    "anchor_span": "the agency guarantees the booking"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is there a specific photographer, by name or precise situation, whose billing arrangement actually prevents the invoice-chasing problem from arising at all?"
+    "question": "Does Jordan's agency arrangement actually eliminate the need to track whether invoices are paid, or does it only shift who sends the invoice?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -492,7 +492,4 @@ Response:
 - none detected
 
 ## Floor notes (informational — a later mechanism offered a lower grade for an opportunistic bar; the floor correctly held, no action needed)
-- M3 offered clearing for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
-- M4 offered clearing for Echo, held at floor settled (opportunistic grading correctly did not lower it).
-- M4 offered turbid for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
-- M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it).
+- none

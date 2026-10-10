@@ -192,7 +192,6 @@ body {
 .wm-intake-content.m0-has-result #m0-result { order:1; }
 .wm-intake-content.m0-has-result .spark-source-row { order:2; margin-top:18px; padding-top:18px; border-top:1px solid var(--border); }
 .wm-intake-content.m0-has-result #f-inp { order:3; }
-.wm-intake-content.m0-has-result #m0-action-row { order:5; }
 .wm-intake-content.m0-has-result #m0-config { order:6; }
 .wm-section.m0-hidden { display:none; }
 .wm-intake-content.m0-revealing #m0-result {
@@ -202,10 +201,6 @@ body {
 .wm-intake-content.m0-revealing #f-inp {
   animation:m0-source-settle .9s cubic-bezier(.32,0,.24,1) both;
   animation-delay:.85s;
-}
-.wm-intake-content.m0-revealing #m0-action-row {
-  animation:m0-action-reveal .75s ease both;
-  animation-delay:1.45s;
 }
 .ph-overlay {
   position:absolute; inset:0;
@@ -397,7 +392,6 @@ body {
 }
 .opt:hover { border-color:var(--border-hi); }
 .opt.sel { border-color:var(--wine); background:rgba(122,46,60,.12); }
-.opt.dim { opacity:.3; pointer-events:none; }
 .opt-letter { font-size:.68rem; color:var(--wine-hi); font-weight:500; letter-spacing:.05em; padding-top:.15rem; min-width:14px; }
 .opt-text { font-size:.875rem; color:var(--cream); line-height:1.45; }
 .opt-sub { font-size:.775rem; color:var(--muted); margin-top:.2rem; }
@@ -964,14 +958,6 @@ body {
   border:1px solid var(--border);
   pointer-events:none;
 }
-.m0-stamp-eyebrow {
-  font-size:.7rem;
-  letter-spacing:.28em;
-  text-transform:uppercase;
-  color:var(--gold);
-  margin-bottom:13px;
-  -webkit-font-smoothing:antialiased;
-}
 .m0-stamp-line {
   font-family:'Playfair Display',serif;
   font-size:1.45rem;
@@ -1004,14 +990,6 @@ body {
 .m0-original .field {
   min-height:118px;
 }
-.m0-action-row {
-  display:flex;
-  justify-content:flex-end;
-  align-items:center;
-  margin-top:18px;
-  padding-top:18px;
-  border-top:1px solid var(--border);
-}
 @keyframes m0-bottle-reveal {
   0%   { opacity:0; transform:translateY(16px); filter:brightness(.82); }
   42%  { opacity:1; transform:translateY(0); filter:brightness(1.06); }
@@ -1020,10 +998,6 @@ body {
 @keyframes m0-source-settle {
   0%   { opacity:.28; transform:translateY(-10px); filter:brightness(.82); }
   100% { opacity:1; transform:translateY(0); filter:brightness(1); }
-}
-@keyframes m0-action-reveal {
-  from { opacity:0; transform:translateY(8px); }
-  to   { opacity:1; transform:translateY(0); }
 }
 .m0-actions {
   display:flex;
@@ -2573,7 +2547,7 @@ function buildMechs() {
 // ── INTAKE ──
 const MATURITY_TREE = {
   q1: {
-    q: 'Have you spoken to a real person who has this problem?',
+    q: 'Have you spoken to a real person this spark comes from?',
     note: 'This sets how Phase 1 questions you. Claiming more than you have gains you nothing.',
     opts: [
       { l:'A', t:'Yes.', s:'There is a real conversation behind this.', next:'q2' },
@@ -2589,7 +2563,7 @@ const MATURITY_TREE = {
     ]
   },
   q3: {
-    q: 'Are you the person with this problem yourself?',
+    q: 'Does this spark come from you?',
     note: 'Your own experience becomes the starting point.',
     opts: [
       { l:'A', t:'Yes. This comes from my own experience.', s:'Your own experience becomes the starting point.', cls:2 },
@@ -2639,14 +2613,6 @@ function renderIntake() {
   const step = INTAKE[intakeStep];
   const first = intakeStep === 0;
   const last  = intakeStep === INTAKE.length - 1;
-
-  // A person already extracted from the raw spark answers Q1 implicitly ("yes") — skip straight to Q2.
-  if (step.id === 'maturity' && maturityNode === 'q1' && maturityHistory.length === 0
-      && window._v6M0?.data?.person_in_spark?.grade === 'settled') {
-    maturityNode = 'q2';
-    maturityLeafIdx = 1;
-    intakeSel['maturity'] = MATURITY_TREE.q2.opts[1].cls;
-  }
 
   const segs = Array.from({length: INTAKE.length}, (_,i) =>
     `<div class="intake-prog-seg${i <= intakeStep ? ' done' : ''}"></div>`
@@ -2706,7 +2672,6 @@ function renderIntake() {
             <circle cx="14" cy="14" r="12.5" stroke="currentColor" stroke-width=".75"/>
             <circle cx="14" cy="14" r="8.5" stroke="currentColor" stroke-width=".5"/>
           </svg>
-          <div class="m0-stamp-eyebrow" id="m0-eyebrow"></div>
           <div class="m0-stamp-line" id="m0-entry-line"></div>
         </div>
       </div>
@@ -2728,30 +2693,22 @@ function renderIntake() {
               The cellar will hold it while you go.
             </p>`;
     } else {
-      const setup = S.m0?.m1_setup;
+      // Fixed labels and empty fields. Nothing here comes from M0's reading of the spark.
       const isSelf = S.maturity === 2;
-      const nameLabel = isSelf ? 'Your first name' : (setup?.person_label || 'Their first name');
-      const namePh   = isSelf ? 'e.g. James' : (setup?.person_placeholder || 'e.g. Sarah');
       const relLabel = isSelf ? 'What makes this spark yours?' : 'How do you know them?';
-      const relPh    = isSelf
-        ? 'I keep opening tabs to read later, then losing them.'
-        : 'e.g. my sister, my old manager from the London office, the café owner downstairs';
-      const _grapePis = window._v6M0?.data?.person_in_spark;
-      const _pisSettled = _grapePis?.grade === 'settled';
-      const savedName = escHtml(intakeSel['grape_name'] || (_pisSettled ? _grapePis.named_person : '') || '');
-      const savedRel  = escHtml(intakeSel['grape_rel']  || (_pisSettled ? _grapePis.relationship_tie : '') || '');
+      const savedName = escHtml(intakeSel['grape_name'] || '');
+      const savedRel  = escHtml(intakeSel['grape_rel']  || '');
       const grapeErr  = intakeSel['grape_error'];
       h += `<div>
-              <div class="grape-input-label" style="display:block;margin-bottom:.45rem">${nameLabel}</div>
+              <div class="grape-input-label" style="display:block;margin-bottom:.45rem">Name</div>
               <input type="text" class="field" id="grape-name-inp" maxlength="60"
-                     placeholder="${namePh}" value="${savedName}"
+                     value="${savedName}"
                      style="font-size:.9rem" oninput="this.style.borderColor=''">
               ${isSelf ? '' : `<button type="button" class="self-choice-btn" onclick="chooseSelfAtPersonStep()">This is me</button>`}
             </div>
             <div style="margin-top:.85rem">
               <div class="grape-input-label" style="display:block;margin-bottom:.45rem">${relLabel}</div>
               <textarea class="field" id="grape-rel-inp" rows="2" ${isSelf ? 'maxlength="300"' : ''}
-                        placeholder="${relPh}"
                         style="min-height:80px;resize:none"
                         oninput="this.style.borderColor=''">${savedRel}</textarea>
             </div>`;
@@ -2765,30 +2722,11 @@ function renderIntake() {
     }
   } else {
     const effOpts = step.id === 'maturity' ? MATURITY_TREE[maturityNode].opts : step.opts;
-    const _pis = (step.id === 'maturity' && maturityNode === 'q2' && window._v6M0?.data?.person_in_spark?.grade === 'settled')
-      ? window._v6M0.data.person_in_spark : null;
-    if (_pis) {
-      const rawTie = _pis.relationship_tie || '';
-      const hasPoss = /^(my|our)\s+/i.test(rawTie);
-      const tieTxt  = rawTie.replace(/^(my|our)\s+/i, '');
-      const pisName = escHtml(_pis.named_person || '');
-      const pisTie  = escHtml(rawTie);
-      const pisTieClean = escHtml(tieTxt);
-      const reason = pisName && rawTie
-        ? hasPoss
-          ? `You named your ${pisTieClean} ${pisName}, so the cellar already knows who this comes from.`
-          : `You named ${pisName}, ${pisTie}, so the cellar already knows who this comes from.`
-        : pisName
-          ? `You named ${pisName} in your spark, so the cellar already knows who this comes from.`
-          : 'The cellar found a real person in your spark.';
-      h += `<div style="font-size:.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;padding:.55rem .85rem;background:rgba(122,46,60,.06);border-left:2px solid var(--wine-dim)">${reason}</div>`;
-    }
     h += `<div class="options">`;
     effOpts.forEach((o,i) => {
       const sel = step.id === 'maturity' ? (maturityLeafIdx === i) : (intakeSel[step.id] === i);
-      const dim = !!(_pis && i !== 0);
       const likelySelf = step.id === 'maturity' && o.cls === 2 && rawSparkHasFirstPerson();
-      h += `<div class="opt${sel?' sel':''}${dim?' dim':''}" ${dim?'':'onclick="pickOpt('+i+')"'}>
+      h += `<div class="opt${sel?' sel':''}" onclick="pickOpt(${i})">
               <div class="opt-letter">${o.l}</div>
               <div>
                 <div class="opt-text">${o.t}</div>
@@ -2804,9 +2742,6 @@ function renderIntake() {
     h += `<div id="v6-bottom-bar" class="row" style="margin-top:2rem">
             <span id="v6-bottle-status" style="font-size:.72rem;color:var(--muted)"></span>
             <button class="btn" id="v6-bottle-btn" onclick="v6BottleSpark()">Bottle your spark →</button>
-          </div>`;
-    h += `<div class="m0-action-row" id="m0-action-row" style="display:none">
-            <button class="btn-sm" id="m0-bottle-btn" onclick="v6BottleThis()" style="display:none">Seal this line</button>
           </div>`;
   } else {
     const btnLabel = (step.type === 'person' && S.maturity === 3) ? 'Save spark →'
@@ -2935,7 +2870,7 @@ async function intakeNext() {
 }
 
 // "This is me" at the person step puts the bottle in self mode, the same as answering the setup
-// question "Are you the person with this problem yourself?" with "Yes". The name stays; the second
+// question "Does this spark come from you?" with "Yes". The name stays; the second
 // field now asks what makes the spark yours, so it starts empty.
 function chooseSelfAtPersonStep() {
   const nameEl = document.getElementById('grape-name-inp');
@@ -3475,9 +3410,10 @@ function showWhatChanged(rows) {
   el.classList.add('is-visible');
 }
 
-// What the worker reads as the idea's line. Still M0's line, so the mechanisms read what they
-// read before; the builder never sees it.
+// What the worker reads as the idea's line (M1, field briefs, M2): the same line the bottle
+// shows. Bottles sealed before the spark became the line keep sending M0's line.
 function getSparkSummary() {
+  if (S.lineIsSpark) return S.idea;
   return S.m0?.user_line || S.m0?.user_line_candidate || S.idea;
 }
 
@@ -6311,16 +6247,14 @@ function showOriginalSparkLabel() {
   label.classList.add('visible');
 }
 
-// After Bottle your spark the field locks, Edit spark shows and the input screen's Winemaster
-// steps back. Nothing M0 writes is shown. A spark that bottles shows itself once, with Edit spark
-// and Seal this line. One that doesn't bottle shows the cellar's no above it, with Edit spark.
-function showM0Result(bottles) {
+// A spark that can't be bottled: the field locks under the cellar's one fixed line, with Edit
+// spark, and the input screen's Winemaster steps back. Nothing M0 writes is shown.
+function showM0Refusal(line) {
   showOriginalSparkLabel();
   const inp = document.getElementById('f-inp');
   if (inp) {
     inp.setAttribute('readonly', '');
-    // Under the stamp the field is the source, so it is dimmed. On its own it is the line.
-    inp.classList.toggle('spark-provenance', !bottles);
+    inp.classList.add('spark-provenance');
   }
   const sparkRow = document.querySelector('.spark-source-row');
   if (sparkRow) sparkRow.classList.add('active');
@@ -6328,14 +6262,12 @@ function showM0Result(bottles) {
   if (intakeWm) intakeWm.classList.add('m0-hidden');
   const bar = document.getElementById('v6-bottom-bar');
   if (bar) bar.style.display = 'none';
-  const actionRow = document.getElementById('m0-action-row');
-  if (actionRow) actionRow.style.display = bottles ? 'flex' : 'none';
+  const entry = document.getElementById('m0-entry-line');
+  if (entry) entry.textContent = line;
   const result = document.getElementById('m0-result');
-  if (result) result.style.display = bottles ? 'none' : 'block';
+  if (result) result.style.display = 'block';
   const rewriteBtn = document.getElementById('m0-rewrite-btn');
   if (rewriteBtn) { rewriteBtn.style.display = 'inline-flex'; rewriteBtn.disabled = false; }
-  const bottleBtn = document.getElementById('m0-bottle-btn');
-  if (bottleBtn) { bottleBtn.style.display = bottles ? '' : 'none'; bottleBtn.disabled = false; }
 
   const content = document.getElementById('wm-content');
   if (!content) return;
@@ -6380,8 +6312,8 @@ async function v6BottleSpark() {
   }
 }
 
-// M0 decides two things: is it software, and is there anything to bottle. Its parse stays with
-// the bottle for routing. The field shows the spark exactly as it went to M0.
+// M0 decides two things: is it software, and is there anything to bottle. A spark that bottles
+// is sealed straight away and intake moves on. Its parse stays with the bottle for routing.
 function v6RenderM0(data) {
   const spark = window._v6M0.spark || '';
   const inp = document.getElementById('f-inp');
@@ -6390,32 +6322,16 @@ function v6RenderM0(data) {
   const outOfScope = data.scope?.in_scope === false;
   const state = outOfScope ? 'out_of_scope' : (data.digestibility?.state || 'unbottleable');
   window._v6M0.state = state;
-  const bottles = state !== 'out_of_scope' && state !== 'unbottleable';
-  if (!bottles) {
-    document.getElementById('m0-eyebrow').textContent = outOfScope ? 'WRONG CELLAR' : 'CANNOT BE BOTTLED';
-    document.getElementById('m0-entry-line').textContent = spark;
-  }
-  showM0Result(bottles);
+  if (state === 'out_of_scope') return showM0Refusal('Corked only ages software.');
+  if (state === 'unbottleable') return showM0Refusal('Not enough here to bottle yet.');
+  sealSpark(data, spark);
 }
 
 // Seal: the spark as typed is the line. intakeNext() records it as S.idea from the field.
-function v6BottleThis() {
-  const data = window._v6M0.data;
-  const state = window._v6M0.state;
-  if (!data || state === 'out_of_scope' || state === 'unbottleable') return;
-
-  const inp = document.getElementById('f-inp');
-  if (inp) {
-    inp.removeAttribute('readonly');
-    inp.classList.remove('spark-provenance');
-  }
-
+function sealSpark(data, spark) {
   S.m0 = data;
   S.lineIsSpark = true;
-
-  const spark = window._v6M0.spark || '';
   localStorage.setItem('corked_m0_saved', JSON.stringify({ spark, user_line: spark, m0: data }));
-
   intakeNext();
 }
 
@@ -6447,8 +6363,6 @@ function v6Rewrite() {
 
   const bar = document.getElementById('v6-bottom-bar');
   if (bar) bar.style.display = '';
-  const actionRow = document.getElementById('m0-action-row');
-  if (actionRow) actionRow.style.display = 'none';
 
   const btn = document.getElementById('v6-bottle-btn');
   if (btn) btn.disabled = false;

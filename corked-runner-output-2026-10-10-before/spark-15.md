@@ -1,10 +1,10 @@
-# Corked Runner Report — spark 19
+# Corked Runner Report — spark 15
 
-Generated: 2026-10-10T13:07:27.882Z
+Generated: 2026-10-10T12:53:41.700Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
-M7 universality — with secondary M6 probe. Expect: M7 limit turbid — asserting universality is a turbid answer, not a strong one. Secondary: M6 words clearing — a real exchange happened but the answer contains no actual language from it. (m2-m5 not specified by the brief — left on generic settled-quality placeholders.)
+M2 tell clearing, vintage unanchored — the most common real answer shape. Expect: tell clearing (emotion in place of behaviour), vintage clearing ("whenever" is recurring, unanchored), overall clearing. A swirl should plausibly fire; log its kind and question, do not answer it. (m3-m7 not specified by the brief — left on generic settled-quality placeholders since they are not under test here.)
 
 ## Raw Spark
 ```
@@ -15,7 +15,7 @@ Maturity class: 0
 Grape: Noor — my friend, runs a one-woman landscaping business
 expect_halt: false
 
-Line sent to the worker (the spark as typed): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
+Line sent to the worker (M0's line): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
 
 M0's line (verbatim, not shown in the app): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
 
@@ -24,14 +24,14 @@ M0's line (verbatim, not shown in the app): "An app for one-man trade businesses
   raw grades: M1=settled
 - **Tell**: clearing — history: inert → clearing (last raised by M6)
   raw grades: M2=clearing, M6=clearing
-- **Vintage**: settled — history: inert → settled (last raised by M4)
-  raw grades: M2=settled, M3=clearing, M4=turbid
+- **Vintage**: clearing — history: inert → turbid → clearing (last raised by M4)
+  raw grades: M2=turbid, M3=clearing, M4=turbid
 - **Gap**: clearing — history: inert → clearing (last raised by M5)
   raw grades: M5=clearing
 - **Echo**: settled — history: inert → settled (last raised by M6)
   raw grades: M3=settled, M4=clearing, M6=turbid
-- **Limit**: turbid — history: inert → turbid (last raised by M7)
-  raw grades: M7=turbid
+- **Limit**: settled — history: inert → settled (last raised by M7)
+  raw grades: M7=settled
 
 ## Run Log
 
@@ -54,7 +54,7 @@ Response:
     "solution_form": "app",
     "implied_person": "one-man trade businesses",
     "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
-    "triggering_situation": "unpaid invoices left unchased until the money is a problem",
+    "triggering_situation": "when unpaid invoices have gone unchased until the money is a problem",
     "promised_change": null,
     "domain": "unpaid invoices",
     "solution_is_software": "software"
@@ -62,7 +62,7 @@ Response:
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The role is one-man trade businesses and the stated problem is forgetting to chase unpaid invoices until the money is a problem. Both are present and usable.",
+    "reason": "Cellar-ready. The role is stated and the problem is stated. A one-man trade business forgets to chase unpaid invoices until the money is already a problem. Both are in the glass.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -71,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name a specific one-man trade business owner and the moment they realised an unpaid invoice had been sitting too long.",
-    "hint": "A good answer names the person and the exact situation: a job wrapped up weeks ago, an invoice unsent or ignored, and cash running short before they noticed.",
+    "question": "Name the specific tradesperson and the moment when an unpaid invoice had already become a money problem before they noticed it.",
+    "hint": "A good answer names one person by trade or name and describes a specific invoice or job where the money gap showed up too late.",
     "person_label": "Tradesperson",
-    "person_placeholder": "Dave, self-employed electrician",
-    "when_label": "When did they notice",
-    "when_placeholder": "three weeks after finishing a job, when rent was due",
+    "person_placeholder": "Danny, sole-trader electrician",
+    "when_label": "When did the money problem hit",
+    "when_placeholder": "end of month when rent was due and three invoices were still unpaid from six weeks back",
     "trying_label": "What were they trying to do",
-    "trying_placeholder": "cover the month's costs after a slow stretch",
-    "happened_label": "What did they find",
-    "happened_placeholder": "two invoices from the previous month still unpaid and never followed up"
+    "trying_placeholder": "cover a materials order for the next job",
+    "happened_label": "What actually happened with the unpaid invoices",
+    "happened_placeholder": "he had to call three customers in one afternoon asking for money he had forgotten to chase, and one of them had already moved on"
   },
   "person_in_spark": {
     "grade": "none",
@@ -126,7 +126,7 @@ Response:
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "A named individual is present. The relationship is real and stated: a friend who runs a one-woman landscaping business.",
+    "surface_text": "Noor is named and tied to a concrete operating role: a one-woman landscaping business. The relationship is real and specific.",
     "anchor_span": "my friend, runs a one-woman landscaping business"
   },
   "next_question": {
@@ -153,7 +153,7 @@ Request:
     "solution_form": "app",
     "implied_person": "one-man trade businesses",
     "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
-    "triggering_situation": "unpaid invoices left unchased until the money is a problem",
+    "triggering_situation": "when unpaid invoices have gone unchased until the money is a problem",
     "promised_change": null,
     "domain": "unpaid invoices",
     "solution_is_software": "software"
@@ -176,7 +176,7 @@ Response:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "question": "Tell me about the last time Noor noticed an unpaid invoice had been sitting there too long, what did she actually do when she realized it?",
+  "question": "Walk me through the last specific time Noor forgot to chase an unpaid invoice until it became a money problem, what did she actually do once she noticed it had gone unchased?",
   "recovered_problem": "forget to chase unpaid invoices until the money is a problem",
   "needs_confirmation": false,
   "server_checks": {
@@ -194,7 +194,7 @@ Response:
 ```
 
 ### 4. [main] M2 · /m2
-Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[Tell, Vintage]
+Summary: state=turbid · substitution_detected=false · swirl=yes · changed=[Tell, Vintage]
 Request:
 ```json
 {
@@ -208,7 +208,7 @@ Request:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "user_answer": "Last Tuesday, right before a deadline, Noor tried the usual approach and it broke down at the same point it always does. Noor gave up partway through and fell back to a plain spreadsheet, because the thing they normally use for this does not catch it in time."
+  "user_answer": "She gets really stressed about it whenever a client goes quiet, and usually she just puts off looking at the numbers."
 }
 ```
 Response:
@@ -217,28 +217,28 @@ Response:
   "schema_version": "m2.v1",
   "mechanism": "M2",
   "phase": "friction",
-  "state": "clearing",
+  "state": "turbid",
   "tell": {
     "state": "clearing",
-    "anchor_span": "gave up partway through and fell back to a plain spreadsheet"
+    "anchor_span": "puts off looking at the numbers"
   },
   "vintage": {
-    "state": "settled",
-    "anchor_span": "Last Tuesday, right before a deadline"
+    "state": "turbid",
+    "anchor_span": null
   },
   "observation": {
-    "surface_text": "The moment is anchored to a specific instance last Tuesday before a deadline. The behaviour named is a retreat to a spreadsheet, but the action that broke down is described only as 'the usual approach' without naming what Noor actually did or stopped doing.",
-    "anchor_span": "tried the usual approach and it broke down at the same point it always does"
+    "surface_text": "No specific past instance is named in the answer. The behaviour offered is a recurring pattern with no single anchoring moment or context.",
+    "anchor_span": "usually she just puts off looking at the numbers"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is Noor someone who has described this moment to you directly, or is this a reconstruction of what her workflow probably looks like?"
+    "question": "Is there one specific client who went quiet and triggered this, a real job, a real silence, a real unpaid amount Noor is sitting with right now?"
   },
   "server_checks": {
     "schema_valid": true,
     "tell_anchor_verified": true,
-    "vintage_anchor_verified": true,
+    "vintage_anchor_verified": false,
     "obs_anchor_verified": true,
     "visible_style_violations_cleaned": [],
     "overall_state_is_floor": true,
@@ -248,7 +248,7 @@ Response:
 ```
 
 ### 5. [main] M3 · /m3
-Summary: state=settled · substitution_detected=false · swirl=no · changed=[Echo]
+Summary: state=settled · substitution_detected=false · swirl=no · changed=[Echo, Vintage]
 Request:
 ```json
 {
@@ -278,7 +278,7 @@ Response:
     "anchor_span": "whenever it comes up"
   },
   "observation": {
-    "surface_text": "The Echo bar is settled: a named third party, Jordan, is identified as encountering the same problem and paying a freelancer to handle it. The Vintage bar finds a recurring pattern anchored to a trigger condition but no specific past instance.",
+    "surface_text": "The Echo bar finds one identifiable person separate from the grape and the founder, named and attributed a concrete workaround behaviour. The Vintage bar finds a recurring pattern anchored to no specific past instance.",
     "anchor_span": "my colleague Jordan mentioned he hits this same thing and just pays a freelancer to sort it out whenever it comes up"
   },
   "substitution_detected": false,
@@ -328,13 +328,13 @@ Response:
     "anchor_span": "for her it shows up a little differently"
   },
   "observation": {
-    "surface_text": "The answer names Priya and attributes a behaviour to her, but the setup and role are not described with enough specificity to confirm she is an identifiable individual rather than a constructed stand-in. No specific past instance is present, only a standing practice.",
+    "surface_text": "The answer names Priya and attributes a concrete workaround, but the description carries no detail that distinguishes Priya as a specific real individual rather than a named placeholder. No moment or instance anchors the behaviour to a particular past occurrence.",
     "anchor_span": "A friend named Priya, who works in a completely different setup, said she keeps a manual backup log for it"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is Priya a specific person the answer could name a role or context for, or is she standing in for a general sense that others must do something similar?"
+    "question": "Is Priya a real person the answer can describe in one more concrete detail, or is she a name standing in for a type of person?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -372,17 +372,19 @@ Response:
     "anchor_span": "plain spreadsheet template to track it"
   },
   "observation": {
-    "surface_text": "The answer names an existing solution: a plain spreadsheet template. The stated failure, 'too late,' is a timing complaint without a precise, nameable shortfall in what the spreadsheet does or does not do.",
-    "anchor_span": "it does not catch the problem until it is already too late"
+    "surface_text": "The answer names an existing solution: a plain spreadsheet template. The failure point given is vague, 'too late' describes a timing impression rather than a precise, nameable shortfall such as a specific trigger, check, or step the spreadsheet does not perform.",
+    "anchor_span": "does not catch the problem until it is already too late"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "When Noor last had an overdue invoice, what did the spreadsheet actually fail to do at that moment, did it not remind her, not flag the date, or something else?"
+    "question": "When Noor last had an overdue invoice go unnoticed, what was the first moment she realized it had slipped, was there a specific invoice, a client, a number of days past due?"
   },
   "server_checks": {
     "schema_valid": true,
-    "visible_style_violations_cleaned": [],
+    "visible_style_violations_cleaned": [
+      "observation.surface_text:dash"
+    ],
     "overall_state_is_primary": true,
     "swirl_included": true
   }
@@ -390,7 +392,7 @@ Response:
 ```
 
 ### 8. [main] M6 · /m6
-Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[none]
+Summary: state=settled · substitution_detected=false · swirl=no · changed=[none]
 Request:
 ```json
 {
@@ -403,7 +405,7 @@ Request:
   "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
   "words_source": "real",
-  "user_answer": "We talked about it over coffee last Friday and she confirmed the month-end thing is her biggest headache."
+  "user_answer": "\"I just want this part to be boring,\" Noor said, when we talked about it last week."
 }
 ```
 Response:
@@ -411,39 +413,35 @@ Response:
 {
   "schema_version": "m6.v1",
   "mechanism": "M6",
-  "state": "clearing",
+  "state": "settled",
   "words": {
-    "state": "clearing",
-    "anchor_span": "she confirmed the month-end thing is her biggest headache"
+    "state": "settled",
+    "anchor_span": "\"I just want this part to be boring,\" Noor said, when we talked about it last week."
   },
   "tell": {
     "state": "clearing",
-    "anchor_span": null
+    "anchor_span": "\"I just want this part to be boring,\" Noor said"
   },
   "echo": {
     "state": "turbid",
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer recounts that a real exchange occurred but supplies no direct language from Noor, only a summary of what she confirmed. No filmable behaviour and no third-party echo are present in the account.",
-    "anchor_span": "she confirmed the month-end thing is her biggest headache"
+    "surface_text": "The answer supplies a direct quote from a real exchange, attributable to Noor by name, with words_source flagged real. The words carry a stated sentiment about the problem but no filmable action or third-party reference.",
+    "anchor_span": "\"I just want this part to be boring,\" Noor said, when we talked about it last week."
   },
   "substitution_detected": false,
-  "swirl": {
-    "kind": "reality",
-    "question": "What were the words Noor used when she named the month-end problem as her biggest headache?"
-  },
   "server_checks": {
     "schema_valid": true,
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
-    "swirl_included": true
+    "swirl_included": false
   }
 }
 ```
 
 ### 9. [main] M7 · /m7
-Summary: state=turbid · substitution_detected=false · swirl=yes · changed=[Limit]
+Summary: state=settled · substitution_detected=false · swirl=no · changed=[Limit]
 Request:
 ```json
 {
@@ -455,7 +453,7 @@ Request:
   "grape_name": "Noor",
   "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
-  "user_answer": "Honestly every freelancer has this. I can't think of a single one who doesn't."
+  "user_answer": "My uncle does the same kind of work but only ever takes retainer clients, so this never happens to him. He is paid whether the job happens or not."
 }
 ```
 Response:
@@ -463,25 +461,21 @@ Response:
 {
   "schema_version": "m7.v1",
   "mechanism": "M7",
-  "state": "turbid",
+  "state": "settled",
   "limit": {
-    "state": "turbid",
-    "anchor_span": "every freelancer has this. I can't think of a single one who doesn't."
+    "state": "settled",
+    "anchor_span": "only ever takes retainer clients, so this never happens to him. He is paid whether the job happens or not."
   },
   "observation": {
-    "surface_text": "The answer names no bounded exclusion, asserting universality instead. No person, role, or situation is identified as exempt, and no reason for immunity is given.",
-    "anchor_span": "every freelancer has this. I can't think of a single one who doesn't."
+    "surface_text": "The answer names a bounded individual and a specific billing arrangement that removes the problem. The reason for immunity is present and concrete: retainer billing decouples payment from job occurrence.",
+    "anchor_span": "only ever takes retainer clients, so this never happens to him. He is paid whether the job happens or not."
   },
   "substitution_detected": false,
-  "swirl": {
-    "kind": "reality",
-    "question": "Is there a landscaper, photographer, or any solo operator Noor actually knows who gets paid reliably without chasing, and what is different about how their billing is structured?"
-  },
   "server_checks": {
     "schema_valid": true,
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
-    "swirl_included": true
+    "swirl_included": false
   }
 }
 ```
@@ -490,7 +484,6 @@ Response:
 - none detected
 
 ## Floor notes (informational — a later mechanism offered a lower grade for an opportunistic bar; the floor correctly held, no action needed)
-- M3 offered clearing for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
 - M4 offered clearing for Echo, held at floor settled (opportunistic grading correctly did not lower it).
-- M4 offered turbid for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
+- M4 offered turbid for Vintage, held at floor clearing (opportunistic grading correctly did not lower it).
 - M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it).

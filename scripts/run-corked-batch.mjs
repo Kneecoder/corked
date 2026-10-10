@@ -5,15 +5,21 @@
 // Each SPARKS entry may carry:
 //   raw_spark, maturity, grapeName, grapeRel        (as before)
 //   answers: { m2, m3, m4, m5, m6, m7 }              (override placeholder answers per mech)
-//   m0FollowupAnswer: string                         (used if M0 asks a followup; falls back to
-//                                                      the auto-placeholder if absent)
+//   m0FollowupAnswer: string                         (unused since the app stopped asking M0's
+//                                                      follow-up; kept as a record of the case)
 //   wordsSource: 'real' | 'reconstructed'             (M6 words_source; default 'real')
 //   expectHalt: true | false | 'maybe'                (drives PASS/FAIL framing in the summary)
 //   note: string                                      (freeform — the assertion under test, echoed
 //                                                      verbatim into the report for the later read)
+//
+// Environment:
+//   CORKED_LINE=spark (default) sends the spark as typed as the idea's line, as the app does.
+//   CORKED_LINE=m0 sends M0's line instead, as the app did before 10 Oct.
+//   CORKED_OUT=<folder> writes the reports there instead of corked-runner-output/.
 
 const WORKER_URL = 'https://orked-m1-proxy.kneebonewebdesign.workers.dev';
-const OUT_DIR = new URL('../corked-runner-output/', import.meta.url);
+const LINE_SOURCE = process.env.CORKED_LINE === 'm0' ? 'm0' : 'spark';
+const OUT_DIR = new URL('../' + (process.env.CORKED_OUT || 'corked-runner-output').replace(/\/?$/, '/'), import.meta.url);
 
 const EL_META = {
   grape:   { name: 'Grape' },
@@ -317,12 +323,6 @@ function buildPlaceholderAnswer(mech, grapeName) {
     default: return '';
   }
 }
-function buildM0FollowupPlaceholder(data) {
-  const sp = data.spark_parse || {};
-  const person = sp.implied_person || 'a specific person';
-  const problem = sp.suspected_problem || 'something concrete keeps going wrong for them';
-  return 'The person is ' + person + '. The problem: ' + problem + '.';
-}
 function mechEndpoint(mech) {
   return { M1: '/m1', M2: '/m2', M3: '/m3', M4: '/m4', M5: '/m5', M6: '/m6', M7: '/m7' }[mech];
 }
@@ -522,32 +522,14 @@ async function runOne(cfg, idx) {
     return R;
   }
   R.m0 = data;
-  R.userLine = data.user_line_candidate || R.raw_spark;
+  R.userLine = LINE_SOURCE === 'm0' ? (data.user_line_candidate || R.raw_spark) : R.raw_spark;
   R.sparkParse = data.spark_parse || null;
   R.domain = (data.spark_parse && data.spark_parse.domain) || '';
 
-  if (data.followup && data.followup.needed) {
-    const followupAnswer = cfg.m0FollowupAnswer || buildM0FollowupPlaceholder(data);
-    const req2 = { raw_spark: R.raw_spark, followup_question: data.followup.question || '', followup_answer: followupAnswer, prior_digestibility: data.digestibility.state };
-    const res2 = await callWorker('/m0', req2);
-    if (!res2.ok) {
-      logEntry(R, { mech: 'M0', endpoint: '/m0 (followup)', kind: 'main', request: req2, response: res2.data, summary: 'ERROR ' + res2.status });
-      halt(R, 'M0 followup request failed.');
-      return R;
-    }
-    logEntry(R, { mech: 'M0', endpoint: '/m0 (followup)', kind: 'main', request: req2, response: res2.data, summary: '[re-bottled] digestibility=' + (res2.data.digestibility && res2.data.digestibility.state) });
-    runAssertions(R, 'M0-followup', res2.data);
-    if (res2.data.scope && res2.data.scope.in_scope === false) {
-      halt(R, 'Out of scope after followup.');
-      return R;
-    }
-    R.m0 = res2.data;
-    R.userLine = res2.data.user_line_candidate || R.userLine;
-    R.sparkParse = res2.data.spark_parse || R.sparkParse;
-    if (res2.data.digestibility && res2.data.digestibility.state === 'unbottleable') {
-      halt(R, 'M0 remained unbottleable after followup.');
-      return R;
-    }
+  // As in the app: M0 asks no follow-up. A thin spark bottles as is; an unbottleable one stops.
+  if (data.digestibility && data.digestibility.state === 'unbottleable') {
+    halt(R, 'M0: unbottleable, nothing to bottle.');
+    return R;
   }
 
   if (R.maturity === 3) {
@@ -648,7 +630,9 @@ function buildReport(R, cfg, idx) {
   if (cfg.wordsSource) lines.push('words_source override: ' + cfg.wordsSource);
   if (cfg.expectHalt !== undefined) lines.push('expect_halt: ' + cfg.expectHalt);
   lines.push('');
-  lines.push('User Line candidate (verbatim from M0): ' + (R.userLine ? JSON.stringify(R.userLine) : '(none — halted before M0 returned one)'));
+  lines.push('Line sent to the worker (' + (LINE_SOURCE === 'm0' ? "M0's line" : 'the spark as typed') + '): ' + (R.userLine ? JSON.stringify(R.userLine) : '(none — halted before M0 returned one)'));
+  lines.push('');
+  lines.push("M0's line (verbatim, not shown in the app): " + (R.m0 && R.m0.user_line_candidate ? JSON.stringify(R.m0.user_line_candidate) : '(none)'));
   lines.push('');
   lines.push('## Element Tracker (final state, floor-enforced like corked_v6.html\'s rankUp — see ' +
     '"raw grades" for what each mechanism actually offered before the floor was applied)');
@@ -720,7 +704,7 @@ async function main() {
     console.log('done — ' + outcome);
     summary.push({ idx, raw_spark: cfg.raw_spark, maturity: cfg.maturity, outcome, anomalies: R.anomalies, note: cfg.note, file: fname });
   }
-  const idxLines = ['# Batch run summary — Corked Phase 1 Test Battery', '', 'Generated: ' + new Date().toISOString(), 'Worker: ' + WORKER_URL, ''];
+  const idxLines = ['# Batch run summary — Corked Phase 1 Test Battery', '', 'Generated: ' + new Date().toISOString(), 'Worker: ' + WORKER_URL, 'Line sent: ' + (LINE_SOURCE === 'm0' ? "M0's line" : 'the spark as typed'), ''];
   summary.forEach(s => {
     idxLines.push('## ' + s.idx + '. ' + (s.file || '(no file)'));
     idxLines.push('Spark: ' + s.raw_spark);
@@ -733,7 +717,7 @@ async function main() {
     idxLines.push('');
   });
   await fs.writeFile(new URL('_summary.md', OUT_DIR), idxLines.join('\n'), 'utf8');
-  console.log('\nAll done. Summary written to corked-runner-output/_summary.md');
+  console.log('\nAll done. Summary written to ' + new URL('_summary.md', OUT_DIR).pathname);
 }
 
 main().catch(err => { console.error('Fatal:', err); process.exit(1); });

@@ -1,10 +1,10 @@
-# Corked Runner Report — spark 19
+# Corked Runner Report — spark 16
 
-Generated: 2026-10-10T13:07:27.882Z
+Generated: 2026-10-10T12:54:25.407Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
-M7 universality — with secondary M6 probe. Expect: M7 limit turbid — asserting universality is a turbid answer, not a strong one. Secondary: M6 words clearing — a real exchange happened but the answer contains no actual language from it. (m2-m5 not specified by the brief — left on generic settled-quality placeholders.)
+M5 one leg — with secondary M7 probe. Expect: M5 gap clearing — named solution, no failure point. M7 limit clearing — a who without a why, and a loose category rather than a bounded group. (m2, m3, m4, m6 not specified by the brief — left on generic settled-quality placeholders.)
 
 ## Raw Spark
 ```
@@ -15,7 +15,7 @@ Maturity class: 0
 Grape: Noor — my friend, runs a one-woman landscaping business
 expect_halt: false
 
-Line sent to the worker (the spark as typed): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
+Line sent to the worker (M0's line): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
 
 M0's line (verbatim, not shown in the app): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
 
@@ -30,8 +30,8 @@ M0's line (verbatim, not shown in the app): "An app for one-man trade businesses
   raw grades: M5=clearing
 - **Echo**: settled — history: inert → settled (last raised by M6)
   raw grades: M3=settled, M4=clearing, M6=turbid
-- **Limit**: turbid — history: inert → turbid (last raised by M7)
-  raw grades: M7=turbid
+- **Limit**: clearing — history: inert → clearing (last raised by M7)
+  raw grades: M7=clearing
 
 ## Run Log
 
@@ -54,7 +54,7 @@ Response:
     "solution_form": "app",
     "implied_person": "one-man trade businesses",
     "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
-    "triggering_situation": "unpaid invoices left unchased until the money is a problem",
+    "triggering_situation": null,
     "promised_change": null,
     "domain": "unpaid invoices",
     "solution_is_software": "software"
@@ -62,7 +62,7 @@ Response:
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The role is one-man trade businesses and the stated problem is forgetting to chase unpaid invoices until the money is a problem. Both are present and usable.",
+    "reason": "Cellar-ready. The role is clear and the stated problem is forgetting to chase unpaid invoices until the money becomes a problem. Both are present and the Spark enters cleanly.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -71,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name a specific one-man trade business owner and the moment they realised an unpaid invoice had been sitting too long.",
-    "hint": "A good answer names the person and the exact situation: a job wrapped up weeks ago, an invoice unsent or ignored, and cash running short before they noticed.",
+    "question": "Name the specific tradesperson you are thinking of, and the moment they realised an unpaid invoice had been sitting too long.",
+    "hint": "A good answer names one person (a plumber, electrician, carpenter) and a specific moment when the money shortage made the forgotten invoice visible.",
     "person_label": "Tradesperson",
-    "person_placeholder": "Dave, self-employed electrician",
-    "when_label": "When did they notice",
-    "when_placeholder": "three weeks after finishing a job, when rent was due",
-    "trying_label": "What were they trying to do",
-    "trying_placeholder": "cover the month's costs after a slow stretch",
-    "happened_label": "What did they find",
-    "happened_placeholder": "two invoices from the previous month still unpaid and never followed up"
+    "person_placeholder": "Danny, self-employed electrician",
+    "when_label": "When the invoice surfaced",
+    "when_placeholder": "when he checked his account before paying a supplier",
+    "trying_label": "What he was trying to do",
+    "trying_placeholder": "cover his materials bill at the end of the month",
+    "happened_label": "What he found",
+    "happened_placeholder": "three invoices from six weeks ago still unpaid and no record of him chasing any of them"
   },
   "person_in_spark": {
     "grade": "none",
@@ -126,7 +126,7 @@ Response:
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "A named individual is present. The relationship is real and stated: a friend who runs a one-woman landscaping business.",
+    "surface_text": "A named individual is present. The relationship is concrete and occupationally specific.",
     "anchor_span": "my friend, runs a one-woman landscaping business"
   },
   "next_question": {
@@ -153,7 +153,7 @@ Request:
     "solution_form": "app",
     "implied_person": "one-man trade businesses",
     "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
-    "triggering_situation": "unpaid invoices left unchased until the money is a problem",
+    "triggering_situation": null,
     "promised_change": null,
     "domain": "unpaid invoices",
     "solution_is_software": "software"
@@ -176,7 +176,7 @@ Response:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "question": "Tell me about the last time Noor noticed an unpaid invoice had been sitting there too long, what did she actually do when she realized it?",
+  "question": "Tell me about a specific time you watched Noor realise unpaid invoices had piled up, what did she do when she noticed?",
   "recovered_problem": "forget to chase unpaid invoices until the money is a problem",
   "needs_confirmation": false,
   "server_checks": {
@@ -227,13 +227,13 @@ Response:
     "anchor_span": "Last Tuesday, right before a deadline"
   },
   "observation": {
-    "surface_text": "The moment is anchored to a specific instance last Tuesday before a deadline. The behaviour named is a retreat to a spreadsheet, but the action that broke down is described only as 'the usual approach' without naming what Noor actually did or stopped doing.",
-    "anchor_span": "tried the usual approach and it broke down at the same point it always does"
+    "surface_text": "Vintage is anchored to a specific moment. The Tell names a fallback action but the breakdown point is described as a pattern rather than a filmed behaviour: what Noor did at the moment of failure is not shown.",
+    "anchor_span": "it broke down at the same point it always does"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is Noor someone who has described this moment to you directly, or is this a reconstruction of what her workflow probably looks like?"
+    "question": "Is there a single moment last Tuesday where a camera would catch Noor doing one specific thing, or is the account a composite of how this usually goes for her?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -275,10 +275,10 @@ Response:
   },
   "vintage": {
     "state": "clearing",
-    "anchor_span": "whenever it comes up"
+    "anchor_span": "Last month"
   },
   "observation": {
-    "surface_text": "The Echo bar is settled: a named third party, Jordan, is identified as encountering the same problem and paying a freelancer to handle it. The Vintage bar finds a recurring pattern anchored to a trigger condition but no specific past instance.",
+    "surface_text": "The Echo bar finds one identifiable separate person, Jordan, distinct from both the grape and the founder, with a concrete workaround: paying a freelancer to handle invoice chasing as it arises. The Vintage bar finds a time marker anchoring the conversation but the workaround itself is described as a recurring pattern rather than a single instance.",
     "anchor_span": "my colleague Jordan mentioned he hits this same thing and just pays a freelancer to sort it out whenever it comes up"
   },
   "substitution_detected": false,
@@ -328,13 +328,13 @@ Response:
     "anchor_span": "for her it shows up a little differently"
   },
   "observation": {
-    "surface_text": "The answer names Priya and attributes a behaviour to her, but the setup and role are not described with enough specificity to confirm she is an identifiable individual rather than a constructed stand-in. No specific past instance is present, only a standing practice.",
+    "surface_text": "The answer names Priya and attributes a workaround (manual backup log), but the description lacks enough specificity to confirm Priya as a distinct, identifiable individual rather than a constructed stand-in. No time anchor is present; the behaviour is described as a standing practice.",
     "anchor_span": "A friend named Priya, who works in a completely different setup, said she keeps a manual backup log for it"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is Priya a specific person the answer could name a role or context for, or is she standing in for a general sense that others must do something similar?"
+    "question": "Is Priya a specific person the answer could name a role or context for, or does she sit at the level of a type?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -358,7 +358,7 @@ Request:
   "grape_name": "Noor",
   "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
-  "user_answer": "Right now Noor uses a plain spreadsheet template to track it, but it does not catch the problem until it is already too late."
+  "user_answer": "She uses Moneybird."
 }
 ```
 Response:
@@ -369,20 +369,22 @@ Response:
   "state": "clearing",
   "gap": {
     "state": "clearing",
-    "anchor_span": "plain spreadsheet template to track it"
+    "anchor_span": "She uses Moneybird."
   },
   "observation": {
-    "surface_text": "The answer names an existing solution: a plain spreadsheet template. The stated failure, 'too late,' is a timing complaint without a precise, nameable shortfall in what the spreadsheet does or does not do.",
-    "anchor_span": "it does not catch the problem until it is already too late"
+    "surface_text": "The answer names an existing solution, Moneybird. No failure point is stated, the answer does not say what Moneybird fails to do about unchased invoices.",
+    "anchor_span": "She uses Moneybird."
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "When Noor last had an overdue invoice, what did the spreadsheet actually fail to do at that moment, did it not remind her, not flag the date, or something else?"
+    "question": "When Noor last let an invoice go too long without a chase, what did Moneybird do or not do in that specific moment?"
   },
   "server_checks": {
     "schema_valid": true,
-    "visible_style_violations_cleaned": [],
+    "visible_style_violations_cleaned": [
+      "observation.surface_text:dash"
+    ],
     "overall_state_is_primary": true,
     "swirl_included": true
   }
@@ -403,7 +405,7 @@ Request:
   "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
   "words_source": "real",
-  "user_answer": "We talked about it over coffee last Friday and she confirmed the month-end thing is her biggest headache."
+  "user_answer": "\"I just want this part to be boring,\" Noor said, when we talked about it last week."
 }
 ```
 Response:
@@ -414,24 +416,24 @@ Response:
   "state": "clearing",
   "words": {
     "state": "clearing",
-    "anchor_span": "she confirmed the month-end thing is her biggest headache"
+    "anchor_span": "I just want this part to be boring"
   },
   "tell": {
     "state": "clearing",
-    "anchor_span": null
+    "anchor_span": "I just want this part to be boring"
   },
   "echo": {
     "state": "turbid",
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer recounts that a real exchange occurred but supplies no direct language from Noor, only a summary of what she confirmed. No filmable behaviour and no third-party echo are present in the account.",
-    "anchor_span": "she confirmed the month-end thing is her biggest headache"
+    "surface_text": "A real attributed quote is present and words_source is real, but the phrase names a sentiment about an unspecified referent rather than the confirmed problem of unchased invoices. No filmable behaviour and no third-party echo appear in the words.",
+    "anchor_span": "I just want this part to be boring"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "What were the words Noor used when she named the month-end problem as her biggest headache?"
+    "question": "What did Noor say specifically about the invoices themselves, the chasing, the forgetting, or the moment the money became a problem, rather than how she wants that part to feel?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -443,7 +445,7 @@ Response:
 ```
 
 ### 9. [main] M7 · /m7
-Summary: state=turbid · substitution_detected=false · swirl=yes · changed=[Limit]
+Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[Limit]
 Request:
 ```json
 {
@@ -455,7 +457,7 @@ Request:
   "grape_name": "Noor",
   "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
-  "user_answer": "Honestly every freelancer has this. I can't think of a single one who doesn't."
+  "user_answer": "Agency photographers probably don't have this."
 }
 ```
 Response:
@@ -463,19 +465,19 @@ Response:
 {
   "schema_version": "m7.v1",
   "mechanism": "M7",
-  "state": "turbid",
+  "state": "clearing",
   "limit": {
-    "state": "turbid",
-    "anchor_span": "every freelancer has this. I can't think of a single one who doesn't."
+    "state": "clearing",
+    "anchor_span": "Agency photographers probably don't have this."
   },
   "observation": {
-    "surface_text": "The answer names no bounded exclusion, asserting universality instead. No person, role, or situation is identified as exempt, and no reason for immunity is given.",
-    "anchor_span": "every freelancer has this. I can't think of a single one who doesn't."
+    "surface_text": "The answer names a loose category without bounding it to an identifiable person or specific arrangement. No reason is given for why agency photographers would be exempt from forgetting to chase unpaid invoices.",
+    "anchor_span": "Agency photographers probably don't have this."
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is there a landscaper, photographer, or any solo operator Noor actually knows who gets paid reliably without chasing, and what is different about how their billing is structured?"
+    "question": "Is there a specific photographer, or a specific billing arrangement like a retainer or accounts-payable department, that actually removes the chasing work from that person's hands?"
   },
   "server_checks": {
     "schema_valid": true,

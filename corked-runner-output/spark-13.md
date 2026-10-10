@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 13
 
-Generated: 2026-07-11T18:26:42.242Z
+Generated: 2026-10-10T13:03:16.622Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -15,7 +15,9 @@ Maturity class: 0
 Grape: Daan — my former colleague, wedding DJ
 expect_halt: false
 
-User Line candidate (verbatim from M0): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
+Line sent to the worker (the spark as typed): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
+
+M0's line (verbatim, not shown in the app): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
 
 ## Element Tracker (final state, floor-enforced like corked_v6.html's rankUp — see "raw grades" for what each mechanism actually offered before the floor was applied)
 - **Grape**: settled — history: inert → settled (last raised by M1)
@@ -60,7 +62,7 @@ Response:
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The role is clear and the problem is stated: one-man trade businesses who forget to chase unpaid invoices until it becomes a money problem.",
+    "reason": "Cellar-ready. The role is stated and the problem is stated. A one-man trade business forgets to chase unpaid invoices until the money becomes a problem.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -69,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name the specific tradesperson and the moment they realised an unpaid invoice had become a money problem.",
-    "hint": "A good answer names the trade, says how long the invoice had been sitting, and what the money pressure looked like when it surfaced.",
+    "question": "Name a specific one-man trade business owner and the moment they realised an unpaid invoice had become a money problem.",
+    "hint": "A good answer names the person and the trade, and describes the moment they noticed the money was short, not the moment they sent the invoice.",
     "person_label": "Tradesperson",
-    "person_placeholder": "Dale, one-man electrician",
-    "when_label": "When the invoice became a problem",
-    "when_placeholder": "six weeks after finishing the job, when rent was due",
-    "trying_label": "What he was trying to do",
-    "trying_placeholder": "cover his supplier bill at the end of the month",
-    "happened_label": "What he found when he looked",
-    "happened_placeholder": "three invoices sitting unpaid, none of them chased, the oldest two months old"
+    "person_placeholder": "Dean, sole-trader electrician",
+    "when_label": "When the money became a problem",
+    "when_placeholder": "end of the month, rent due, two invoices still unpaid from six weeks back",
+    "trying_label": "What they were trying to do",
+    "trying_placeholder": "cover the month's expenses without chasing clients again",
+    "happened_label": "What actually happened",
+    "happened_placeholder": "he checked his account and realised he had not followed up the invoices and the cash was not there"
   },
   "person_in_spark": {
     "grade": "none",
@@ -124,7 +126,7 @@ Response:
     "temporal_grounding": "none"
   },
   "observation": {
-    "surface_text": "A named individual is present. A real stated relationship ties him to the interviewer.",
+    "surface_text": "A named individual is present. The relationship is stated as a real prior tie with a specific occupational identity.",
     "anchor_span": "my former colleague, wedding DJ"
   },
   "next_question": {
@@ -140,10 +142,12 @@ Response:
 ```
 
 ### 3. [main] M2 · /m2 (phase A)
-Summary: recovered_problem="forgetting to chase unpaid invoices until the money is a problem" · needs_confirmation=false · gap_in_play=false
+Summary: outcome=stated · problem="forget to chase unpaid invoices until the money is a problem" (user_stated) · gap_in_play=false
 Request:
 ```json
 {
+  "phase": "problem",
+  "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
   "user_line": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
   "spark_parse": {
     "solution_form": "app",
@@ -162,28 +166,27 @@ Request:
 Response:
 ```json
 {
-  "schema_version": "m2.v1",
+  "schema_version": "m2.v2",
   "mechanism": "M2",
   "phase": "problem",
-  "recovered_problem": "forgetting to chase unpaid invoices until the money is a problem",
-  "needs_confirmation": false,
-  "gap_in_play": false,
-  "observation": {
-    "surface_text": "The spark names the problem directly: Daan forgets to follow up on unpaid invoices until the cash shortfall forces the issue. The implied person is a one-man trade operation, which matches a wedding DJ running without admin support.",
-    "problem_source": "explicit"
+  "outcome": "stated",
+  "problem": {
+    "text": "forget to chase unpaid invoices until the money is a problem",
+    "source": "user_stated",
+    "status": "confirmed"
   },
-  "question": "Walk me through the last time Daan realised a gig payment was still unpaid, what had just happened, and what did he actually do next?",
-  "hint": "A strong answer names the specific job, how long the invoice had been sitting, what triggered Daan to notice, and the first concrete step he took, for example, he spotted a low bank balance three weeks after a wedding and then sent a WhatsApp to the couple.",
+  "gap_in_play": false,
+  "question": "Walk me through the last time Daan forgot to chase an unpaid invoice and money became a problem: what did he actually do when he noticed it?",
+  "recovered_problem": "forget to chase unpaid invoices until the money is a problem",
+  "needs_confirmation": false,
   "server_checks": {
     "schema_valid": true,
-    "gap_in_play": false,
-    "needs_confirmation": false,
-    "visible_style_violations_cleaned": [
-      "question:dash",
-      "hint:dash"
-    ],
-    "m2_question_repaired": false,
-    "problem_forced_verbatim": true
+    "model_outcome": "stated",
+    "outcome": "stated",
+    "downgrades": [],
+    "unsupported_words": [],
+    "visible_style_violations_cleaned": [],
+    "m2_question_repaired": false
   }
 }
 ```
@@ -197,7 +200,11 @@ Request:
   "grape_name": "Daan",
   "grape_relationship": "my former colleague, wedding DJ",
   "maturity_class": 0,
-  "confirmed_problem": "forgetting to chase unpaid invoices until the money is a problem",
+  "problem": {
+    "text": "forget to chase unpaid invoices until the money is a problem",
+    "source": "user_stated",
+    "status": "confirmed"
+  },
   "gap_in_play": false,
   "user_answer": "I would build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice before the date frees up."
 }
@@ -211,20 +218,20 @@ Response:
   "state": "turbid",
   "tell": {
     "state": "turbid",
-    "anchor_span": "I would build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice"
+    "anchor_span": "build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice"
   },
   "vintage": {
     "state": "turbid",
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer describes the founder's intended build rather than any observable action by Daan. No specific instance of Daan forgetting to chase an invoice is named in the answer.",
-    "anchor_span": "I would build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice"
+    "surface_text": "The answer describes the founder's own proposed build rather than any observable action Daan was seen taking. No specific moment in which Daan encountered this problem is named in the answer.",
+    "anchor_span": "build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice"
   },
   "substitution_detected": true,
   "swirl": {
     "kind": "reality",
-    "question": "Has Daan ever described or shown the moment a specific unpaid invoice slipped past him, or is the problem inferred from the general shape of how wedding DJs work?"
+    "question": "Is Daan a specific DJ the answer-giver has watched lose track of an invoice, or a representative stand-in for the kind of person this build is meant to serve?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -243,7 +250,11 @@ Summary: state=turbid · substitution_detected=false · swirl=yes · changed=[Ec
 Request:
 ```json
 {
-  "confirmed_problem": "forgetting to chase unpaid invoices until the money is a problem",
+  "problem": {
+    "text": "forget to chase unpaid invoices until the money is a problem",
+    "source": "user_stated",
+    "status": "confirmed"
+  },
   "grape_name": "Daan",
   "grape_relationship": "my former colleague, wedding DJ",
   "maturity_class": 0,
@@ -265,13 +276,13 @@ Response:
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer names a real third party, Owen, but his behaviour addresses cancellation disputes and contract signing, not forgetting to chase unpaid invoices. No element of the confirmed problem appears in what Owen did.",
+    "surface_text": "The answer names Owen and describes a behaviour around signed contracts after a cancellation dispute, which does not connect to the confirmed problem of forgetting to chase unpaid invoices. No third party is present who has hit the invoice-chasing problem.",
     "anchor_span": "started requiring signed contracts after a similar cancellation dispute"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Has anyone outside Daan's situation ever mentioned the unpaid invoice chase specifically, or is Owen the closest stand-in available?"
+    "question": "Does Owen have a specific account of missing invoice follow-up, or is the connection to unpaid invoices something inferred from his contract situation?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -287,7 +298,11 @@ Summary: state=turbid · substitution_detected=false · swirl=yes · changed=[no
 Request:
 ```json
 {
-  "confirmed_problem": "forgetting to chase unpaid invoices until the money is a problem",
+  "problem": {
+    "text": "forget to chase unpaid invoices until the money is a problem",
+    "source": "user_stated",
+    "status": "confirmed"
+  },
   "grape_name": "Daan",
   "grape_relationship": "my former colleague, wedding DJ",
   "maturity_class": 0,
@@ -315,13 +330,13 @@ Response:
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer introduces Priya but immediately disqualifies her: the deposit tracking is fine for her and the confirmed problem is forgetting to chase unpaid invoices, which the answer states is not her pain. No concrete behaviour around the confirmed problem is present.",
+    "surface_text": "The answer names Priya but explicitly states the confirmed problem does not apply to her: the deposit part is fine, and her pain is last-minute order changes. No second person experiencing the invoice-chasing problem is present.",
     "anchor_span": "the deposit part is fine"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is there a specific person in that vendor group for whom a late or forgotten invoice chase has actually caused a cash problem, and what did they do about it?"
+    "question": "Is there someone in Priya's vendor group, or anywhere else you have encountered, for whom the invoice-chasing problem specifically is the one that costs them?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -337,7 +352,11 @@ Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[
 Request:
 ```json
 {
-  "confirmed_problem": "forgetting to chase unpaid invoices until the money is a problem",
+  "problem": {
+    "text": "forget to chase unpaid invoices until the money is a problem",
+    "source": "user_stated",
+    "status": "confirmed"
+  },
   "grape_name": "Daan",
   "grape_relationship": "my former colleague, wedding DJ",
   "maturity_class": 0,
@@ -352,16 +371,16 @@ Response:
   "state": "clearing",
   "gap": {
     "state": "clearing",
-    "anchor_span": "Daan uses a plain email thread to track bookings and cancellations"
+    "anchor_span": "plain email thread to track bookings and cancellations"
   },
   "observation": {
-    "surface_text": "The answer names an existing solution: a plain email thread used to track bookings and cancellations. The failure described concerns cancellation detection, not the confirmed problem of chasing unpaid invoices.",
+    "surface_text": "The answer names an existing solution: a plain email thread used to track bookings and cancellations. The failure described concerns missed cancellation flags, not the confirmed problem of chasing unpaid invoices.",
     "anchor_span": "nothing flags when a cancellation actually happens"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "When Daan last had an overdue invoice sitting unpaid long enough to become a cash problem, what did he actually do to notice it and decide to follow up?"
+    "question": "When an invoice goes unpaid past its due date, what does Daan actually do today, is there a specific moment or ritual where he notices it, or does the money problem surface first?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -377,7 +396,11 @@ Summary: state=turbid · substitution_detected=true · swirl=yes · changed=[non
 Request:
 ```json
 {
-  "confirmed_problem": "forgetting to chase unpaid invoices until the money is a problem",
+  "problem": {
+    "text": "forget to chase unpaid invoices until the money is a problem",
+    "source": "user_stated",
+    "status": "confirmed"
+  },
   "grape_name": "Daan",
   "grape_relationship": "my former colleague, wedding DJ",
   "maturity_class": 0,
@@ -404,13 +427,13 @@ Response:
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer supplies the founder's own interpretive gloss rather than any language attributed to Daan; no quote or close recounting of Daan's words is present. No filmable behaviour or third-party echo can be assessed without source language.",
+    "surface_text": "The answer supplies no language from Daan; it supplies the founder's interpretation of what Daan means. No filmable behaviour or third-party echo is present to assess.",
     "anchor_span": "What she basically means is that the admin side makes her feel unprofessional."
   },
   "substitution_detected": true,
   "swirl": {
     "kind": "reality",
-    "question": "When Daan last talked about this problem, what were the words she actually used before the interpretation was formed?"
+    "question": "When Daan spoke about chasing invoices, what words did she actually use in that conversation?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -426,7 +449,11 @@ Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[
 Request:
 ```json
 {
-  "confirmed_problem": "forgetting to chase unpaid invoices until the money is a problem",
+  "problem": {
+    "text": "forget to chase unpaid invoices until the money is a problem",
+    "source": "user_stated",
+    "status": "confirmed"
+  },
   "grape_name": "Daan",
   "grape_relationship": "my former colleague, wedding DJ",
   "maturity_class": 0,
@@ -444,13 +471,13 @@ Response:
     "anchor_span": "Jordan only DJs corporate events booked through an agency on annual contract"
   },
   "observation": {
-    "surface_text": "The answer names a bounded individual and a specific arrangement. The reason given addresses cancellation cost, not the confirmed problem of forgetting to chase unpaid invoices until money becomes critical.",
+    "surface_text": "The answer names a bounded person and a specific structural arrangement. The exclusion reason addresses cancellations, not the confirmed problem of forgetting to chase unpaid invoices.",
     "anchor_span": "the agency guarantees the booking"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Does Jordan's agency arrangement actually eliminate the need to track whether invoices have been paid, or does it only remove the risk of a cancelled date?"
+    "question": "If Jordan's agency contract means invoices are handled entirely by the agency and never touch him, does he have any invoices to forget chasing at all, and is that the actual reason stated?"
   },
   "server_checks": {
     "schema_valid": true,

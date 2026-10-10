@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 05
 
-Generated: 2026-10-10T12:58:33.164Z
+Generated: 2026-10-10T12:47:32.082Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -15,7 +15,7 @@ Maturity class: 3
 Grape: (none) — (none)
 expect_halt: maybe
 
-Line sent to the worker (the spark as typed): (none — halted before M0 returned one)
+Line sent to the worker (M0's line): (none — halted before M0 returned one)
 
 M0's line (verbatim, not shown in the app): (none)
 

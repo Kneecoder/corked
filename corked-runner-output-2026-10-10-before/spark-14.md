@@ -1,10 +1,10 @@
-# Corked Runner Report — spark 11
+# Corked Runner Report — spark 14
 
-Generated: 2026-10-10T13:01:57.589Z
+Generated: 2026-10-10T12:53:00.893Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
-M3 grape exclusion — plus one doctrine corner to record. Expect: echo turbid despite the concrete behaviour and moment — every person in the answer is the grape. Corner to record: does Vintage rank up opportunistically off this grape-only moment while echo goes turbid? Doctrine says Vintage grades when the answer carries a moment; it does not say whose. Log the result either way; this is a doctrine call waiting to be made, not a bug.
+M4 prior-echo exclusion. Expect: M3 settled. M4 echo clearing — same person rephrased is not a second person; contrast fields "unclear". Confirm prior_echo_context was populated from the M3 answer in the M4 request.
 
 ## Raw Spark
 ```
@@ -12,26 +12,26 @@ An app for one-man trade businesses who forget to chase unpaid invoices until th
 ```
 
 Maturity class: 0
-Grape: Femke — my sister-in-law, photographer
+Grape: Noor — my friend, runs a one-woman landscaping business
 expect_halt: false
 
-Line sent to the worker (the spark as typed): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
+Line sent to the worker (M0's line): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
 
 M0's line (verbatim, not shown in the app): "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
 
 ## Element Tracker (final state, floor-enforced like corked_v6.html's rankUp — see "raw grades" for what each mechanism actually offered before the floor was applied)
 - **Grape**: settled — history: inert → settled (last raised by M1)
   raw grades: M1=settled
-- **Tell**: clearing — history: inert → clearing (last raised by M6)
-  raw grades: M2=clearing, M6=clearing
+- **Tell**: settled — history: inert → settled (last raised by M6)
+  raw grades: M2=settled, M6=clearing
 - **Vintage**: settled — history: inert → settled (last raised by M4)
-  raw grades: M2=settled, M3=settled, M4=clearing
+  raw grades: M2=settled, M3=settled, M4=turbid
 - **Gap**: settled — history: inert → settled (last raised by M5)
   raw grades: M5=settled
-- **Echo**: clearing — history: inert → turbid → clearing (last raised by M6)
-  raw grades: M3=turbid, M4=clearing, M6=turbid
-- **Limit**: settled — history: inert → settled (last raised by M7)
-  raw grades: M7=settled
+- **Echo**: settled — history: inert → settled (last raised by M6)
+  raw grades: M3=settled, M4=clearing, M6=turbid
+- **Limit**: clearing — history: inert → clearing (last raised by M7)
+  raw grades: M7=clearing
 
 ## Run Log
 
@@ -62,7 +62,7 @@ Response:
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The role is clear, one-man trade businesses, and the stated problem is forgetting to chase unpaid invoices until the money is already a problem.",
+    "reason": "Cellar-ready. The role is clear, one-man trade businesses, and the problem is stated: unpaid invoices go unchased until the money is already a problem.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -71,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name the specific tradesperson and the moment when they realised an unpaid invoice had been sitting too long.",
-    "hint": "A good answer names a real person, the trade they work in, and the point when the money being short made them notice the invoice.",
+    "question": "Name a specific one-man trade business owner and the moment they realised an unpaid invoice had been sitting too long.",
+    "hint": "A good answer names the person and their trade, and describes the moment the money problem became visible, before any chasing had started.",
     "person_label": "Tradesperson",
-    "person_placeholder": "Dave, self-employed plumber",
-    "when_label": "When they noticed",
-    "when_placeholder": "when rent was due and three invoices were still unpaid",
-    "trying_label": "What they were trying to do",
-    "trying_placeholder": "cover the month's costs without chasing clients",
-    "happened_label": "What actually happened",
-    "happened_placeholder": "he found invoices from six weeks ago he had never followed up on"
+    "person_placeholder": "Danny, self-employed electrician",
+    "when_label": "When did it surface",
+    "when_placeholder": "three weeks after finishing the job, when rent was due",
+    "trying_label": "What were they trying to do",
+    "trying_placeholder": "cover a supplier payment at the end of the month",
+    "happened_label": "What did they find",
+    "happened_placeholder": "two invoices from the previous month still unpaid and no reminder sent"
   },
   "person_in_spark": {
     "grade": "none",
@@ -108,8 +108,8 @@ Request:
 ```json
 {
   "spark_summary": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
-  "person_name": "Femke",
-  "relationship": "my sister-in-law, photographer",
+  "person_name": "Noor",
+  "relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0
 }
 ```
@@ -121,13 +121,13 @@ Response:
   "outcome": "settled",
   "grape": {
     "state": "settled",
-    "named_person": "Femke",
+    "named_person": "Noor",
     "person_kind": "named_individual",
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "A named individual is present. A real stated relationship ties her to the respondent.",
-    "anchor_span": "my sister-in-law, photographer"
+    "surface_text": "A named individual is present. The relationship is concrete and specific.",
+    "anchor_span": "my friend, runs a one-woman landscaping business"
   },
   "next_question": {
     "should_advance": true,
@@ -158,8 +158,8 @@ Request:
     "domain": "unpaid invoices",
     "solution_is_software": "software"
   },
-  "grape_name": "Femke",
-  "grape_relationship": "my sister-in-law, photographer",
+  "grape_name": "Noor",
+  "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0
 }
 ```
@@ -176,7 +176,7 @@ Response:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "question": "Walk me through the last time Femke forgot to chase an unpaid invoice and the money had already become a problem: what did she actually do when she realised it?",
+  "question": "Walk me through the last time Noor realized she had forgotten to chase an unpaid invoice, what had she just done or tried to do when it surfaced?",
   "recovered_problem": "forget to chase unpaid invoices until the money is a problem",
   "needs_confirmation": false,
   "server_checks": {
@@ -185,20 +185,22 @@ Response:
     "outcome": "stated",
     "downgrades": [],
     "unsupported_words": [],
-    "visible_style_violations_cleaned": [],
+    "visible_style_violations_cleaned": [
+      "question:dash"
+    ],
     "m2_question_repaired": false
   }
 }
 ```
 
 ### 4. [main] M2 · /m2
-Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[Tell, Vintage]
+Summary: state=settled · substitution_detected=false · swirl=no · changed=[Tell, Vintage]
 Request:
 ```json
 {
   "user_line": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
-  "grape_name": "Femke",
-  "grape_relationship": "my sister-in-law, photographer",
+  "grape_name": "Noor",
+  "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
   "problem": {
     "text": "forget to chase unpaid invoices until the money is a problem",
@@ -206,7 +208,7 @@ Request:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "user_answer": "Last month Femke finished a wedding shoot and didn't invoice until three weeks later, by which point the couple had already spent their budget on the honeymoon."
+  "user_answer": "Last month Noor finished a hedge-trimming job and didn't send the invoice for two weeks, by which point she'd forgotten the exact hours and had to guess the total."
 }
 ```
 Response:
@@ -215,24 +217,20 @@ Response:
   "schema_version": "m2.v1",
   "mechanism": "M2",
   "phase": "friction",
-  "state": "clearing",
+  "state": "settled",
   "tell": {
-    "state": "clearing",
-    "anchor_span": "didn't invoice until three weeks later"
+    "state": "settled",
+    "anchor_span": "didn't send the invoice for two weeks, by which point she'd forgotten the exact hours and had to guess the total"
   },
   "vintage": {
     "state": "settled",
-    "anchor_span": "Last month Femke finished a wedding shoot"
+    "anchor_span": "Last month Noor finished a hedge-trimming job"
   },
   "observation": {
-    "surface_text": "The vintage is anchored to a specific past shoot last month. The tell names a delayed action but stops at absence of invoicing rather than a filmable behaviour Femke performed instead.",
-    "anchor_span": "didn't invoice until three weeks later"
+    "surface_text": "The vintage is anchored to a specific past job last month with a named task. The tell names observable behaviour: invoice delayed two weeks, hours forgotten, total guessed.",
+    "anchor_span": "Last month Noor finished a hedge-trimming job and didn't send the invoice for two weeks, by which point she'd forgotten the exact hours and had to guess the total"
   },
   "substitution_detected": false,
-  "swirl": {
-    "kind": "ownership",
-    "question": "When the three weeks passed without an invoice, whose hand was on the delay, Femke's own habit, a missing system, or something else in her workflow?"
-  },
   "server_checks": {
     "schema_valid": true,
     "tell_anchor_verified": true,
@@ -240,13 +238,13 @@ Response:
     "obs_anchor_verified": true,
     "visible_style_violations_cleaned": [],
     "overall_state_is_floor": true,
-    "swirl_included": true
+    "swirl_included": false
   }
 }
 ```
 
 ### 5. [main] M3 · /m3
-Summary: state=turbid · substitution_detected=false · swirl=yes · changed=[Echo]
+Summary: state=settled · substitution_detected=false · swirl=no · changed=[Echo]
 Request:
 ```json
 {
@@ -255,10 +253,10 @@ Request:
     "source": "user_stated",
     "status": "confirmed"
   },
-  "grape_name": "Femke",
-  "grape_relationship": "my sister-in-law, photographer",
+  "grape_name": "Noor",
+  "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
-  "user_answer": "Femke started adding a 30 percent booking fee in January after two no-shows in one month."
+  "user_answer": "My colleague Jordan pays a VA every month to chase his invoices. He set it up in February after a client stiffed him for six weeks."
 }
 ```
 Response:
@@ -266,35 +264,31 @@ Response:
 {
   "schema_version": "m3.v1",
   "mechanism": "M3",
-  "state": "turbid",
+  "state": "settled",
   "echo": {
-    "state": "turbid",
-    "anchor_span": "Femke started adding a 30 percent booking fee in January after two no-shows in one month"
+    "state": "settled",
+    "anchor_span": "My colleague Jordan pays a VA every month to chase his invoices"
   },
   "vintage": {
     "state": "settled",
-    "anchor_span": "in January after two no-shows in one month"
+    "anchor_span": "He set it up in February after a client stiffed him for six weeks"
   },
   "observation": {
-    "surface_text": "The answer describes only Femke's behaviour, and Femke is the named grape. No person separate from the grape is present.",
-    "anchor_span": "Femke started adding a 30 percent booking fee in January after two no-shows in one month"
+    "surface_text": "The Echo bar finds one identifiable separate person, Jordan, with concrete behaviour: paying a VA to chase invoices. The Vintage bar finds a specific anchoring moment: setup in February following a six-week non-payment.",
+    "anchor_span": "He set it up in February after a client stiffed him for six weeks"
   },
   "substitution_detected": false,
-  "swirl": {
-    "kind": "reality",
-    "question": "Is there a second photographer, someone entirely outside this situation, who has run into the same chasing problem and done something about it?"
-  },
   "server_checks": {
     "schema_valid": true,
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
-    "swirl_included": true
+    "swirl_included": false
   }
 }
 ```
 
 ### 6. [main] M4 · /m4
-Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[Echo]
+Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[none]
 Request:
 ```json
 {
@@ -303,11 +297,11 @@ Request:
     "source": "user_stated",
     "status": "confirmed"
   },
-  "grape_name": "Femke",
-  "grape_relationship": "my sister-in-law, photographer",
+  "grape_name": "Noor",
+  "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
-  "prior_echo_context": "Femke started adding a 30 percent booking fee in January after two no-shows in one month.",
-  "user_answer": "Priya, who runs a catering van, showed me the whiteboard in her kitchen last week where she crosses off paid jobs. For her it is deposits going missing, the chasing part she has under control."
+  "prior_echo_context": "My colleague Jordan pays a VA every month to chase his invoices. He set it up in February after a client stiffed him for six weeks.",
+  "user_answer": "There's a guy at my office who just has an assistant handle all his invoice chasing every month."
 }
 ```
 Response:
@@ -318,25 +312,25 @@ Response:
   "state": "clearing",
   "echo": {
     "state": "clearing",
-    "anchor_span": "For her it is deposits going missing, the chasing part she has under control."
+    "anchor_span": "a guy at my office who just has an assistant handle all his invoice chasing every month"
   },
   "vintage": {
-    "state": "clearing",
-    "anchor_span": "showed me the whiteboard in her kitchen last week"
+    "state": "turbid",
+    "anchor_span": null
   },
   "contrast": {
-    "is_different_kind": "true",
-    "same_or_different": "different",
-    "anchor_span": "For her it is deposits going missing, the chasing part she has under control."
+    "is_different_kind": "unclear",
+    "same_or_different": "unclear",
+    "anchor_span": null
   },
   "observation": {
-    "surface_text": "Priya is a real named third party distinct from Femke, but the confirmed problem is forgetting to chase unpaid invoices and the answer states chasing is not her problem, placing her outside the confirmed problem. The whiteboard detail anchors a recent encounter but not a specific instance of the confirmed problem.",
-    "anchor_span": "the chasing part she has under control."
+    "surface_text": "The answer describes an unnamed office contact using an assistant for invoice chasing, which mirrors the prior echo person Jordan's identical workaround and does not establish a second distinct person. No specific instance is present, only a recurring monthly pattern.",
+    "anchor_span": "a guy at my office who just has an assistant handle all his invoice chasing every month"
   },
   "substitution_detected": false,
   "swirl": {
-    "kind": "ownership",
-    "question": "Does Priya ever let a payment slip entirely, or is the whiteboard holding the line so that forgetting to chase has never actually cost her?"
+    "kind": "reality",
+    "question": "Is this a specific person with a name or a face, or a figure assembled from the general awareness that some office people use assistants for this?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -357,10 +351,10 @@ Request:
     "source": "user_stated",
     "status": "confirmed"
   },
-  "grape_name": "Femke",
-  "grape_relationship": "my sister-in-law, photographer",
+  "grape_name": "Noor",
+  "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
-  "user_answer": "Femke uses a basic invoicing app, but it has no automatic reminders, so nothing chases the client but her own memory."
+  "user_answer": "Noor uses a paper receipt book for jobs, but it has no way to flag which jobs are still unpaid, so invoices slip through unnoticed."
 }
 ```
 Response:
@@ -371,11 +365,11 @@ Response:
   "state": "settled",
   "gap": {
     "state": "settled",
-    "anchor_span": "basic invoicing app, but it has no automatic reminders, so nothing chases the client but her own memory"
+    "anchor_span": "uses a paper receipt book for jobs, but it has no way to flag which jobs are still unpaid"
   },
   "observation": {
-    "surface_text": "The answer names a basic invoicing app as the existing solution Femke currently uses. The precise failure point is identified: the app has no automatic reminders, leaving follow-up dependent on her memory alone.",
-    "anchor_span": "basic invoicing app, but it has no automatic reminders, so nothing chases the client but her own memory"
+    "surface_text": "The answer names an existing solution: a paper receipt book used to track jobs. A precise failure point is present: it cannot flag unpaid jobs, allowing invoices to go unnoticed.",
+    "anchor_span": "it has no way to flag which jobs are still unpaid, so invoices slip through unnoticed"
   },
   "substitution_detected": false,
   "server_checks": {
@@ -397,11 +391,11 @@ Request:
     "source": "user_stated",
     "status": "confirmed"
   },
-  "grape_name": "Femke",
-  "grape_relationship": "my sister-in-law, photographer",
+  "grape_name": "Noor",
+  "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
   "words_source": "real",
-  "user_answer": "\"I hate having to be the one who asks for money,\" she said after the honeymoon one."
+  "user_answer": "\"I just want to send it and forget it,\" she said after the two-week one."
 }
 ```
 Response:
@@ -412,19 +406,19 @@ Response:
   "state": "settled",
   "words": {
     "state": "settled",
-    "anchor_span": "I hate having to be the one who asks for money"
+    "anchor_span": "I just want to send it and forget it"
   },
   "tell": {
     "state": "clearing",
-    "anchor_span": "I hate having to be the one who asks for money"
+    "anchor_span": "I just want to send it and forget it"
   },
   "echo": {
     "state": "turbid",
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "A direct quote from a flagged real exchange is present, meeting the Words settled bar. The quoted words carry a stated feeling about the act of asking but no filmable action, placing Tell at clearing.",
-    "anchor_span": "I hate having to be the one who asks for money"
+    "surface_text": "A direct quote from a real exchange is present, attributing specific language to Noor about the invoice problem. The words carry a stated desire but no filmable action, and no third-party reference appears.",
+    "anchor_span": "I just want to send it and forget it"
   },
   "substitution_detected": false,
   "server_checks": {
@@ -437,7 +431,7 @@ Response:
 ```
 
 ### 9. [main] M7 · /m7
-Summary: state=settled · substitution_detected=false · swirl=no · changed=[Limit]
+Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[Limit]
 Request:
 ```json
 {
@@ -446,10 +440,10 @@ Request:
     "source": "user_stated",
     "status": "confirmed"
   },
-  "grape_name": "Femke",
-  "grape_relationship": "my sister-in-law, photographer",
+  "grape_name": "Noor",
+  "grape_relationship": "my friend, runs a one-woman landscaping business",
   "maturity_class": 0,
-  "user_answer": "Owen works only through an agency that invoices clients on his behalf. Chasing payments never happens to him because the agency handles it."
+  "user_answer": "Priya only does fixed-price maintenance contracts billed automatically each month. Invoice chasing never happens to her because nothing is billed per job."
 }
 ```
 Response:
@@ -457,21 +451,25 @@ Response:
 {
   "schema_version": "m7.v1",
   "mechanism": "M7",
-  "state": "settled",
+  "state": "clearing",
   "limit": {
-    "state": "settled",
-    "anchor_span": "Owen works only through an agency that invoices clients on his behalf. Chasing payments never happens to him because the agency handles it."
+    "state": "clearing",
+    "anchor_span": "Priya only does fixed-price maintenance contracts billed automatically each month"
   },
   "observation": {
-    "surface_text": "The answer names a bounded individual, Owen, working exclusively through an agency that absorbs the invoicing function. The reason for exemption is specific: the agency handles client billing, so the problem of forgotten chasing never reaches him.",
-    "anchor_span": "the agency handles it"
+    "surface_text": "The answer names a bounded individual and a structural reason for immunity. The reason stops short of specificity: no detail on what automatic billing system or arrangement makes chasing structurally impossible rather than merely unlikely.",
+    "anchor_span": "Invoice chasing never happens to her because nothing is billed per job"
   },
   "substitution_detected": false,
+  "swirl": {
+    "kind": "reality",
+    "question": "Is Priya a real landscaper with an actual auto-billing contract in place today, or a constructed example built to fit the logic of the exclusion?"
+  },
   "server_checks": {
     "schema_valid": true,
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
-    "swirl_included": false
+    "swirl_included": true
   }
 }
 ```
@@ -480,5 +478,7 @@ Response:
 - none detected
 
 ## Floor notes (informational — a later mechanism offered a lower grade for an opportunistic bar; the floor correctly held, no action needed)
-- M4 offered clearing for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
-- M6 offered turbid for Echo, held at floor clearing (opportunistic grading correctly did not lower it).
+- M4 offered clearing for Echo, held at floor settled (opportunistic grading correctly did not lower it).
+- M4 offered turbid for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
+- M6 offered clearing for Tell, held at floor settled (opportunistic grading correctly did not lower it).
+- M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it).

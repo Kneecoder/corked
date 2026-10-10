@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 06
 
-Generated: 2026-10-10T12:58:39.571Z
+Generated: 2026-10-10T12:47:39.265Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -15,7 +15,7 @@ Maturity class: 1
 Grape: (none) — (none)
 expect_halt: true
 
-Line sent to the worker (the spark as typed): "Something that makes life easier."
+Line sent to the worker (M0's line): "Something that makes life easier."
 
 M0's line (verbatim, not shown in the app): "Something that makes life easier."
 
@@ -63,24 +63,24 @@ Response:
       "domain",
       "problem"
     ],
-    "reason": "Not bottleable yet. No person, domain, or problem is present. There is nothing to work with.",
+    "reason": "Not bottleable yet. No person, domain, or problem is present. There is nothing to bottle.",
     "can_seal": false,
     "requires_followup_before_seal": true
   },
   "followup": {
     "needed": true,
-    "question": "Who is this for, and what problem are they sitting with before they find it?"
+    "question": "Who is sitting with a problem here, and what is going wrong for them?"
   },
   "m1_setup": {
-    "question": "Name the specific person and moment this idea starts from.",
-    "hint": "A good answer names who is struggling and what is going wrong for them, in their own situation.",
+    "question": "Name the specific person this starts from and the moment when life was not easy for them.",
+    "hint": "A good answer names a real person, what they were trying to do, and what actually happened.",
     "person_label": "Person",
-    "person_placeholder": null,
-    "when_label": "When",
-    "when_placeholder": null,
-    "trying_label": "Trying to",
+    "person_placeholder": "e.g. Dana, a nurse working double shifts",
+    "when_label": "When it happened",
+    "when_placeholder": "e.g. after her third consecutive overnight",
+    "trying_label": "What they were trying to do",
     "trying_placeholder": null,
-    "happened_label": "What happened",
+    "happened_label": "What actually happened",
     "happened_placeholder": null
   },
   "person_in_spark": {

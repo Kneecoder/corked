@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 03
 
-Generated: 2026-10-10T12:58:17.849Z
+Generated: 2026-10-10T12:47:16.424Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -15,9 +15,9 @@ Maturity class: 1
 Grape: Marco — owns the boxing gym where I train
 expect_halt: false
 
-Line sent to the worker (the spark as typed): "A better scheduling app for gym owners."
+Line sent to the worker (M0's line): "A better scheduling app for gym owners."
 
-M0's line (verbatim, not shown in the app): "A scheduling app for gym owners that is better than what they currently use."
+M0's line (verbatim, not shown in the app): "A better scheduling app for gym owners."
 
 ## Element Tracker (final state, floor-enforced like corked_v6.html's rankUp — see "raw grades" for what each mechanism actually offered before the floor was applied)
 - **Grape**: settled — history: inert → settled (last raised by M1)
@@ -47,7 +47,7 @@ Response:
   "schema_version": "m0.v1",
   "mechanism": "M0",
   "raw_spark": "A better scheduling app for gym owners.",
-  "user_line_candidate": "A scheduling app for gym owners that is better than what they currently use.",
+  "user_line_candidate": "A better scheduling app for gym owners.",
   "spark_parse": {
     "solution_form": "app",
     "implied_person": "gym owners",
@@ -62,24 +62,24 @@ Response:
     "missing": [
       "suspected_problem"
     ],
-    "reason": "Bottleable, cloudy. The form, the population, and the domain are visible, but no problem with scheduling is stated. That is what the cellar will age.",
+    "reason": "Bottleable, cloudy. The role and the form are visible, but no problem with scheduling is stated. That is what the cellar will age.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
   "followup": {
     "needed": true,
-    "question": "What is going wrong for gym owners with scheduling right now?"
+    "question": "What is going wrong for gym owners with scheduling?"
   },
   "m1_setup": {
-    "question": "Name the specific gym owner and the moment when scheduling broke down for them.",
-    "hint": "A good answer names a real gym owner and describes a concrete scheduling situation that went wrong.",
+    "question": "Name the specific gym owner and the moment when scheduling became a problem for them.",
+    "hint": "A good answer names one gym owner and describes a concrete situation where their current scheduling broke down or fell short.",
     "person_label": "Gym owner",
-    "person_placeholder": "Dana, gym owner",
-    "when_label": "When the scheduling problem hit",
-    "when_placeholder": "the morning a class double-booked and members showed up at the same time",
-    "trying_label": "What they were trying to do",
+    "person_placeholder": "e.g. Priya, gym owner",
+    "when_label": "When scheduling became a problem",
+    "when_placeholder": null,
+    "trying_label": "What they were trying to schedule",
     "trying_placeholder": null,
-    "happened_label": "What actually happened",
+    "happened_label": "What went wrong",
     "happened_placeholder": null
   },
   "person_in_spark": {
@@ -126,7 +126,7 @@ Response:
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "Marco is identified as a named individual with a concrete real-world tie. The relationship is specific and verifiable.",
+    "surface_text": "Marco is identified as a named individual with a concrete operational role. The relationship 'owns the boxing gym where I train' places him in direct contact with the scheduling problem.",
     "anchor_span": "owns the boxing gym where I train"
   },
   "next_question": {

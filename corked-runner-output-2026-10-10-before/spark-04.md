@@ -1,21 +1,21 @@
-# Corked Runner Report — spark 05
+# Corked Runner Report — spark 04
 
-Generated: 2026-10-10T12:58:33.164Z
+Generated: 2026-10-10T12:47:24.699Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
-Scope asymmetry probe — doctrine tension, either outcome is a finding. Expect one of two outcomes, both worth recording verbatim: (a) Out of scope — "bookstore" read as physical store, meaning M0 doctrine's own canonical thin-spark example is unreachable behind the scope gate (a doctrine note for v46, not a code bug); or (b) passes as thin — then assert suspected_problem null, m1_placeholders_nulled true, followup uses only spark nouns (books, cans — never literacy, barter, recycling, currency).
+Scope gate, explicit non-software. Expect: out_of_scope, scope_gated true, scope reason present, no followup, no downstream calls. Clean halt.
 
 ## Raw Spark
 ```
-A bookstore for homeless people where you pay with cans.
+A sourdough bakery subscription for my street.
 ```
 
-Maturity class: 3
+Maturity class: 1
 Grape: (none) — (none)
-expect_halt: maybe
+expect_halt: true
 
-Line sent to the worker (the spark as typed): (none — halted before M0 returned one)
+Line sent to the worker (M0's line): (none — halted before M0 returned one)
 
 M0's line (verbatim, not shown in the app): (none)
 
@@ -37,7 +37,7 @@ Summary: digestibility=out_of_scope · in_scope=false · followup_needed=false
 Request:
 ```json
 {
-  "raw_spark": "A bookstore for homeless people where you pay with cans."
+  "raw_spark": "A sourdough bakery subscription for my street."
 }
 ```
 Response:
@@ -45,15 +45,15 @@ Response:
 {
   "schema_version": "m0.v1",
   "mechanism": "M0",
-  "raw_spark": "A bookstore for homeless people where you pay with cans.",
-  "user_line_candidate": "A bookstore for homeless people where you pay with cans.",
+  "raw_spark": "A sourdough bakery subscription for my street.",
+  "user_line_candidate": "A sourdough bakery subscription for people on the speaker's street.",
   "spark_parse": {
-    "solution_form": "bookstore",
-    "implied_person": "homeless people",
+    "solution_form": "subscription",
+    "implied_person": "people on the speaker's street",
     "suspected_problem": null,
     "triggering_situation": null,
     "promised_change": null,
-    "domain": "books",
+    "domain": "sourdough bakery",
     "solution_is_software": "non_software"
   },
   "digestibility": {

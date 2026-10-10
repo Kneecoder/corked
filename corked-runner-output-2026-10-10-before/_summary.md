@@ -1,8 +1,8 @@
 # Batch run summary — Corked Phase 1 Test Battery
 
-Generated: 2026-10-10T13:07:38.997Z
+Generated: 2026-10-10T12:56:47.318Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
-Line sent: the spark as typed
+Line sent: M0's line
 
 ## 1. spark-01.md
 Spark: An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.
@@ -101,6 +101,8 @@ Outcome: PASS (completed full chain)
 Spark: An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.
 Maturity: 0
 Outcome: PASS (completed full chain)
+Anomalies (1):
+  - VOICE: contrast-formula ("not X but Y" / "not just X") found at M5.observation.surface_text: "The answer names a specific existing solution: a plain spreadsheet template. The failure point given, does not catch the problem until it is already too late, describes a timing shortfall but does not state what the spreadsheet specifically fails to do, such as send reminders or flag overdue dates."
 
 ## 19. spark-19.md
 Spark: An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.
