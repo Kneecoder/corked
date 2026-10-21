@@ -1,0 +1,517 @@
+{
+  "idx": 8,
+  "cfg": {
+    "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+    "maturity": 0,
+    "grapeName": "Bram",
+    "grapeRel": "my uncle, owns four rental flats",
+    "answers": {
+      "m2": "Last month a tenant sent three separate partial payments across two weeks, and Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand.",
+      "m3": "My neighbor Tom, who rents out a duplex, told me last month he started asking for one lump sum only after a similar reconciling headache.",
+      "m4": "Priya, who runs a small storage unit business, keeps a manual ledger for partial payments too. For her the pain is chasing the balance down, the reconciling part is fine.",
+      "m5": "Bram uses a shared spreadsheet to track rent, but it has no way to flag a partial payment against the wrong month, so mismatches pile up.",
+      "m6": "\"I just want one number a month, not a puzzle,\" he said after the Sunday one.",
+      "m7": "Owen only rents to corporate tenants on annual leases paid in full upfront. Partial payments never happen to him because the whole year is billed at once."
+    },
+    "expectHalt": false,
+    "note": "Sanitizer mutation probe — proven-bug regression. Record user_line_candidate verbatim. cleanVisibleText strips \"not just\", which can turn \"do not just pay late\" into \"do pay late\" — a meaning inversion. If the line mutates, the known sanitizer bug has regressed into user-facing text. If M0 rephrases to avoid the construction while keeping both facts (late AND partial), that is a pass."
+  },
+  "outcome": "FAIL (unexpected halt: M2 request failed.)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8789",
+    "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+    "maturity": 0,
+    "grapeName": "Bram",
+    "grapeRel": "my uncle, owns four rental flats",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+      "user_line_candidate": "A tool for landlords when tenants pay in random partial chunks nobody can reconcile.",
+      "spark_parse": {
+        "solution_form": "tool",
+        "implied_person": "landlords",
+        "suspected_problem": "tenants pay in random partial chunks nobody can reconcile",
+        "triggering_situation": null,
+        "promised_change": null,
+        "domain": "landlords and tenant payments",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "cellar_ready",
+        "missing": [],
+        "reason": "Cellar-ready. The role is landlords and the stated problem is tenants paying in random partial chunks nobody can reconcile. Both enter cleanly.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": false,
+        "question": null
+      },
+      "m1_setup": {
+        "question": "Name the specific landlord and the moment a tenant's partial payment arrived that nobody could reconcile.",
+        "hint": "A good answer names one landlord and one tenant payment that did not add up.",
+        "person_label": "Landlord",
+        "person_placeholder": "Dana, landlord with a few rental units",
+        "when_label": "When the partial payments arrived",
+        "when_placeholder": "the third partial payment in one month",
+        "trying_label": "What the landlord was trying to do",
+        "trying_placeholder": "match the payments to the rent owed",
+        "happened_label": "What happened with the payments",
+        "happened_placeholder": "Three transfers of different amounts came in over two weeks and the landlord could not tell which month they covered."
+      },
+      "person_in_spark": {
+        "grade": "none",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": false
+      }
+    },
+    "userLine": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+    "sparkParse": {
+      "solution_form": "tool",
+      "implied_person": "landlords",
+      "suspected_problem": "tenants pay in random partial chunks nobody can reconcile",
+      "triggering_situation": null,
+      "promised_change": null,
+      "domain": "landlords and tenant payments",
+      "solution_is_software": "software"
+    },
+    "domain": "landlords and tenant payments",
+    "gapInPlay": false,
+    "problem": {
+      "text": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
+      "source": "user_stated",
+      "status": "confirmed"
+    },
+    "phaseAOutcome": "stated",
+    "answers": {
+      "M1": "my uncle, owns four rental flats",
+      "M2": "Last month a tenant sent three separate partial payments across two weeks, and Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand."
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+          "user_line_candidate": "A tool for landlords when tenants pay in random partial chunks nobody can reconcile.",
+          "spark_parse": {
+            "solution_form": "tool",
+            "implied_person": "landlords",
+            "suspected_problem": "tenants pay in random partial chunks nobody can reconcile",
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "landlords and tenant payments",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "cellar_ready",
+            "missing": [],
+            "reason": "Cellar-ready. The role is landlords and the stated problem is tenants paying in random partial chunks nobody can reconcile. Both enter cleanly.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": false,
+            "question": null
+          },
+          "m1_setup": {
+            "question": "Name the specific landlord and the moment a tenant's partial payment arrived that nobody could reconcile.",
+            "hint": "A good answer names one landlord and one tenant payment that did not add up.",
+            "person_label": "Landlord",
+            "person_placeholder": "Dana, landlord with a few rental units",
+            "when_label": "When the partial payments arrived",
+            "when_placeholder": "the third partial payment in one month",
+            "trying_label": "What the landlord was trying to do",
+            "trying_placeholder": "match the payments to the rent owed",
+            "happened_label": "What happened with the payments",
+            "happened_placeholder": "Three transfers of different amounts came in over two weeks and the landlord could not tell which month they covered."
+          },
+          "person_in_spark": {
+            "grade": "none",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:35:59Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:36:03Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:35:58Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T16:35:59Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.\",\n  \"user_line_candidate\": \"A tool for landlords when tenants pay in random partial chunks nobody can reconcile.\",\n  \"spark_parse\": {\n    \"solution_form\": \"tool\",\n    \"implied_person\": \"landlords\",\n    \"suspected_problem\": \"tenants pay in random partial chunks nobody can reconcile\",\n    \"triggering_situation\": null,\n    \"promised_change\": null,\n    \"domain\": \"landlords and tenant payments\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The role is landlords and the stated problem is tenants paying in random partial chunks nobody can reconcile. Both enter cleanly.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the specific landlord and the moment a tenant's partial payment arrived that nobody could reconcile.\",\n    \"hint\": \"A good answer names one landlord and one tenant payment that did not add up.\",\n    \"person_label\": \"Landlord\",\n    \"person_placeholder\": \"Dana, landlord with a few rental units\",\n    \"when_label\": \"When the partial payments arrived\",\n    \"when_placeholder\": \"the third partial payment in one month\",\n    \"trying_label\": \"What the landlord was trying to do\",\n    \"trying_placeholder\": \"match the payments to the rent owed\",\n    \"happened_label\": \"What happened with the payments\",\n    \"happened_placeholder\": \"Three transfers of different amounts came in over two weeks and the landlord could not tell which month they covered.\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"none\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}",
+              "usage": {
+                "input_tokens": 4840,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 693,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "digestibility=cellar_ready · in_scope=true · followup_needed=false",
+        "ts": "2026-10-21T16:36:03.001Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/m1",
+        "kind": "main",
+        "request": {
+          "spark_summary": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+          "person_name": "Bram",
+          "relationship": "my uncle, owns four rental flats",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "settled",
+          "grape": {
+            "state": "settled",
+            "named_person": "Bram",
+            "person_kind": "named_individual",
+            "temporal_grounding": "present_general"
+          },
+          "observation": {
+            "surface_text": "Bram is named and tied to the idea as an uncle who owns four rental flats. The name and the relationship together identify a specific individual.",
+            "anchor_span": "my uncle, owns four rental flats"
+          },
+          "next_question": {
+            "should_advance": true,
+            "framing": "Move to a specific moment when Bram dealt with a tenant paying in partial chunks."
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "anchor_verified": true,
+            "visible_style_violations_cleaned": []
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:36:03Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:36:05Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:36:03Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:36:03Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m1.v1\",\n  \"mechanism\": \"M1\",\n  \"outcome\": \"settled\",\n  \"grape\": {\n    \"state\": \"settled\",\n    \"named_person\": \"Bram\",\n    \"person_kind\": \"named_individual\",\n    \"temporal_grounding\": \"present_general\"\n  },\n  \"observation\": {\n    \"surface_text\": \"Bram is named and tied to the idea as an uncle who owns four rental flats. The name and the relationship together identify a specific individual.\",\n    \"anchor_span\": \"my uncle, owns four rental flats\"\n  },\n  \"next_question\": {\n    \"should_advance\": true,\n    \"framing\": \"Move to a specific moment when Bram dealt with a tenant paying in partial chunks.\"\n  }\n}",
+              "usage": {
+                "input_tokens": 1132,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 246,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=n/a · swirl=no · changed=[Grape]",
+        "ts": "2026-10-21T16:36:05.528Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (phase A)",
+        "kind": "main",
+        "request": {
+          "phase": "problem",
+          "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+          "user_line": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+          "spark_parse": {
+            "solution_form": "tool",
+            "implied_person": "landlords",
+            "suspected_problem": "tenants pay in random partial chunks nobody can reconcile",
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "landlords and tenant payments",
+            "solution_is_software": "software"
+          },
+          "grape_name": "Bram",
+          "grape_relationship": "my uncle, owns four rental flats",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m2.v2",
+          "mechanism": "M2",
+          "phase": "problem",
+          "outcome": "stated",
+          "problem": {
+            "text": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "question": "Bram has watched tenants pay in random partial chunks, so what did he actually do the last time he tried to reconcile one of those payments?",
+          "recovered_problem": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
+          "needs_confirmation": false,
+          "server_checks": {
+            "schema_valid": true,
+            "model_outcome": "stated",
+            "outcome": "stated",
+            "downgrades": [],
+            "unsupported_words": [],
+            "visible_style_violations_cleaned": [],
+            "m2_question_repaired": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:36:06Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:36:07Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:36:05Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:36:06Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m2.v2\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"problem\",\n  \"outcome\": \"stated\",\n  \"stated_span\": \"tenants do not just pay late, they pay in random partial chunks nobody can reconcile\",\n  \"problem\": null,\n  \"gap_in_play\": false,\n  \"question\": \"Bram has watched tenants pay in random partial chunks, so what did he actually do the last time he tried to reconcile one of those payments?\"\n}",
+              "usage": {
+                "input_tokens": 1639,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 161,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "outcome=stated · problem=\"tenants do not just pay late, they pay in random partial chunks nobody can reconcile\" (user_stated) · gap_in_play=false",
+        "ts": "2026-10-21T16:36:07.059Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2",
+        "kind": "main",
+        "request": {
+          "user_line": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+          "grape_name": "Bram",
+          "grape_relationship": "my uncle, owns four rental flats",
+          "maturity_class": 0,
+          "problem": {
+            "text": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "user_answer": "Last month a tenant sent three separate partial payments across two weeks, and Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand."
+        },
+        "response": {
+          "error": "Parse error",
+          "raw": ""
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:36:07Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:36:10Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:36:07Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11998000",
+                "tokens-reset": "2026-10-21T16:36:07Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "thinking",
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m2.v1\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"friction\",\n  \"state\": \"settled\",\n  \"tell\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand\"\n  },\n  \"vintage\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Last month a tenant sent three separate partial payments across two weeks\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names an observable action: Bram matched bank transfers to the lease spreadsheet by hand. The moment is anchored to one instance, a Sunday night last month following three partial payments.\",\n    \"anchor_span\": \"Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 2001,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 566,
+                "output_tokens_details": {
+                  "thinking_tokens": 271
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "ERROR 502",
+        "ts": "2026-10-21T16:36:10.868Z"
+      }
+    ],
+    "anomalies": [
+      "VOICE: contrast-formula (\"not X but Y\" / \"not just X\") found at M0.raw_spark: \"A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.\"",
+      "VOICE: contrast-formula (\"not X but Y\" / \"not just X\") found at M2-phaseA.recovered_problem: \"tenants do not just pay late, they pay in random partial chunks nobody can reconcile\"",
+      "VOICE: contrast-formula (\"not X but Y\" / \"not just X\") found at M2-phaseA.problem.text: \"tenants do not just pay late, they pay in random partial chunks nobody can reconcile\""
+    ],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M1",
+        "rawGrades": [
+          {
+            "mech": "M1",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M2 request failed."
+  }
+}

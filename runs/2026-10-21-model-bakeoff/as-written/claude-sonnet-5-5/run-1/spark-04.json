@@ -1,0 +1,137 @@
+{
+  "idx": 4,
+  "cfg": {
+    "raw_spark": "A sourdough bakery subscription for my street.",
+    "maturity": 1,
+    "grapeName": "",
+    "grapeRel": "",
+    "expectHalt": true,
+    "note": "Scope gate, explicit non-software. Expect: out_of_scope, scope_gated true, scope reason present, no followup, no downstream calls. Clean halt."
+  },
+  "outcome": "PASS (halted as expected: M0 request failed: Parse error)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8789",
+    "raw_spark": "A sourdough bakery subscription for my street.",
+    "maturity": 1,
+    "grapeName": "",
+    "grapeRel": "",
+    "wordsSource": "real",
+    "m0": null,
+    "userLine": "",
+    "sparkParse": null,
+    "domain": "",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {},
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A sourdough bakery subscription for my street."
+        },
+        "response": {
+          "error": "Parse error",
+          "raw": ""
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:35:29Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1998000",
+                "output-tokens-reset": "2026-10-21T16:35:39Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:35:27Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11996000",
+                "tokens-reset": "2026-10-21T16:35:29Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "max_tokens",
+              "blocks": [
+                "thinking",
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"A sourdough bakery subscription for my street.\",\n  \"user_line_candidate\": \"A sourdough bakery subscription for my street.\",\n  \"spark_parse\": {\n    \"solution_form\": \"subscription\",\n    \"implied_person\": \"people on the speaker's street\",\n    \"suspected_problem\": null,\n    \"triggering_situation\": null,\n    \"promised_change\": null,\n    \"domain\": \"sourdough bakery\",\n    \"solution_is_software\": \"non_software\"\n  },\n  \"digestibility\": {\n    \"state\": \"bottleable_cloudy\",\n    \"missing\": [\"problem\"],\n    \"reason\": \"Bottleable, cloudy. The subscription, the sourdough bakery, and the street are visible, but no problem is stated. That is what the cellar will age.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": true,\n    \"question\": \"What problem are people on your street having with sourdough?\"\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the one person on your street this sourdough subscription starts from, and the moment you saw them.\",\n    \"hint\": \"A good answer is one real person on the street and one specific time, such as a doorstep, a shop run, or a conversation.\",\n    \"person_label\": \"Neighbour\",\n    \"person_placeholder\": \"Dana, lives three doors down\",\n    \"when_label\": \"When on the street\",\n    \"when_placeholder\": \"a Saturday morning in the last month\",\n    \"trying_label\": \"What they were doing\",\n    \"trying_placeholder\": null,\n    \"happened_label\": \"What you saw happen\",\n    \"happened_placeholder\": null\n  },\n  \"person_in_spark\": {\n    \"grade\": \"none\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n",
+              "usage": {
+                "input_tokens": 4818,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 1600,
+                "output_tokens_details": {
+                  "thinking_tokens": 985
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "ERROR 502",
+        "ts": "2026-10-21T16:35:39.390Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M0 request failed: Parse error"
+  }
+}

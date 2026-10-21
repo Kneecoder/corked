@@ -1,0 +1,934 @@
+{
+  "idx": 12,
+  "cfg": {
+    "raw_spark": "An app to stop myself doomchecking my bank balance at the end of every month.",
+    "maturity": 2,
+    "grapeName": "Jamie",
+    "grapeRel": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.",
+    "answers": {
+      "m2": "Last month on the 28th, right before rent was due, I opened my banking app for the eleventh time that day instead of finishing the invoice I still hadn't sent, and gave up and closed the app without doing either.",
+      "m3": "I built a spreadsheet that projects the month forward, I check that instead now.",
+      "m4": "My friend Daniel, who freelances in video, told me in April he moved every client to 50 percent upfront after one late payer wrecked his rent month.",
+      "m5": "I use a budgeting app, but it only shows last month's picture, nothing about the invoice that has not landed yet.",
+      "m6": "I caught myself saying out loud, \"I can't look at it again until the Bakker invoice lands.\"",
+      "m7": "My uncle does the same kind of work but only takes retainer clients, so his balance is flat and boring. He is paid whether the work moves or not."
+    },
+    "expectHalt": false,
+    "note": "Class 2 self battery. Expect: M1 self-mode settled (concrete instance present). M3 echo turbid — the Echo can never be the speaker; observation pivots away from self. M4 settled (separate person satisfies self mode). M5 settled — self's own current tool is the one place self counts as Gap material, and the founder's own build exclusion does not fire on a budgeting app he did not build. M6 response omits the echo field entirely; record how the words bar grades a self-quote (mild corner, real exchange with oneself). M7 settled."
+  },
+  "outcome": "PASS (completed full chain)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8787",
+    "raw_spark": "An app to stop myself doomchecking my bank balance at the end of every month.",
+    "maturity": 2,
+    "grapeName": "Jamie",
+    "grapeRel": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "An app to stop myself doomchecking my bank balance at the end of every month.",
+      "user_line_candidate": "An app for someone to stop doomchecking their bank balance at the end of every month.",
+      "spark_parse": {
+        "solution_form": "app",
+        "implied_person": "the speaker",
+        "suspected_problem": "doomchecking bank balance at the end of every month",
+        "triggering_situation": "end of every month",
+        "promised_change": "stop doomchecking bank balance",
+        "domain": "bank balance",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "cellar_ready",
+        "missing": [],
+        "reason": "Cellar-ready. The speaker and the stated problem are both present: compulsive bank balance checking at end of month. It enters cleanly.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": false,
+        "question": null
+      },
+      "m1_setup": {
+        "question": "Name the specific person and the moment this starts from: who is it, and when exactly does the doomchecking happen?",
+        "hint": "A good answer names one real person and the exact moment they open their banking app, such as late on the last night of the month before a direct debit clears.",
+        "person_label": "Doomchecker",
+        "person_placeholder": "e.g. Jamie, checking their balance at 11pm on the 30th",
+        "when_label": "When does the doomchecking happen",
+        "when_placeholder": "e.g. the night before rent comes out",
+        "trying_label": "What were they trying to do",
+        "trying_placeholder": "e.g. get through the evening without opening the banking app",
+        "happened_label": "What actually happened",
+        "happened_placeholder": "e.g. they opened the banking app three times in an hour and felt worse each time"
+      },
+      "person_in_spark": {
+        "grade": "clearing",
+        "named_person": null,
+        "relationship_tie": "myself"
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": false
+      }
+    },
+    "userLine": "An app to stop myself doomchecking my bank balance at the end of every month.",
+    "sparkParse": {
+      "solution_form": "app",
+      "implied_person": "the speaker",
+      "suspected_problem": "doomchecking bank balance at the end of every month",
+      "triggering_situation": "end of every month",
+      "promised_change": "stop doomchecking bank balance",
+      "domain": "bank balance",
+      "solution_is_software": "software"
+    },
+    "domain": "bank balance",
+    "gapInPlay": false,
+    "problem": {
+      "text": "doomchecking my bank balance at the end of every month",
+      "source": "user_stated",
+      "status": "confirmed"
+    },
+    "phaseAOutcome": "stated",
+    "answers": {
+      "M1": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.",
+      "M2": "Last month on the 28th, right before rent was due, I opened my banking app for the eleventh time that day instead of finishing the invoice I still hadn't sent, and gave up and closed the app without doing either.",
+      "M3": "I built a spreadsheet that projects the month forward, I check that instead now.",
+      "M4": "My friend Daniel, who freelances in video, told me in April he moved every client to 50 percent upfront after one late payer wrecked his rent month.",
+      "M5": "I use a budgeting app, but it only shows last month's picture, nothing about the invoice that has not landed yet.",
+      "M6": "I caught myself saying out loud, \"I can't look at it again until the Bakker invoice lands.\"",
+      "M7": "My uncle does the same kind of work but only takes retainer clients, so his balance is flat and boring. He is paid whether the work moves or not."
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "An app to stop myself doomchecking my bank balance at the end of every month."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "An app to stop myself doomchecking my bank balance at the end of every month.",
+          "user_line_candidate": "An app for someone to stop doomchecking their bank balance at the end of every month.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "the speaker",
+            "suspected_problem": "doomchecking bank balance at the end of every month",
+            "triggering_situation": "end of every month",
+            "promised_change": "stop doomchecking bank balance",
+            "domain": "bank balance",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "cellar_ready",
+            "missing": [],
+            "reason": "Cellar-ready. The speaker and the stated problem are both present: compulsive bank balance checking at end of month. It enters cleanly.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": false,
+            "question": null
+          },
+          "m1_setup": {
+            "question": "Name the specific person and the moment this starts from: who is it, and when exactly does the doomchecking happen?",
+            "hint": "A good answer names one real person and the exact moment they open their banking app, such as late on the last night of the month before a direct debit clears.",
+            "person_label": "Doomchecker",
+            "person_placeholder": "e.g. Jamie, checking their balance at 11pm on the 30th",
+            "when_label": "When does the doomchecking happen",
+            "when_placeholder": "e.g. the night before rent comes out",
+            "trying_label": "What were they trying to do",
+            "trying_placeholder": "e.g. get through the evening without opening the banking app",
+            "happened_label": "What actually happened",
+            "happened_placeholder": "e.g. they opened the banking app three times in an hour and felt worse each time"
+          },
+          "person_in_spark": {
+            "grade": "clearing",
+            "named_person": null,
+            "relationship_tie": "myself"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T17:01:56Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T17:02:04Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:01:55Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T17:01:56Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"An app to stop myself doomchecking my bank balance at the end of every month.\",\n  \"user_line_candidate\": \"An app for someone to stop doomchecking their bank balance at the end of every month.\",\n  \"spark_parse\": {\n    \"solution_form\": \"app\",\n    \"implied_person\": \"the speaker\",\n    \"suspected_problem\": \"doomchecking bank balance at the end of every month\",\n    \"triggering_situation\": \"end of every month\",\n    \"promised_change\": \"stop doomchecking bank balance\",\n    \"domain\": \"bank balance\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The speaker and the stated problem are both present: compulsive bank balance checking at end of month. It enters cleanly.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the specific person and the moment this starts from: who is it, and when exactly does the doomchecking happen?\",\n    \"hint\": \"A good answer names one real person and the exact moment they open their banking app, such as late on the last night of the month before a direct debit clears.\",\n    \"person_label\": \"Doomchecker\",\n    \"person_placeholder\": \"e.g. Jamie, checking their balance at 11pm on the 30th\",\n    \"when_label\": \"When does the doomchecking happen\",\n    \"when_placeholder\": \"e.g. the night before rent comes out\",\n    \"trying_label\": \"What were they trying to do\",\n    \"trying_placeholder\": \"e.g. get through the evening without opening the banking app\",\n    \"happened_label\": \"What actually happened\",\n    \"happened_placeholder\": \"e.g. they opened the banking app three times in an hour and felt worse each time\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"clearing\",\n    \"named_person\": null,\n    \"relationship_tie\": \"myself\"\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 3642,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 591,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "digestibility=cellar_ready · in_scope=true · followup_needed=false",
+        "ts": "2026-10-21T17:02:04.323Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "none (self mode, not graded)",
+        "kind": "main",
+        "request": null,
+        "response": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "settled",
+          "grape": {
+            "state": "settled",
+            "named_person": "Jamie",
+            "person_kind": "self"
+          },
+          "observation": {
+            "surface_text": "",
+            "anchor_span": null
+          },
+          "next_question": {
+            "should_advance": true,
+            "framing": null
+          }
+        },
+        "summary": "state=settled · substitution_detected=n/a · swirl=no · changed=[Grape]",
+        "ts": "2026-10-21T17:02:04.323Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (phase A)",
+        "kind": "main",
+        "request": {
+          "phase": "problem",
+          "raw_spark": "An app to stop myself doomchecking my bank balance at the end of every month.",
+          "user_line": "An app to stop myself doomchecking my bank balance at the end of every month.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "the speaker",
+            "suspected_problem": "doomchecking bank balance at the end of every month",
+            "triggering_situation": "end of every month",
+            "promised_change": "stop doomchecking bank balance",
+            "domain": "bank balance",
+            "solution_is_software": "software"
+          },
+          "grape_name": "Jamie",
+          "grape_relationship": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.",
+          "maturity_class": 2
+        },
+        "response": {
+          "schema_version": "m2.v2",
+          "mechanism": "M2",
+          "phase": "problem",
+          "outcome": "stated",
+          "problem": {
+            "text": "doomchecking my bank balance at the end of every month",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "question": "Walk me through the last time you opened your bank balance at the end of the month: what did you actually do, from the moment you picked up your phone to the moment you put it down?",
+          "recovered_problem": "doomchecking my bank balance at the end of every month",
+          "needs_confirmation": false,
+          "server_checks": {
+            "schema_valid": true,
+            "model_outcome": "stated",
+            "outcome": "stated",
+            "downgrades": [],
+            "unsupported_words": [],
+            "visible_style_violations_cleaned": [],
+            "m2_question_repaired": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T17:02:08Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:02:09Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:02:04Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T17:02:08Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m2.v2\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"problem\",\n  \"outcome\": \"stated\",\n  \"stated_span\": \"doomchecking my bank balance at the end of every month\",\n  \"problem\": null,\n  \"gap_in_play\": false,\n  \"question\": \"Walk me through the last time you opened your bank balance at the end of the month: what did you actually do, from the moment you picked up your phone to the moment you put it down?\"\n}\n```",
+              "usage": {
+                "input_tokens": 1174,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 137,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "outcome=stated · problem=\"doomchecking my bank balance at the end of every month\" (user_stated) · gap_in_play=false",
+        "ts": "2026-10-21T17:02:09.752Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2",
+        "kind": "main",
+        "request": {
+          "user_line": "An app to stop myself doomchecking my bank balance at the end of every month.",
+          "grape_name": "Jamie",
+          "grape_relationship": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.",
+          "maturity_class": 2,
+          "problem": {
+            "text": "doomchecking my bank balance at the end of every month",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "user_answer": "Last month on the 28th, right before rent was due, I opened my banking app for the eleventh time that day instead of finishing the invoice I still hadn't sent, and gave up and closed the app without doing either."
+        },
+        "response": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "settled",
+          "tell": {
+            "state": "settled",
+            "anchor_span": "opened my banking app for the eleventh time that day instead of finishing the invoice I still hadn't sent, and gave up and closed the app without doing either"
+          },
+          "vintage": {
+            "state": "settled",
+            "anchor_span": "Last month on the 28th, right before rent was due"
+          },
+          "observation": {
+            "surface_text": "The Tell bar is settled: a specific observable sequence of actions is named, including repetitive app-opening, abandoned invoice, and app closure. The Vintage bar is settled: the behaviour is anchored to a single dated instance with a concrete situational context.",
+            "anchor_span": "Last month on the 28th, right before rent was due, I opened my banking app for the eleventh time that day"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": true,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:02:10Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:02:14Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:02:10Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:02:10Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m2.v1\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"friction\",\n  \"state\": \"settled\",\n  \"tell\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"opened my banking app for the eleventh time that day instead of finishing the invoice I still hadn't sent, and gave up and closed the app without doing either\"\n  },\n  \"vintage\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Last month on the 28th, right before rent was due\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The Tell bar is settled: a specific observable sequence of actions is named, including repetitive app-opening, abandoned invoice, and app closure. The Vintage bar is settled: the behaviour is anchored to a single dated instance with a concrete situational context.\",\n    \"anchor_span\": \"Last month on the 28th, right before rent was due, I opened my banking app for the eleventh time that day\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1438,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 261,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Tell, Vintage]",
+        "ts": "2026-10-21T17:02:14.284Z"
+      },
+      {
+        "mech": "M3",
+        "endpoint": "/m3",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "doomchecking my bank balance at the end of every month",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Jamie",
+          "grape_relationship": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.",
+          "maturity_class": 2,
+          "user_answer": "I built a spreadsheet that projects the month forward, I check that instead now."
+        },
+        "response": {
+          "schema_version": "m3.v1",
+          "mechanism": "M3",
+          "state": "turbid",
+          "echo": {
+            "state": "turbid",
+            "anchor_span": "I built a spreadsheet that projects the month forward, I check that instead now."
+          },
+          "observation": {
+            "surface_text": "The answer describes the founder's own build and workaround behaviour, which is excluded under self-as-grape rules; no separate person and no concrete behaviour from a third party appears anywhere in the answer.",
+            "anchor_span": "I built a spreadsheet that projects the month forward, I check that instead now."
+          },
+          "substitution_detected": true,
+          "swirl": {
+            "kind": "reality",
+            "question": "Who else, by name or clear role, has shown up carrying this same end-of-month dread and reached for something to fix it?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:02:16Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:02:20Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:02:14Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:02:16Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m3.v1\",\n  \"mechanism\": \"M3\",\n  \"state\": \"turbid\",\n  \"echo\": {\n    \"state\": \"turbid\",\n    \"anchor_span\": \"I built a spreadsheet that projects the month forward, I check that instead now.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer describes the founder's own build and workaround behaviour, which is excluded under self-as-grape rules; no separate person and no concrete behaviour from a third party appears anywhere in the answer.\",\n    \"anchor_span\": \"I built a spreadsheet that projects the month forward, I check that instead now.\"\n  },\n  \"substitution_detected\": true,\n  \"swirl\": {\n    \"kind\": \"reality\",\n    \"question\": \"Who else, by name or clear role, has shown up carrying this same end-of-month dread and reached for something to fix it?\"\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 1265,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 234,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=turbid · substitution_detected=true · swirl=yes · changed=[Echo]",
+        "ts": "2026-10-21T17:02:20.418Z"
+      },
+      {
+        "mech": "M4",
+        "endpoint": "/m4",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "doomchecking my bank balance at the end of every month",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Jamie",
+          "grape_relationship": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.",
+          "maturity_class": 2,
+          "prior_echo_context": "I built a spreadsheet that projects the month forward, I check that instead now.",
+          "user_answer": "My friend Daniel, who freelances in video, told me in April he moved every client to 50 percent upfront after one late payer wrecked his rent month."
+        },
+        "response": {
+          "schema_version": "m4.v1",
+          "mechanism": "M4",
+          "state": "clearing",
+          "echo": {
+            "state": "clearing",
+            "anchor_span": "moved every client to 50 percent upfront after one late payer wrecked his rent month"
+          },
+          "contrast": {
+            "is_different_kind": "true",
+            "same_or_different": "different",
+            "anchor_span": "My friend Daniel, who freelances in video"
+          },
+          "observation": {
+            "surface_text": "Daniel is a real named person distinct from the grape and the prior echo context, but his concrete behaviour addresses late payment rather than doomchecking a bank balance, making him a response to a related cash anxiety rather than a second confirmation of the confirmed problem.",
+            "anchor_span": "moved every client to 50 percent upfront after one late payer wrecked his rent month"
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "Does Daniel actually doomcheck his balance at month end, or did the late-payer crisis end once he changed his deposit terms?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:02:22Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:02:26Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:02:20Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:02:22Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m4.v1\",\n  \"mechanism\": \"M4\",\n  \"state\": \"clearing\",\n  \"echo\": {\n    \"state\": \"clearing\",\n    \"anchor_span\": \"moved every client to 50 percent upfront after one late payer wrecked his rent month\"\n  },\n  \"contrast\": {\n    \"is_different_kind\": \"true\",\n    \"same_or_different\": \"different\",\n    \"anchor_span\": \"My friend Daniel, who freelances in video\"\n  },\n  \"observation\": {\n    \"surface_text\": \"Daniel is a real named person distinct from the grape and the prior echo context, but his concrete behaviour addresses late payment rather than doomchecking a bank balance, making him a response to a related cash anxiety rather than a second confirmation of the confirmed problem.\",\n    \"anchor_span\": \"moved every client to 50 percent upfront after one late payer wrecked his rent month\"\n  },\n  \"substitution_detected\": false,\n  \"swirl\": {\n    \"kind\": \"reality\",\n    \"question\": \"Does Daniel actually doomcheck his balance at month end, or did the late-payer crisis end once he changed his deposit terms?\"\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 1633,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 302,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=clearing · substitution_detected=false · swirl=yes · changed=[Echo]",
+        "ts": "2026-10-21T17:02:26.252Z"
+      },
+      {
+        "mech": "M5",
+        "endpoint": "/m5",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "doomchecking my bank balance at the end of every month",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Jamie",
+          "grape_relationship": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.",
+          "maturity_class": 2,
+          "user_answer": "I use a budgeting app, but it only shows last month's picture, nothing about the invoice that has not landed yet."
+        },
+        "response": {
+          "schema_version": "m5.v1",
+          "mechanism": "M5",
+          "state": "settled",
+          "gap": {
+            "state": "settled",
+            "anchor_span": "I use a budgeting app, but it only shows last month's picture, nothing about the invoice that has not landed yet."
+          },
+          "observation": {
+            "surface_text": "The answer names an existing solution: a budgeting app used by the grape today. The precise failure point is also present: the app reflects only historical data and does not account for outstanding invoices.",
+            "anchor_span": "it only shows last month's picture, nothing about the invoice that has not landed yet."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:02:26Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:02:29Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:02:26Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:02:26Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m5.v1\",\n  \"mechanism\": \"M5\",\n  \"state\": \"settled\",\n  \"gap\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"I use a budgeting app, but it only shows last month's picture, nothing about the invoice that has not landed yet.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names an existing solution: a budgeting app used by the grape today. The precise failure point is also present: the app reflects only historical data and does not account for outstanding invoices.\",\n    \"anchor_span\": \"it only shows last month's picture, nothing about the invoice that has not landed yet.\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1241,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 187,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Gap]",
+        "ts": "2026-10-21T17:02:29.047Z"
+      },
+      {
+        "mech": "M6",
+        "endpoint": "/m6",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "doomchecking my bank balance at the end of every month",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Jamie",
+          "grape_relationship": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.",
+          "maturity_class": 2,
+          "words_source": "real",
+          "user_answer": "I caught myself saying out loud, \"I can't look at it again until the Bakker invoice lands.\""
+        },
+        "response": {
+          "schema_version": "m6.v1",
+          "mechanism": "M6",
+          "state": "settled",
+          "words": {
+            "state": "settled",
+            "anchor_span": "I can't look at it again until the Bakker invoice lands"
+          },
+          "tell": {
+            "state": "settled",
+            "anchor_span": "I caught myself saying out loud"
+          },
+          "observation": {
+            "surface_text": "The answer supplies a direct quote from a real, self-attributed exchange, meeting the Words bar. The quoted moment includes a filmable action: the speaker catching themselves vocalising avoidance aloud.",
+            "anchor_span": "I caught myself saying out loud, \"I can't look at it again until the Bakker invoice lands.\""
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:02:30Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:02:32Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:02:29Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:02:30Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m6.v1\",\n  \"mechanism\": \"M6\",\n  \"state\": \"settled\",\n  \"words\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"I can't look at it again until the Bakker invoice lands\"\n  },\n  \"tell\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"I caught myself saying out loud\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer supplies a direct quote from a real, self-attributed exchange, meeting the Words bar. The quoted moment includes a filmable action: the speaker catching themselves vocalising avoidance aloud.\",\n    \"anchor_span\": \"I caught myself saying out loud, \\\"I can't look at it again until the Bakker invoice lands.\\\"\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1644,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 214,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[none]",
+        "ts": "2026-10-21T17:02:32.963Z"
+      },
+      {
+        "mech": "M7",
+        "endpoint": "/m7",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "doomchecking my bank balance at the end of every month",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Jamie",
+          "grape_relationship": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.",
+          "maturity_class": 2,
+          "user_answer": "My uncle does the same kind of work but only takes retainer clients, so his balance is flat and boring. He is paid whether the work moves or not."
+        },
+        "response": {
+          "schema_version": "m7.v1",
+          "mechanism": "M7",
+          "state": "settled",
+          "limit": {
+            "state": "settled",
+            "anchor_span": "only takes retainer clients, so his balance is flat and boring. He is paid whether the work moves or not"
+          },
+          "observation": {
+            "surface_text": "The answer names a bounded individual and describes a specific present-day arrangement that removes variable income. The reason for immunity is concrete: retainer billing decouples payment from work execution, eliminating end-of-month balance uncertainty.",
+            "anchor_span": "only takes retainer clients, so his balance is flat and boring. He is paid whether the work moves or not"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T17:02:33Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:02:36Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:02:33Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T17:02:33Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m7.v1\",\n  \"mechanism\": \"M7\",\n  \"state\": \"settled\",\n  \"limit\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"only takes retainer clients, so his balance is flat and boring. He is paid whether the work moves or not\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names a bounded individual and describes a specific present-day arrangement that removes variable income. The reason for immunity is concrete: retainer billing decouples payment from work execution, eliminating end-of-month balance uncertainty.\",\n    \"anchor_span\": \"only takes retainer clients, so his balance is flat and boring. He is paid whether the work moves or not\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1152,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 196,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Limit]",
+        "ts": "2026-10-21T17:02:36.256Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": false,
+    "elements": {
+      "grape": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M1",
+        "rawGrades": [
+          {
+            "mech": "M1",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "tell": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "vintage": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "gap": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M5",
+        "rawGrades": [
+          {
+            "mech": "M5",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "echo": {
+        "state": "clearing",
+        "history": [
+          "inert",
+          "turbid",
+          "clearing"
+        ],
+        "mech": "M4",
+        "rawGrades": [
+          {
+            "mech": "M3",
+            "offeredState": "turbid"
+          },
+          {
+            "mech": "M4",
+            "offeredState": "clearing"
+          }
+        ]
+      },
+      "limit": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M7",
+        "rawGrades": [
+          {
+            "mech": "M7",
+            "offeredState": "settled"
+          }
+        ]
+      }
+    }
+  }
+}

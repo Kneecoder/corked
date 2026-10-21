@@ -1,0 +1,317 @@
+{
+  "idx": 18,
+  "cfg": {
+    "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+    "maturity": 0,
+    "grapeName": "Noor",
+    "grapeRel": "my friend, runs a one-woman landscaping business",
+    "wordsSource": "reconstructed",
+    "answers": {
+      "m6": "\"I honestly cannot look at my bank app in week four, it makes me sick,\" is basically what she would say."
+    },
+    "expectHalt": false,
+    "note": "M6 reconstructed cap — hard rule. Expect: words clearing, never settled, no matter how vivid the quote. Echo bar forced turbid (words_source is not real). Observation notes the reconstruction without coaching toward what a real exchange would earn. (m2-m5, m7 not specified by the brief — left on generic settled-quality placeholders.)"
+  },
+  "outcome": "FAIL (unexpected halt: M1 request failed.)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8789",
+    "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+    "maturity": 0,
+    "grapeName": "Noor",
+    "grapeRel": "my friend, runs a one-woman landscaping business",
+    "wordsSource": "reconstructed",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+      "user_line_candidate": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+      "spark_parse": {
+        "solution_form": "app",
+        "implied_person": "one-man trade businesses",
+        "suspected_problem": "they forget to chase unpaid invoices until the money is a problem",
+        "triggering_situation": null,
+        "promised_change": null,
+        "domain": "unpaid invoices",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "cellar_ready",
+        "missing": [],
+        "reason": "Cellar-ready. The role is one-man trade businesses and the stated problem is forgetting to chase unpaid invoices until the money is a problem. That enters cleanly.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": false,
+        "question": null
+      },
+      "m1_setup": {
+        "question": "Name the one-man trade business owner and the moment an unpaid invoice went unchased until the money was a problem.",
+        "hint": "A good answer is a real tradesperson and the point when they noticed the money was missing.",
+        "person_label": "Tradesperson",
+        "person_placeholder": "Dave, self-employed plumber",
+        "when_label": "When the money became a problem",
+        "when_placeholder": "the week his van insurance came due and an invoice was six weeks old",
+        "trying_label": "What they were trying to do",
+        "trying_placeholder": "pay a supplier bill while an invoice sat unpaid",
+        "happened_label": "What happened with the invoice",
+        "happened_placeholder": "Dave finished a bathroom job, sent the invoice, did not follow up, and found the account short when the supplier bill landed"
+      },
+      "person_in_spark": {
+        "grade": "none",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": false
+      }
+    },
+    "userLine": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+    "sparkParse": {
+      "solution_form": "app",
+      "implied_person": "one-man trade businesses",
+      "suspected_problem": "they forget to chase unpaid invoices until the money is a problem",
+      "triggering_situation": null,
+      "promised_change": null,
+      "domain": "unpaid invoices",
+      "solution_is_software": "software"
+    },
+    "domain": "unpaid invoices",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {
+      "M1": "my friend, runs a one-woman landscaping business"
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "user_line_candidate": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "one-man trade businesses",
+            "suspected_problem": "they forget to chase unpaid invoices until the money is a problem",
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "unpaid invoices",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "cellar_ready",
+            "missing": [],
+            "reason": "Cellar-ready. The role is one-man trade businesses and the stated problem is forgetting to chase unpaid invoices until the money is a problem. That enters cleanly.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": false,
+            "question": null
+          },
+          "m1_setup": {
+            "question": "Name the one-man trade business owner and the moment an unpaid invoice went unchased until the money was a problem.",
+            "hint": "A good answer is a real tradesperson and the point when they noticed the money was missing.",
+            "person_label": "Tradesperson",
+            "person_placeholder": "Dave, self-employed plumber",
+            "when_label": "When the money became a problem",
+            "when_placeholder": "the week his van insurance came due and an invoice was six weeks old",
+            "trying_label": "What they were trying to do",
+            "trying_placeholder": "pay a supplier bill while an invoice sat unpaid",
+            "happened_label": "What happened with the invoice",
+            "happened_placeholder": "Dave finished a bathroom job, sent the invoice, did not follow up, and found the account short when the supplier bill landed"
+          },
+          "person_in_spark": {
+            "grade": "none",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:37:47Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:37:52Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:37:47Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T16:37:47Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.\",\n  \"user_line_candidate\": \"An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.\",\n  \"spark_parse\": {\n    \"solution_form\": \"app\",\n    \"implied_person\": \"one-man trade businesses\",\n    \"suspected_problem\": \"they forget to chase unpaid invoices until the money is a problem\",\n    \"triggering_situation\": null,\n    \"promised_change\": null,\n    \"domain\": \"unpaid invoices\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The role is one-man trade businesses and the stated problem is forgetting to chase unpaid invoices until the money is a problem. That enters cleanly.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the one-man trade business owner and the moment an unpaid invoice went unchased until the money was a problem.\",\n    \"hint\": \"A good answer is a real tradesperson and the point when they noticed the money was missing.\",\n    \"person_label\": \"Tradesperson\",\n    \"person_placeholder\": \"Dave, self-employed plumber\",\n    \"when_label\": \"When the money became a problem\",\n    \"when_placeholder\": \"the week his van insurance came due and an invoice was six weeks old\",\n    \"trying_label\": \"What they were trying to do\",\n    \"trying_placeholder\": \"pay a supplier bill while an invoice sat unpaid\",\n    \"happened_label\": \"What happened with the invoice\",\n    \"happened_placeholder\": \"Dave finished a bathroom job, sent the invoice, did not follow up, and found the account short when the supplier bill landed\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"none\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}",
+              "usage": {
+                "input_tokens": 4835,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 727,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "digestibility=cellar_ready · in_scope=true · followup_needed=false",
+        "ts": "2026-10-21T16:37:52.245Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/m1",
+        "kind": "main",
+        "request": {
+          "spark_summary": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "person_name": "Noor",
+          "relationship": "my friend, runs a one-woman landscaping business",
+          "maturity_class": 0
+        },
+        "response": {
+          "error": "Parse error",
+          "raw": ""
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:37:53Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:37:57Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:37:52Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11998000",
+                "tokens-reset": "2026-10-21T16:37:53Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "thinking",
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m1.v1\",\n  \"mechanism\": \"M1\",\n  \"outcome\": \"settled\",\n  \"grape\": {\n    \"state\": \"settled\",\n    \"named_person\": \"Noor\",\n    \"person_kind\": \"named_individual\",\n    \"temporal_grounding\": \"present_general\"\n  },\n  \"observation\": {\n    \"surface_text\": \"Noor is a named individual with a stated tie, my friend. The tie sits beside a one-woman landscaping business that matches the trade profile.\",\n    \"anchor_span\": \"my friend, runs a one-woman landscaping business\"\n  },\n  \"next_question\": {\n    \"should_advance\": true,\n    \"framing\": \"Move to a specific past moment when Noor had an invoice go unchased or unpaid.\"\n  }\n}",
+              "usage": {
+                "input_tokens": 1131,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 656,
+                "output_tokens_details": {
+                  "thinking_tokens": 404
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "ERROR 502",
+        "ts": "2026-10-21T16:37:57.483Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M1 request failed."
+  }
+}

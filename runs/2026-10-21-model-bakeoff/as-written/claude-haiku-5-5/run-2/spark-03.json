@@ -1,0 +1,146 @@
+{
+  "idx": 3,
+  "cfg": {
+    "raw_spark": "A better scheduling app for gym owners.",
+    "maturity": 1,
+    "grapeName": "Marco",
+    "grapeRel": "owns the boxing gym where I train",
+    "m0FollowupAnswer": "Marco double-books the 6pm slot and members show up to a class that is already full.",
+    "answers": {
+      "m2": "Marco walked me through last Tuesday: two members arrived for the 18:00 class he had already filled. He refunded one at the front desk and comped the other a personal training session.",
+      "m3": "My friend Priya, who runs a yoga studio, told me last month she started capping sign-ups in a shared spreadsheet after a similar double-booking during a holiday rush.",
+      "m4": "Owen, a barber who takes walk-ins, keeps a paper appointment book by the chair. For him the pain is no-shows, the overbooking part is fine.",
+      "m5": "Marco uses a shared Google Calendar for the class roster, but it doesn't stop two people from claiming the same slot if they both edit it around the same time.",
+      "m6": "\"I hate turning people away at the door,\" he said after the Tuesday one.",
+      "m7": "Jordan runs one-on-one training sessions only, no group classes. Double-booking never happens to him because every slot has exactly one client."
+    },
+    "expectHalt": false,
+    "note": "Solution-language spark, class 1 direction door. Expect: first pass bottleable_cloudy (person visible, no problem), followup fires, re-bottle lands cellar_ready or cloudy-with-problem. M2 question uses the direction door: no \"think of the last time\" / \"describe the moment\" phrasing. The told-not-watched moment grades settled."
+  },
+  "outcome": "FAIL (unexpected halt: M0 request failed: Parse error)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8788",
+    "raw_spark": "A better scheduling app for gym owners.",
+    "maturity": 1,
+    "grapeName": "Marco",
+    "grapeRel": "owns the boxing gym where I train",
+    "wordsSource": "real",
+    "m0": null,
+    "userLine": "",
+    "sparkParse": null,
+    "domain": "",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {},
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A better scheduling app for gym owners."
+        },
+        "response": {
+          "error": "Parse error",
+          "raw": ""
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:37:21Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1998000",
+                "output-tokens-reset": "2026-10-21T16:37:26Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:37:20Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11996000",
+                "tokens-reset": "2026-10-21T16:37:21Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "thinking",
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"A better scheduling app for gym owners.\",\n  \"user_line_candidate\": \"A better scheduling app for gym owners.\",\n  \"spark_parse\": {\n    \"solution_form\": \"app\",\n    \"implied_person\": \"gym owners\",\n    \"suspected_problem\": null,\n    \"triggering_situation\": null,\n    \"promised_change\": \"better scheduling\",\n    \"domain\": \"gym\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"bottleable_cloudy\",\n    \"missing\": [\"suspected_problem\"],\n    \"reason\": \"Bottleable, cloudy. The app form, the gym owners, and the scheduling are visible, but no problem is stated. That is what the cellar will age.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": true,\n    \"question\": \"What problem are gym owners having with scheduling?\"\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the gym owner and the moment scheduling first became a problem for them.\",\n    \"hint\": \"A good answer names one owner, one scheduling task, and the point where that task went wrong.\",\n    \"person_label\": \"Gym owner\",\n    \"person_placeholder\": \"Dana, gym owner\",\n    \"when_label\": \"When\",\n    \"when_placeholder\": \"the Monday before the spring class timetable changed\",\n    \"trying_label\": \"What they were trying to do\",\n    \"trying_placeholder\": null,\n    \"happened_label\": \"What happened\",\n    \"happened_placeholder\": null\n  },\n  \"person_in_spark\": {\n    \"grade\": \"none\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}",
+              "usage": {
+                "input_tokens": 4816,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 1533,
+                "output_tokens_details": {
+                  "thinking_tokens": 939
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "ERROR 502",
+        "ts": "2026-10-21T16:37:26.772Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M0 request failed: Parse error"
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "idx": 5,
+  "cfg": {
+    "raw_spark": "A bookstore for homeless people where you pay with cans.",
+    "maturity": 3,
+    "grapeName": "",
+    "grapeRel": "",
+    "expectHalt": "maybe",
+    "note": "Scope asymmetry probe — doctrine tension, either outcome is a finding. Expect one of two outcomes, both worth recording verbatim: (a) Out of scope — \"bookstore\" read as physical store, meaning M0 doctrine's own canonical thin-spark example is unreachable behind the scope gate (a doctrine note for v46, not a code bug); or (b) passes as thin — then assert suspected_problem null, m1_placeholders_nulled true, followup uses only spark nouns (books, cans — never literacy, barter, recycling, currency)."
+  },
+  "outcome": "RECORDED (halted: Out of scope (non-software spark) — expected worker behaviour.)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8787",
+    "raw_spark": "A bookstore for homeless people where you pay with cans.",
+    "maturity": 3,
+    "grapeName": "",
+    "grapeRel": "",
+    "wordsSource": "real",
+    "m0": null,
+    "userLine": "",
+    "sparkParse": null,
+    "domain": "",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {},
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A bookstore for homeless people where you pay with cans."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "A bookstore for homeless people where you pay with cans.",
+          "user_line_candidate": "A bookstore for homeless people where you pay with cans.",
+          "spark_parse": {
+            "solution_form": "bookstore",
+            "implied_person": "homeless people",
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "books",
+            "solution_is_software": "non_software"
+          },
+          "digestibility": {
+            "state": "out_of_scope",
+            "missing": [],
+            "reason": "",
+            "can_seal": false,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": false,
+            "question": null
+          },
+          "m1_setup": null,
+          "scope": {
+            "in_scope": false,
+            "reason": "This spark describes something that belongs in a different cellar. Corked ages software products built by solo builders. A non-software idea is not less valid, it ages somewhere else."
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "scope_gated": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:47:14Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:47:21Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:47:14Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11998000",
+                "tokens-reset": "2026-10-21T16:47:14Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"A bookstore for homeless people where you pay with cans.\",\n  \"user_line_candidate\": \"A bookstore for homeless people where you pay with cans.\",\n  \"spark_parse\": {\n    \"solution_form\": \"bookstore\",\n    \"implied_person\": \"homeless people\",\n    \"suspected_problem\": null,\n    \"triggering_situation\": null,\n    \"promised_change\": null,\n    \"domain\": \"books\",\n    \"solution_is_software\": \"non_software\"\n  },\n  \"digestibility\": {\n    \"state\": \"bottleable_cloudy\",\n    \"missing\": [\"suspected_problem\"],\n    \"reason\": \"Bottleable, cloudy. The form, the population, the books, and the cans are visible, but no problem is stated. That is what the cellar will age.\",\n    \"can_seal\": false,\n    \"requires_followup_before_seal\": true\n  },\n  \"followup\": {\n    \"needed\": true,\n    \"question\": \"What problem are homeless people having with books?\"\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the specific person and moment this bookstore starts from.\",\n    \"hint\": \"A good answer names one homeless person and describes what was happening with books before this idea existed for them.\",\n    \"person_label\": \"Customer\",\n    \"person_placeholder\": \"Darnell, a man living in a shelter\",\n    \"when_label\": \"When it happened\",\n    \"when_placeholder\": null,\n    \"trying_label\": \"What they were trying to do\",\n    \"trying_placeholder\": null,\n    \"happened_label\": \"What you saw or heard\",\n    \"happened_placeholder\": null\n  },\n  \"person_in_spark\": {\n    \"grade\": \"none\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 3635,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 485,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "digestibility=out_of_scope · in_scope=false · followup_needed=false",
+        "ts": "2026-10-21T16:47:21.409Z"
+      }
+    ],
+    "anomalies": [
+      "M0: flagged out_of_scope (non_software)."
+    ],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "Out of scope (non-software spark) — expected worker behaviour."
+  }
+}

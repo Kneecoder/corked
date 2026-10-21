@@ -1,0 +1,1009 @@
+{
+  "idx": 13,
+  "cfg": {
+    "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+    "maturity": 0,
+    "grapeName": "Daan",
+    "grapeRel": "my former colleague, wedding DJ",
+    "answers": {
+      "m2": "I would build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice before the date frees up.",
+      "m3": "My friend Owen, another wedding DJ, told me last month he started requiring signed contracts after a similar cancellation dispute.",
+      "m4": "Priya, a wedding florist I met through a vendor group, keeps a deposit tracking spreadsheet too. For her the pain is last-minute order changes, the deposit part is fine.",
+      "m5": "Daan uses a plain email thread to track bookings and cancellations, but nothing flags when a cancellation actually happens, so he has to notice it himself.",
+      "m6": "What she basically means is that the admin side makes her feel unprofessional.",
+      "m7": "Jordan only DJs corporate events booked through an agency on annual contract. Cancellations never cost him anything because the agency guarantees the booking."
+    },
+    "expectHalt": false,
+    "note": "Substitution rule, M2 — with secondary M6 probe. Expect: M2 substitution_detected true, tell turbid (no grape behaviour referenced at all), overall turbid. Observation names what was described and what was asked for, nothing more — no interpretation, no named avoidance. Secondary: M6 words turbid — the builder's framing presented as the grape's meaning is not language from the grape."
+  },
+  "outcome": "PASS (completed full chain)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8787",
+    "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+    "maturity": 0,
+    "grapeName": "Daan",
+    "grapeRel": "my former colleague, wedding DJ",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+      "user_line_candidate": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+      "spark_parse": {
+        "solution_form": "app",
+        "implied_person": "one-man trade businesses",
+        "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
+        "triggering_situation": "when the money is a problem",
+        "promised_change": null,
+        "domain": "unpaid invoices",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "cellar_ready",
+        "missing": [],
+        "reason": "Cellar-ready. The role is clear, one-man trade businesses, and the stated problem is forgetting to chase unpaid invoices until the money is a problem. Both are present and in the user's own words.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": false,
+        "question": null
+      },
+      "m1_setup": {
+        "question": "Name the specific sole trader you are thinking of and the moment they realised an unpaid invoice had become a money problem.",
+        "hint": "A good answer names a trade, a person, and the point where the forgotten invoice surfaced, not when they sent it.",
+        "person_label": "Sole trader",
+        "person_placeholder": "e.g. Dave, self-employed electrician",
+        "when_label": "When the money problem hit",
+        "when_placeholder": "e.g. two weeks after a big job when rent was due",
+        "trying_label": "What they were trying to do",
+        "trying_placeholder": "e.g. cover costs while waiting on three outstanding invoices",
+        "happened_label": "What actually happened",
+        "happened_placeholder": "e.g. he checked his account and realised a job from six weeks ago still had not been paid, and he had never followed it up"
+      },
+      "person_in_spark": {
+        "grade": "none",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": false
+      }
+    },
+    "userLine": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+    "sparkParse": {
+      "solution_form": "app",
+      "implied_person": "one-man trade businesses",
+      "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
+      "triggering_situation": "when the money is a problem",
+      "promised_change": null,
+      "domain": "unpaid invoices",
+      "solution_is_software": "software"
+    },
+    "domain": "unpaid invoices",
+    "gapInPlay": false,
+    "problem": {
+      "text": "forget to chase unpaid invoices until the money is a problem",
+      "source": "user_stated",
+      "status": "confirmed"
+    },
+    "phaseAOutcome": "stated",
+    "answers": {
+      "M1": "my former colleague, wedding DJ",
+      "M2": "I would build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice before the date frees up.",
+      "M3": "My friend Owen, another wedding DJ, told me last month he started requiring signed contracts after a similar cancellation dispute.",
+      "M4": "Priya, a wedding florist I met through a vendor group, keeps a deposit tracking spreadsheet too. For her the pain is last-minute order changes, the deposit part is fine.",
+      "M5": "Daan uses a plain email thread to track bookings and cancellations, but nothing flags when a cancellation actually happens, so he has to notice it himself.",
+      "M6": "What she basically means is that the admin side makes her feel unprofessional.",
+      "M7": "Jordan only DJs corporate events booked through an agency on annual contract. Cancellations never cost him anything because the agency guarantees the booking."
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "user_line_candidate": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "one-man trade businesses",
+            "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
+            "triggering_situation": "when the money is a problem",
+            "promised_change": null,
+            "domain": "unpaid invoices",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "cellar_ready",
+            "missing": [],
+            "reason": "Cellar-ready. The role is clear, one-man trade businesses, and the stated problem is forgetting to chase unpaid invoices until the money is a problem. Both are present and in the user's own words.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": false,
+            "question": null
+          },
+          "m1_setup": {
+            "question": "Name the specific sole trader you are thinking of and the moment they realised an unpaid invoice had become a money problem.",
+            "hint": "A good answer names a trade, a person, and the point where the forgotten invoice surfaced, not when they sent it.",
+            "person_label": "Sole trader",
+            "person_placeholder": "e.g. Dave, self-employed electrician",
+            "when_label": "When the money problem hit",
+            "when_placeholder": "e.g. two weeks after a big job when rent was due",
+            "trying_label": "What they were trying to do",
+            "trying_placeholder": "e.g. cover costs while waiting on three outstanding invoices",
+            "happened_label": "What actually happened",
+            "happened_placeholder": "e.g. he checked his account and realised a job from six weeks ago still had not been paid, and he had never followed it up"
+          },
+          "person_in_spark": {
+            "grade": "none",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T17:02:37Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T17:02:45Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:02:36Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T17:02:37Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.\",\n  \"user_line_candidate\": \"An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.\",\n  \"spark_parse\": {\n    \"solution_form\": \"app\",\n    \"implied_person\": \"one-man trade businesses\",\n    \"suspected_problem\": \"forgetting to chase unpaid invoices until the money is a problem\",\n    \"triggering_situation\": \"when the money is a problem\",\n    \"promised_change\": null,\n    \"domain\": \"unpaid invoices\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The role is clear, one-man trade businesses, and the stated problem is forgetting to chase unpaid invoices until the money is a problem. Both are present and in the user's own words.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the specific sole trader you are thinking of and the moment they realised an unpaid invoice had become a money problem.\",\n    \"hint\": \"A good answer names a trade, a person, and the point where the forgotten invoice surfaced, not when they sent it.\",\n    \"person_label\": \"Sole trader\",\n    \"person_placeholder\": \"e.g. Dave, self-employed electrician\",\n    \"when_label\": \"When the money problem hit\",\n    \"when_placeholder\": \"e.g. two weeks after a big job when rent was due\",\n    \"trying_label\": \"What they were trying to do\",\n    \"trying_placeholder\": \"e.g. cover costs while waiting on three outstanding invoices\",\n    \"happened_label\": \"What actually happened\",\n    \"happened_placeholder\": \"e.g. he checked his account and realised a job from six weeks ago still had not been paid, and he had never followed it up\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"none\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 3645,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 600,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "digestibility=cellar_ready · in_scope=true · followup_needed=false",
+        "ts": "2026-10-21T17:02:45.526Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/m1",
+        "kind": "main",
+        "request": {
+          "spark_summary": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "person_name": "Daan",
+          "relationship": "my former colleague, wedding DJ",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "settled",
+          "grape": {
+            "state": "settled",
+            "named_person": "Daan",
+            "person_kind": "named_individual",
+            "temporal_grounding": "present_general"
+          },
+          "observation": {
+            "surface_text": "A named individual is present. A real stated relationship grounds him as a specific person.",
+            "anchor_span": "my former colleague, wedding DJ"
+          },
+          "next_question": {
+            "should_advance": true,
+            "framing": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "anchor_verified": true,
+            "visible_style_violations_cleaned": []
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T17:02:46Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:02:48Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:02:45Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T17:02:46Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m1.v1\",\n  \"mechanism\": \"M1\",\n  \"outcome\": \"settled\",\n  \"grape\": {\n    \"state\": \"settled\",\n    \"named_person\": \"Daan\",\n    \"person_kind\": \"named_individual\",\n    \"temporal_grounding\": \"present_general\"\n  },\n  \"observation\": {\n    \"surface_text\": \"A named individual is present. A real stated relationship grounds him as a specific person.\",\n    \"anchor_span\": \"my former colleague, wedding DJ\"\n  },\n  \"next_question\": {\n    \"should_advance\": true,\n    \"framing\": null\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 861,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 172,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=n/a · swirl=no · changed=[Grape]",
+        "ts": "2026-10-21T17:02:48.308Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (phase A)",
+        "kind": "main",
+        "request": {
+          "phase": "problem",
+          "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "user_line": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "one-man trade businesses",
+            "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
+            "triggering_situation": "when the money is a problem",
+            "promised_change": null,
+            "domain": "unpaid invoices",
+            "solution_is_software": "software"
+          },
+          "grape_name": "Daan",
+          "grape_relationship": "my former colleague, wedding DJ",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m2.v2",
+          "mechanism": "M2",
+          "phase": "problem",
+          "outcome": "stated",
+          "problem": {
+            "text": "forget to chase unpaid invoices until the money is a problem",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "question": "Walk me through the last time Daan realised he had forgotten to chase an unpaid invoice: what did he actually do when he noticed it?",
+          "recovered_problem": "forget to chase unpaid invoices until the money is a problem",
+          "needs_confirmation": false,
+          "server_checks": {
+            "schema_valid": true,
+            "model_outcome": "stated",
+            "outcome": "stated",
+            "downgrades": [],
+            "unsupported_words": [],
+            "visible_style_violations_cleaned": [],
+            "m2_question_repaired": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T17:02:49Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:02:50Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:02:48Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T17:02:49Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m2.v2\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"problem\",\n  \"outcome\": \"stated\",\n  \"stated_span\": \"forget to chase unpaid invoices until the money is a problem\",\n  \"problem\": null,\n  \"gap_in_play\": false,\n  \"question\": \"Walk me through the last time Daan realised he had forgotten to chase an unpaid invoice: what did he actually do when he noticed it?\"\n}\n```",
+              "usage": {
+                "input_tokens": 1198,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 127,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "outcome=stated · problem=\"forget to chase unpaid invoices until the money is a problem\" (user_stated) · gap_in_play=false",
+        "ts": "2026-10-21T17:02:50.773Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2",
+        "kind": "main",
+        "request": {
+          "user_line": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "grape_name": "Daan",
+          "grape_relationship": "my former colleague, wedding DJ",
+          "maturity_class": 0,
+          "problem": {
+            "text": "forget to chase unpaid invoices until the money is a problem",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "user_answer": "I would build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice before the date frees up."
+        },
+        "response": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "turbid",
+          "tell": {
+            "state": "turbid",
+            "anchor_span": "build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice"
+          },
+          "vintage": {
+            "state": "turbid",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "The answer describes the founder's own build stack in place of Daan's observed behaviour. No filmable action by Daan is present. No specific moment or instance involving Daan is named in the answer.",
+            "anchor_span": "build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice"
+          },
+          "substitution_detected": true,
+          "swirl": {
+            "kind": "reality",
+            "question": "Has Daan ever actually described or shown what he does when an invoice goes unpaid, or is the problem being inferred from what a wedding DJ probably experiences?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": false,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:02:51Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:02:55Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:02:51Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:02:51Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m2.v1\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"friction\",\n  \"state\": \"turbid\",\n  \"tell\": {\n    \"state\": \"turbid\",\n    \"anchor_span\": \"build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice\"\n  },\n  \"vintage\": {\n    \"state\": \"turbid\",\n    \"anchor_span\": null\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer describes the founder's own build stack in place of Daan's observed behaviour. No filmable action by Daan is present. No specific moment or instance involving Daan is named in the answer.\",\n    \"anchor_span\": \"build a Supabase table of bookings with a webhook that flags cancellations and auto-generates the deposit invoice\"\n  },\n  \"substitution_detected\": true,\n  \"swirl\": {\n    \"kind\": \"reality\",\n    \"question\": \"Has Daan ever actually described or shown what he does when an invoice goes unpaid, or is the problem being inferred from what a wedding DJ probably experiences?\"\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 1443,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 293,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=turbid · substitution_detected=true · swirl=yes · changed=[Tell, Vintage]",
+        "ts": "2026-10-21T17:02:55.383Z"
+      },
+      {
+        "mech": "M3",
+        "endpoint": "/m3",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "forget to chase unpaid invoices until the money is a problem",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Daan",
+          "grape_relationship": "my former colleague, wedding DJ",
+          "maturity_class": 0,
+          "user_answer": "My friend Owen, another wedding DJ, told me last month he started requiring signed contracts after a similar cancellation dispute."
+        },
+        "response": {
+          "schema_version": "m3.v1",
+          "mechanism": "M3",
+          "state": "turbid",
+          "echo": {
+            "state": "turbid",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "Owen's concrete behaviour addresses contract signing after cancellation disputes, not the confirmed problem of forgetting to chase unpaid invoices; no third party in the answer touches the confirmed problem.",
+            "anchor_span": "he started requiring signed contracts after a similar cancellation dispute"
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "Does Owen or anyone else the answer can name actually let invoices go unchased until the money becomes a problem?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:02:55Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:02:58Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:02:55Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:02:55Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m3.v1\",\n  \"mechanism\": \"M3\",\n  \"state\": \"turbid\",\n  \"echo\": {\n    \"state\": \"turbid\",\n    \"anchor_span\": null\n  },\n  \"observation\": {\n    \"surface_text\": \"Owen's concrete behaviour addresses contract signing after cancellation disputes, not the confirmed problem of forgetting to chase unpaid invoices; no third party in the answer touches the confirmed problem.\",\n    \"anchor_span\": \"he started requiring signed contracts after a similar cancellation dispute\"\n  },\n  \"substitution_detected\": false,\n  \"swirl\": {\n    \"kind\": \"reality\",\n    \"question\": \"Does Owen or anyone else the answer can name actually let invoices go unchased until the money becomes a problem?\"\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 1291,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 201,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=turbid · substitution_detected=false · swirl=yes · changed=[Echo]",
+        "ts": "2026-10-21T17:02:58.863Z"
+      },
+      {
+        "mech": "M4",
+        "endpoint": "/m4",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "forget to chase unpaid invoices until the money is a problem",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Daan",
+          "grape_relationship": "my former colleague, wedding DJ",
+          "maturity_class": 0,
+          "prior_echo_context": "My friend Owen, another wedding DJ, told me last month he started requiring signed contracts after a similar cancellation dispute.",
+          "user_answer": "Priya, a wedding florist I met through a vendor group, keeps a deposit tracking spreadsheet too. For her the pain is last-minute order changes, the deposit part is fine."
+        },
+        "response": {
+          "schema_version": "m4.v1",
+          "mechanism": "M4",
+          "state": "turbid",
+          "echo": {
+            "state": "turbid",
+            "anchor_span": "the deposit part is fine"
+          },
+          "contrast": {
+            "is_different_kind": "unclear",
+            "same_or_different": "unclear",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "Priya is named and distinct from the grape and prior echo, but the answer explicitly states the confirmed problem does not apply to her, removing her as a valid second confirmation of that problem.",
+            "anchor_span": "the deposit part is fine"
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "Is there someone in that vendor group for whom chasing unpaid invoices is actually the problem, not a side note?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:03:00Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:03:04Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:02:59Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:03:00Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m4.v1\",\n  \"mechanism\": \"M4\",\n  \"state\": \"turbid\",\n  \"echo\": {\n    \"state\": \"turbid\",\n    \"anchor_span\": \"the deposit part is fine\"\n  },\n  \"contrast\": {\n    \"is_different_kind\": \"unclear\",\n    \"same_or_different\": \"unclear\",\n    \"anchor_span\": null\n  },\n  \"observation\": {\n    \"surface_text\": \"Priya is named and distinct from the grape and prior echo, but the answer explicitly states the confirmed problem does not apply to her, removing her as a valid second confirmation of that problem.\",\n    \"anchor_span\": \"the deposit part is fine\"\n  },\n  \"substitution_detected\": false,\n  \"swirl\": { \"kind\": \"reality\", \"question\": \"Is there someone in that vendor group for whom chasing unpaid invoices is actually the problem, not a side note?\" }\n}\n```",
+              "usage": {
+                "input_tokens": 1662,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 239,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=turbid · substitution_detected=false · swirl=yes · changed=[none]",
+        "ts": "2026-10-21T17:03:04.078Z"
+      },
+      {
+        "mech": "M5",
+        "endpoint": "/m5",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "forget to chase unpaid invoices until the money is a problem",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Daan",
+          "grape_relationship": "my former colleague, wedding DJ",
+          "maturity_class": 0,
+          "user_answer": "Daan uses a plain email thread to track bookings and cancellations, but nothing flags when a cancellation actually happens, so he has to notice it himself."
+        },
+        "response": {
+          "schema_version": "m5.v1",
+          "mechanism": "M5",
+          "state": "clearing",
+          "gap": {
+            "state": "clearing",
+            "anchor_span": "plain email thread to track bookings and cancellations"
+          },
+          "observation": {
+            "surface_text": "The answer names an existing solution: a plain email thread used to track bookings and cancellations. The failure described is about missing cancellation flags, not about unpaid invoices going unchased, which leaves the confirmed problem unaddressed.",
+            "anchor_span": "nothing flags when a cancellation actually happens"
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "Is Daan a specific person whose unpaid invoice situation the founder has direct knowledge of, or is this account assembled from general impressions of how DJs tend to work?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:03:04Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:03:08Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:03:04Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:03:04Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m5.v1\",\n  \"mechanism\": \"M5\",\n  \"state\": \"clearing\",\n  \"gap\": {\n    \"state\": \"clearing\",\n    \"anchor_span\": \"plain email thread to track bookings and cancellations\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names an existing solution: a plain email thread used to track bookings and cancellations. The failure described is about missing cancellation flags, not about unpaid invoices going unchased, which leaves the confirmed problem unaddressed.\",\n    \"anchor_span\": \"nothing flags when a cancellation actually happens\"\n  },\n  \"substitution_detected\": false,\n  \"swirl\": {\n    \"kind\": \"reality\",\n    \"question\": \"Is Daan a specific person whose unpaid invoice situation the founder has direct knowledge of, or is this account assembled from general impressions of how DJs tend to work?\"\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 1268,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 234,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=clearing · substitution_detected=false · swirl=yes · changed=[Gap]",
+        "ts": "2026-10-21T17:03:08.477Z"
+      },
+      {
+        "mech": "M6",
+        "endpoint": "/m6",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "forget to chase unpaid invoices until the money is a problem",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Daan",
+          "grape_relationship": "my former colleague, wedding DJ",
+          "maturity_class": 0,
+          "words_source": "real",
+          "user_answer": "What she basically means is that the admin side makes her feel unprofessional."
+        },
+        "response": {
+          "schema_version": "m6.v1",
+          "mechanism": "M6",
+          "state": "turbid",
+          "words": {
+            "state": "turbid",
+            "anchor_span": null
+          },
+          "tell": {
+            "state": "turbid",
+            "anchor_span": null
+          },
+          "echo": {
+            "state": "turbid",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "The answer presents the founder's own interpretive gloss rather than any language attributed to Daan; no quote or close recounting of Daan's words is present. No filmable behaviour and no third-party echo can be graded from founder framing alone.",
+            "anchor_span": "What she basically means is that the admin side makes her feel unprofessional."
+          },
+          "substitution_detected": true,
+          "swirl": {
+            "kind": "reality",
+            "question": "When Daan spoke about this problem, what words did she actually use?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:03:09Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:03:13Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:03:08Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:03:09Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m6.v1\",\n  \"mechanism\": \"M6\",\n  \"state\": \"turbid\",\n  \"words\": {\n    \"state\": \"turbid\",\n    \"anchor_span\": null\n  },\n  \"tell\": {\n    \"state\": \"turbid\",\n    \"anchor_span\": null\n  },\n  \"echo\": {\n    \"state\": \"turbid\",\n    \"anchor_span\": null\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer presents the founder's own interpretive gloss rather than any language attributed to Daan; no quote or close recounting of Daan's words is present. No filmable behaviour and no third-party echo can be graded from founder framing alone.\",\n    \"anchor_span\": \"What she basically means is that the admin side makes her feel unprofessional.\"\n  },\n  \"substitution_detected\": true,\n  \"swirl\": {\n    \"kind\": \"reality\",\n    \"question\": \"When Daan spoke about this problem, what words did she actually use?\"\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 1686,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 269,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=turbid · substitution_detected=true · swirl=yes · changed=[none]",
+        "ts": "2026-10-21T17:03:13.390Z"
+      },
+      {
+        "mech": "M7",
+        "endpoint": "/m7",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "forget to chase unpaid invoices until the money is a problem",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Daan",
+          "grape_relationship": "my former colleague, wedding DJ",
+          "maturity_class": 0,
+          "user_answer": "Jordan only DJs corporate events booked through an agency on annual contract. Cancellations never cost him anything because the agency guarantees the booking."
+        },
+        "response": {
+          "schema_version": "m7.v1",
+          "mechanism": "M7",
+          "state": "clearing",
+          "limit": {
+            "state": "clearing",
+            "anchor_span": "Jordan only DJs corporate events booked through an agency on annual contract"
+          },
+          "observation": {
+            "surface_text": "The answer names a bounded person and arrangement. The reason given addresses cancellation cost immunity, not immunity from forgetting to chase unpaid invoices, which is the confirmed problem.",
+            "anchor_span": "the agency guarantees the booking"
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "Does Jordan's agency contract mean invoices are never issued at all, or does someone still have to track whether the agency has actually paid?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T17:03:14Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:03:17Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:03:13Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T17:03:14Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m7.v1\",\n  \"mechanism\": \"M7\",\n  \"state\": \"clearing\",\n  \"limit\": {\n    \"state\": \"clearing\",\n    \"anchor_span\": \"Jordan only DJs corporate events booked through an agency on annual contract\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names a bounded person and arrangement. The reason given addresses cancellation cost immunity, not immunity from forgetting to chase unpaid invoices, which is the confirmed problem.\",\n    \"anchor_span\": \"the agency guarantees the booking\"\n  },\n  \"substitution_detected\": false,\n  \"swirl\": {\n    \"kind\": \"reality\",\n    \"question\": \"Does Jordan's agency contract mean invoices are never issued at all, or does someone still have to track whether the agency has actually paid?\"\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 1169,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 212,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=clearing · substitution_detected=false · swirl=yes · changed=[Limit]",
+        "ts": "2026-10-21T17:03:17.586Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": false,
+    "elements": {
+      "grape": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M1",
+        "rawGrades": [
+          {
+            "mech": "M1",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "tell": {
+        "state": "turbid",
+        "history": [
+          "inert",
+          "turbid"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "turbid"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "turbid"
+          }
+        ]
+      },
+      "vintage": {
+        "state": "turbid",
+        "history": [
+          "inert",
+          "turbid"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "turbid"
+          }
+        ]
+      },
+      "gap": {
+        "state": "clearing",
+        "history": [
+          "inert",
+          "clearing"
+        ],
+        "mech": "M5",
+        "rawGrades": [
+          {
+            "mech": "M5",
+            "offeredState": "clearing"
+          }
+        ]
+      },
+      "echo": {
+        "state": "turbid",
+        "history": [
+          "inert",
+          "turbid"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M3",
+            "offeredState": "turbid"
+          },
+          {
+            "mech": "M4",
+            "offeredState": "turbid"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "turbid"
+          }
+        ]
+      },
+      "limit": {
+        "state": "clearing",
+        "history": [
+          "inert",
+          "clearing"
+        ],
+        "mech": "M7",
+        "rawGrades": [
+          {
+            "mech": "M7",
+            "offeredState": "clearing"
+          }
+        ]
+      }
+    }
+  }
+}

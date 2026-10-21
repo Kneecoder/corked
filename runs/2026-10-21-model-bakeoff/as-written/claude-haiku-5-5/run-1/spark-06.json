@@ -1,0 +1,258 @@
+{
+  "idx": 6,
+  "cfg": {
+    "raw_spark": "Something that makes life easier.",
+    "maturity": 1,
+    "grapeName": "",
+    "grapeRel": "",
+    "m0FollowupAnswer": "It's for freelancers.",
+    "expectHalt": true,
+    "note": "Unbottleable rescue guard. Expect: unbottleable on first pass. Followup supplies a person only (no domain, no problem), so unbottleable_rescue_blocked true and state stays unbottleable. Chain halts. If it re-bottles, the rescue guard has a hole."
+  },
+  "outcome": "PASS (halted as expected: M0: unbottleable, nothing to bottle.)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8788",
+    "raw_spark": "Something that makes life easier.",
+    "maturity": 1,
+    "grapeName": "",
+    "grapeRel": "",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "Something that makes life easier.",
+      "user_line_candidate": "Something that makes life easier.",
+      "spark_parse": {
+        "solution_form": null,
+        "implied_person": null,
+        "suspected_problem": null,
+        "triggering_situation": null,
+        "promised_change": "makes life easier",
+        "domain": null,
+        "solution_is_software": "unstated"
+      },
+      "digestibility": {
+        "state": "unbottleable",
+        "missing": [
+          "person or role",
+          "domain",
+          "problem"
+        ],
+        "reason": "Not bottleable yet. The spark names no person, domain, or problem, only a general effect on life.",
+        "can_seal": false,
+        "requires_followup_before_seal": true
+      },
+      "followup": {
+        "needed": true,
+        "question": "Whose life, and what is going wrong for them that this would make easier?"
+      },
+      "m1_setup": {
+        "question": "Name the specific person this would make life easier for, and the moment their life is hardest.",
+        "hint": "A good answer names one person, their role, and one concrete task that goes wrong for them.",
+        "person_label": "Person",
+        "person_placeholder": "Maya, night-shift nurse",
+        "when_label": "When",
+        "when_placeholder": "the night before a double shift",
+        "trying_label": "Trying to",
+        "trying_placeholder": null,
+        "happened_label": "What happened",
+        "happened_placeholder": null
+      },
+      "person_in_spark": {
+        "grade": "none",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": true
+      }
+    },
+    "userLine": "Something that makes life easier.",
+    "sparkParse": {
+      "solution_form": null,
+      "implied_person": null,
+      "suspected_problem": null,
+      "triggering_situation": null,
+      "promised_change": "makes life easier",
+      "domain": null,
+      "solution_is_software": "unstated"
+    },
+    "domain": "",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {},
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "Something that makes life easier."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "Something that makes life easier.",
+          "user_line_candidate": "Something that makes life easier.",
+          "spark_parse": {
+            "solution_form": null,
+            "implied_person": null,
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": "makes life easier",
+            "domain": null,
+            "solution_is_software": "unstated"
+          },
+          "digestibility": {
+            "state": "unbottleable",
+            "missing": [
+              "person or role",
+              "domain",
+              "problem"
+            ],
+            "reason": "Not bottleable yet. The spark names no person, domain, or problem, only a general effect on life.",
+            "can_seal": false,
+            "requires_followup_before_seal": true
+          },
+          "followup": {
+            "needed": true,
+            "question": "Whose life, and what is going wrong for them that this would make easier?"
+          },
+          "m1_setup": {
+            "question": "Name the specific person this would make life easier for, and the moment their life is hardest.",
+            "hint": "A good answer names one person, their role, and one concrete task that goes wrong for them.",
+            "person_label": "Person",
+            "person_placeholder": "Maya, night-shift nurse",
+            "when_label": "When",
+            "when_placeholder": "the night before a double shift",
+            "trying_label": "Trying to",
+            "trying_placeholder": null,
+            "happened_label": "What happened",
+            "happened_placeholder": null
+          },
+          "person_in_spark": {
+            "grade": "none",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:35:18Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:35:20Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:35:17Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11998000",
+                "tokens-reset": "2026-10-21T16:35:18Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"schema_version\":\"m0.v1\",\"mechanism\":\"M0\",\"raw_spark\":\"Something that makes life easier.\",\"user_line_candidate\":\"Something that makes life easier.\",\"spark_parse\":{\"solution_form\":null,\"implied_person\":null,\"suspected_problem\":null,\"triggering_situation\":null,\"promised_change\":\"makes life easier\",\"domain\":null,\"solution_is_software\":\"unstated\"},\"digestibility\":{\"state\":\"unbottleable\",\"missing\":[\"person or role\",\"domain\",\"problem\"],\"reason\":\"Not bottleable yet. The spark names no person, domain, or problem, only a general effect on life.\",\"can_seal\":false,\"requires_followup_before_seal\":true},\"followup\":{\"needed\":true,\"question\":\"Whose life, and what is going wrong for them that this would make easier?\"},\"m1_setup\":{\"question\":\"Name the specific person this would make life easier for, and the moment their life is hardest.\",\"hint\":\"A good answer names one person, their role, and one concrete task that goes wrong for them.\",\"person_label\":\"Person\",\"person_placeholder\":\"Maya, night-shift nurse\",\"when_label\":\"When\",\"when_placeholder\":\"the night before a double shift\",\"trying_label\":\"Trying to\",\"trying_placeholder\":\"get through the week without missing a bill payment\",\"happened_label\":\"What happened\",\"happened_placeholder\":\"she forgot to refill a prescription and had to leave work to fix it\"},\"person_in_spark\":{\"grade\":\"none\",\"named_person\":null,\"relationship_tie\":null}}",
+              "usage": {
+                "input_tokens": 4812,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 492,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "digestibility=unbottleable · in_scope=true · followup_needed=true",
+        "ts": "2026-10-21T16:35:20.777Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M0: unbottleable, nothing to bottle."
+  }
+}

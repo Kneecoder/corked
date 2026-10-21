@@ -1,0 +1,489 @@
+{
+  "idx": 3,
+  "cfg": {
+    "raw_spark": "A better scheduling app for gym owners.",
+    "maturity": 1,
+    "grapeName": "Marco",
+    "grapeRel": "owns the boxing gym where I train",
+    "m0FollowupAnswer": "Marco double-books the 6pm slot and members show up to a class that is already full.",
+    "answers": {
+      "m2": "Marco walked me through last Tuesday: two members arrived for the 18:00 class he had already filled. He refunded one at the front desk and comped the other a personal training session.",
+      "m3": "My friend Priya, who runs a yoga studio, told me last month she started capping sign-ups in a shared spreadsheet after a similar double-booking during a holiday rush.",
+      "m4": "Owen, a barber who takes walk-ins, keeps a paper appointment book by the chair. For him the pain is no-shows, the overbooking part is fine.",
+      "m5": "Marco uses a shared Google Calendar for the class roster, but it doesn't stop two people from claiming the same slot if they both edit it around the same time.",
+      "m6": "\"I hate turning people away at the door,\" he said after the Tuesday one.",
+      "m7": "Jordan runs one-on-one training sessions only, no group classes. Double-booking never happens to him because every slot has exactly one client."
+    },
+    "expectHalt": false,
+    "note": "Solution-language spark, class 1 direction door. Expect: first pass bottleable_cloudy (person visible, no problem), followup fires, re-bottle lands cellar_ready or cloudy-with-problem. M2 question uses the direction door: no \"think of the last time\" / \"describe the moment\" phrasing. The told-not-watched moment grades settled."
+  },
+  "outcome": "RECORDED (M2 Phase A insufficient: stopped at M2)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8790",
+    "raw_spark": "A better scheduling app for gym owners.",
+    "maturity": 1,
+    "grapeName": "Marco",
+    "grapeRel": "owns the boxing gym where I train",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "A better scheduling app for gym owners.",
+      "user_line_candidate": "A better scheduling app for gym owners.",
+      "spark_parse": {
+        "solution_form": "app",
+        "implied_person": "gym owners",
+        "suspected_problem": null,
+        "triggering_situation": null,
+        "promised_change": "better scheduling",
+        "domain": "gyms",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "bottleable_cloudy",
+        "missing": [
+          "suspected_problem"
+        ],
+        "reason": "Bottleable, cloudy. The form, the population, and the scheduling are visible, but no problem is stated. That is what the cellar will age.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": true,
+        "question": "What is going wrong for gym owners with scheduling right now?"
+      },
+      "m1_setup": {
+        "question": "Name the specific gym owner and the moment their scheduling broke down.",
+        "hint": "A good answer names one owner and one concrete scheduling failure they ran into at their gym.",
+        "person_label": "Gym owner",
+        "person_placeholder": "Dana, owner of a two-location boxing gym",
+        "when_label": "When it happened",
+        "when_placeholder": "the Monday after a class was double-booked",
+        "trying_label": "What they were trying to do",
+        "trying_placeholder": null,
+        "happened_label": "What actually happened",
+        "happened_placeholder": null
+      },
+      "person_in_spark": {
+        "grade": "turbid",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": true
+      }
+    },
+    "userLine": "A better scheduling app for gym owners.",
+    "sparkParse": {
+      "solution_form": "app",
+      "implied_person": "gym owners",
+      "suspected_problem": null,
+      "triggering_situation": null,
+      "promised_change": "better scheduling",
+      "domain": "gyms",
+      "solution_is_software": "software"
+    },
+    "domain": "gyms",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": "insufficient",
+    "answers": {
+      "M1": "owns the boxing gym where I train"
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A better scheduling app for gym owners."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "A better scheduling app for gym owners.",
+          "user_line_candidate": "A better scheduling app for gym owners.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "gym owners",
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": "better scheduling",
+            "domain": "gyms",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "bottleable_cloudy",
+            "missing": [
+              "suspected_problem"
+            ],
+            "reason": "Bottleable, cloudy. The form, the population, and the scheduling are visible, but no problem is stated. That is what the cellar will age.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": true,
+            "question": "What is going wrong for gym owners with scheduling right now?"
+          },
+          "m1_setup": {
+            "question": "Name the specific gym owner and the moment their scheduling broke down.",
+            "hint": "A good answer names one owner and one concrete scheduling failure they ran into at their gym.",
+            "person_label": "Gym owner",
+            "person_placeholder": "Dana, owner of a two-location boxing gym",
+            "when_label": "When it happened",
+            "when_placeholder": "the Monday after a class was double-booked",
+            "trying_label": "What they were trying to do",
+            "trying_placeholder": null,
+            "happened_label": "What actually happened",
+            "happened_placeholder": null
+          },
+          "person_in_spark": {
+            "grade": "turbid",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:44:22Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:44:24Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:44:21Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T16:44:22Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"schema_version\":\"m0.v1\",\"mechanism\":\"M0\",\"raw_spark\":\"A better scheduling app for gym owners.\",\"user_line_candidate\":\"A better scheduling app for gym owners.\",\"spark_parse\":{\"solution_form\":\"app\",\"implied_person\":\"gym owners\",\"suspected_problem\":null,\"triggering_situation\":null,\"promised_change\":\"better scheduling\",\"domain\":\"gyms\",\"solution_is_software\":\"software\"},\"digestibility\":{\"state\":\"bottleable_cloudy\",\"missing\":[\"suspected_problem\"],\"reason\":\"Bottleable, cloudy. The form, the population, and the scheduling are visible, but no problem is stated. That is what the cellar will age.\",\"can_seal\":true,\"requires_followup_before_seal\":false},\"followup\":{\"needed\":true,\"question\":\"What is going wrong for gym owners with scheduling right now?\"},\"m1_setup\":{\"question\":\"Name the specific gym owner and the moment their scheduling broke down.\",\"hint\":\"A good answer names one owner and one concrete scheduling failure they ran into at their gym.\",\"person_label\":\"Gym owner\",\"person_placeholder\":\"Dana, owner of a two-location boxing gym\",\"when_label\":\"When it happened\",\"when_placeholder\":\"the Monday after a class was double-booked\",\"trying_label\":\"What they were trying to do\",\"trying_placeholder\":\"fill the 6pm classes without losing members\",\"happened_label\":\"What actually happened\",\"happened_placeholder\":\"two trainers were booked into the same room and a class had to be cancelled\"},\"person_in_spark\":{\"grade\":\"turbid\",\"named_person\":null,\"relationship_tie\":null}}",
+              "usage": {
+                "input_tokens": 4815,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 539,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "digestibility=bottleable_cloudy · in_scope=true · followup_needed=true",
+        "ts": "2026-10-21T16:44:24.427Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/m1",
+        "kind": "main",
+        "request": {
+          "spark_summary": "A better scheduling app for gym owners.",
+          "person_name": "Marco",
+          "relationship": "owns the boxing gym where I train",
+          "maturity_class": 1
+        },
+        "response": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "settled",
+          "grape": {
+            "state": "settled",
+            "named_person": "Marco",
+            "person_kind": "named_individual",
+            "temporal_grounding": "present_general"
+          },
+          "observation": {
+            "surface_text": "A named individual is present: Marco. The stated relationship is that he owns the boxing gym where the user trains.",
+            "anchor_span": "owns the boxing gym where I train"
+          },
+          "next_question": {
+            "should_advance": false,
+            "framing": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "anchor_verified": true,
+            "visible_style_violations_cleaned": []
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T16:44:25Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:44:26Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:44:24Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T16:44:25Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"schema_version\":\"m1.v1\",\"mechanism\":\"M1\",\"outcome\":\"settled\",\"grape\":{\"state\":\"settled\",\"named_person\":\"Marco\",\"person_kind\":\"named_individual\",\"temporal_grounding\":\"present_general\"},\"observation\":{\"surface_text\":\"A named individual is present: Marco. The stated relationship is that he owns the boxing gym where the user trains.\",\"anchor_span\":\"owns the boxing gym where I train\"},\"next_question\":{\"should_advance\":false,\"framing\":null}}",
+              "usage": {
+                "input_tokens": 1106,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 166,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=n/a · swirl=no · changed=[Grape]",
+        "ts": "2026-10-21T16:44:26.138Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (phase A)",
+        "kind": "main",
+        "request": {
+          "phase": "problem",
+          "raw_spark": "A better scheduling app for gym owners.",
+          "user_line": "A better scheduling app for gym owners.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "gym owners",
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": "better scheduling",
+            "domain": "gyms",
+            "solution_is_software": "software"
+          },
+          "grape_name": "Marco",
+          "grape_relationship": "owns the boxing gym where I train",
+          "maturity_class": 1
+        },
+        "response": {
+          "schema_version": "m2.v2",
+          "mechanism": "M2",
+          "phase": "problem",
+          "outcome": "insufficient",
+          "problem": null,
+          "gap_in_play": false,
+          "question": null,
+          "recovered_problem": null,
+          "needs_confirmation": false,
+          "server_checks": {
+            "schema_valid": true,
+            "model_outcome": "guessed",
+            "outcome": "insufficient",
+            "downgrades": [
+              {
+                "from": "guessed",
+                "to": "insufficient",
+                "reason": "words_not_in_spark",
+                "words": [
+                  "currently",
+                  "manage",
+                  "bookings"
+                ],
+                "text": "Gym owners cannot get better scheduling from the way they currently manage bookings."
+              }
+            ],
+            "unsupported_words": [
+              "currently",
+              "manage",
+              "bookings"
+            ],
+            "visible_style_violations_cleaned": [],
+            "m2_question_repaired": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:44:26Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:44:27Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:44:26Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:44:26Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m2.v2\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"problem\",\n  \"outcome\": \"guessed\",\n  \"stated_span\": null,\n  \"problem\": \"Gym owners cannot get better scheduling from the way they currently manage bookings.\",\n  \"gap_in_play\": false,\n  \"question\": \"Have Marco walk you through the last specific time his schedule broke or a booking went wrong, or watch for the next time it happens and note what he did.\"\n}\n```",
+              "usage": {
+                "input_tokens": 1568,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 166,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "outcome=insufficient · problem=none · gap_in_play=false",
+        "ts": "2026-10-21T16:44:27.453Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M1",
+        "rawGrades": [
+          {
+            "mech": "M1",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M2 Phase A outcome: insufficient, no problem on record. Stopped at M2."
+  }
+}

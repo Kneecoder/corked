@@ -1,0 +1,999 @@
+{
+  "idx": 10,
+  "cfg": {
+    "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+    "maturity": 0,
+    "grapeName": "Tomas",
+    "grapeRel": "my neighbour, carpenter with a one-man business",
+    "answers": {
+      "m2": "Last month Tomas finished a kitchen cabinet job and didn't send the invoice until three weeks later, by which point the client had already spent the budget elsewhere and paid him in installments.",
+      "m3": "Lots of tradesmen I know just keep it in their heads or a notebook.",
+      "m4": "Priya, who runs a catering van, showed me the whiteboard in her kitchen last week where she crosses off paid jobs. For her it is deposits going missing, the chasing part she has under control.",
+      "m5": "Tomas uses a paper invoice pad from the hardware store, but it has no reminder system at all, so following up depends entirely on him remembering.",
+      "m6": "\"I just want the money to show up without me having to ask twice,\" he said after the cabinet job.",
+      "m7": "Priya works only through a property management company that pays a fixed monthly retainer. Chasing invoices never happens to her because the retainer is automatic."
+    },
+    "expectHalt": false,
+    "note": "M3 category rule, then M4 rank-up. Expect: M3 echo clearing, never settled — the named workaround does not rescue the category; observation names a population, not a person. M4 echo settled, so element history shows clearing -> settled with no regression. M4 contrast fields are strings: is_different_kind \"true\", same_or_different \"different\" (the boolean-wipe bug check)."
+  },
+  "outcome": "PASS (completed full chain)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8787",
+    "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+    "maturity": 0,
+    "grapeName": "Tomas",
+    "grapeRel": "my neighbour, carpenter with a one-man business",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+      "user_line_candidate": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+      "spark_parse": {
+        "solution_form": "app",
+        "implied_person": "one-man trade businesses",
+        "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
+        "triggering_situation": "when the money is a problem",
+        "promised_change": null,
+        "domain": "unpaid invoices",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "cellar_ready",
+        "missing": [],
+        "reason": "Cellar-ready. The role is one-man trade businesses and the stated problem is forgetting to chase unpaid invoices until the money is already a problem. Both are visible and the Spark enters cleanly.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": false,
+        "question": null
+      },
+      "m1_setup": {
+        "question": "Name a specific one-man trade business owner and the moment they realised an unpaid invoice had been sitting too long.",
+        "hint": "A good answer names the trade, the person, and what they were doing or looking at when the overdue invoice became a problem.",
+        "person_label": "Tradesperson",
+        "person_placeholder": "Danny, sole-trader electrician",
+        "when_label": "When they noticed",
+        "when_placeholder": "after finishing a job and checking his bank before paying a supplier",
+        "trying_label": "What he was trying to do",
+        "trying_placeholder": "cover materials costs for the next job",
+        "happened_label": "What he found",
+        "happened_placeholder": "an invoice from six weeks ago still unpaid, the client never chased, the money not there"
+      },
+      "person_in_spark": {
+        "grade": "none",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": false
+      }
+    },
+    "userLine": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+    "sparkParse": {
+      "solution_form": "app",
+      "implied_person": "one-man trade businesses",
+      "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
+      "triggering_situation": "when the money is a problem",
+      "promised_change": null,
+      "domain": "unpaid invoices",
+      "solution_is_software": "software"
+    },
+    "domain": "unpaid invoices",
+    "gapInPlay": false,
+    "problem": {
+      "text": "forget to chase unpaid invoices until the money is a problem",
+      "source": "user_stated",
+      "status": "confirmed"
+    },
+    "phaseAOutcome": "stated",
+    "answers": {
+      "M1": "my neighbour, carpenter with a one-man business",
+      "M2": "Last month Tomas finished a kitchen cabinet job and didn't send the invoice until three weeks later, by which point the client had already spent the budget elsewhere and paid him in installments.",
+      "M3": "Lots of tradesmen I know just keep it in their heads or a notebook.",
+      "M4": "Priya, who runs a catering van, showed me the whiteboard in her kitchen last week where she crosses off paid jobs. For her it is deposits going missing, the chasing part she has under control.",
+      "M5": "Tomas uses a paper invoice pad from the hardware store, but it has no reminder system at all, so following up depends entirely on him remembering.",
+      "M6": "\"I just want the money to show up without me having to ask twice,\" he said after the cabinet job.",
+      "M7": "Priya works only through a property management company that pays a fixed monthly retainer. Chasing invoices never happens to her because the retainer is automatic."
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "user_line_candidate": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "one-man trade businesses",
+            "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
+            "triggering_situation": "when the money is a problem",
+            "promised_change": null,
+            "domain": "unpaid invoices",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "cellar_ready",
+            "missing": [],
+            "reason": "Cellar-ready. The role is one-man trade businesses and the stated problem is forgetting to chase unpaid invoices until the money is already a problem. Both are visible and the Spark enters cleanly.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": false,
+            "question": null
+          },
+          "m1_setup": {
+            "question": "Name a specific one-man trade business owner and the moment they realised an unpaid invoice had been sitting too long.",
+            "hint": "A good answer names the trade, the person, and what they were doing or looking at when the overdue invoice became a problem.",
+            "person_label": "Tradesperson",
+            "person_placeholder": "Danny, sole-trader electrician",
+            "when_label": "When they noticed",
+            "when_placeholder": "after finishing a job and checking his bank before paying a supplier",
+            "trying_label": "What he was trying to do",
+            "trying_placeholder": "cover materials costs for the next job",
+            "happened_label": "What he found",
+            "happened_placeholder": "an invoice from six weeks ago still unpaid, the client never chased, the money not there"
+          },
+          "person_in_spark": {
+            "grade": "none",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:49:30Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:49:38Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:29Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T16:49:30Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.\",\n  \"user_line_candidate\": \"An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.\",\n  \"spark_parse\": {\n    \"solution_form\": \"app\",\n    \"implied_person\": \"one-man trade businesses\",\n    \"suspected_problem\": \"forgetting to chase unpaid invoices until the money is a problem\",\n    \"triggering_situation\": \"when the money is a problem\",\n    \"promised_change\": null,\n    \"domain\": \"unpaid invoices\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The role is one-man trade businesses and the stated problem is forgetting to chase unpaid invoices until the money is already a problem. Both are visible and the Spark enters cleanly.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name a specific one-man trade business owner and the moment they realised an unpaid invoice had been sitting too long.\",\n    \"hint\": \"A good answer names the trade, the person, and what they were doing or looking at when the overdue invoice became a problem.\",\n    \"person_label\": \"Tradesperson\",\n    \"person_placeholder\": \"Danny, sole-trader electrician\",\n    \"when_label\": \"When they noticed\",\n    \"when_placeholder\": \"after finishing a job and checking his bank before paying a supplier\",\n    \"trying_label\": \"What he was trying to do\",\n    \"trying_placeholder\": \"cover materials costs for the next job\",\n    \"happened_label\": \"What he found\",\n    \"happened_placeholder\": \"an invoice from six weeks ago still unpaid, the client never chased, the money not there\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"none\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 3645,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 575,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "digestibility=cellar_ready · in_scope=true · followup_needed=false",
+        "ts": "2026-10-21T16:49:38.882Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/m1",
+        "kind": "main",
+        "request": {
+          "spark_summary": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "person_name": "Tomas",
+          "relationship": "my neighbour, carpenter with a one-man business",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "settled",
+          "grape": {
+            "state": "settled",
+            "named_person": "Tomas",
+            "person_kind": "named_individual",
+            "temporal_grounding": "present_general"
+          },
+          "observation": {
+            "surface_text": "Tomas is named and the relationship is concrete. A neighbour running a one-man carpentry business is a specific individual with a real stated tie.",
+            "anchor_span": "my neighbour, carpenter with a one-man business"
+          },
+          "next_question": {
+            "should_advance": true,
+            "framing": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "anchor_verified": true,
+            "visible_style_violations_cleaned": []
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T16:49:39Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:42Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:39Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T16:49:39Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m1.v1\",\n  \"mechanism\": \"M1\",\n  \"outcome\": \"settled\",\n  \"grape\": {\n    \"state\": \"settled\",\n    \"named_person\": \"Tomas\",\n    \"person_kind\": \"named_individual\",\n    \"temporal_grounding\": \"present_general\"\n  },\n  \"observation\": {\n    \"surface_text\": \"Tomas is named and the relationship is concrete. A neighbour running a one-man carpentry business is a specific individual with a real stated tie.\",\n    \"anchor_span\": \"my neighbour, carpenter with a one-man business\"\n  },\n  \"next_question\": {\n    \"should_advance\": true,\n    \"framing\": null\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 866,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 192,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=n/a · swirl=no · changed=[Grape]",
+        "ts": "2026-10-21T16:49:42.007Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (phase A)",
+        "kind": "main",
+        "request": {
+          "phase": "problem",
+          "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "user_line": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "one-man trade businesses",
+            "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
+            "triggering_situation": "when the money is a problem",
+            "promised_change": null,
+            "domain": "unpaid invoices",
+            "solution_is_software": "software"
+          },
+          "grape_name": "Tomas",
+          "grape_relationship": "my neighbour, carpenter with a one-man business",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m2.v2",
+          "mechanism": "M2",
+          "phase": "problem",
+          "outcome": "stated",
+          "problem": {
+            "text": "forget to chase unpaid invoices until the money is a problem",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "question": "Walk me through the last time Tomas realised he had unpaid invoices he had not chased: what did he actually do when he noticed?",
+          "recovered_problem": "forget to chase unpaid invoices until the money is a problem",
+          "needs_confirmation": false,
+          "server_checks": {
+            "schema_valid": true,
+            "model_outcome": "stated",
+            "outcome": "stated",
+            "downgrades": [],
+            "unsupported_words": [],
+            "visible_style_violations_cleaned": [],
+            "m2_question_repaired": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T16:49:43Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:45Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:42Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T16:49:43Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m2.v2\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"problem\",\n  \"outcome\": \"stated\",\n  \"stated_span\": \"forget to chase unpaid invoices until the money is a problem\",\n  \"problem\": null,\n  \"gap_in_play\": false,\n  \"question\": \"Walk me through the last time Tomas realised he had unpaid invoices he had not chased: what did he actually do when he noticed?\"\n}\n```",
+              "usage": {
+                "input_tokens": 1203,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 128,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "outcome=stated · problem=\"forget to chase unpaid invoices until the money is a problem\" (user_stated) · gap_in_play=false",
+        "ts": "2026-10-21T16:49:45.078Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2",
+        "kind": "main",
+        "request": {
+          "user_line": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+          "grape_name": "Tomas",
+          "grape_relationship": "my neighbour, carpenter with a one-man business",
+          "maturity_class": 0,
+          "problem": {
+            "text": "forget to chase unpaid invoices until the money is a problem",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "user_answer": "Last month Tomas finished a kitchen cabinet job and didn't send the invoice until three weeks later, by which point the client had already spent the budget elsewhere and paid him in installments."
+        },
+        "response": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "clearing",
+          "tell": {
+            "state": "clearing",
+            "anchor_span": "didn't send the invoice until three weeks later"
+          },
+          "vintage": {
+            "state": "settled",
+            "anchor_span": "Last month Tomas finished a kitchen cabinet job"
+          },
+          "observation": {
+            "surface_text": "The vintage is anchored to a specific job last month. The tell names a delay but not a filmable action: what Tomas did instead of invoicing in those three weeks is absent from the answer.",
+            "anchor_span": "didn't send the invoice until three weeks later"
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "ownership",
+            "question": "When those three weeks passed without an invoice, who in Tomas's life, if anyone, noticed or said something to him about it?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": true,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:47Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:51Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:45Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:47Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m2.v1\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"friction\",\n  \"state\": \"clearing\",\n  \"tell\": {\n    \"state\": \"clearing\",\n    \"anchor_span\": \"didn't send the invoice until three weeks later\"\n  },\n  \"vintage\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Last month Tomas finished a kitchen cabinet job\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The vintage is anchored to a specific job last month. The tell names a delay but not a filmable action: what Tomas did instead of invoicing in those three weeks is absent from the answer.\",\n    \"anchor_span\": \"didn't send the invoice until three weeks later\"\n  },\n  \"substitution_detected\": false,\n  \"swirl\": {\n    \"kind\": \"ownership\",\n    \"question\": \"When those three weeks passed without an invoice, who in Tomas's life, if anyone, noticed or said something to him about it?\"\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 1453,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 262,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=clearing · substitution_detected=false · swirl=yes · changed=[Tell, Vintage]",
+        "ts": "2026-10-21T16:49:51.291Z"
+      },
+      {
+        "mech": "M3",
+        "endpoint": "/m3",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "forget to chase unpaid invoices until the money is a problem",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Tomas",
+          "grape_relationship": "my neighbour, carpenter with a one-man business",
+          "maturity_class": 0,
+          "user_answer": "Lots of tradesmen I know just keep it in their heads or a notebook."
+        },
+        "response": {
+          "schema_version": "m3.v1",
+          "mechanism": "M3",
+          "state": "clearing",
+          "echo": {
+            "state": "clearing",
+            "anchor_span": "Lots of tradesmen I know"
+          },
+          "observation": {
+            "surface_text": "The answer names a category of sufferers with a gestured workaround but produces no single identifiable person distinct from Tomas and no concrete behaviour beyond passive retention methods.",
+            "anchor_span": "Lots of tradesmen I know just keep it in their heads or a notebook"
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "Is there one specific tradesman in that group whose invoice pile the answer could name and describe, or does the group dissolve when pressed to a single face?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:52Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:56Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:51Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:52Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m3.v1\",\n  \"mechanism\": \"M3\",\n  \"state\": \"clearing\",\n  \"echo\": {\n    \"state\": \"clearing\",\n    \"anchor_span\": \"Lots of tradesmen I know\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names a category of sufferers with a gestured workaround but produces no single identifiable person distinct from Tomas and no concrete behaviour beyond passive retention methods.\",\n    \"anchor_span\": \"Lots of tradesmen I know just keep it in their heads or a notebook\"\n  },\n  \"substitution_detected\": false,\n  \"swirl\": {\n    \"kind\": \"reality\",\n    \"question\": \"Is there one specific tradesman in that group whose invoice pile the answer could name and describe, or does the group dissolve when pressed to a single face?\"\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 1290,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 221,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=clearing · substitution_detected=false · swirl=yes · changed=[Echo]",
+        "ts": "2026-10-21T16:49:56.526Z"
+      },
+      {
+        "mech": "M4",
+        "endpoint": "/m4",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "forget to chase unpaid invoices until the money is a problem",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Tomas",
+          "grape_relationship": "my neighbour, carpenter with a one-man business",
+          "maturity_class": 0,
+          "prior_echo_context": "Lots of tradesmen I know just keep it in their heads or a notebook.",
+          "user_answer": "Priya, who runs a catering van, showed me the whiteboard in her kitchen last week where she crosses off paid jobs. For her it is deposits going missing, the chasing part she has under control."
+        },
+        "response": {
+          "schema_version": "m4.v1",
+          "mechanism": "M4",
+          "state": "clearing",
+          "echo": {
+            "state": "clearing",
+            "anchor_span": "For her it is deposits going missing, the chasing part she has under control."
+          },
+          "contrast": {
+            "is_different_kind": "true",
+            "same_or_different": "different",
+            "anchor_span": "For her it is deposits going missing, the chasing part she has under control."
+          },
+          "observation": {
+            "surface_text": "Priya is a named, identifiable person distinct from Tomas and the prior echo, but her problem is deposits going missing rather than forgetting to chase unpaid invoices, so the confirmed problem does not land the same way for her.",
+            "anchor_span": "For her it is deposits going missing, the chasing part she has under control."
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "Is there anyone in Priya's world, or in Tomas's, who specifically forgets the chasing step the way the confirmed problem describes it?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:57Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:50:02Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:56Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:57Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m4.v1\",\n  \"mechanism\": \"M4\",\n  \"state\": \"clearing\",\n  \"echo\": {\n    \"state\": \"clearing\",\n    \"anchor_span\": \"For her it is deposits going missing, the chasing part she has under control.\"\n  },\n  \"contrast\": {\n    \"is_different_kind\": \"true\",\n    \"same_or_different\": \"different\",\n    \"anchor_span\": \"For her it is deposits going missing, the chasing part she has under control.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"Priya is a named, identifiable person distinct from Tomas and the prior echo, but her problem is deposits going missing rather than forgetting to chase unpaid invoices, so the confirmed problem does not land the same way for her.\",\n    \"anchor_span\": \"For her it is deposits going missing, the chasing part she has under control.\"\n  },\n  \"substitution_detected\": false,\n  \"swirl\": {\n    \"kind\": \"reality\",\n    \"question\": \"Is there anyone in Priya's world, or in Tomas's, who specifically forgets the chasing step the way the confirmed problem describes it?\"\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 1666,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 302,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=clearing · substitution_detected=false · swirl=yes · changed=[none]",
+        "ts": "2026-10-21T16:50:02.042Z"
+      },
+      {
+        "mech": "M5",
+        "endpoint": "/m5",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "forget to chase unpaid invoices until the money is a problem",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Tomas",
+          "grape_relationship": "my neighbour, carpenter with a one-man business",
+          "maturity_class": 0,
+          "user_answer": "Tomas uses a paper invoice pad from the hardware store, but it has no reminder system at all, so following up depends entirely on him remembering."
+        },
+        "response": {
+          "schema_version": "m5.v1",
+          "mechanism": "M5",
+          "state": "settled",
+          "gap": {
+            "state": "settled",
+            "anchor_span": "paper invoice pad from the hardware store, but it has no reminder system at all"
+          },
+          "observation": {
+            "surface_text": "The answer names an existing solution: a paper invoice pad from the hardware store. The precise failure point is present: it carries no reminder system, making follow-up contingent on unaided memory.",
+            "anchor_span": "paper invoice pad from the hardware store, but it has no reminder system at all"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:50:02Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:50:04Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:50:02Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:50:02Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m5.v1\",\n  \"mechanism\": \"M5\",\n  \"state\": \"settled\",\n  \"gap\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"paper invoice pad from the hardware store, but it has no reminder system at all\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names an existing solution: a paper invoice pad from the hardware store. The precise failure point is present: it carries no reminder system, making follow-up contingent on unaided memory.\",\n    \"anchor_span\": \"paper invoice pad from the hardware store, but it has no reminder system at all\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1270,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 176,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Gap]",
+        "ts": "2026-10-21T16:50:04.663Z"
+      },
+      {
+        "mech": "M6",
+        "endpoint": "/m6",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "forget to chase unpaid invoices until the money is a problem",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Tomas",
+          "grape_relationship": "my neighbour, carpenter with a one-man business",
+          "maturity_class": 0,
+          "words_source": "real",
+          "user_answer": "\"I just want the money to show up without me having to ask twice,\" he said after the cabinet job."
+        },
+        "response": {
+          "schema_version": "m6.v1",
+          "mechanism": "M6",
+          "state": "settled",
+          "words": {
+            "state": "settled",
+            "anchor_span": "I just want the money to show up without me having to ask twice"
+          },
+          "tell": {
+            "state": "clearing",
+            "anchor_span": "I just want the money to show up without me having to ask twice"
+          },
+          "echo": {
+            "state": "turbid",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "The answer supplies a direct quote from a real exchange, attributable to Tomas by name, with words_source marked real. The quoted language carries a stated sentiment about chasing payment but no filmable action or third-party reference.",
+            "anchor_span": "I just want the money to show up without me having to ask twice"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:50:05Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:50:09Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:50:05Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:50:05Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m6.v1\",\n  \"mechanism\": \"M6\",\n  \"state\": \"settled\",\n  \"words\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"I just want the money to show up without me having to ask twice\"\n  },\n  \"tell\": {\n    \"state\": \"clearing\",\n    \"anchor_span\": \"I just want the money to show up without me having to ask twice\"\n  },\n  \"echo\": {\n    \"state\": \"turbid\",\n    \"anchor_span\": null\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer supplies a direct quote from a real exchange, attributable to Tomas by name, with words_source marked real. The quoted language carries a stated sentiment about chasing payment but no filmable action or third-party reference.\",\n    \"anchor_span\": \"I just want the money to show up without me having to ask twice\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1696,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 246,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[none]",
+        "ts": "2026-10-21T16:50:09.008Z"
+      },
+      {
+        "mech": "M7",
+        "endpoint": "/m7",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "forget to chase unpaid invoices until the money is a problem",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Tomas",
+          "grape_relationship": "my neighbour, carpenter with a one-man business",
+          "maturity_class": 0,
+          "user_answer": "Priya works only through a property management company that pays a fixed monthly retainer. Chasing invoices never happens to her because the retainer is automatic."
+        },
+        "response": {
+          "schema_version": "m7.v1",
+          "mechanism": "M7",
+          "state": "settled",
+          "limit": {
+            "state": "settled",
+            "anchor_span": "Priya works only through a property management company that pays a fixed monthly retainer"
+          },
+          "observation": {
+            "surface_text": "The answer names a bounded individual and her specific arrangement as the exclusion. The reason is present and specific: automatic retainer billing removes the invoice-chasing trigger entirely.",
+            "anchor_span": "the retainer is automatic"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T16:50:10Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:50:12Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:50:09Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T16:50:10Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m7.v1\",\n  \"mechanism\": \"M7\",\n  \"state\": \"settled\",\n  \"limit\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Priya works only through a property management company that pays a fixed monthly retainer\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names a bounded individual and her specific arrangement as the exclusion. The reason is present and specific: automatic retainer billing removes the invoice-chasing trigger entirely.\",\n    \"anchor_span\": \"the retainer is automatic\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1177,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 160,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Limit]",
+        "ts": "2026-10-21T16:50:12.421Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [
+      "M6 offered turbid for Echo, held at floor clearing (opportunistic grading correctly did not lower it)."
+    ],
+    "halted": false,
+    "elements": {
+      "grape": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M1",
+        "rawGrades": [
+          {
+            "mech": "M1",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "tell": {
+        "state": "clearing",
+        "history": [
+          "inert",
+          "clearing"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "clearing"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "clearing"
+          }
+        ]
+      },
+      "vintage": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "gap": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M5",
+        "rawGrades": [
+          {
+            "mech": "M5",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "echo": {
+        "state": "clearing",
+        "history": [
+          "inert",
+          "clearing"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M3",
+            "offeredState": "clearing"
+          },
+          {
+            "mech": "M4",
+            "offeredState": "clearing"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "turbid"
+          }
+        ]
+      },
+      "limit": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M7",
+        "rawGrades": [
+          {
+            "mech": "M7",
+            "offeredState": "settled"
+          }
+        ]
+      }
+    }
+  }
+}

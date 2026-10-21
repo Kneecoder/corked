@@ -1,0 +1,145 @@
+{
+  "idx": 11,
+  "cfg": {
+    "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+    "maturity": 0,
+    "grapeName": "Femke",
+    "grapeRel": "my sister-in-law, photographer",
+    "answers": {
+      "m2": "Last month Femke finished a wedding shoot and didn't invoice until three weeks later, by which point the couple had already spent their budget on the honeymoon.",
+      "m3": "Femke started adding a 30 percent booking fee in January after two no-shows in one month.",
+      "m4": "Priya, who runs a catering van, showed me the whiteboard in her kitchen last week where she crosses off paid jobs. For her it is deposits going missing, the chasing part she has under control.",
+      "m5": "Femke uses a basic invoicing app, but it has no automatic reminders, so nothing chases the client but her own memory.",
+      "m6": "\"I hate having to be the one who asks for money,\" she said after the honeymoon one.",
+      "m7": "Owen works only through an agency that invoices clients on his behalf. Chasing payments never happens to him because the agency handles it."
+    },
+    "expectHalt": false,
+    "note": "M3 grape exclusion — plus one doctrine corner to record. Expect: echo turbid despite the concrete behaviour and moment — every person in the answer is the grape. Corner to record: does Vintage rank up opportunistically off this grape-only moment while echo goes turbid? Doctrine says Vintage grades when the answer carries a moment; it does not say whose. Log the result either way; this is a doctrine call waiting to be made, not a bug."
+  },
+  "outcome": "FAIL (unexpected halt: M0 request failed: Parse error)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8788",
+    "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
+    "maturity": 0,
+    "grapeName": "Femke",
+    "grapeRel": "my sister-in-law, photographer",
+    "wordsSource": "real",
+    "m0": null,
+    "userLine": "",
+    "sparkParse": null,
+    "domain": "",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {},
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem."
+        },
+        "response": {
+          "error": "Parse error",
+          "raw": ""
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:35:52Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1998000",
+                "output-tokens-reset": "2026-10-21T16:35:59Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:35:51Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11996000",
+                "tokens-reset": "2026-10-21T16:35:52Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "max_tokens",
+              "blocks": [
+                "thinking",
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.\",\n  \"user_line_candidate\": \"An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.\",\n  \"spark_parse\": {\n    \"solution_form\": \"app\",\n    \"implied_person\": \"one-man trade businesses\",\n    \"suspected_problem\": \"forget to chase unpaid invoices until the money is a problem\",\n    \"triggering_situation\": null,\n    \"promised_change\": null,\n    \"domain\": \"trade businesses, unpaid invoices\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"",
+              "usage": {
+                "input_tokens": 4835,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 1600,
+                "output_tokens_details": {
+                  "thinking_tokens": 1343
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "ERROR 502",
+        "ts": "2026-10-21T16:35:59.047Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M0 request failed: Parse error"
+  }
+}

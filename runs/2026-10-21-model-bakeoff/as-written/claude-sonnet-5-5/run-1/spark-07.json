@@ -1,0 +1,420 @@
+{
+  "idx": 7,
+  "cfg": {
+    "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+    "maturity": 0,
+    "grapeName": "Marieke",
+    "grapeRel": "my sister",
+    "answers": {
+      "m2": "Last Saturday a regular customer paid with a card that declined twice at the stall, and Marieke just waved her off with the flowers anyway, saying she'd sort it out later.",
+      "m3": "My friend Owen, who runs a farm stand, told me last month he started keeping a paper IOU pad after a similar situation with a regular.",
+      "m4": "Priya, a food truck owner I met at the market, keeps a card reader as backup for exactly this. For her the pain is spotty signal, the payment method itself is fine.",
+      "m5": "Marieke uses a basic card reader clipped to her apron, but it has no offline mode, so a bad signal at the stall means she can't charge anything at all.",
+      "m6": "\"I just want people to pay and go,\" she said after the declined-card one.",
+      "m7": "Jordan sells only pre-paid subscription flower boxes online. Payment problems at the point of sale never happen to him because nothing is sold in person."
+    },
+    "expectHalt": false,
+    "note": "Compress-may-not-upgrade, register hold. Expect: user_line_candidate keeps \"annoying with payments\" or very close; no operationalised synonyms (late, difficult, unreliable = fail), no introduced nouns. person_in_spark settled (name plus tie). M1 grape settled."
+  },
+  "outcome": "FAIL (unexpected halt: M2 Phase A request failed.)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8789",
+    "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+    "maturity": 0,
+    "grapeName": "Marieke",
+    "grapeRel": "my sister",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+      "user_line_candidate": "An app for flower stall owners because customers are annoying with payments.",
+      "spark_parse": {
+        "solution_form": "app",
+        "implied_person": "flower stall owners",
+        "suspected_problem": "customers are annoying with payments",
+        "triggering_situation": null,
+        "promised_change": null,
+        "domain": "flower stall",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "cellar_ready",
+        "missing": [],
+        "reason": "Cellar-ready. The role is flower stall owners and the stated problem is customers being annoying with payments. Both enter the cellar as the user wrote them.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": false,
+        "question": null
+      },
+      "m1_setup": {
+        "question": "Name the specific person at the flower stall and the moment a customer was annoying with payments.",
+        "hint": "A good answer is one stall owner and one payment that went wrong, with who was standing at the stall.",
+        "person_label": "Stall owner",
+        "person_placeholder": "Marieke, flower stall owner",
+        "when_label": "When at the stall",
+        "when_placeholder": "Saturday morning with a queue at the stall",
+        "trying_label": "Trying to do",
+        "trying_placeholder": "take a payment from a customer buying a bouquet",
+        "happened_label": "What the customer did",
+        "happened_placeholder": "A customer held up the queue while sorting out how to pay for a bouquet"
+      },
+      "person_in_spark": {
+        "grade": "settled",
+        "named_person": "Marieke",
+        "relationship_tie": "my sister"
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": false
+      }
+    },
+    "userLine": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+    "sparkParse": {
+      "solution_form": "app",
+      "implied_person": "flower stall owners",
+      "suspected_problem": "customers are annoying with payments",
+      "triggering_situation": null,
+      "promised_change": null,
+      "domain": "flower stall",
+      "solution_is_software": "software"
+    },
+    "domain": "flower stall",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {
+      "M1": "my sister"
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall"
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+          "user_line_candidate": "An app for flower stall owners because customers are annoying with payments.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "flower stall owners",
+            "suspected_problem": "customers are annoying with payments",
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "flower stall",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "cellar_ready",
+            "missing": [],
+            "reason": "Cellar-ready. The role is flower stall owners and the stated problem is customers being annoying with payments. Both enter the cellar as the user wrote them.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": false,
+            "question": null
+          },
+          "m1_setup": {
+            "question": "Name the specific person at the flower stall and the moment a customer was annoying with payments.",
+            "hint": "A good answer is one stall owner and one payment that went wrong, with who was standing at the stall.",
+            "person_label": "Stall owner",
+            "person_placeholder": "Marieke, flower stall owner",
+            "when_label": "When at the stall",
+            "when_placeholder": "Saturday morning with a queue at the stall",
+            "trying_label": "Trying to do",
+            "trying_placeholder": "take a payment from a customer buying a bouquet",
+            "happened_label": "What the customer did",
+            "happened_placeholder": "A customer held up the queue while sorting out how to pay for a bouquet"
+          },
+          "person_in_spark": {
+            "grade": "settled",
+            "named_person": "Marieke",
+            "relationship_tie": "my sister"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:35:47Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:35:51Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:35:47Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T16:35:47Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"an app for my sister Marieke because customers are annoying with payments at her flower stall\",\n  \"user_line_candidate\": \"An app for flower stall owners because customers are annoying with payments.\",\n  \"spark_parse\": {\n    \"solution_form\": \"app\",\n    \"implied_person\": \"flower stall owners\",\n    \"suspected_problem\": \"customers are annoying with payments\",\n    \"triggering_situation\": null,\n    \"promised_change\": null,\n    \"domain\": \"flower stall\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The role is flower stall owners and the stated problem is customers being annoying with payments. Both enter the cellar as the user wrote them.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the specific person at the flower stall and the moment a customer was annoying with payments.\",\n    \"hint\": \"A good answer is one stall owner and one payment that went wrong, with who was standing at the stall.\",\n    \"person_label\": \"Stall owner\",\n    \"person_placeholder\": \"Marieke, flower stall owner\",\n    \"when_label\": \"When at the stall\",\n    \"when_placeholder\": \"Saturday morning with a queue at the stall\",\n    \"trying_label\": \"Trying to do\",\n    \"trying_placeholder\": \"take a payment from a customer buying a bouquet\",\n    \"happened_label\": \"What the customer did\",\n    \"happened_placeholder\": \"A customer held up the queue while sorting out how to pay for a bouquet\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"settled\",\n    \"named_person\": \"Marieke\",\n    \"relationship_tie\": \"my sister\"\n  }\n}",
+              "usage": {
+                "input_tokens": 4829,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 658,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "digestibility=cellar_ready · in_scope=true · followup_needed=false",
+        "ts": "2026-10-21T16:35:51.407Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/m1",
+        "kind": "main",
+        "request": {
+          "spark_summary": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+          "person_name": "Marieke",
+          "relationship": "my sister",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "settled",
+          "grape": {
+            "state": "settled",
+            "named_person": "Marieke",
+            "person_kind": "named_individual",
+            "temporal_grounding": "present_general"
+          },
+          "observation": {
+            "surface_text": "Marieke is named and tied to the asker as a sister. The grape is a specific individual with a real relationship.",
+            "anchor_span": "my sister"
+          },
+          "next_question": {
+            "should_advance": true,
+            "framing": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "anchor_verified": true,
+            "visible_style_violations_cleaned": []
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T16:35:53Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:35:54Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:35:51Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T16:35:53Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m1.v1\",\n  \"mechanism\": \"M1\",\n  \"outcome\": \"settled\",\n  \"grape\": {\n    \"state\": \"settled\",\n    \"named_person\": \"Marieke\",\n    \"person_kind\": \"named_individual\",\n    \"temporal_grounding\": \"present_general\"\n  },\n  \"observation\": {\n    \"surface_text\": \"Marieke is named and tied to the asker as a sister. The grape is a specific individual with a real relationship.\",\n    \"anchor_span\": \"my sister\"\n  },\n  \"next_question\": {\n    \"should_advance\": true,\n    \"framing\": null\n  }\n}",
+              "usage": {
+                "input_tokens": 1113,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 201,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=n/a · swirl=no · changed=[Grape]",
+        "ts": "2026-10-21T16:35:54.127Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (phase A)",
+        "kind": "main",
+        "request": {
+          "phase": "problem",
+          "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+          "user_line": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "flower stall owners",
+            "suspected_problem": "customers are annoying with payments",
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "flower stall",
+            "solution_is_software": "software"
+          },
+          "grape_name": "Marieke",
+          "grape_relationship": "my sister",
+          "maturity_class": 0
+        },
+        "response": {
+          "error": "Parse error",
+          "raw": ""
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:35:55Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:35:58Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:35:54Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:35:55Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "thinking",
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m2.v2\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"problem\",\n  \"outcome\": \"stated\",\n  \"stated_span\": \"customers are annoying with payments at her flower stall\",\n  \"problem\": null,\n  \"gap_in_play\": false,\n  \"question\": \"What was the specific moment a customer was annoying with payments at Marieke's flower stall, and what did Marieke actually do?\"\n}",
+              "usage": {
+                "input_tokens": 1595,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 457,
+                "output_tokens_details": {
+                  "thinking_tokens": 313
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "ERROR 502",
+        "ts": "2026-10-21T16:35:58.326Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M1",
+        "rawGrades": [
+          {
+            "mech": "M1",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M2 Phase A request failed."
+  }
+}

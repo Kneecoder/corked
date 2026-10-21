@@ -1,0 +1,145 @@
+{
+  "idx": 8,
+  "cfg": {
+    "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+    "maturity": 0,
+    "grapeName": "Bram",
+    "grapeRel": "my uncle, owns four rental flats",
+    "answers": {
+      "m2": "Last month a tenant sent three separate partial payments across two weeks, and Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand.",
+      "m3": "My neighbor Tom, who rents out a duplex, told me last month he started asking for one lump sum only after a similar reconciling headache.",
+      "m4": "Priya, who runs a small storage unit business, keeps a manual ledger for partial payments too. For her the pain is chasing the balance down, the reconciling part is fine.",
+      "m5": "Bram uses a shared spreadsheet to track rent, but it has no way to flag a partial payment against the wrong month, so mismatches pile up.",
+      "m6": "\"I just want one number a month, not a puzzle,\" he said after the Sunday one.",
+      "m7": "Owen only rents to corporate tenants on annual leases paid in full upfront. Partial payments never happen to him because the whole year is billed at once."
+    },
+    "expectHalt": false,
+    "note": "Sanitizer mutation probe — proven-bug regression. Record user_line_candidate verbatim. cleanVisibleText strips \"not just\", which can turn \"do not just pay late\" into \"do pay late\" — a meaning inversion. If the line mutates, the known sanitizer bug has regressed into user-facing text. If M0 rephrases to avoid the construction while keeping both facts (late AND partial), that is a pass."
+  },
+  "outcome": "FAIL (unexpected halt: M0 request failed: Parse error)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8788",
+    "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+    "maturity": 0,
+    "grapeName": "Bram",
+    "grapeRel": "my uncle, owns four rental flats",
+    "wordsSource": "real",
+    "m0": null,
+    "userLine": "",
+    "sparkParse": null,
+    "domain": "",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {},
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile."
+        },
+        "response": {
+          "error": "Parse error",
+          "raw": ""
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:35:29Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1998000",
+                "output-tokens-reset": "2026-10-21T16:35:35Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:35:29Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11996000",
+                "tokens-reset": "2026-10-21T16:35:29Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "max_tokens",
+              "blocks": [
+                "thinking",
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.\",\n  \"user_line_candidate\": \"A tool for landlords when tenants pay late and in random partial chunks nobody can reconcile.\",\n  \"spark_parse\": {\n    \"solution_form\": \"tool\",\n    \"implied_person\": \"landlords\",\n    \"suspected_problem\": \"tenants pay late and in random partial chunks that nobody can reconcile\",\n    \"triggering_situation\": null,\n    \"promised_change\": null,\n    \"domain\": \"tenant payments\",\n    \"solution_is_software\": \"unstated\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. Landlords are named as the role, and the stated problem of late, partial, unreconciled tenant payments is visible enough to enter cleanly.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the landlord and the moment when a tenant's payments first arrived in pieces nobody could match.\",\n    \"hint\": \"A good answer names one landlord, one tenant, and one month where the payments could not be reconciled against the rent owed.\",\n    \"person_label\": \"Landlord\",\n    \"person_placeholder\": \"Dana, landlord of three flats\",\n    \"when_label\": \"When\",\n    \"when_placeholder\": \"the month a tenant paid in three separate transfers\",\n    \"trying_label\": \"What the landlord was trying to do\",\n    \"trying_placeholder\": \"match each payment to the rent owed\",\n    \"happened_label\": \"What actually happened\",\n    \"happened_placeholder\": \"rent arrives in four partial transfers over ten days and the ledger still shows a balance\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"none\",\n    \"named_person\": null",
+              "usage": {
+                "input_tokens": 4840,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 1600,
+                "output_tokens_details": {
+                  "thinking_tokens": 919
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "ERROR 502",
+        "ts": "2026-10-21T16:35:35.811Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M0 request failed: Parse error"
+  }
+}

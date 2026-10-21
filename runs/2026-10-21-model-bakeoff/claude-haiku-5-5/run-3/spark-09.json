@@ -1,0 +1,1114 @@
+{
+  "idx": 9,
+  "cfg": {
+    "raw_spark": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.",
+    "maturity": 0,
+    "grapeName": "Ilse",
+    "grapeRel": "my physio, runs a two-person practice",
+    "answers": {
+      "m2": "Last Tuesday an insurer rejected a claim over a mismatched code, and Ilse spent her lunch break digging out the referral letter and rewriting the claim line by line in the portal.",
+      "m3": "My friend Jordan, who runs a small dental practice, told me last month he started keeping a printed code cheat-sheet after a similar rejection.",
+      "m4": "Priya, a massage therapist I met at a conference, keeps a folder of past approved claims to copy from. For her the pain is the follow-up timing, the coding part is fine.",
+      "m5": "Ilse uses the insurer's own portal to resubmit claims, but it has no way to flag which codes were previously rejected, so the same mismatch can happen twice.",
+      "m6": "\"I don't have a spare afternoon for this every week,\" she said after the Tuesday one.",
+      "m7": "Owen works purely on a cash-pay basis with no insurance billing at all. Claim rejections never happen to him because there are no claims to submit."
+    },
+    "expectHalt": false,
+    "note": "Cap-edge verbose problem. Expect: either M0 compresses suspected_problem under the 300-char field cap and the chain runs, or a downstream call 400s on \"spark_parse.suspected_problem exceeds max length\". The second outcome means legitimate verbose input kills the chain — a sturdiness finding to fix, not user error."
+  },
+  "outcome": "PASS (completed full chain)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8790",
+    "raw_spark": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.",
+    "maturity": 0,
+    "grapeName": "Ilse",
+    "grapeRel": "my physio, runs a two-person practice",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.",
+      "user_line_candidate": "A tool for physiotherapists in small practices to handle insurer claim rejections over mismatched treatment codes when the referral letter, code list and portal rewrite each take a separate step.",
+      "spark_parse": {
+        "solution_form": "tool",
+        "implied_person": "physiotherapists in small practices",
+        "suspected_problem": "every insurer rejection over a mismatched treatment code forces the physio to retrieve the referral letter, cross-check the code list, rewrite the claim line by line, and follow up two weeks later, and no one in a two-person practice has a spare afternoon for this every week",
+        "triggering_situation": "an insurer rejects a claim over a mismatched treatment code",
+        "promised_change": null,
+        "domain": "physiotherapy insurance claims",
+        "solution_is_software": "unstated"
+      },
+      "digestibility": {
+        "state": "cellar_ready",
+        "missing": [],
+        "reason": "Cellar-ready. The role, the recurring rejection trigger, and the stated burden on a two-person practice are all visible and enter cleanly.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": false,
+        "question": null
+      },
+      "m1_setup": {
+        "question": "Name the physiotherapist and the specific claim rejection that starts this Spark.",
+        "hint": "A good answer names one practice owner and one rejected claim, with the code mismatch and the week it happened.",
+        "person_label": "Physiotherapist",
+        "person_placeholder": "Priya, physiotherapist and co-owner of a two-person practice",
+        "when_label": "When the rejection arrived",
+        "when_placeholder": "the Monday after the insurer returned three claims with mismatched codes",
+        "trying_label": "What she was trying to do",
+        "trying_placeholder": "get the week's claims paid without losing the afternoon she had set aside for patients",
+        "happened_label": "What actually happened",
+        "happened_placeholder": "she pulled the referral letter from the notes system, checked the code list in a separate spreadsheet, retyped each line into the portal, and set a reminder for two weeks later"
+      },
+      "person_in_spark": {
+        "grade": "turbid",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": false
+      }
+    },
+    "userLine": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.",
+    "sparkParse": {
+      "solution_form": "tool",
+      "implied_person": "physiotherapists in small practices",
+      "suspected_problem": "every insurer rejection over a mismatched treatment code forces the physio to retrieve the referral letter, cross-check the code list, rewrite the claim line by line, and follow up two weeks later, and no one in a two-person practice has a spare afternoon for this every week",
+      "triggering_situation": "an insurer rejects a claim over a mismatched treatment code",
+      "promised_change": null,
+      "domain": "physiotherapy insurance claims",
+      "solution_is_software": "unstated"
+    },
+    "domain": "physiotherapy insurance claims",
+    "gapInPlay": false,
+    "problem": {
+      "text": "every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time",
+      "source": "user_stated",
+      "status": "confirmed"
+    },
+    "phaseAOutcome": "stated",
+    "answers": {
+      "M1": "my physio, runs a two-person practice",
+      "M2": "Last Tuesday an insurer rejected a claim over a mismatched code, and Ilse spent her lunch break digging out the referral letter and rewriting the claim line by line in the portal.",
+      "M3": "My friend Jordan, who runs a small dental practice, told me last month he started keeping a printed code cheat-sheet after a similar rejection.",
+      "M4": "Priya, a massage therapist I met at a conference, keeps a folder of past approved claims to copy from. For her the pain is the follow-up timing, the coding part is fine.",
+      "M5": "Ilse uses the insurer's own portal to resubmit claims, but it has no way to flag which codes were previously rejected, so the same mismatch can happen twice.",
+      "M6": "\"I don't have a spare afternoon for this every week,\" she said after the Tuesday one.",
+      "M7": "Owen works purely on a cash-pay basis with no insurance billing at all. Claim rejections never happen to him because there are no claims to submit."
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.",
+          "user_line_candidate": "A tool for physiotherapists in small practices to handle insurer claim rejections over mismatched treatment codes when the referral letter, code list and portal rewrite each take a separate step.",
+          "spark_parse": {
+            "solution_form": "tool",
+            "implied_person": "physiotherapists in small practices",
+            "suspected_problem": "every insurer rejection over a mismatched treatment code forces the physio to retrieve the referral letter, cross-check the code list, rewrite the claim line by line, and follow up two weeks later, and no one in a two-person practice has a spare afternoon for this every week",
+            "triggering_situation": "an insurer rejects a claim over a mismatched treatment code",
+            "promised_change": null,
+            "domain": "physiotherapy insurance claims",
+            "solution_is_software": "unstated"
+          },
+          "digestibility": {
+            "state": "cellar_ready",
+            "missing": [],
+            "reason": "Cellar-ready. The role, the recurring rejection trigger, and the stated burden on a two-person practice are all visible and enter cleanly.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": false,
+            "question": null
+          },
+          "m1_setup": {
+            "question": "Name the physiotherapist and the specific claim rejection that starts this Spark.",
+            "hint": "A good answer names one practice owner and one rejected claim, with the code mismatch and the week it happened.",
+            "person_label": "Physiotherapist",
+            "person_placeholder": "Priya, physiotherapist and co-owner of a two-person practice",
+            "when_label": "When the rejection arrived",
+            "when_placeholder": "the Monday after the insurer returned three claims with mismatched codes",
+            "trying_label": "What she was trying to do",
+            "trying_placeholder": "get the week's claims paid without losing the afternoon she had set aside for patients",
+            "happened_label": "What actually happened",
+            "happened_placeholder": "she pulled the referral letter from the notes system, checked the code list in a separate spreadsheet, retyped each line into the portal, and set a reminder for two weeks later"
+          },
+          "person_in_spark": {
+            "grade": "turbid",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:49:49Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:49:53Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:49Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T16:49:49Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.\",\n  \"user_line_candidate\": \"A tool for physiotherapists in small practices to handle insurer claim rejections over mismatched treatment codes when the referral letter, code list and portal rewrite each take a separate step.\",\n  \"spark_parse\": {\n    \"solution_form\": \"tool\",\n    \"implied_person\": \"physiotherapists in small practices\",\n    \"suspected_problem\": \"every insurer rejection over a mismatched treatment code forces the physio to retrieve the referral letter, cross-check the code list, rewrite the claim line by line, and follow up two weeks later, and no one in a two-person practice has a spare afternoon for this every week\",\n    \"triggering_situation\": \"an insurer rejects a claim over a mismatched treatment code\",\n    \"promised_change\": null,\n    \"domain\": \"physiotherapy insurance claims\",\n    \"solution_is_software\": \"unstated\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The role, the recurring rejection trigger, and the stated burden on a two-person practice are all visible and enter cleanly.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the physiotherapist and the specific claim rejection that starts this Spark.\",\n    \"hint\": \"A good answer names one practice owner and one rejected claim, with the code mismatch and the week it happened.\",\n    \"person_label\": \"Physiotherapist\",\n    \"person_placeholder\": \"Priya, physiotherapist and co-owner of a two-person practice\",\n    \"when_label\": \"When the rejection arrived\",\n    \"when_placeholder\": \"the Monday after the insurer returned three claims with mismatched codes\",\n    \"trying_label\": \"What she was trying to do\",\n    \"trying_placeholder\": \"get the week's claims paid without losing the afternoon she had set aside for patients\",\n    \"happened_label\": \"What actually happened\",\n    \"happened_placeholder\": \"she pulled the referral letter from the notes system, checked the code list in a separate spreadsheet, retyped each line into the portal, and set a reminder for two weeks later\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"turbid\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}",
+              "usage": {
+                "input_tokens": 4934,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 966,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "digestibility=cellar_ready · in_scope=true · followup_needed=false",
+        "ts": "2026-10-21T16:49:53.095Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/m1",
+        "kind": "main",
+        "request": {
+          "spark_summary": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.",
+          "person_name": "Ilse",
+          "relationship": "my physio, runs a two-person practice",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "settled",
+          "grape": {
+            "state": "settled",
+            "named_person": "Ilse",
+            "person_kind": "named_individual",
+            "temporal_grounding": "present_specific"
+          },
+          "observation": {
+            "surface_text": "A named individual is identified: Ilse. The stated relationship is physio who runs a two-person practice, which is a real tie.",
+            "anchor_span": "my physio, runs a two-person practice"
+          },
+          "next_question": {
+            "should_advance": false,
+            "framing": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "anchor_verified": true,
+            "visible_style_violations_cleaned": []
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:54Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:54Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:53Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:54Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"schema_version\":\"m1.v1\",\"mechanism\":\"M1\",\"outcome\":\"settled\",\"grape\":{\"state\":\"settled\",\"named_person\":\"Ilse\",\"person_kind\":\"named_individual\",\"temporal_grounding\":\"present_specific\"},\"observation\":{\"surface_text\":\"A named individual is identified: Ilse. The stated relationship is physio who runs a two-person practice, which is a real tie.\",\"anchor_span\":\"my physio, runs a two-person practice\"},\"next_question\":{\"should_advance\":false,\"framing\":null}}",
+              "usage": {
+                "input_tokens": 1227,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 174,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=n/a · swirl=no · changed=[Grape]",
+        "ts": "2026-10-21T16:49:54.529Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (phase A)",
+        "kind": "main",
+        "request": {
+          "phase": "problem",
+          "raw_spark": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.",
+          "user_line": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.",
+          "spark_parse": {
+            "solution_form": "tool",
+            "implied_person": "physiotherapists in small practices",
+            "suspected_problem": "every insurer rejection over a mismatched treatment code forces the physio to retrieve the referral letter, cross-check the code list, rewrite the claim line by line, and follow up two weeks later, and no one in a two-person practice has a spare afternoon for this every week",
+            "triggering_situation": "an insurer rejects a claim over a mismatched treatment code",
+            "promised_change": null,
+            "domain": "physiotherapy insurance claims",
+            "solution_is_software": "unstated"
+          },
+          "grape_name": "Ilse",
+          "grape_relationship": "my physio, runs a two-person practice",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m2.v2",
+          "mechanism": "M2",
+          "phase": "problem",
+          "outcome": "stated",
+          "problem": {
+            "text": "every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "question": "Walk me through the last specific time Ilse had a claim rejected over a mismatched treatment code, step by step, from finding the referral letter to following up two weeks later.",
+          "recovered_problem": "every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time",
+          "needs_confirmation": false,
+          "server_checks": {
+            "schema_valid": true,
+            "model_outcome": "stated",
+            "outcome": "stated",
+            "downgrades": [],
+            "unsupported_words": [],
+            "visible_style_violations_cleaned": [],
+            "m2_question_repaired": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:55Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:56Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:54Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:55Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m2.v2\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"problem\",\n  \"outcome\": \"stated\",\n  \"stated_span\": \"every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time\",\n  \"problem\": null,\n  \"gap_in_play\": false,\n  \"question\": \"Walk me through the last specific time Ilse had a claim rejected over a mismatched treatment code, step by step, from finding the referral letter to following up two weeks later.\"\n}\n```",
+              "usage": {
+                "input_tokens": 1921,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 238,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "outcome=stated · problem=\"every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time\" (user_stated) · gap_in_play=false",
+        "ts": "2026-10-21T16:49:55.964Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2",
+        "kind": "main",
+        "request": {
+          "user_line": "A tool for physiotherapists in small practices because every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time, and nobody in a two-person practice has a spare afternoon for that every single week.",
+          "grape_name": "Ilse",
+          "grape_relationship": "my physio, runs a two-person practice",
+          "maturity_class": 0,
+          "problem": {
+            "text": "every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "user_answer": "Last Tuesday an insurer rejected a claim over a mismatched code, and Ilse spent her lunch break digging out the referral letter and rewriting the claim line by line in the portal."
+        },
+        "response": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "settled",
+          "tell": {
+            "state": "settled",
+            "anchor_span": "Ilse spent her lunch break digging out the referral letter and rewriting the claim line by line in the portal."
+          },
+          "vintage": {
+            "state": "settled",
+            "anchor_span": "Last Tuesday an insurer rejected a claim over a mismatched code"
+          },
+          "observation": {
+            "surface_text": "The answer names observable actions: Ilse dug out the referral letter and rewrote the claim line by line in the portal. The moment is anchored to last Tuesday, a single rejected claim over a mismatched code.",
+            "anchor_span": "Last Tuesday an insurer rejected a claim over a mismatched code, and Ilse spent her lunch break digging out the referral letter and rewriting the claim line by line in the portal."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": true,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:57Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:58Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:56Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:57Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m2.v1\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"friction\",\n  \"state\": \"settled\",\n  \"tell\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Ilse spent her lunch break digging out the referral letter and rewriting the claim line by line in the portal.\"\n  },\n  \"vintage\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Last Tuesday an insurer rejected a claim over a mismatched code\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names observable actions: Ilse dug out the referral letter and rewrote the claim line by line in the portal. The moment is anchored to last Tuesday, a single rejected claim over a mismatched code.\",\n    \"anchor_span\": \"Last Tuesday an insurer rejected a claim over a mismatched code, and Ilse spent her lunch break digging out the referral letter and rewriting the claim line by line in the portal.\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 2071,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 339,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Tell, Vintage]",
+        "ts": "2026-10-21T16:49:58.016Z"
+      },
+      {
+        "mech": "M3",
+        "endpoint": "/m3",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Ilse",
+          "grape_relationship": "my physio, runs a two-person practice",
+          "maturity_class": 0,
+          "user_answer": "My friend Jordan, who runs a small dental practice, told me last month he started keeping a printed code cheat-sheet after a similar rejection."
+        },
+        "response": {
+          "schema_version": "m3.v1",
+          "mechanism": "M3",
+          "state": "settled",
+          "echo": {
+            "state": "settled",
+            "anchor_span": "My friend Jordan, who runs a small dental practice, told me last month he started keeping a printed code cheat-sheet after a similar rejection."
+          },
+          "observation": {
+            "surface_text": "The answer names Jordan, a separate dental practitioner distinct from the grape Ilse and the founder, who reports keeping a printed code cheat-sheet after a similar claim rejection.",
+            "anchor_span": "he started keeping a printed code cheat-sheet after a similar rejection"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:59Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:50:00Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:58Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:59Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m3.v1\",\n  \"mechanism\": \"M3\",\n  \"state\": \"settled\",\n  \"echo\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"My friend Jordan, who runs a small dental practice, told me last month he started keeping a printed code cheat-sheet after a similar rejection.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names Jordan, a separate dental practitioner distinct from the grape Ilse and the founder, who reports keeping a printed code cheat-sheet after a similar claim rejection.\",\n    \"anchor_span\": \"he started keeping a printed code cheat-sheet after a similar rejection\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 1845,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 242,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Echo]",
+        "ts": "2026-10-21T16:50:00.258Z"
+      },
+      {
+        "mech": "M4",
+        "endpoint": "/m4",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Ilse",
+          "grape_relationship": "my physio, runs a two-person practice",
+          "maturity_class": 0,
+          "prior_echo_context": "My friend Jordan, who runs a small dental practice, told me last month he started keeping a printed code cheat-sheet after a similar rejection.",
+          "user_answer": "Priya, a massage therapist I met at a conference, keeps a folder of past approved claims to copy from. For her the pain is the follow-up timing, the coding part is fine."
+        },
+        "response": {
+          "schema_version": "m4.v1",
+          "mechanism": "M4",
+          "state": "settled",
+          "echo": {
+            "state": "settled",
+            "anchor_span": "Priya, a massage therapist I met at a conference, keeps a folder of past approved claims to copy from."
+          },
+          "contrast": {
+            "is_different_kind": "true",
+            "same_or_different": "different",
+            "anchor_span": "For her the pain is the follow-up timing, the coding part is fine."
+          },
+          "observation": {
+            "surface_text": "A separate person, Priya, a massage therapist, keeps a folder of past approved claims to copy from, and reports the pain as follow-up timing rather than coding.",
+            "anchor_span": "Priya, a massage therapist I met at a conference, keeps a folder of past approved claims to copy from."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:50:01Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:50:02Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:50:00Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:50:01Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m4.v1\",\n  \"mechanism\": \"M4\",\n  \"state\": \"settled\",\n  \"echo\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Priya, a massage therapist I met at a conference, keeps a folder of past approved claims to copy from.\"\n  },\n  \"contrast\": {\n    \"is_different_kind\": \"true\",\n    \"same_or_different\": \"different\",\n    \"anchor_span\": \"For her the pain is the follow-up timing, the coding part is fine.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"A separate person, Priya, a massage therapist, keeps a folder of past approved claims to copy from, and reports the pain as follow-up timing rather than coding.\",\n    \"anchor_span\": \"Priya, a massage therapist I met at a conference, keeps a folder of past approved claims to copy from.\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 2322,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 299,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[none]",
+        "ts": "2026-10-21T16:50:01.975Z"
+      },
+      {
+        "mech": "M5",
+        "endpoint": "/m5",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Ilse",
+          "grape_relationship": "my physio, runs a two-person practice",
+          "maturity_class": 0,
+          "user_answer": "Ilse uses the insurer's own portal to resubmit claims, but it has no way to flag which codes were previously rejected, so the same mismatch can happen twice."
+        },
+        "response": {
+          "schema_version": "m5.v1",
+          "mechanism": "M5",
+          "state": "settled",
+          "gap": {
+            "state": "settled",
+            "anchor_span": "Ilse uses the insurer's own portal to resubmit claims, but it has no way to flag which codes were previously rejected, so the same mismatch can happen twice."
+          },
+          "observation": {
+            "surface_text": "The answer names an existing solution: the insurer's own portal used for resubmission. It states a precise failure point: the portal cannot flag previously rejected codes, so the same mismatch can recur.",
+            "anchor_span": "it has no way to flag which codes were previously rejected, so the same mismatch can happen twice"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:50:02Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:50:03Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:50:02Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:50:02Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"schema_version\":\"m5.v1\",\"mechanism\":\"M5\",\"state\":\"settled\",\"gap\":{\"state\":\"settled\",\"anchor_span\":\"Ilse uses the insurer's own portal to resubmit claims, but it has no way to flag which codes were previously rejected, so the same mismatch can happen twice.\"},\"observation\":{\"surface_text\":\"The answer names an existing solution: the insurer's own portal used for resubmission. It states a precise failure point: the portal cannot flag previously rejected codes, so the same mismatch can recur.\",\"anchor_span\":\"it has no way to flag which codes were previously rejected, so the same mismatch can happen twice\"},\"substitution_detected\":false}",
+              "usage": {
+                "input_tokens": 1791,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 225,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Gap]",
+        "ts": "2026-10-21T16:50:03.290Z"
+      },
+      {
+        "mech": "M6",
+        "endpoint": "/m6",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Ilse",
+          "grape_relationship": "my physio, runs a two-person practice",
+          "maturity_class": 0,
+          "words_source": "real",
+          "user_answer": "\"I don't have a spare afternoon for this every week,\" she said after the Tuesday one."
+        },
+        "response": {
+          "schema_version": "m6.v1",
+          "mechanism": "M6",
+          "state": "settled",
+          "words": {
+            "state": "settled",
+            "anchor_span": "\"I don't have a spare afternoon for this every week,\" she said after the Tuesday one."
+          },
+          "tell": {
+            "state": "clearing",
+            "anchor_span": "\"I don't have a spare afternoon for this every week,\" she said after the Tuesday one."
+          },
+          "echo": {
+            "state": "turbid",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "The grape's own words are present as a direct quote from a real exchange, so the Words bar is met. The words state a complaint about time lost each week but describe no specific filmable action, so Tell sits at clearing.",
+            "anchor_span": "\"I don't have a spare afternoon for this every week,\" she said after the Tuesday one."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:50:04Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:50:05Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:50:03Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:50:04Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"schema_version\":\"m6.v1\",\"mechanism\":\"M6\",\"state\":\"settled\",\"words\":{\"state\":\"settled\",\"anchor_span\":\"\\\"I don't have a spare afternoon for this every week,\\\" she said after the Tuesday one.\"},\"tell\":{\"state\":\"clearing\",\"anchor_span\":\"\\\"I don't have a spare afternoon for this every week,\\\" she said after the Tuesday one.\"},\"echo\":{\"state\":\"turbid\",\"anchor_span\":null},\"observation\":{\"surface_text\":\"The grape's own words are present as a direct quote from a real exchange, so the Words bar is met. The words state a complaint about time lost each week but describe no specific filmable action, so Tell sits at clearing.\",\"anchor_span\":\"\\\"I don't have a spare afternoon for this every week,\\\" she said after the Tuesday one.\"},\"substitution_detected\":false}",
+              "usage": {
+                "input_tokens": 2364,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 280,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[none]",
+        "ts": "2026-10-21T16:50:05.479Z"
+      },
+      {
+        "mech": "M7",
+        "endpoint": "/m7",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "every time an insurer rejects a claim over a mismatched treatment code the physio has to dig the original referral letter out of one system, cross-check the code list in a second system, rewrite the claim line by line in the insurer portal, and then remember to follow up two weeks later to see if it went through this time",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Ilse",
+          "grape_relationship": "my physio, runs a two-person practice",
+          "maturity_class": 0,
+          "user_answer": "Owen works purely on a cash-pay basis with no insurance billing at all. Claim rejections never happen to him because there are no claims to submit."
+        },
+        "response": {
+          "schema_version": "m7.v1",
+          "mechanism": "M7",
+          "state": "settled",
+          "limit": {
+            "state": "settled",
+            "anchor_span": "Owen works purely on a cash-pay basis with no insurance billing at all."
+          },
+          "observation": {
+            "surface_text": "The answer names a bounded exclusion, Owen, a cash-pay client with no insurance billing. The reason is present and specific: without claims to submit, claim rejections cannot occur for him.",
+            "anchor_span": "Owen works purely on a cash-pay basis with no insurance billing at all."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:50:06Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:50:06Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:50:05Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:50:06Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"schema_version\":\"m7.v1\",\"mechanism\":\"M7\",\"state\":\"settled\",\"limit\":{\"state\":\"settled\",\"anchor_span\":\"Owen works purely on a cash-pay basis with no insurance billing at all.\"},\"observation\":{\"surface_text\":\"The answer names a bounded exclusion, Owen, a cash-pay client with no insurance billing. The reason is present and specific: without claims to submit, claim rejections cannot occur for him.\",\"anchor_span\":\"Owen works purely on a cash-pay basis with no insurance billing at all.\"},\"substitution_detected\":false}",
+              "usage": {
+                "input_tokens": 1657,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 192,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Limit]",
+        "ts": "2026-10-21T16:50:06.622Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [
+      "M6 offered clearing for Tell, held at floor settled (opportunistic grading correctly did not lower it).",
+      "M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it)."
+    ],
+    "halted": false,
+    "elements": {
+      "grape": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M1",
+        "rawGrades": [
+          {
+            "mech": "M1",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "tell": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "clearing"
+          }
+        ]
+      },
+      "vintage": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "gap": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M5",
+        "rawGrades": [
+          {
+            "mech": "M5",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "echo": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M3",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M4",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "turbid"
+          }
+        ]
+      },
+      "limit": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M7",
+        "rawGrades": [
+          {
+            "mech": "M7",
+            "offeredState": "settled"
+          }
+        ]
+      }
+    }
+  }
+}

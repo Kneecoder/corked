@@ -1,0 +1,289 @@
+{
+  "idx": 4,
+  "cfg": {
+    "raw_spark": "A sourdough bakery subscription for my street.",
+    "maturity": 1,
+    "grapeName": "",
+    "grapeRel": "",
+    "expectHalt": true,
+    "note": "Scope gate, explicit non-software. Expect: out_of_scope, scope_gated true, scope reason present, no followup, no downstream calls. Clean halt."
+  },
+  "outcome": "PASS (halted as expected: M1 request failed.)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8790",
+    "raw_spark": "A sourdough bakery subscription for my street.",
+    "maturity": 1,
+    "grapeName": "",
+    "grapeRel": "",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "A sourdough bakery subscription for my street.",
+      "user_line_candidate": "A sourdough bakery subscription for my street.",
+      "spark_parse": {
+        "solution_form": "subscription",
+        "implied_person": "the speaker's street residents",
+        "suspected_problem": null,
+        "triggering_situation": null,
+        "promised_change": null,
+        "domain": "sourdough bread from a bakery",
+        "solution_is_software": "unstated"
+      },
+      "digestibility": {
+        "state": "bottleable_cloudy",
+        "missing": [
+          "suspected_problem",
+          "triggering_situation"
+        ],
+        "reason": "Bottleable, cloudy. The form, the sourdough bakery, and the street are visible, but no problem is stated. That is what the cellar will age.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": true,
+        "question": "What problem are people on your street having with getting sourdough bread?"
+      },
+      "m1_setup": {
+        "question": "Name the specific resident on your street and the moment they run into the bread problem this subscription would address.",
+        "hint": "A good answer names one household and a real, observable moment when they wanted sourdough and could not get it the way they wanted.",
+        "person_label": "Resident",
+        "person_placeholder": "Dana, neighbour two doors down",
+        "when_label": "When",
+        "when_placeholder": "every Saturday morning before the farmers market closes",
+        "trying_label": "Trying to",
+        "trying_placeholder": null,
+        "happened_label": "What happened",
+        "happened_placeholder": null
+      },
+      "person_in_spark": {
+        "grade": "turbid",
+        "named_person": null,
+        "relationship_tie": "my street"
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": true
+      }
+    },
+    "userLine": "A sourdough bakery subscription for my street.",
+    "sparkParse": {
+      "solution_form": "subscription",
+      "implied_person": "the speaker's street residents",
+      "suspected_problem": null,
+      "triggering_situation": null,
+      "promised_change": null,
+      "domain": "sourdough bread from a bakery",
+      "solution_is_software": "unstated"
+    },
+    "domain": "sourdough bread from a bakery",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {
+      "M1": ""
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A sourdough bakery subscription for my street."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "A sourdough bakery subscription for my street.",
+          "user_line_candidate": "A sourdough bakery subscription for my street.",
+          "spark_parse": {
+            "solution_form": "subscription",
+            "implied_person": "the speaker's street residents",
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "sourdough bread from a bakery",
+            "solution_is_software": "unstated"
+          },
+          "digestibility": {
+            "state": "bottleable_cloudy",
+            "missing": [
+              "suspected_problem",
+              "triggering_situation"
+            ],
+            "reason": "Bottleable, cloudy. The form, the sourdough bakery, and the street are visible, but no problem is stated. That is what the cellar will age.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": true,
+            "question": "What problem are people on your street having with getting sourdough bread?"
+          },
+          "m1_setup": {
+            "question": "Name the specific resident on your street and the moment they run into the bread problem this subscription would address.",
+            "hint": "A good answer names one household and a real, observable moment when they wanted sourdough and could not get it the way they wanted.",
+            "person_label": "Resident",
+            "person_placeholder": "Dana, neighbour two doors down",
+            "when_label": "When",
+            "when_placeholder": "every Saturday morning before the farmers market closes",
+            "trying_label": "Trying to",
+            "trying_placeholder": null,
+            "happened_label": "What happened",
+            "happened_placeholder": null
+          },
+          "person_in_spark": {
+            "grade": "turbid",
+            "named_person": null,
+            "relationship_tie": "my street"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:49:09Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:49:11Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:08Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T16:49:09Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"schema_version\":\"m0.v1\",\"mechanism\":\"M0\",\"raw_spark\":\"A sourdough bakery subscription for my street.\",\"user_line_candidate\":\"A sourdough bakery subscription for my street.\",\"spark_parse\":{\"solution_form\":\"subscription\",\"implied_person\":\"the speaker's street residents\",\"suspected_problem\":null,\"triggering_situation\":null,\"promised_change\":null,\"domain\":\"sourdough bread from a bakery\",\"solution_is_software\":\"unstated\"},\"digestibility\":{\"state\":\"bottleable_cloudy\",\"missing\":[\"suspected_problem\",\"triggering_situation\"],\"reason\":\"Bottleable, cloudy. The form, the sourdough bakery, and the street are visible, but no problem is stated. That is what the cellar will age.\",\"can_seal\":true,\"requires_followup_before_seal\":false},\"followup\":{\"needed\":true,\"question\":\"What problem are people on your street having with getting sourdough bread?\"},\"m1_setup\":{\"question\":\"Name the specific resident on your street and the moment they run into the bread problem this subscription would address.\",\"hint\":\"A good answer names one household and a real, observable moment when they wanted sourdough and could not get it the way they wanted.\",\"person_label\":\"Resident\",\"person_placeholder\":\"Dana, neighbour two doors down\",\"when_label\":\"When\",\"when_placeholder\":\"every Saturday morning before the farmers market closes\",\"trying_label\":\"Trying to\",\"trying_placeholder\":\"get a loaf for the weekend without leaving the street\",\"happened_label\":\"What happened\",\"happened_placeholder\":\"they walk to the shop, find it sold out, and buy a supermarket loaf instead\"},\"person_in_spark\":{\"grade\":\"turbid\",\"named_person\":null,\"relationship_tie\":\"my street\"}}",
+              "usage": {
+                "input_tokens": 4817,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 581,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "digestibility=bottleable_cloudy · in_scope=true · followup_needed=true",
+        "ts": "2026-10-21T16:49:11.119Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/m1",
+        "kind": "main",
+        "request": {
+          "spark_summary": "A sourdough bakery subscription for my street.",
+          "person_name": "",
+          "relationship": "",
+          "maturity_class": 1
+        },
+        "response": {
+          "error": "Missing required fields: spark_summary and person_name or relationship"
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [],
+          "adapter": []
+        },
+        "summary": "ERROR 400",
+        "ts": "2026-10-21T16:49:11.121Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M1 request failed."
+  }
+}

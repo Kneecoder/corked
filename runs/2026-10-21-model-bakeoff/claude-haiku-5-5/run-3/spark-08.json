@@ -1,0 +1,1118 @@
+{
+  "idx": 8,
+  "cfg": {
+    "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+    "maturity": 0,
+    "grapeName": "Bram",
+    "grapeRel": "my uncle, owns four rental flats",
+    "answers": {
+      "m2": "Last month a tenant sent three separate partial payments across two weeks, and Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand.",
+      "m3": "My neighbor Tom, who rents out a duplex, told me last month he started asking for one lump sum only after a similar reconciling headache.",
+      "m4": "Priya, who runs a small storage unit business, keeps a manual ledger for partial payments too. For her the pain is chasing the balance down, the reconciling part is fine.",
+      "m5": "Bram uses a shared spreadsheet to track rent, but it has no way to flag a partial payment against the wrong month, so mismatches pile up.",
+      "m6": "\"I just want one number a month, not a puzzle,\" he said after the Sunday one.",
+      "m7": "Owen only rents to corporate tenants on annual leases paid in full upfront. Partial payments never happen to him because the whole year is billed at once."
+    },
+    "expectHalt": false,
+    "note": "Sanitizer mutation probe — proven-bug regression. Record user_line_candidate verbatim. cleanVisibleText strips \"not just\", which can turn \"do not just pay late\" into \"do pay late\" — a meaning inversion. If the line mutates, the known sanitizer bug has regressed into user-facing text. If M0 rephrases to avoid the construction while keeping both facts (late AND partial), that is a pass."
+  },
+  "outcome": "PASS (completed full chain)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8790",
+    "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+    "maturity": 0,
+    "grapeName": "Bram",
+    "grapeRel": "my uncle, owns four rental flats",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+      "user_line_candidate": "A tool for landlords to reconcile tenant payments that arrive late and in random partial amounts.",
+      "spark_parse": {
+        "solution_form": "tool",
+        "implied_person": "landlords",
+        "suspected_problem": "tenants pay in random partial chunks that nobody can reconcile",
+        "triggering_situation": null,
+        "promised_change": null,
+        "domain": "rent payments",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "cellar_ready",
+        "missing": [],
+        "reason": "Cellar-ready. The landlord role and the stated problem of unreconcilable partial payments are both visible and enter cleanly.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": false,
+        "question": null
+      },
+      "m1_setup": {
+        "question": "Name the specific landlord and the moment they found a payment they could not reconcile.",
+        "hint": "A good answer names one landlord and one tenant payment that did not match what was owed, with the amounts involved.",
+        "person_label": "Landlord",
+        "person_placeholder": "Dana, owner of three rental units",
+        "when_label": "When it happened",
+        "when_placeholder": "the month the third partial payment arrived for the same invoice",
+        "trying_label": "What they were trying to do",
+        "trying_placeholder": "close out the month's rent ledger",
+        "happened_label": "What actually happened",
+        "happened_placeholder": "three transfers of different sizes arrived over ten days and none matched a full month's rent"
+      },
+      "person_in_spark": {
+        "grade": "turbid",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": false
+      }
+    },
+    "userLine": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+    "sparkParse": {
+      "solution_form": "tool",
+      "implied_person": "landlords",
+      "suspected_problem": "tenants pay in random partial chunks that nobody can reconcile",
+      "triggering_situation": null,
+      "promised_change": null,
+      "domain": "rent payments",
+      "solution_is_software": "software"
+    },
+    "domain": "rent payments",
+    "gapInPlay": false,
+    "problem": {
+      "text": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
+      "source": "user_stated",
+      "status": "confirmed"
+    },
+    "phaseAOutcome": "stated",
+    "answers": {
+      "M1": "my uncle, owns four rental flats",
+      "M2": "Last month a tenant sent three separate partial payments across two weeks, and Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand.",
+      "M3": "My neighbor Tom, who rents out a duplex, told me last month he started asking for one lump sum only after a similar reconciling headache.",
+      "M4": "Priya, who runs a small storage unit business, keeps a manual ledger for partial payments too. For her the pain is chasing the balance down, the reconciling part is fine.",
+      "M5": "Bram uses a shared spreadsheet to track rent, but it has no way to flag a partial payment against the wrong month, so mismatches pile up.",
+      "M6": "\"I just want one number a month, not a puzzle,\" he said after the Sunday one.",
+      "M7": "Owen only rents to corporate tenants on annual leases paid in full upfront. Partial payments never happen to him because the whole year is billed at once."
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+          "user_line_candidate": "A tool for landlords to reconcile tenant payments that arrive late and in random partial amounts.",
+          "spark_parse": {
+            "solution_form": "tool",
+            "implied_person": "landlords",
+            "suspected_problem": "tenants pay in random partial chunks that nobody can reconcile",
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "rent payments",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "cellar_ready",
+            "missing": [],
+            "reason": "Cellar-ready. The landlord role and the stated problem of unreconcilable partial payments are both visible and enter cleanly.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": false,
+            "question": null
+          },
+          "m1_setup": {
+            "question": "Name the specific landlord and the moment they found a payment they could not reconcile.",
+            "hint": "A good answer names one landlord and one tenant payment that did not match what was owed, with the amounts involved.",
+            "person_label": "Landlord",
+            "person_placeholder": "Dana, owner of three rental units",
+            "when_label": "When it happened",
+            "when_placeholder": "the month the third partial payment arrived for the same invoice",
+            "trying_label": "What they were trying to do",
+            "trying_placeholder": "close out the month's rent ledger",
+            "happened_label": "What actually happened",
+            "happened_placeholder": "three transfers of different sizes arrived over ten days and none matched a full month's rent"
+          },
+          "person_in_spark": {
+            "grade": "turbid",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:49:34Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:49:37Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:34Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T16:49:34Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.\",\n  \"user_line_candidate\": \"A tool for landlords to reconcile tenant payments that arrive late and in random partial amounts.\",\n  \"spark_parse\": {\n    \"solution_form\": \"tool\",\n    \"implied_person\": \"landlords\",\n    \"suspected_problem\": \"tenants pay in random partial chunks that nobody can reconcile\",\n    \"triggering_situation\": null,\n    \"promised_change\": null,\n    \"domain\": \"rent payments\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The landlord role and the stated problem of unreconcilable partial payments are both visible and enter cleanly.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the specific landlord and the moment they found a payment they could not reconcile.\",\n    \"hint\": \"A good answer names one landlord and one tenant payment that did not match what was owed, with the amounts involved.\",\n    \"person_label\": \"Landlord\",\n    \"person_placeholder\": \"Dana, owner of three rental units\",\n    \"when_label\": \"When it happened\",\n    \"when_placeholder\": \"the month the third partial payment arrived for the same invoice\",\n    \"trying_label\": \"What they were trying to do\",\n    \"trying_placeholder\": \"close out the month's rent ledger\",\n    \"happened_label\": \"What actually happened\",\n    \"happened_placeholder\": \"three transfers of different sizes arrived over ten days and none matched a full month's rent\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"turbid\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}",
+              "usage": {
+                "input_tokens": 4839,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 677,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "digestibility=cellar_ready · in_scope=true · followup_needed=false",
+        "ts": "2026-10-21T16:49:36.999Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/m1",
+        "kind": "main",
+        "request": {
+          "spark_summary": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+          "person_name": "Bram",
+          "relationship": "my uncle, owns four rental flats",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "settled",
+          "grape": {
+            "state": "settled",
+            "named_person": "Bram",
+            "person_kind": "named_individual",
+            "temporal_grounding": "present_general"
+          },
+          "observation": {
+            "surface_text": "A named individual is present: Bram, the user's uncle. The stated relationship is real and specific, as he owns four rental flats.",
+            "anchor_span": "my uncle, owns four rental flats"
+          },
+          "next_question": {
+            "should_advance": false,
+            "framing": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "anchor_verified": true,
+            "visible_style_violations_cleaned": []
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:38Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:39Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:37Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:38Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m1.v1\",\n  \"mechanism\": \"M1\",\n  \"outcome\": \"settled\",\n  \"grape\": {\n    \"state\": \"settled\",\n    \"named_person\": \"Bram\",\n    \"person_kind\": \"named_individual\",\n    \"temporal_grounding\": \"present_general\"\n  },\n  \"observation\": {\n    \"surface_text\": \"A named individual is present: Bram, the user's uncle. The stated relationship is real and specific, as he owns four rental flats.\",\n    \"anchor_span\": \"my uncle, owns four rental flats\"\n  },\n  \"next_question\": {\n    \"should_advance\": false,\n    \"framing\": null\n  }\n}",
+              "usage": {
+                "input_tokens": 1131,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 215,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=n/a · swirl=no · changed=[Grape]",
+        "ts": "2026-10-21T16:49:38.970Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (phase A)",
+        "kind": "main",
+        "request": {
+          "phase": "problem",
+          "raw_spark": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+          "user_line": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+          "spark_parse": {
+            "solution_form": "tool",
+            "implied_person": "landlords",
+            "suspected_problem": "tenants pay in random partial chunks that nobody can reconcile",
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "rent payments",
+            "solution_is_software": "software"
+          },
+          "grape_name": "Bram",
+          "grape_relationship": "my uncle, owns four rental flats",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m2.v2",
+          "mechanism": "M2",
+          "phase": "problem",
+          "outcome": "stated",
+          "problem": {
+            "text": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "question": "Bram, walk me through the last specific time a tenant paid in partial chunks and what you actually did to reconcile it against the rent owed.",
+          "recovered_problem": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
+          "needs_confirmation": false,
+          "server_checks": {
+            "schema_valid": true,
+            "model_outcome": "stated",
+            "outcome": "stated",
+            "downgrades": [],
+            "unsupported_words": [],
+            "visible_style_violations_cleaned": [],
+            "m2_question_repaired": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:39Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:40Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:39Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:39Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"schema_version\": \"m2.v2\", \"mechanism\": \"M2\", \"phase\": \"problem\", \"outcome\": \"stated\", \"stated_span\": \"tenants do not just pay late, they pay in random partial chunks nobody can reconcile\", \"problem\": null, \"gap_in_play\": false, \"question\": \"Bram, walk me through the last specific time a tenant paid in partial chunks and what you actually did to reconcile it against the rent owed.\"}",
+              "usage": {
+                "input_tokens": 1634,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 144,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "outcome=stated · problem=\"tenants do not just pay late, they pay in random partial chunks nobody can reconcile\" (user_stated) · gap_in_play=false",
+        "ts": "2026-10-21T16:49:39.950Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2",
+        "kind": "main",
+        "request": {
+          "user_line": "A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.",
+          "grape_name": "Bram",
+          "grape_relationship": "my uncle, owns four rental flats",
+          "maturity_class": 0,
+          "problem": {
+            "text": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "user_answer": "Last month a tenant sent three separate partial payments across two weeks, and Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand."
+        },
+        "response": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "settled",
+          "tell": {
+            "state": "settled",
+            "anchor_span": "Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand."
+          },
+          "vintage": {
+            "state": "settled",
+            "anchor_span": "Last month a tenant sent three separate partial payments across two weeks"
+          },
+          "observation": {
+            "surface_text": "Bram matched bank transfers to the lease spreadsheet by hand on a Sunday night, an observable action. The instance is anchored to last month, when a tenant sent three separate partial payments across two weeks.",
+            "anchor_span": "Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": true,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:40Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:41Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:40Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:40Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m2.v1\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"friction\",\n  \"state\": \"settled\",\n  \"tell\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand.\"\n  },\n  \"vintage\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Last month a tenant sent three separate partial payments across two weeks\"\n  },\n  \"observation\": {\n    \"surface_text\": \"Bram matched bank transfers to the lease spreadsheet by hand on a Sunday night, an observable action. The instance is anchored to last month, when a tenant sent three separate partial payments across two weeks.\",\n    \"anchor_span\": \"Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand.\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 2000,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 302,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Tell, Vintage]",
+        "ts": "2026-10-21T16:49:41.505Z"
+      },
+      {
+        "mech": "M3",
+        "endpoint": "/m3",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Bram",
+          "grape_relationship": "my uncle, owns four rental flats",
+          "maturity_class": 0,
+          "user_answer": "My neighbor Tom, who rents out a duplex, told me last month he started asking for one lump sum only after a similar reconciling headache."
+        },
+        "response": {
+          "schema_version": "m3.v1",
+          "mechanism": "M3",
+          "state": "settled",
+          "echo": {
+            "state": "settled",
+            "anchor_span": "My neighbor Tom, who rents out a duplex, told me last month he started asking for one lump sum only after a similar reconciling headache."
+          },
+          "observation": {
+            "surface_text": "A separate person, Tom, a duplex landlord and not the grape Bram, reports a concrete change: he now requires one lump-sum payment after a similar reconciliation problem.",
+            "anchor_span": "he started asking for one lump sum only after a similar reconciling headache"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:42Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:43Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:41Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:42Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m3.v1\",\n  \"mechanism\": \"M3\",\n  \"state\": \"settled\",\n  \"echo\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"My neighbor Tom, who rents out a duplex, told me last month he started asking for one lump sum only after a similar reconciling headache.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"A separate person, Tom, a duplex landlord and not the grape Bram, reports a concrete change: he now requires one lump-sum payment after a similar reconciliation problem.\",\n    \"anchor_span\": \"he started asking for one lump sum only after a similar reconciling headache\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 1779,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 234,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Echo]",
+        "ts": "2026-10-21T16:49:42.989Z"
+      },
+      {
+        "mech": "M4",
+        "endpoint": "/m4",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Bram",
+          "grape_relationship": "my uncle, owns four rental flats",
+          "maturity_class": 0,
+          "prior_echo_context": "My neighbor Tom, who rents out a duplex, told me last month he started asking for one lump sum only after a similar reconciling headache.",
+          "user_answer": "Priya, who runs a small storage unit business, keeps a manual ledger for partial payments too. For her the pain is chasing the balance down, the reconciling part is fine."
+        },
+        "response": {
+          "schema_version": "m4.v1",
+          "mechanism": "M4",
+          "state": "settled",
+          "echo": {
+            "state": "settled",
+            "anchor_span": "Priya, who runs a small storage unit business, keeps a manual ledger for partial payments too."
+          },
+          "contrast": {
+            "is_different_kind": "true",
+            "same_or_different": "different",
+            "anchor_span": "For her the pain is chasing the balance down, the reconciling part is fine."
+          },
+          "observation": {
+            "surface_text": "A separate person, Priya, who runs a storage unit business, keeps a manual ledger for partial payments, and the answer places her pain in chasing balances rather than reconciling them.",
+            "anchor_span": "Priya, who runs a small storage unit business, keeps a manual ledger for partial payments too."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:43Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:44Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:43Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:43Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"schema_version\":\"m4.v1\",\"mechanism\":\"M4\",\"state\":\"settled\",\"echo\":{\"state\":\"settled\",\"anchor_span\":\"Priya, who runs a small storage unit business, keeps a manual ledger for partial payments too.\"},\"contrast\":{\"is_different_kind\":\"true\",\"same_or_different\":\"different\",\"anchor_span\":\"For her the pain is chasing the balance down, the reconciling part is fine.\"},\"observation\":{\"surface_text\":\"A separate person, Priya, who runs a storage unit business, keeps a manual ledger for partial payments, and the answer places her pain in chasing balances rather than reconciling them.\",\"anchor_span\":\"Priya, who runs a small storage unit business, keeps a manual ledger for partial payments too.\"},\"substitution_detected\":false}",
+              "usage": {
+                "input_tokens": 2255,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 258,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[none]",
+        "ts": "2026-10-21T16:49:44.587Z"
+      },
+      {
+        "mech": "M5",
+        "endpoint": "/m5",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Bram",
+          "grape_relationship": "my uncle, owns four rental flats",
+          "maturity_class": 0,
+          "user_answer": "Bram uses a shared spreadsheet to track rent, but it has no way to flag a partial payment against the wrong month, so mismatches pile up."
+        },
+        "response": {
+          "schema_version": "m5.v1",
+          "mechanism": "M5",
+          "state": "settled",
+          "gap": {
+            "state": "settled",
+            "anchor_span": "Bram uses a shared spreadsheet to track rent, but it has no way to flag a partial payment against the wrong month, so mismatches pile up."
+          },
+          "observation": {
+            "surface_text": "The answer names an existing solution: a shared spreadsheet Bram uses to track rent. It also states a precise failure point: the spreadsheet cannot flag a partial payment booked against the wrong month, so mismatches accumulate.",
+            "anchor_span": "it has no way to flag a partial payment against the wrong month, so mismatches pile up"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:45Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:46Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:44Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:45Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"schema_version\":\"m5.v1\",\"mechanism\":\"M5\",\"state\":\"settled\",\"gap\":{\"state\":\"settled\",\"anchor_span\":\"Bram uses a shared spreadsheet to track rent, but it has no way to flag a partial payment against the wrong month, so mismatches pile up.\"},\"observation\":{\"surface_text\":\"The answer names an existing solution: a shared spreadsheet Bram uses to track rent. It also states a precise failure point: the spreadsheet cannot flag a partial payment booked against the wrong month, so mismatches accumulate.\",\"anchor_span\":\"it has no way to flag a partial payment against the wrong month, so mismatches pile up\"},\"substitution_detected\":false}",
+              "usage": {
+                "input_tokens": 1722,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 232,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Gap]",
+        "ts": "2026-10-21T16:49:46.114Z"
+      },
+      {
+        "mech": "M6",
+        "endpoint": "/m6",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Bram",
+          "grape_relationship": "my uncle, owns four rental flats",
+          "maturity_class": 0,
+          "words_source": "real",
+          "user_answer": "\"I just want one number a month, not a puzzle,\" he said after the Sunday one."
+        },
+        "response": {
+          "schema_version": "m6.v1",
+          "mechanism": "M6",
+          "state": "settled",
+          "words": {
+            "state": "settled",
+            "anchor_span": "\"I just want one number a month, not a puzzle,\" he said after the Sunday one."
+          },
+          "tell": {
+            "state": "clearing",
+            "anchor_span": "\"I just want one number a month, not a puzzle,\""
+          },
+          "echo": {
+            "state": "turbid",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "The answer contains direct, attributed language from Bram tied to a real exchange, so Words is settled. The quoted words state a clear want and a complaint but describe no filmable action, so Tell is clearing.",
+            "anchor_span": "\"I just want one number a month, not a puzzle,\" he said after the Sunday one."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:47Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:47Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:46Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:47Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"schema_version\":\"m6.v1\",\"mechanism\":\"M6\",\"state\":\"settled\",\"words\":{\"state\":\"settled\",\"anchor_span\":\"\\\"I just want one number a month, not a puzzle,\\\" he said after the Sunday one.\"},\"tell\":{\"state\":\"clearing\",\"anchor_span\":\"\\\"I just want one number a month, not a puzzle,\\\"\"},\"echo\":{\"state\":\"turbid\",\"anchor_span\":null},\"observation\":{\"surface_text\":\"The answer contains direct, attributed language from Bram tied to a real exchange, so Words is settled. The quoted words state a clear want and a complaint but describe no filmable action, so Tell is clearing.\",\"anchor_span\":\"\\\"I just want one number a month, not a puzzle,\\\" he said after the Sunday one.\"},\"substitution_detected\":false}",
+              "usage": {
+                "input_tokens": 2298,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 264,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[none]",
+        "ts": "2026-10-21T16:49:47.893Z"
+      },
+      {
+        "mech": "M7",
+        "endpoint": "/m7",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Bram",
+          "grape_relationship": "my uncle, owns four rental flats",
+          "maturity_class": 0,
+          "user_answer": "Owen only rents to corporate tenants on annual leases paid in full upfront. Partial payments never happen to him because the whole year is billed at once."
+        },
+        "response": {
+          "schema_version": "m7.v1",
+          "mechanism": "M7",
+          "state": "settled",
+          "limit": {
+            "state": "settled",
+            "anchor_span": "Owen only rents to corporate tenants on annual leases paid in full upfront."
+          },
+          "observation": {
+            "surface_text": "The answer names a bounded exclusion: Owen, a landlord renting only to corporate tenants on annual leases paid in full upfront. The reason for his immunity is present and specific: the whole year is billed at once, so partial payments never arise.",
+            "anchor_span": "Partial payments never happen to him because the whole year is billed at once."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:48Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:49Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:48Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:48Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"schema_version\":\"m7.v1\",\"mechanism\":\"M7\",\"state\":\"settled\",\"limit\":{\"state\":\"settled\",\"anchor_span\":\"Owen only rents to corporate tenants on annual leases paid in full upfront.\"},\"observation\":{\"surface_text\":\"The answer names a bounded exclusion: Owen, a landlord renting only to corporate tenants on annual leases paid in full upfront. The reason for his immunity is present and specific: the whole year is billed at once, so partial payments never arise.\",\"anchor_span\":\"Partial payments never happen to him because the whole year is billed at once.\"},\"substitution_detected\":false}",
+              "usage": {
+                "input_tokens": 1594,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 205,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Limit]",
+        "ts": "2026-10-21T16:49:49.128Z"
+      }
+    ],
+    "anomalies": [
+      "VOICE: contrast-formula (\"not X but Y\" / \"not just X\") found at M0.raw_spark: \"A tool for landlords because tenants do not just pay late, they pay in random partial chunks nobody can reconcile.\"",
+      "VOICE: contrast-formula (\"not X but Y\" / \"not just X\") found at M2-phaseA.recovered_problem: \"tenants do not just pay late, they pay in random partial chunks nobody can reconcile\"",
+      "VOICE: contrast-formula (\"not X but Y\" / \"not just X\") found at M2-phaseA.problem.text: \"tenants do not just pay late, they pay in random partial chunks nobody can reconcile\""
+    ],
+    "floorNotes": [
+      "M6 offered clearing for Tell, held at floor settled (opportunistic grading correctly did not lower it).",
+      "M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it)."
+    ],
+    "halted": false,
+    "elements": {
+      "grape": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M1",
+        "rawGrades": [
+          {
+            "mech": "M1",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "tell": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "clearing"
+          }
+        ]
+      },
+      "vintage": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "gap": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M5",
+        "rawGrades": [
+          {
+            "mech": "M5",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "echo": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M3",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M4",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "turbid"
+          }
+        ]
+      },
+      "limit": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M7",
+        "rawGrades": [
+          {
+            "mech": "M7",
+            "offeredState": "settled"
+          }
+        ]
+      }
+    }
+  }
+}

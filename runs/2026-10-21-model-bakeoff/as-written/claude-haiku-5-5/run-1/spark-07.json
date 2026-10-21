@@ -1,0 +1,145 @@
+{
+  "idx": 7,
+  "cfg": {
+    "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+    "maturity": 0,
+    "grapeName": "Marieke",
+    "grapeRel": "my sister",
+    "answers": {
+      "m2": "Last Saturday a regular customer paid with a card that declined twice at the stall, and Marieke just waved her off with the flowers anyway, saying she'd sort it out later.",
+      "m3": "My friend Owen, who runs a farm stand, told me last month he started keeping a paper IOU pad after a similar situation with a regular.",
+      "m4": "Priya, a food truck owner I met at the market, keeps a card reader as backup for exactly this. For her the pain is spotty signal, the payment method itself is fine.",
+      "m5": "Marieke uses a basic card reader clipped to her apron, but it has no offline mode, so a bad signal at the stall means she can't charge anything at all.",
+      "m6": "\"I just want people to pay and go,\" she said after the declined-card one.",
+      "m7": "Jordan sells only pre-paid subscription flower boxes online. Payment problems at the point of sale never happen to him because nothing is sold in person."
+    },
+    "expectHalt": false,
+    "note": "Compress-may-not-upgrade, register hold. Expect: user_line_candidate keeps \"annoying with payments\" or very close; no operationalised synonyms (late, difficult, unreliable = fail), no introduced nouns. person_in_spark settled (name plus tie). M1 grape settled."
+  },
+  "outcome": "FAIL (unexpected halt: M0 request failed: Parse error)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8788",
+    "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+    "maturity": 0,
+    "grapeName": "Marieke",
+    "grapeRel": "my sister",
+    "wordsSource": "real",
+    "m0": null,
+    "userLine": "",
+    "sparkParse": null,
+    "domain": "",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {},
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall"
+        },
+        "response": {
+          "error": "Parse error",
+          "raw": ""
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:35:22Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1998000",
+                "output-tokens-reset": "2026-10-21T16:35:29Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:35:21Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11996000",
+                "tokens-reset": "2026-10-21T16:35:22Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "max_tokens",
+              "blocks": [
+                "thinking",
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"an app for my sister Marieke because customers are annoying with payments at her flower stall\",\n  \"user_line_candidate\": \"An app for flower stall owners, because customers are annoying with payments at the stall.\",\n  \"spark_parse\": {\n    \"solution_form\": \"app\",\n    \"implied_person\": \"flower stall owner\",\n    \"suspected_problem\": \"customers are annoying with payments\",\n    \"triggering_situation\": null,\n    \"promised_change\": null,\n    \"domain\": \"flower stall\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The app, the flower stall owner, and the payment problem are visible and enter cleanly.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the flower stall owner this starts from and the moment a customer's payment goes wrong at the stall.\",\n    \"hint\": \"A good answer names who runs the stall, the payment moment at the till, and what the owner was trying to get done at that point.\",\n    \"person_label\": \"Stall owner\",\n    \"person_placeholder\": \"Marieke, flower stall owner\",\n    \"when_label\": \"When the payment went wrong\",\n    \"when_placeholder\": \"a busy Saturday morning, with a queue forming\",\n    \"trying_label\": \"What she was trying to do\",\n    \"trying_placeholder\": \"close the sale before the next customer waits too long\",\n    \"happened_label\": \"What happened at the till\",\n    \"",
+              "usage": {
+                "input_tokens": 4829,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 1600,
+                "output_tokens_details": {
+                  "thinking_tokens": 1025
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "ERROR 502",
+        "ts": "2026-10-21T16:35:28.897Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M0 request failed: Parse error"
+  }
+}

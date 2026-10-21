@@ -1,0 +1,1119 @@
+{
+  "idx": 3,
+  "cfg": {
+    "raw_spark": "A better scheduling app for gym owners.",
+    "maturity": 1,
+    "grapeName": "Marco",
+    "grapeRel": "owns the boxing gym where I train",
+    "m0FollowupAnswer": "Marco double-books the 6pm slot and members show up to a class that is already full.",
+    "answers": {
+      "m2": "Marco walked me through last Tuesday: two members arrived for the 18:00 class he had already filled. He refunded one at the front desk and comped the other a personal training session.",
+      "m3": "My friend Priya, who runs a yoga studio, told me last month she started capping sign-ups in a shared spreadsheet after a similar double-booking during a holiday rush.",
+      "m4": "Owen, a barber who takes walk-ins, keeps a paper appointment book by the chair. For him the pain is no-shows, the overbooking part is fine.",
+      "m5": "Marco uses a shared Google Calendar for the class roster, but it doesn't stop two people from claiming the same slot if they both edit it around the same time.",
+      "m6": "\"I hate turning people away at the door,\" he said after the Tuesday one.",
+      "m7": "Jordan runs one-on-one training sessions only, no group classes. Double-booking never happens to him because every slot has exactly one client."
+    },
+    "expectHalt": false,
+    "note": "Solution-language spark, class 1 direction door. Expect: first pass bottleable_cloudy (person visible, no problem), followup fires, re-bottle lands cellar_ready or cloudy-with-problem. M2 question uses the direction door: no \"think of the last time\" / \"describe the moment\" phrasing. The told-not-watched moment grades settled."
+  },
+  "outcome": "PASS (completed full chain)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8791",
+    "raw_spark": "A better scheduling app for gym owners.",
+    "maturity": 1,
+    "grapeName": "Marco",
+    "grapeRel": "owns the boxing gym where I train",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "A better scheduling app for gym owners.",
+      "user_line_candidate": "A better scheduling app for gym owners.",
+      "spark_parse": {
+        "solution_form": "app",
+        "implied_person": "gym owners",
+        "suspected_problem": null,
+        "triggering_situation": null,
+        "promised_change": "better",
+        "domain": "scheduling",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "bottleable_cloudy",
+        "missing": [
+          "suspected_problem"
+        ],
+        "reason": "Bottleable, cloudy. The app, the gym owners, and the scheduling are visible, but no problem is stated, only that it should be better. That is what the cellar will age.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": true,
+        "question": "What is going wrong for gym owners with scheduling?"
+      },
+      "m1_setup": {
+        "question": "Name the specific gym owner and the moment scheduling was last a problem for them.",
+        "hint": "A real gym owner you know or have watched, and one scheduling moment you can describe.",
+        "person_label": "Gym owner",
+        "person_placeholder": "Dana, owner of a small neighborhood gym",
+        "when_label": "When scheduling came up",
+        "when_placeholder": "the week before a new month's class timetable went out",
+        "trying_label": "What they were trying to schedule",
+        "trying_placeholder": null,
+        "happened_label": "What happened with the schedule",
+        "happened_placeholder": null
+      },
+      "person_in_spark": {
+        "grade": "none",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": true
+      }
+    },
+    "userLine": "A better scheduling app for gym owners.",
+    "sparkParse": {
+      "solution_form": "app",
+      "implied_person": "gym owners",
+      "suspected_problem": null,
+      "triggering_situation": null,
+      "promised_change": "better",
+      "domain": "scheduling",
+      "solution_is_software": "software"
+    },
+    "domain": "scheduling",
+    "gapInPlay": false,
+    "problem": {
+      "text": "Gym owners have trouble with scheduling.",
+      "source": "system_hypothesis",
+      "status": "confirmed"
+    },
+    "phaseAOutcome": "guessed",
+    "answers": {
+      "M1": "owns the boxing gym where I train",
+      "M2": "Marco walked me through last Tuesday: two members arrived for the 18:00 class he had already filled. He refunded one at the front desk and comped the other a personal training session.",
+      "M3": "My friend Priya, who runs a yoga studio, told me last month she started capping sign-ups in a shared spreadsheet after a similar double-booking during a holiday rush.",
+      "M4": "Owen, a barber who takes walk-ins, keeps a paper appointment book by the chair. For him the pain is no-shows, the overbooking part is fine.",
+      "M5": "Marco uses a shared Google Calendar for the class roster, but it doesn't stop two people from claiming the same slot if they both edit it around the same time.",
+      "M6": "\"I hate turning people away at the door,\" he said after the Tuesday one.",
+      "M7": "Jordan runs one-on-one training sessions only, no group classes. Double-booking never happens to him because every slot has exactly one client."
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A better scheduling app for gym owners."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "A better scheduling app for gym owners.",
+          "user_line_candidate": "A better scheduling app for gym owners.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "gym owners",
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": "better",
+            "domain": "scheduling",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "bottleable_cloudy",
+            "missing": [
+              "suspected_problem"
+            ],
+            "reason": "Bottleable, cloudy. The app, the gym owners, and the scheduling are visible, but no problem is stated, only that it should be better. That is what the cellar will age.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": true,
+            "question": "What is going wrong for gym owners with scheduling?"
+          },
+          "m1_setup": {
+            "question": "Name the specific gym owner and the moment scheduling was last a problem for them.",
+            "hint": "A real gym owner you know or have watched, and one scheduling moment you can describe.",
+            "person_label": "Gym owner",
+            "person_placeholder": "Dana, owner of a small neighborhood gym",
+            "when_label": "When scheduling came up",
+            "when_placeholder": "the week before a new month's class timetable went out",
+            "trying_label": "What they were trying to schedule",
+            "trying_placeholder": null,
+            "happened_label": "What happened with the schedule",
+            "happened_placeholder": null
+          },
+          "person_in_spark": {
+            "grade": "none",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:43:34Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:43:38Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:43:33Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T16:43:34Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"A better scheduling app for gym owners.\",\n  \"user_line_candidate\": \"A better scheduling app for gym owners.\",\n  \"spark_parse\": {\n    \"solution_form\": \"app\",\n    \"implied_person\": \"gym owners\",\n    \"suspected_problem\": null,\n    \"triggering_situation\": null,\n    \"promised_change\": \"better\",\n    \"domain\": \"scheduling\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"bottleable_cloudy\",\n    \"missing\": [\"suspected_problem\"],\n    \"reason\": \"Bottleable, cloudy. The app, the gym owners, and the scheduling are visible, but no problem is stated, only that it should be better. That is what the cellar will age.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": true,\n    \"question\": \"What is going wrong for gym owners with scheduling?\"\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the specific gym owner and the moment scheduling was last a problem for them.\",\n    \"hint\": \"A real gym owner you know or have watched, and one scheduling moment you can describe.\",\n    \"person_label\": \"Gym owner\",\n    \"person_placeholder\": \"Dana, owner of a small neighborhood gym\",\n    \"when_label\": \"When scheduling came up\",\n    \"when_placeholder\": \"the week before a new month's class timetable went out\",\n    \"trying_label\": \"What they were trying to schedule\",\n    \"trying_placeholder\": null,\n    \"happened_label\": \"What happened with the schedule\",\n    \"happened_placeholder\": null\n  },\n  \"person_in_spark\": {\n    \"grade\": \"none\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}",
+              "usage": {
+                "input_tokens": 4815,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 621,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "digestibility=bottleable_cloudy · in_scope=true · followup_needed=true",
+        "ts": "2026-10-21T16:43:38.072Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/m1",
+        "kind": "main",
+        "request": {
+          "spark_summary": "A better scheduling app for gym owners.",
+          "person_name": "Marco",
+          "relationship": "owns the boxing gym where I train",
+          "maturity_class": 1
+        },
+        "response": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "settled",
+          "grape": {
+            "state": "settled",
+            "named_person": "Marco",
+            "person_kind": "named_individual",
+            "temporal_grounding": "present_general"
+          },
+          "observation": {
+            "surface_text": "Marco is a named individual with a stated tie. He owns the boxing gym where the speaker trains, which places him as a gym owner in the target market.",
+            "anchor_span": "owns the boxing gym where I train"
+          },
+          "next_question": {
+            "should_advance": true,
+            "framing": "Move to a specific scheduling problem Marco has had at the gym."
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "anchor_verified": true,
+            "visible_style_violations_cleaned": []
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T16:43:39Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:43:40Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:43:38Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T16:43:39Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m1.v1\",\n  \"mechanism\": \"M1\",\n  \"outcome\": \"settled\",\n  \"grape\": {\n    \"state\": \"settled\",\n    \"named_person\": \"Marco\",\n    \"person_kind\": \"named_individual\",\n    \"temporal_grounding\": \"present_general\"\n  },\n  \"observation\": {\n    \"surface_text\": \"Marco is a named individual with a stated tie. He owns the boxing gym where the speaker trains, which places him as a gym owner in the target market.\",\n    \"anchor_span\": \"owns the boxing gym where I train\"\n  },\n  \"next_question\": {\n    \"should_advance\": true,\n    \"framing\": \"Move to a specific scheduling problem Marco has had at the gym.\"\n  }\n}",
+              "usage": {
+                "input_tokens": 1106,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 242,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=n/a · swirl=no · changed=[Grape]",
+        "ts": "2026-10-21T16:43:40.898Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (phase A)",
+        "kind": "main",
+        "request": {
+          "phase": "problem",
+          "raw_spark": "A better scheduling app for gym owners.",
+          "user_line": "A better scheduling app for gym owners.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "gym owners",
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": "better",
+            "domain": "scheduling",
+            "solution_is_software": "software"
+          },
+          "grape_name": "Marco",
+          "grape_relationship": "owns the boxing gym where I train",
+          "maturity_class": 1
+        },
+        "response": {
+          "schema_version": "m2.v2",
+          "mechanism": "M2",
+          "phase": "problem",
+          "outcome": "guessed",
+          "problem": {
+            "text": "Gym owners have trouble with scheduling.",
+            "source": "system_hypothesis",
+            "status": "proposed"
+          },
+          "gap_in_play": false,
+          "question": "Ask Marco to walk you through the last specific time scheduling at his gym went wrong, or watch for the next time it does.",
+          "recovered_problem": "Gym owners have trouble with scheduling.",
+          "needs_confirmation": true,
+          "server_checks": {
+            "schema_valid": true,
+            "model_outcome": "guessed",
+            "outcome": "guessed",
+            "downgrades": [],
+            "unsupported_words": [],
+            "visible_style_violations_cleaned": [],
+            "m2_question_repaired": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:43:41Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:43:42Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:43:41Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:43:41Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m2.v2\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"problem\",\n  \"outcome\": \"guessed\",\n  \"stated_span\": null,\n  \"problem\": \"Gym owners have trouble with scheduling.\",\n  \"gap_in_play\": false,\n  \"question\": \"Ask Marco to walk you through the last specific time scheduling at his gym went wrong, or watch for the next time it does.\"\n}",
+              "usage": {
+                "input_tokens": 1565,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 144,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "outcome=guessed · problem=\"Gym owners have trouble with scheduling.\" (system_hypothesis) · gap_in_play=false",
+        "ts": "2026-10-21T16:43:42.690Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2",
+        "kind": "main",
+        "request": {
+          "user_line": "A better scheduling app for gym owners.",
+          "grape_name": "Marco",
+          "grape_relationship": "owns the boxing gym where I train",
+          "maturity_class": 1,
+          "problem": {
+            "text": "Gym owners have trouble with scheduling.",
+            "source": "system_hypothesis",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "user_answer": "Marco walked me through last Tuesday: two members arrived for the 18:00 class he had already filled. He refunded one at the front desk and comped the other a personal training session."
+        },
+        "response": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "settled",
+          "tell": {
+            "state": "settled",
+            "anchor_span": "He refunded one at the front desk and comped the other a personal training session."
+          },
+          "vintage": {
+            "state": "settled",
+            "anchor_span": "last Tuesday: two members arrived for the 18:00 class he had already filled"
+          },
+          "observation": {
+            "surface_text": "The answer names two observable actions: a front-desk refund and a comped personal training session. It anchors them to one instance, the 18:00 class last Tuesday, with a concrete overbooking trigger.",
+            "anchor_span": "He refunded one at the front desk and comped the other a personal training session."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": true,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:43:44Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:43:46Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:43:43Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:43:44Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m2.v1\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"friction\",\n  \"state\": \"settled\",\n  \"tell\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"He refunded one at the front desk and comped the other a personal training session.\"\n  },\n  \"vintage\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"last Tuesday: two members arrived for the 18:00 class he had already filled\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names two observable actions: a front-desk refund and a comped personal training session. It anchors them to one instance, the 18:00 class last Tuesday, with a concrete overbooking trigger.\",\n    \"anchor_span\": \"He refunded one at the front desk and comped the other a personal training session.\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 1986,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 282,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Tell, Vintage]",
+        "ts": "2026-10-21T16:43:46.148Z"
+      },
+      {
+        "mech": "M3",
+        "endpoint": "/m3",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "Gym owners have trouble with scheduling.",
+            "source": "system_hypothesis",
+            "status": "confirmed"
+          },
+          "grape_name": "Marco",
+          "grape_relationship": "owns the boxing gym where I train",
+          "maturity_class": 1,
+          "user_answer": "My friend Priya, who runs a yoga studio, told me last month she started capping sign-ups in a shared spreadsheet after a similar double-booking during a holiday rush."
+        },
+        "response": {
+          "schema_version": "m3.v1",
+          "mechanism": "M3",
+          "state": "settled",
+          "echo": {
+            "state": "settled",
+            "anchor_span": "Priya, who runs a yoga studio, told me last month she started capping sign-ups in a shared spreadsheet"
+          },
+          "observation": {
+            "surface_text": "The answer names one identifiable third party, Priya, separate from the grape and the founder, who responded to a double-booking by capping sign-ups in a shared spreadsheet.",
+            "anchor_span": "she started capping sign-ups in a shared spreadsheet after a similar double-booking during a holiday rush"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:43:47Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:43:48Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:43:46Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:43:47Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m3.v1\",\n  \"mechanism\": \"M3\",\n  \"state\": \"settled\",\n  \"echo\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Priya, who runs a yoga studio, told me last month she started capping sign-ups in a shared spreadsheet\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names one identifiable third party, Priya, separate from the grape and the founder, who responded to a double-booking by capping sign-ups in a shared spreadsheet.\",\n    \"anchor_span\": \"she started capping sign-ups in a shared spreadsheet after a similar double-booking during a holiday rush\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 1777,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 239,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Echo]",
+        "ts": "2026-10-21T16:43:48.354Z"
+      },
+      {
+        "mech": "M4",
+        "endpoint": "/m4",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "Gym owners have trouble with scheduling.",
+            "source": "system_hypothesis",
+            "status": "confirmed"
+          },
+          "grape_name": "Marco",
+          "grape_relationship": "owns the boxing gym where I train",
+          "maturity_class": 1,
+          "prior_echo_context": "My friend Priya, who runs a yoga studio, told me last month she started capping sign-ups in a shared spreadsheet after a similar double-booking during a holiday rush.",
+          "user_answer": "Owen, a barber who takes walk-ins, keeps a paper appointment book by the chair. For him the pain is no-shows, the overbooking part is fine."
+        },
+        "response": {
+          "schema_version": "m4.v1",
+          "mechanism": "M4",
+          "state": "settled",
+          "echo": {
+            "state": "settled",
+            "anchor_span": "Owen, a barber who takes walk-ins, keeps a paper appointment book by the chair."
+          },
+          "contrast": {
+            "is_different_kind": "true",
+            "same_or_different": "different",
+            "anchor_span": "For him the pain is no-shows, the overbooking part is fine."
+          },
+          "observation": {
+            "surface_text": "The answer names Owen, a barber distinct from Marco and Priya, who keeps a paper appointment book and reports no-shows as his pain rather than overbooking.",
+            "anchor_span": "keeps a paper appointment book by the chair"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:43:49Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:43:51Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:43:48Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:43:49Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m4.v1\",\n  \"mechanism\": \"M4\",\n  \"state\": \"settled\",\n  \"echo\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Owen, a barber who takes walk-ins, keeps a paper appointment book by the chair.\"\n  },\n  \"contrast\": {\n    \"is_different_kind\": \"true\",\n    \"same_or_different\": \"different\",\n    \"anchor_span\": \"For him the pain is no-shows, the overbooking part is fine.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names Owen, a barber distinct from Marco and Priya, who keeps a paper appointment book and reports no-shows as his pain rather than overbooking.\",\n    \"anchor_span\": \"keeps a paper appointment book by the chair\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 2250,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 277,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[none]",
+        "ts": "2026-10-21T16:43:51.196Z"
+      },
+      {
+        "mech": "M5",
+        "endpoint": "/m5",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "Gym owners have trouble with scheduling.",
+            "source": "system_hypothesis",
+            "status": "confirmed"
+          },
+          "grape_name": "Marco",
+          "grape_relationship": "owns the boxing gym where I train",
+          "maturity_class": 1,
+          "user_answer": "Marco uses a shared Google Calendar for the class roster, but it doesn't stop two people from claiming the same slot if they both edit it around the same time."
+        },
+        "response": {
+          "schema_version": "m5.v1",
+          "mechanism": "M5",
+          "state": "settled",
+          "gap": {
+            "state": "settled",
+            "anchor_span": "Marco uses a shared Google Calendar for the class roster, but it doesn't stop two people from claiming the same slot if they both edit it around the same time."
+          },
+          "observation": {
+            "surface_text": "The answer names an existing solution: a shared Google Calendar used for the class roster. It also states a precise failure point: simultaneous edits let two people claim the same slot.",
+            "anchor_span": "it doesn't stop two people from claiming the same slot if they both edit it around the same time"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:43:52Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:43:53Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:43:51Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:43:52Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m5.v1\",\n  \"mechanism\": \"M5\",\n  \"state\": \"settled\",\n  \"gap\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Marco uses a shared Google Calendar for the class roster, but it doesn't stop two people from claiming the same slot if they both edit it around the same time.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names an existing solution: a shared Google Calendar used for the class roster. It also states a precise failure point: simultaneous edits let two people claim the same slot.\",\n    \"anchor_span\": \"it doesn't stop two people from claiming the same slot if they both edit it around the same time\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 1709,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 241,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Gap]",
+        "ts": "2026-10-21T16:43:53.922Z"
+      },
+      {
+        "mech": "M6",
+        "endpoint": "/m6",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "Gym owners have trouble with scheduling.",
+            "source": "system_hypothesis",
+            "status": "confirmed"
+          },
+          "grape_name": "Marco",
+          "grape_relationship": "owns the boxing gym where I train",
+          "maturity_class": 1,
+          "words_source": "real",
+          "user_answer": "\"I hate turning people away at the door,\" he said after the Tuesday one."
+        },
+        "response": {
+          "schema_version": "m6.v1",
+          "mechanism": "M6",
+          "state": "settled",
+          "words": {
+            "state": "settled",
+            "anchor_span": "\"I hate turning people away at the door,\" he said after the Tuesday one."
+          },
+          "tell": {
+            "state": "clearing",
+            "anchor_span": "I hate turning people away at the door"
+          },
+          "echo": {
+            "state": "turbid",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "Direct language from the grape is present and flagged real, anchored to a specific moment after the Tuesday session. The words carry a stated feeling and a loosely implied act of turning people away, with no third party named.",
+            "anchor_span": "\"I hate turning people away at the door,\" he said after the Tuesday one."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:43:55Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:43:56Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:43:54Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:43:55Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m6.v1\",\n  \"mechanism\": \"M6\",\n  \"state\": \"settled\",\n  \"words\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"\\\"I hate turning people away at the door,\\\" he said after the Tuesday one.\"\n  },\n  \"tell\": {\n    \"state\": \"clearing\",\n    \"anchor_span\": \"I hate turning people away at the door\"\n  },\n  \"echo\": {\n    \"state\": \"turbid\",\n    \"anchor_span\": null\n  },\n  \"observation\": {\n    \"surface_text\": \"Direct language from the grape is present and flagged real, anchored to a specific moment after the Tuesday session. The words carry a stated feeling and a loosely implied act of turning people away, with no third party named.\",\n    \"anchor_span\": \"\\\"I hate turning people away at the door,\\\" he said after the Tuesday one.\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 2281,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 297,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[none]",
+        "ts": "2026-10-21T16:43:56.591Z"
+      },
+      {
+        "mech": "M7",
+        "endpoint": "/m7",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "Gym owners have trouble with scheduling.",
+            "source": "system_hypothesis",
+            "status": "confirmed"
+          },
+          "grape_name": "Marco",
+          "grape_relationship": "owns the boxing gym where I train",
+          "maturity_class": 1,
+          "user_answer": "Jordan runs one-on-one training sessions only, no group classes. Double-booking never happens to him because every slot has exactly one client."
+        },
+        "response": {
+          "schema_version": "m7.v1",
+          "mechanism": "M7",
+          "state": "settled",
+          "limit": {
+            "state": "settled",
+            "anchor_span": "Jordan runs one-on-one training sessions only, no group classes. Double-booking never happens to him because every slot has exactly one client."
+          },
+          "observation": {
+            "surface_text": "The answer names Jordan, a gym trainer running one-on-one sessions only, as a bounded exclusion. The reason is present and specific: every slot holds exactly one client, so double-booking cannot occur.",
+            "anchor_span": "Double-booking never happens to him because every slot has exactly one client."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:43:57Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:43:58Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:43:56Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:43:57Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m7.v1\",\n  \"mechanism\": \"M7\",\n  \"state\": \"settled\",\n  \"limit\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Jordan runs one-on-one training sessions only, no group classes. Double-booking never happens to him because every slot has exactly one client.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names Jordan, a gym trainer running one-on-one sessions only, as a bounded exclusion. The reason is present and specific: every slot holds exactly one client, so double-booking cannot occur.\",\n    \"anchor_span\": \"Double-booking never happens to him because every slot has exactly one client.\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 1576,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 242,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Limit]",
+        "ts": "2026-10-21T16:43:58.771Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [
+      "M6 offered clearing for Tell, held at floor settled (opportunistic grading correctly did not lower it).",
+      "M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it)."
+    ],
+    "halted": false,
+    "elements": {
+      "grape": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M1",
+        "rawGrades": [
+          {
+            "mech": "M1",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "tell": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "clearing"
+          }
+        ]
+      },
+      "vintage": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "gap": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M5",
+        "rawGrades": [
+          {
+            "mech": "M5",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "echo": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M3",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M4",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "turbid"
+          }
+        ]
+      },
+      "limit": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M7",
+        "rawGrades": [
+          {
+            "mech": "M7",
+            "offeredState": "settled"
+          }
+        ]
+      }
+    }
+  }
+}

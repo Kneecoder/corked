@@ -1,0 +1,993 @@
+{
+  "idx": 1,
+  "cfg": {
+    "raw_spark": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+    "maturity": 0,
+    "grapeName": "Lena",
+    "grapeRel": "my cousin, she shoots weddings",
+    "answers": {
+      "m2": "Last Saturday a couple cancelled on Thursday night. Lena spent the morning re-reading her contract clause, then wrote off the deposit and blocked the date in her calendar anyway.",
+      "m3": "My colleague Jordan, another wedding photographer, told me last month he now takes half the fee upfront through a payment link after a March cancellation burned him.",
+      "m4": "Priya, a wedding caterer I met at a market, keeps a paper deposit ledger per event. For her the pain is cancellations inside 48 hours, the payment part is fine.",
+      "m5": "Lena uses a HoneyBook contract template, but it stores no card on file, so when the couple ghosted there was nothing to charge.",
+      "m6": "\"I am done being the bad guy about deposits,\" she said after the March one.",
+      "m7": "Rob shoots corporate headshots on retainer for two agencies. Cancellations cost him nothing because the retainer bills monthly whether shoots happen or not."
+    },
+    "expectHalt": false,
+    "note": "Control — everything settles. Expect: cellar_ready, problem_forced_verbatim true, needs_confirmation false, gap_in_play false (no gap bar in M2 response). All six elements settled by M7. M4 contrast: is_different_kind \"true\", same_or_different \"different\". Zero substitution flags, zero anomalies."
+  },
+  "outcome": "PASS (completed full chain)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8787",
+    "raw_spark": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+    "maturity": 0,
+    "grapeName": "Lena",
+    "grapeRel": "my cousin, she shoots weddings",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+      "user_line_candidate": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+      "spark_parse": {
+        "solution_form": "app",
+        "implied_person": "wedding photographers",
+        "suspected_problem": "losing their deposit when couples cancel two days before the shoot",
+        "triggering_situation": "couples cancel two days before the shoot",
+        "promised_change": null,
+        "domain": "wedding photography",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "cellar_ready",
+        "missing": [],
+        "reason": "Cellar-ready. The role is wedding photographers and the stated problem is deposit loss on last-minute cancellations. Both enter cleanly.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": false,
+        "question": null
+      },
+      "m1_setup": {
+        "question": "Name the specific wedding photographer and the moment a couple cancelled close to the shoot date.",
+        "hint": "A good answer names one photographer, roughly when the cancellation landed, what they were counting on that deposit for, and what they were left with.",
+        "person_label": "Photographer",
+        "person_placeholder": "Dani, freelance wedding photographer",
+        "when_label": "When the cancellation came in",
+        "when_placeholder": "two days before a Saturday booking",
+        "trying_label": "What they were counting on",
+        "trying_placeholder": "cover equipment rental already paid for that shoot",
+        "happened_label": "What the cancellation left them with",
+        "happened_placeholder": "couple cancelled by text, deposit was non-refundable in the contract but the photographer had no way to enforce it and let it go"
+      },
+      "person_in_spark": {
+        "grade": "none",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": false
+      }
+    },
+    "userLine": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+    "sparkParse": {
+      "solution_form": "app",
+      "implied_person": "wedding photographers",
+      "suspected_problem": "losing their deposit when couples cancel two days before the shoot",
+      "triggering_situation": "couples cancel two days before the shoot",
+      "promised_change": null,
+      "domain": "wedding photography",
+      "solution_is_software": "software"
+    },
+    "domain": "wedding photography",
+    "gapInPlay": false,
+    "problem": {
+      "text": "lose their deposit when couples cancel two days before the shoot",
+      "source": "user_stated",
+      "status": "confirmed"
+    },
+    "phaseAOutcome": "stated",
+    "answers": {
+      "M1": "my cousin, she shoots weddings",
+      "M2": "Last Saturday a couple cancelled on Thursday night. Lena spent the morning re-reading her contract clause, then wrote off the deposit and blocked the date in her calendar anyway.",
+      "M3": "My colleague Jordan, another wedding photographer, told me last month he now takes half the fee upfront through a payment link after a March cancellation burned him.",
+      "M4": "Priya, a wedding caterer I met at a market, keeps a paper deposit ledger per event. For her the pain is cancellations inside 48 hours, the payment part is fine.",
+      "M5": "Lena uses a HoneyBook contract template, but it stores no card on file, so when the couple ghosted there was nothing to charge.",
+      "M6": "\"I am done being the bad guy about deposits,\" she said after the March one.",
+      "M7": "Rob shoots corporate headshots on retainer for two agencies. Cancellations cost him nothing because the retainer bills monthly whether shoots happen or not."
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+          "user_line_candidate": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "wedding photographers",
+            "suspected_problem": "losing their deposit when couples cancel two days before the shoot",
+            "triggering_situation": "couples cancel two days before the shoot",
+            "promised_change": null,
+            "domain": "wedding photography",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "cellar_ready",
+            "missing": [],
+            "reason": "Cellar-ready. The role is wedding photographers and the stated problem is deposit loss on last-minute cancellations. Both enter cleanly.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": false,
+            "question": null
+          },
+          "m1_setup": {
+            "question": "Name the specific wedding photographer and the moment a couple cancelled close to the shoot date.",
+            "hint": "A good answer names one photographer, roughly when the cancellation landed, what they were counting on that deposit for, and what they were left with.",
+            "person_label": "Photographer",
+            "person_placeholder": "Dani, freelance wedding photographer",
+            "when_label": "When the cancellation came in",
+            "when_placeholder": "two days before a Saturday booking",
+            "trying_label": "What they were counting on",
+            "trying_placeholder": "cover equipment rental already paid for that shoot",
+            "happened_label": "What the cancellation left them with",
+            "happened_placeholder": "couple cancelled by text, deposit was non-refundable in the contract but the photographer had no way to enforce it and let it go"
+          },
+          "person_in_spark": {
+            "grade": "none",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:56:22Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:56:30Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:56:21Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T16:56:22Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.\",\n  \"user_line_candidate\": \"An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.\",\n  \"spark_parse\": {\n    \"solution_form\": \"app\",\n    \"implied_person\": \"wedding photographers\",\n    \"suspected_problem\": \"losing their deposit when couples cancel two days before the shoot\",\n    \"triggering_situation\": \"couples cancel two days before the shoot\",\n    \"promised_change\": null,\n    \"domain\": \"wedding photography\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The role is wedding photographers and the stated problem is deposit loss on last-minute cancellations. Both enter cleanly.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the specific wedding photographer and the moment a couple cancelled close to the shoot date.\",\n    \"hint\": \"A good answer names one photographer, roughly when the cancellation landed, what they were counting on that deposit for, and what they were left with.\",\n    \"person_label\": \"Photographer\",\n    \"person_placeholder\": \"Dani, freelance wedding photographer\",\n    \"when_label\": \"When the cancellation came in\",\n    \"when_placeholder\": \"two days before a Saturday booking\",\n    \"trying_label\": \"What they were counting on\",\n    \"trying_placeholder\": \"cover equipment rental already paid for that shoot\",\n    \"happened_label\": \"What the cancellation left them with\",\n    \"happened_placeholder\": \"couple cancelled by text, deposit was non-refundable in the contract but the photographer had no way to enforce it and let it go\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"none\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 3640,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 547,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "digestibility=cellar_ready · in_scope=true · followup_needed=false",
+        "ts": "2026-10-21T16:56:30.394Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/m1",
+        "kind": "main",
+        "request": {
+          "spark_summary": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+          "person_name": "Lena",
+          "relationship": "my cousin, she shoots weddings",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "settled",
+          "grape": {
+            "state": "settled",
+            "named_person": "Lena",
+            "person_kind": "named_individual",
+            "temporal_grounding": "present_general"
+          },
+          "observation": {
+            "surface_text": "A named individual is present. A real occupational tie is stated.",
+            "anchor_span": "my cousin, she shoots weddings"
+          },
+          "next_question": {
+            "should_advance": true,
+            "framing": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "anchor_verified": true,
+            "visible_style_violations_cleaned": []
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T16:56:31Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:56:33Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:56:30Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T16:56:31Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m1.v1\",\n  \"mechanism\": \"M1\",\n  \"outcome\": \"settled\",\n  \"grape\": {\n    \"state\": \"settled\",\n    \"named_person\": \"Lena\",\n    \"person_kind\": \"named_individual\",\n    \"temporal_grounding\": \"present_general\"\n  },\n  \"observation\": {\n    \"surface_text\": \"A named individual is present. A real occupational tie is stated.\",\n    \"anchor_span\": \"my cousin, she shoots weddings\"\n  },\n  \"next_question\": {\n    \"should_advance\": true,\n    \"framing\": null\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 857,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 170,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=n/a · swirl=no · changed=[Grape]",
+        "ts": "2026-10-21T16:56:33.115Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (phase A)",
+        "kind": "main",
+        "request": {
+          "phase": "problem",
+          "raw_spark": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+          "user_line": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "wedding photographers",
+            "suspected_problem": "losing their deposit when couples cancel two days before the shoot",
+            "triggering_situation": "couples cancel two days before the shoot",
+            "promised_change": null,
+            "domain": "wedding photography",
+            "solution_is_software": "software"
+          },
+          "grape_name": "Lena",
+          "grape_relationship": "my cousin, she shoots weddings",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m2.v2",
+          "mechanism": "M2",
+          "phase": "problem",
+          "outcome": "stated",
+          "problem": {
+            "text": "lose their deposit when couples cancel two days before the shoot",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "question": "Walk me through the last time Lena lost a deposit after a couple cancelled close to the shoot date, and tell me exactly what she did when she found out.",
+          "recovered_problem": "lose their deposit when couples cancel two days before the shoot",
+          "needs_confirmation": false,
+          "server_checks": {
+            "schema_valid": true,
+            "model_outcome": "stated",
+            "outcome": "stated",
+            "downgrades": [],
+            "unsupported_words": [],
+            "visible_style_violations_cleaned": [],
+            "m2_question_repaired": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T16:56:34Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:56:35Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:56:33Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T16:56:34Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m2.v2\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"problem\",\n  \"outcome\": \"stated\",\n  \"stated_span\": \"lose their deposit when couples cancel two days before the shoot\",\n  \"problem\": null,\n  \"gap_in_play\": false,\n  \"question\": \"Walk me through the last time Lena lost a deposit after a couple cancelled close to the shoot date, and tell me exactly what she did when she found out.\"\n}\n```",
+              "usage": {
+                "input_tokens": 1182,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 128,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "outcome=stated · problem=\"lose their deposit when couples cancel two days before the shoot\" (user_stated) · gap_in_play=false",
+        "ts": "2026-10-21T16:56:35.736Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2",
+        "kind": "main",
+        "request": {
+          "user_line": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+          "grape_name": "Lena",
+          "grape_relationship": "my cousin, she shoots weddings",
+          "maturity_class": 0,
+          "problem": {
+            "text": "lose their deposit when couples cancel two days before the shoot",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "user_answer": "Last Saturday a couple cancelled on Thursday night. Lena spent the morning re-reading her contract clause, then wrote off the deposit and blocked the date in her calendar anyway."
+        },
+        "response": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "settled",
+          "tell": {
+            "state": "settled",
+            "anchor_span": "re-reading her contract clause, then wrote off the deposit and blocked the date in her calendar anyway"
+          },
+          "vintage": {
+            "state": "settled",
+            "anchor_span": "Last Saturday a couple cancelled on Thursday night"
+          },
+          "observation": {
+            "surface_text": "Lena's behaviour is observable: she re-read the contract clause, wrote off the deposit, and blocked the date. The instance is anchored to a specific event: a Thursday-night cancellation preceding last Saturday's shoot.",
+            "anchor_span": "Last Saturday a couple cancelled on Thursday night. Lena spent the morning re-reading her contract clause, then wrote off the deposit and blocked the date in her calendar anyway."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": true,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:56:36Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:56:39Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:56:36Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:56:36Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m2.v1\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"friction\",\n  \"state\": \"settled\",\n  \"tell\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"re-reading her contract clause, then wrote off the deposit and blocked the date in her calendar anyway\"\n  },\n  \"vintage\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Last Saturday a couple cancelled on Thursday night\"\n  },\n  \"observation\": {\n    \"surface_text\": \"Lena's behaviour is observable: she re-read the contract clause, wrote off the deposit, and blocked the date. The instance is anchored to a specific event: a Thursday-night cancellation preceding last Saturday's shoot.\",\n    \"anchor_span\": \"Last Saturday a couple cancelled on Thursday night. Lena spent the morning re-reading her contract clause, then wrote off the deposit and blocked the date in her calendar anyway.\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1444,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 248,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Tell, Vintage]",
+        "ts": "2026-10-21T16:56:39.267Z"
+      },
+      {
+        "mech": "M3",
+        "endpoint": "/m3",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "lose their deposit when couples cancel two days before the shoot",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Lena",
+          "grape_relationship": "my cousin, she shoots weddings",
+          "maturity_class": 0,
+          "user_answer": "My colleague Jordan, another wedding photographer, told me last month he now takes half the fee upfront through a payment link after a March cancellation burned him."
+        },
+        "response": {
+          "schema_version": "m3.v1",
+          "mechanism": "M3",
+          "state": "settled",
+          "echo": {
+            "state": "settled",
+            "anchor_span": "My colleague Jordan, another wedding photographer, told me last month he now takes half the fee upfront through a payment link after a March cancellation burned him."
+          },
+          "observation": {
+            "surface_text": "One identifiable person separate from the grape and the founder, Jordan, is named with a concrete behaviour: requiring half the fee upfront via a payment link following a specific cancellation event.",
+            "anchor_span": "My colleague Jordan, another wedding photographer, told me last month he now takes half the fee upfront through a payment link after a March cancellation burned him."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:56:39Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:56:42Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:56:39Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:56:39Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m3.v1\",\n  \"mechanism\": \"M3\",\n  \"state\": \"settled\",\n  \"echo\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"My colleague Jordan, another wedding photographer, told me last month he now takes half the fee upfront through a payment link after a March cancellation burned him.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"One identifiable person separate from the grape and the founder, Jordan, is named with a concrete behaviour: requiring half the fee upfront via a payment link following a specific cancellation event.\",\n    \"anchor_span\": \"My colleague Jordan, another wedding photographer, told me last month he now takes half the fee upfront through a payment link after a March cancellation burned him.\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1298,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 203,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Echo]",
+        "ts": "2026-10-21T16:56:42.465Z"
+      },
+      {
+        "mech": "M4",
+        "endpoint": "/m4",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "lose their deposit when couples cancel two days before the shoot",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Lena",
+          "grape_relationship": "my cousin, she shoots weddings",
+          "maturity_class": 0,
+          "prior_echo_context": "My colleague Jordan, another wedding photographer, told me last month he now takes half the fee upfront through a payment link after a March cancellation burned him.",
+          "user_answer": "Priya, a wedding caterer I met at a market, keeps a paper deposit ledger per event. For her the pain is cancellations inside 48 hours, the payment part is fine."
+        },
+        "response": {
+          "schema_version": "m4.v1",
+          "mechanism": "M4",
+          "state": "clearing",
+          "echo": {
+            "state": "clearing",
+            "anchor_span": "Priya, a wedding caterer I met at a market, keeps a paper deposit ledger per event"
+          },
+          "contrast": {
+            "is_different_kind": "true",
+            "same_or_different": "same",
+            "anchor_span": "For her the pain is cancellations inside 48 hours, the payment part is fine"
+          },
+          "observation": {
+            "surface_text": "Priya is named and distinct from Lena and Jordan, but the answer describes only an administrative record-keeping tool rather than a concrete behaviour Priya enacted in response to the late-cancellation loss problem.",
+            "anchor_span": "keeps a paper deposit ledger per event"
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "When Priya had a cancellation inside 48 hours, what specifically did she do or say about the lost deposit?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:56:43Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:56:47Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:56:42Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:56:43Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m4.v1\",\n  \"mechanism\": \"M4\",\n  \"state\": \"clearing\",\n  \"echo\": {\n    \"state\": \"clearing\",\n    \"anchor_span\": \"Priya, a wedding caterer I met at a market, keeps a paper deposit ledger per event\"\n  },\n  \"contrast\": {\n    \"is_different_kind\": \"true\",\n    \"same_or_different\": \"same\",\n    \"anchor_span\": \"For her the pain is cancellations inside 48 hours, the payment part is fine\"\n  },\n  \"observation\": {\n    \"surface_text\": \"Priya is named and distinct from Lena and Jordan, but the answer describes only an administrative record-keeping tool rather than a concrete behaviour Priya enacted in response to the late-cancellation loss problem.\",\n    \"anchor_span\": \"keeps a paper deposit ledger per event\"\n  },\n  \"substitution_detected\": false,\n  \"swirl\": {\n    \"kind\": \"reality\",\n    \"question\": \"When Priya had a cancellation inside 48 hours, what specifically did she do or say about the lost deposit?\"\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 1672,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 290,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=clearing · substitution_detected=false · swirl=yes · changed=[none]",
+        "ts": "2026-10-21T16:56:47.018Z"
+      },
+      {
+        "mech": "M5",
+        "endpoint": "/m5",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "lose their deposit when couples cancel two days before the shoot",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Lena",
+          "grape_relationship": "my cousin, she shoots weddings",
+          "maturity_class": 0,
+          "user_answer": "Lena uses a HoneyBook contract template, but it stores no card on file, so when the couple ghosted there was nothing to charge."
+        },
+        "response": {
+          "schema_version": "m5.v1",
+          "mechanism": "M5",
+          "state": "settled",
+          "gap": {
+            "state": "settled",
+            "anchor_span": "HoneyBook contract template, but it stores no card on file, so when the couple ghosted there was nothing to charge"
+          },
+          "observation": {
+            "surface_text": "The answer names HoneyBook contract template as the existing solution Lena uses. The precise failure point is present: it stores no card on file, leaving no payment method to charge when the couple ghosted.",
+            "anchor_span": "HoneyBook contract template, but it stores no card on file, so when the couple ghosted there was nothing to charge"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:56:47Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:56:50Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:56:47Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:56:47Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m5.v1\",\n  \"mechanism\": \"M5\",\n  \"state\": \"settled\",\n  \"gap\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"HoneyBook contract template, but it stores no card on file, so when the couple ghosted there was nothing to charge\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names HoneyBook contract template as the existing solution Lena uses. The precise failure point is present: it stores no card on file, leaving no payment method to charge when the couple ghosted.\",\n    \"anchor_span\": \"HoneyBook contract template, but it stores no card on file, so when the couple ghosted there was nothing to charge\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1264,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 199,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Gap]",
+        "ts": "2026-10-21T16:56:49.995Z"
+      },
+      {
+        "mech": "M6",
+        "endpoint": "/m6",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "lose their deposit when couples cancel two days before the shoot",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Lena",
+          "grape_relationship": "my cousin, she shoots weddings",
+          "maturity_class": 0,
+          "words_source": "real",
+          "user_answer": "\"I am done being the bad guy about deposits,\" she said after the March one."
+        },
+        "response": {
+          "schema_version": "m6.v1",
+          "mechanism": "M6",
+          "state": "settled",
+          "words": {
+            "state": "settled",
+            "anchor_span": "I am done being the bad guy about deposits"
+          },
+          "tell": {
+            "state": "clearing",
+            "anchor_span": "I am done being the bad guy about deposits"
+          },
+          "echo": {
+            "state": "turbid",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "A direct quote from a real exchange is present and words_source is real, satisfying the Words bar at settled. The words carry a stated frustration but no filmable action; no third-party reference appears in the quoted language.",
+            "anchor_span": "I am done being the bad guy about deposits"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:56:50Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:56:53Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:56:50Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:56:50Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m6.v1\",\n  \"mechanism\": \"M6\",\n  \"state\": \"settled\",\n  \"words\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"I am done being the bad guy about deposits\"\n  },\n  \"tell\": {\n    \"state\": \"clearing\",\n    \"anchor_span\": \"I am done being the bad guy about deposits\"\n  },\n  \"echo\": {\n    \"state\": \"turbid\",\n    \"anchor_span\": null\n  },\n  \"observation\": {\n    \"surface_text\": \"A direct quote from a real exchange is present and words_source is real, satisfying the Words bar at settled. The words carry a stated frustration but no filmable action; no third-party reference appears in the quoted language.\",\n    \"anchor_span\": \"I am done being the bad guy about deposits\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1685,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 230,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[none]",
+        "ts": "2026-10-21T16:56:53.889Z"
+      },
+      {
+        "mech": "M7",
+        "endpoint": "/m7",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "lose their deposit when couples cancel two days before the shoot",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Lena",
+          "grape_relationship": "my cousin, she shoots weddings",
+          "maturity_class": 0,
+          "user_answer": "Rob shoots corporate headshots on retainer for two agencies. Cancellations cost him nothing because the retainer bills monthly whether shoots happen or not."
+        },
+        "response": {
+          "schema_version": "m7.v1",
+          "mechanism": "M7",
+          "state": "settled",
+          "limit": {
+            "state": "settled",
+            "anchor_span": "Rob shoots corporate headshots on retainer for two agencies. Cancellations cost him nothing because the retainer bills monthly whether shoots happen or not."
+          },
+          "observation": {
+            "surface_text": "The answer names a bounded individual (Rob) in a specific contractual arrangement (monthly retainer with two agencies) who does not have the problem. The reason for his immunity is present and specific: the retainer bills monthly regardless of whether shoots occur.",
+            "anchor_span": "the retainer bills monthly whether shoots happen or not"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T16:56:54Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:56:56Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:56:54Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T16:56:54Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m7.v1\",\n  \"mechanism\": \"M7\",\n  \"state\": \"settled\",\n  \"limit\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Rob shoots corporate headshots on retainer for two agencies. Cancellations cost him nothing because the retainer bills monthly whether shoots happen or not.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names a bounded individual (Rob) in a specific contractual arrangement (monthly retainer with two agencies) who does not have the problem. The reason for his immunity is present and specific: the retainer bills monthly regardless of whether shoots occur.\",\n    \"anchor_span\": \"the retainer bills monthly whether shoots happen or not\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1168,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 194,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Limit]",
+        "ts": "2026-10-21T16:56:56.743Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [
+      "M4 offered clearing for Echo, held at floor settled (opportunistic grading correctly did not lower it).",
+      "M6 offered clearing for Tell, held at floor settled (opportunistic grading correctly did not lower it).",
+      "M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it)."
+    ],
+    "halted": false,
+    "elements": {
+      "grape": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M1",
+        "rawGrades": [
+          {
+            "mech": "M1",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "tell": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "clearing"
+          }
+        ]
+      },
+      "vintage": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "gap": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M5",
+        "rawGrades": [
+          {
+            "mech": "M5",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "echo": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M3",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M4",
+            "offeredState": "clearing"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "turbid"
+          }
+        ]
+      },
+      "limit": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M7",
+        "rawGrades": [
+          {
+            "mech": "M7",
+            "offeredState": "settled"
+          }
+        ]
+      }
+    }
+  }
+}

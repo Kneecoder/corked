@@ -1,0 +1,350 @@
+{
+  "idx": 20,
+  "cfg": {
+    "raw_spark": "A mobile app for allotment gardeners to swap surplus vegetables.",
+    "maturity": 3,
+    "grapeName": "",
+    "grapeRel": "",
+    "m0FollowupAnswer": "Vegetables rot on the plot before anyone finds out who has surplus and who wants some, because there's no shared way to see it.",
+    "expectHalt": true,
+    "note": "Class 3 FIND path. Expect: chain stops after M0, one /field call in find mode. The brief must not assert a problem the spark never stated, target drawn from the spark's own nouns (gardeners, vegetables, allotment), question open and past-anchored, no pitch, no \"would you use\". A generic \"ask them about their workflow\" brief is a fail."
+  },
+  "outcome": "PASS (halted as expected: Maturity class 3: chain stops after M0 (routes to \"find a person\" park screen), matching real client behaviour.)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8790",
+    "raw_spark": "A mobile app for allotment gardeners to swap surplus vegetables.",
+    "maturity": 3,
+    "grapeName": "",
+    "grapeRel": "",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "A mobile app for allotment gardeners to swap surplus vegetables.",
+      "user_line_candidate": "A mobile app for allotment gardeners to swap surplus vegetables.",
+      "spark_parse": {
+        "solution_form": "mobile app",
+        "implied_person": "allotment gardeners",
+        "suspected_problem": null,
+        "triggering_situation": null,
+        "promised_change": "swap surplus vegetables",
+        "domain": "allotment gardening, surplus vegetables",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "bottleable_cloudy",
+        "missing": [],
+        "reason": "Bottleable, cloudy. A person is visible, but no problem is stated. That is what the cellar will age.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": true,
+        "question": "What specific person or problem is missing from this Spark? Use only the words already in the Spark."
+      },
+      "m1_setup": {
+        "question": "Name the specific allotment gardener this starts from and the moment they ended up with more vegetables than they could use.",
+        "hint": "A good answer names one gardener, the season or week, and what they did with the surplus that went unused.",
+        "person_label": "Gardener",
+        "person_placeholder": "Dorothy, allotment holder for six years",
+        "when_label": "When",
+        "when_placeholder": "the week the courgettes all ripened at once",
+        "trying_label": "What they were trying to do",
+        "trying_placeholder": null,
+        "happened_label": "What actually happened",
+        "happened_placeholder": null
+      },
+      "person_in_spark": {
+        "grade": "turbid",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": true,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": true
+      }
+    },
+    "userLine": "A mobile app for allotment gardeners to swap surplus vegetables.",
+    "sparkParse": {
+      "solution_form": "mobile app",
+      "implied_person": "allotment gardeners",
+      "suspected_problem": null,
+      "triggering_situation": null,
+      "promised_change": "swap surplus vegetables",
+      "domain": "allotment gardening, surplus vegetables",
+      "solution_is_software": "software"
+    },
+    "domain": "allotment gardening, surplus vegetables",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {},
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A mobile app for allotment gardeners to swap surplus vegetables."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "A mobile app for allotment gardeners to swap surplus vegetables.",
+          "user_line_candidate": "A mobile app for allotment gardeners to swap surplus vegetables.",
+          "spark_parse": {
+            "solution_form": "mobile app",
+            "implied_person": "allotment gardeners",
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": "swap surplus vegetables",
+            "domain": "allotment gardening, surplus vegetables",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "bottleable_cloudy",
+            "missing": [],
+            "reason": "Bottleable, cloudy. A person is visible, but no problem is stated. That is what the cellar will age.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": true,
+            "question": "What specific person or problem is missing from this Spark? Use only the words already in the Spark."
+          },
+          "m1_setup": {
+            "question": "Name the specific allotment gardener this starts from and the moment they ended up with more vegetables than they could use.",
+            "hint": "A good answer names one gardener, the season or week, and what they did with the surplus that went unused.",
+            "person_label": "Gardener",
+            "person_placeholder": "Dorothy, allotment holder for six years",
+            "when_label": "When",
+            "when_placeholder": "the week the courgettes all ripened at once",
+            "trying_label": "What they were trying to do",
+            "trying_placeholder": null,
+            "happened_label": "What actually happened",
+            "happened_placeholder": null
+          },
+          "person_in_spark": {
+            "grade": "turbid",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": true,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:43:41Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:43:44Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:43:40Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T16:43:41Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"A mobile app for allotment gardeners to swap surplus vegetables.\",\n  \"user_line_candidate\": \"A mobile app for allotment gardeners to swap surplus vegetables.\",\n  \"spark_parse\": {\n    \"solution_form\": \"mobile app\",\n    \"implied_person\": \"allotment gardeners\",\n    \"suspected_problem\": null,\n    \"triggering_situation\": null,\n    \"promised_change\": \"swap surplus vegetables\",\n    \"domain\": \"allotment gardening, surplus vegetables\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The form, the role, and the exchange of surplus vegetables are visible and enter cleanly, though no problem is stated yet.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the specific allotment gardener this starts from and the moment they ended up with more vegetables than they could use.\",\n    \"hint\": \"A good answer names one gardener, the season or week, and what they did with the surplus that went unused.\",\n    \"person_label\": \"Gardener\",\n    \"person_placeholder\": \"Dorothy, allotment holder for six years\",\n    \"when_label\": \"When\",\n    \"when_placeholder\": \"the week the courgettes all ripened at once\",\n    \"trying_label\": \"What they were trying to do\",\n    \"trying_placeholder\": \"keep the harvest from going to waste\",\n    \"happened_label\": \"What actually happened\",\n    \"happened_placeholder\": \"she left bags of beans on the shed step and watched them go limp\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"turbid\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}",
+              "usage": {
+                "input_tokens": 4826,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 662,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "digestibility=bottleable_cloudy · in_scope=true · followup_needed=true",
+        "ts": "2026-10-21T16:43:44.031Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/field",
+        "kind": "park",
+        "request": {
+          "mode": "find",
+          "user_line": "A mobile app for allotment gardeners to swap surplus vegetables.",
+          "spark_parse": {
+            "solution_form": "mobile app",
+            "implied_person": "allotment gardeners",
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": "swap surplus vegetables",
+            "domain": "allotment gardening, surplus vegetables",
+            "solution_is_software": "software"
+          },
+          "maturity_class": 3,
+          "missing": "grape",
+          "grape_name": "",
+          "grape_relationship": "",
+          "problem": null,
+          "element": null
+        },
+        "response": {
+          "brief": {
+            "kind": "find",
+            "setup": "Find an allotment gardener who grows more than they can eat.",
+            "question": "Walk me through what you did with your surplus vegetables the last time you had too many, and when that last went badly.",
+            "target": "Allotment gardeners with surplus produce"
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:43:44Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:43:45Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:43:44Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:43:44Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"brief\": {\"kind\": \"find\", \"setup\": \"Find an allotment gardener who grows more than they can eat.\", \"question\": \"Walk me through what you did with your surplus vegetables the last time you had too many, and when that last went badly.\", \"target\": \"Allotment gardeners with surplus produce\"}}",
+              "usage": {
+                "input_tokens": 1998,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 99,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "brief target=\"Allotment gardeners with surplus produce\"",
+        "ts": "2026-10-21T16:43:45.195Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "Maturity class 3: chain stops after M0 (routes to \"find a person\" park screen), matching real client behaviour."
+  }
+}

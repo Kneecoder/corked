@@ -1,0 +1,992 @@
+{
+  "idx": 7,
+  "cfg": {
+    "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+    "maturity": 0,
+    "grapeName": "Marieke",
+    "grapeRel": "my sister",
+    "answers": {
+      "m2": "Last Saturday a regular customer paid with a card that declined twice at the stall, and Marieke just waved her off with the flowers anyway, saying she'd sort it out later.",
+      "m3": "My friend Owen, who runs a farm stand, told me last month he started keeping a paper IOU pad after a similar situation with a regular.",
+      "m4": "Priya, a food truck owner I met at the market, keeps a card reader as backup for exactly this. For her the pain is spotty signal, the payment method itself is fine.",
+      "m5": "Marieke uses a basic card reader clipped to her apron, but it has no offline mode, so a bad signal at the stall means she can't charge anything at all.",
+      "m6": "\"I just want people to pay and go,\" she said after the declined-card one.",
+      "m7": "Jordan sells only pre-paid subscription flower boxes online. Payment problems at the point of sale never happen to him because nothing is sold in person."
+    },
+    "expectHalt": false,
+    "note": "Compress-may-not-upgrade, register hold. Expect: user_line_candidate keeps \"annoying with payments\" or very close; no operationalised synonyms (late, difficult, unreliable = fail), no introduced nouns. person_in_spark settled (name plus tie). M1 grape settled."
+  },
+  "outcome": "PASS (completed full chain)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8787",
+    "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+    "maturity": 0,
+    "grapeName": "Marieke",
+    "grapeRel": "my sister",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+      "user_line_candidate": "An app for flower stall owners where customers are annoying with payments",
+      "spark_parse": {
+        "solution_form": "app",
+        "implied_person": "flower stall owners",
+        "suspected_problem": "customers are annoying with payments",
+        "triggering_situation": "at her flower stall",
+        "promised_change": null,
+        "domain": "flower stall",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "cellar_ready",
+        "missing": [],
+        "reason": "Cellar-ready. The role is flower stall owners and the stated problem is customers being annoying with payments. Both are visible and the Spark enters cleanly.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": false,
+        "question": null
+      },
+      "m1_setup": {
+        "question": "Name the specific person running a flower stall and the moment when a customer being annoying with payments actually happened.",
+        "hint": "A good answer names who was at the stall, what they were doing, and what the customer did with the payment that made it annoying.",
+        "person_label": "Flower stall owner",
+        "person_placeholder": "Marieke, flower stall owner",
+        "when_label": "When it happened",
+        "when_placeholder": "during a busy Saturday market while a queue was forming",
+        "trying_label": "What she was trying to do",
+        "trying_placeholder": "finish the transaction quickly and move to the next customer",
+        "happened_label": "What happened with the payment",
+        "happened_placeholder": "the customer argued about change, paid with a large note, or kept fumbling with a card that wouldn't work"
+      },
+      "person_in_spark": {
+        "grade": "settled",
+        "named_person": "Marieke",
+        "relationship_tie": "my sister"
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": false
+      }
+    },
+    "userLine": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+    "sparkParse": {
+      "solution_form": "app",
+      "implied_person": "flower stall owners",
+      "suspected_problem": "customers are annoying with payments",
+      "triggering_situation": "at her flower stall",
+      "promised_change": null,
+      "domain": "flower stall",
+      "solution_is_software": "software"
+    },
+    "domain": "flower stall",
+    "gapInPlay": false,
+    "problem": {
+      "text": "customers are annoying with payments at her flower stall",
+      "source": "user_stated",
+      "status": "confirmed"
+    },
+    "phaseAOutcome": "stated",
+    "answers": {
+      "M1": "my sister",
+      "M2": "Last Saturday a regular customer paid with a card that declined twice at the stall, and Marieke just waved her off with the flowers anyway, saying she'd sort it out later.",
+      "M3": "My friend Owen, who runs a farm stand, told me last month he started keeping a paper IOU pad after a similar situation with a regular.",
+      "M4": "Priya, a food truck owner I met at the market, keeps a card reader as backup for exactly this. For her the pain is spotty signal, the payment method itself is fine.",
+      "M5": "Marieke uses a basic card reader clipped to her apron, but it has no offline mode, so a bad signal at the stall means she can't charge anything at all.",
+      "M6": "\"I just want people to pay and go,\" she said after the declined-card one.",
+      "M7": "Jordan sells only pre-paid subscription flower boxes online. Payment problems at the point of sale never happen to him because nothing is sold in person."
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall"
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+          "user_line_candidate": "An app for flower stall owners where customers are annoying with payments",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "flower stall owners",
+            "suspected_problem": "customers are annoying with payments",
+            "triggering_situation": "at her flower stall",
+            "promised_change": null,
+            "domain": "flower stall",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "cellar_ready",
+            "missing": [],
+            "reason": "Cellar-ready. The role is flower stall owners and the stated problem is customers being annoying with payments. Both are visible and the Spark enters cleanly.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": false,
+            "question": null
+          },
+          "m1_setup": {
+            "question": "Name the specific person running a flower stall and the moment when a customer being annoying with payments actually happened.",
+            "hint": "A good answer names who was at the stall, what they were doing, and what the customer did with the payment that made it annoying.",
+            "person_label": "Flower stall owner",
+            "person_placeholder": "Marieke, flower stall owner",
+            "when_label": "When it happened",
+            "when_placeholder": "during a busy Saturday market while a queue was forming",
+            "trying_label": "What she was trying to do",
+            "trying_placeholder": "finish the transaction quickly and move to the next customer",
+            "happened_label": "What happened with the payment",
+            "happened_placeholder": "the customer argued about change, paid with a large note, or kept fumbling with a card that wouldn't work"
+          },
+          "person_in_spark": {
+            "grade": "settled",
+            "named_person": "Marieke",
+            "relationship_tie": "my sister"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:58:17Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:58:24Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:58:16Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T16:58:17Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"an app for my sister Marieke because customers are annoying with payments at her flower stall\",\n  \"user_line_candidate\": \"An app for flower stall owners where customers are annoying with payments\",\n  \"spark_parse\": {\n    \"solution_form\": \"app\",\n    \"implied_person\": \"flower stall owners\",\n    \"suspected_problem\": \"customers are annoying with payments\",\n    \"triggering_situation\": \"at her flower stall\",\n    \"promised_change\": null,\n    \"domain\": \"flower stall\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The role is flower stall owners and the stated problem is customers being annoying with payments. Both are visible and the Spark enters cleanly.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the specific person running a flower stall and the moment when a customer being annoying with payments actually happened.\",\n    \"hint\": \"A good answer names who was at the stall, what they were doing, and what the customer did with the payment that made it annoying.\",\n    \"person_label\": \"Flower stall owner\",\n    \"person_placeholder\": \"Marieke, flower stall owner\",\n    \"when_label\": \"When it happened\",\n    \"when_placeholder\": \"during a busy Saturday market while a queue was forming\",\n    \"trying_label\": \"What she was trying to do\",\n    \"trying_placeholder\": \"finish the transaction quickly and move to the next customer\",\n    \"happened_label\": \"What happened with the payment\",\n    \"happened_placeholder\": \"the customer argued about change, paid with a large note, or kept fumbling with a card that wouldn't work\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"settled\",\n    \"named_person\": \"Marieke\",\n    \"relationship_tie\": \"my sister\"\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 3643,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 560,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "digestibility=cellar_ready · in_scope=true · followup_needed=false",
+        "ts": "2026-10-21T16:58:24.547Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/m1",
+        "kind": "main",
+        "request": {
+          "spark_summary": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+          "person_name": "Marieke",
+          "relationship": "my sister",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "settled",
+          "grape": {
+            "state": "settled",
+            "named_person": "Marieke",
+            "person_kind": "named_individual",
+            "temporal_grounding": "present_general"
+          },
+          "observation": {
+            "surface_text": "A named individual is present. The relationship field supplies a real stated tie.",
+            "anchor_span": "my sister"
+          },
+          "next_question": {
+            "should_advance": true,
+            "framing": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "anchor_verified": true,
+            "visible_style_violations_cleaned": []
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T16:58:25Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:58:27Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:58:25Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T16:58:25Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m1.v1\",\n  \"mechanism\": \"M1\",\n  \"outcome\": \"settled\",\n  \"grape\": {\n    \"state\": \"settled\",\n    \"named_person\": \"Marieke\",\n    \"person_kind\": \"named_individual\",\n    \"temporal_grounding\": \"present_general\"\n  },\n  \"observation\": {\n    \"surface_text\": \"A named individual is present. The relationship field supplies a real stated tie.\",\n    \"anchor_span\": \"my sister\"\n  },\n  \"next_question\": {\n    \"should_advance\": true,\n    \"framing\": null\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 855,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 166,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=n/a · swirl=no · changed=[Grape]",
+        "ts": "2026-10-21T16:58:27.482Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (phase A)",
+        "kind": "main",
+        "request": {
+          "phase": "problem",
+          "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+          "user_line": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "flower stall owners",
+            "suspected_problem": "customers are annoying with payments",
+            "triggering_situation": "at her flower stall",
+            "promised_change": null,
+            "domain": "flower stall",
+            "solution_is_software": "software"
+          },
+          "grape_name": "Marieke",
+          "grape_relationship": "my sister",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m2.v2",
+          "mechanism": "M2",
+          "phase": "problem",
+          "outcome": "stated",
+          "problem": {
+            "text": "customers are annoying with payments at her flower stall",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "question": "Tell me about the last time a customer was annoying with payments at Marieke's stall: what did the customer do and what did Marieke do in response?",
+          "recovered_problem": "customers are annoying with payments at her flower stall",
+          "needs_confirmation": false,
+          "server_checks": {
+            "schema_valid": true,
+            "model_outcome": "stated",
+            "outcome": "stated",
+            "downgrades": [],
+            "unsupported_words": [],
+            "visible_style_violations_cleaned": [],
+            "m2_question_repaired": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T16:58:30Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:58:31Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:58:27Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T16:58:30Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m2.v2\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"problem\",\n  \"outcome\": \"stated\",\n  \"stated_span\": \"customers are annoying with payments at her flower stall\",\n  \"problem\": null,\n  \"gap_in_play\": false,\n  \"question\": \"Tell me about the last time a customer was annoying with payments at Marieke's stall: what did the customer do and what did Marieke do in response?\"\n}\n```",
+              "usage": {
+                "input_tokens": 1179,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 130,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "outcome=stated · problem=\"customers are annoying with payments at her flower stall\" (user_stated) · gap_in_play=false",
+        "ts": "2026-10-21T16:58:31.791Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2",
+        "kind": "main",
+        "request": {
+          "user_line": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
+          "grape_name": "Marieke",
+          "grape_relationship": "my sister",
+          "maturity_class": 0,
+          "problem": {
+            "text": "customers are annoying with payments at her flower stall",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": false,
+          "user_answer": "Last Saturday a regular customer paid with a card that declined twice at the stall, and Marieke just waved her off with the flowers anyway, saying she'd sort it out later."
+        },
+        "response": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "settled",
+          "tell": {
+            "state": "settled",
+            "anchor_span": "Marieke just waved her off with the flowers anyway, saying she'd sort it out later"
+          },
+          "vintage": {
+            "state": "settled",
+            "anchor_span": "Last Saturday a regular customer paid with a card that declined twice at the stall"
+          },
+          "observation": {
+            "surface_text": "Tell is settled: a specific observable action is named. Vintage is settled: the behaviour is anchored to a single past instance.",
+            "anchor_span": "Last Saturday a regular customer paid with a card that declined twice at the stall, and Marieke just waved her off with the flowers anyway"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": true,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:58:32Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:58:35Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:58:32Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:58:32Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m2.v1\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"friction\",\n  \"state\": \"settled\",\n  \"tell\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Marieke just waved her off with the flowers anyway, saying she'd sort it out later\"\n  },\n  \"vintage\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Last Saturday a regular customer paid with a card that declined twice at the stall\"\n  },\n  \"observation\": {\n    \"surface_text\": \"Tell is settled: a specific observable action is named. Vintage is settled: the behaviour is anchored to a single past instance.\",\n    \"anchor_span\": \"Last Saturday a regular customer paid with a card that declined twice at the stall, and Marieke just waved her off with the flowers anyway\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1442,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 230,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Tell, Vintage]",
+        "ts": "2026-10-21T16:58:35.426Z"
+      },
+      {
+        "mech": "M3",
+        "endpoint": "/m3",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "customers are annoying with payments at her flower stall",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Marieke",
+          "grape_relationship": "my sister",
+          "maturity_class": 0,
+          "user_answer": "My friend Owen, who runs a farm stand, told me last month he started keeping a paper IOU pad after a similar situation with a regular."
+        },
+        "response": {
+          "schema_version": "m3.v1",
+          "mechanism": "M3",
+          "state": "settled",
+          "echo": {
+            "state": "settled",
+            "anchor_span": "My friend Owen, who runs a farm stand, told me last month he started keeping a paper IOU pad after a similar situation with a regular."
+          },
+          "observation": {
+            "surface_text": "The answer names one identifiable third party, Owen, distinct from the grape and the founder, and records a concrete behaviour he adopted in response to a payment friction problem.",
+            "anchor_span": "My friend Owen, who runs a farm stand, told me last month he started keeping a paper IOU pad after a similar situation with a regular."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:58:36Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:58:38Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:58:35Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:58:36Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m3.v1\",\n  \"mechanism\": \"M3\",\n  \"state\": \"settled\",\n  \"echo\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"My friend Owen, who runs a farm stand, told me last month he started keeping a paper IOU pad after a similar situation with a regular.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names one identifiable third party, Owen, distinct from the grape and the founder, and records a concrete behaviour he adopted in response to a payment friction problem.\",\n    \"anchor_span\": \"My friend Owen, who runs a farm stand, told me last month he started keeping a paper IOU pad after a similar situation with a regular.\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1291,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 195,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Echo]",
+        "ts": "2026-10-21T16:58:38.851Z"
+      },
+      {
+        "mech": "M4",
+        "endpoint": "/m4",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "customers are annoying with payments at her flower stall",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Marieke",
+          "grape_relationship": "my sister",
+          "maturity_class": 0,
+          "prior_echo_context": "My friend Owen, who runs a farm stand, told me last month he started keeping a paper IOU pad after a similar situation with a regular.",
+          "user_answer": "Priya, a food truck owner I met at the market, keeps a card reader as backup for exactly this. For her the pain is spotty signal, the payment method itself is fine."
+        },
+        "response": {
+          "schema_version": "m4.v1",
+          "mechanism": "M4",
+          "state": "clearing",
+          "echo": {
+            "state": "clearing",
+            "anchor_span": "Priya, a food truck owner I met at the market, keeps a card reader as backup for exactly this"
+          },
+          "contrast": {
+            "is_different_kind": "true",
+            "same_or_different": "different",
+            "anchor_span": "For her the pain is spotty signal, the payment method itself is fine"
+          },
+          "observation": {
+            "surface_text": "Priya is named and has a concrete behaviour, but the problem she faces is described as different from the confirmed problem: spotty signal rather than annoying customer payment behaviour, which weakens the confirmation that the same problem exists for her.",
+            "anchor_span": "For her the pain is spotty signal, the payment method itself is fine"
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "Is Priya someone who has actually complained about customers being difficult around payments at her stall, or is the card-reader habit a workaround for a signal problem that has nothing to do with the confirmed problem?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:58:39Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:58:44Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:58:39Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:58:39Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m4.v1\",\n  \"mechanism\": \"M4\",\n  \"state\": \"clearing\",\n  \"echo\": {\n    \"state\": \"clearing\",\n    \"anchor_span\": \"Priya, a food truck owner I met at the market, keeps a card reader as backup for exactly this\"\n  },\n  \"contrast\": {\n    \"is_different_kind\": \"true\",\n    \"same_or_different\": \"different\",\n    \"anchor_span\": \"For her the pain is spotty signal, the payment method itself is fine\"\n  },\n  \"observation\": {\n    \"surface_text\": \"Priya is named and has a concrete behaviour, but the problem she faces is described as different from the confirmed problem: spotty signal rather than annoying customer payment behaviour, which weakens the confirmation that the same problem exists for her.\",\n    \"anchor_span\": \"For her the pain is spotty signal, the payment method itself is fine\"\n  },\n  \"substitution_detected\": false,\n  \"swirl\": {\n    \"kind\": \"reality\",\n    \"question\": \"Is Priya someone who has actually complained about customers being difficult around payments at her stall, or is the card-reader habit a workaround for a signal problem that has nothing to do with the confirmed problem?\"\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 1662,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 317,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=clearing · substitution_detected=false · swirl=yes · changed=[none]",
+        "ts": "2026-10-21T16:58:44.629Z"
+      },
+      {
+        "mech": "M5",
+        "endpoint": "/m5",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "customers are annoying with payments at her flower stall",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Marieke",
+          "grape_relationship": "my sister",
+          "maturity_class": 0,
+          "user_answer": "Marieke uses a basic card reader clipped to her apron, but it has no offline mode, so a bad signal at the stall means she can't charge anything at all."
+        },
+        "response": {
+          "schema_version": "m5.v1",
+          "mechanism": "M5",
+          "state": "settled",
+          "gap": {
+            "state": "settled",
+            "anchor_span": "a basic card reader clipped to her apron, but it has no offline mode, so a bad signal at the stall means she can't charge anything at all"
+          },
+          "observation": {
+            "surface_text": "The answer names a specific existing solution: a basic card reader clipped to her apron. The precise failure point is also present: no offline mode, rendering the device unable to process payments when signal is lost.",
+            "anchor_span": "a basic card reader clipped to her apron, but it has no offline mode, so a bad signal at the stall means she can't charge anything at all"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:58:45Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:58:47Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:58:44Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:58:45Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m5.v1\",\n  \"mechanism\": \"M5\",\n  \"state\": \"settled\",\n  \"gap\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"a basic card reader clipped to her apron, but it has no offline mode, so a bad signal at the stall means she can't charge anything at all\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names a specific existing solution: a basic card reader clipped to her apron. The precise failure point is also present: no offline mode, rendering the device unable to process payments when signal is lost.\",\n    \"anchor_span\": \"a basic card reader clipped to her apron, but it has no offline mode, so a bad signal at the stall means she can't charge anything at all\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1266,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 214,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Gap]",
+        "ts": "2026-10-21T16:58:47.816Z"
+      },
+      {
+        "mech": "M6",
+        "endpoint": "/m6",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "customers are annoying with payments at her flower stall",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Marieke",
+          "grape_relationship": "my sister",
+          "maturity_class": 0,
+          "words_source": "real",
+          "user_answer": "\"I just want people to pay and go,\" she said after the declined-card one."
+        },
+        "response": {
+          "schema_version": "m6.v1",
+          "mechanism": "M6",
+          "state": "settled",
+          "words": {
+            "state": "settled",
+            "anchor_span": "\"I just want people to pay and go,\" she said after the declined-card one."
+          },
+          "tell": {
+            "state": "settled",
+            "anchor_span": "she said after the declined-card one"
+          },
+          "echo": {
+            "state": "turbid",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "The answer supplies a direct quote attributed to Marieke from a flagged real exchange, meeting the Words bar. The phrase 'after the declined-card one' anchors the quote to a specific filmable incident, meeting the Tell bar.",
+            "anchor_span": "\"I just want people to pay and go,\" she said after the declined-card one."
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:58:48Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:58:51Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:58:48Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:58:48Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m6.v1\",\n  \"mechanism\": \"M6\",\n  \"state\": \"settled\",\n  \"words\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"\\\"I just want people to pay and go,\\\" she said after the declined-card one.\"\n  },\n  \"tell\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"she said after the declined-card one\"\n  },\n  \"echo\": {\n    \"state\": \"turbid\",\n    \"anchor_span\": null\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer supplies a direct quote attributed to Marieke from a flagged real exchange, meeting the Words bar. The phrase 'after the declined-card one' anchors the quote to a specific filmable incident, meeting the Tell bar.\",\n    \"anchor_span\": \"\\\"I just want people to pay and go,\\\" she said after the declined-card one.\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1681,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 251,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[none]",
+        "ts": "2026-10-21T16:58:51.869Z"
+      },
+      {
+        "mech": "M7",
+        "endpoint": "/m7",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "customers are annoying with payments at her flower stall",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Marieke",
+          "grape_relationship": "my sister",
+          "maturity_class": 0,
+          "user_answer": "Jordan sells only pre-paid subscription flower boxes online. Payment problems at the point of sale never happen to him because nothing is sold in person."
+        },
+        "response": {
+          "schema_version": "m7.v1",
+          "mechanism": "M7",
+          "state": "settled",
+          "limit": {
+            "state": "settled",
+            "anchor_span": "Jordan sells only pre-paid subscription flower boxes online. Payment problems at the point of sale never happen to him because nothing is sold in person."
+          },
+          "observation": {
+            "surface_text": "The answer names a bounded individual with a specific business arrangement that structurally removes point-of-sale contact. The reason for immunity is stated precisely: no in-person transaction occurs, so the friction Marieke faces cannot arise.",
+            "anchor_span": "nothing is sold in person"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T16:58:52Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:58:55Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:58:52Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T16:58:52Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m7.v1\",\n  \"mechanism\": \"M7\",\n  \"state\": \"settled\",\n  \"limit\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Jordan sells only pre-paid subscription flower boxes online. Payment problems at the point of sale never happen to him because nothing is sold in person.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names a bounded individual with a specific business arrangement that structurally removes point-of-sale contact. The reason for immunity is stated precisely: no in-person transaction occurs, so the friction Marieke faces cannot arise.\",\n    \"anchor_span\": \"nothing is sold in person\"\n  },\n  \"substitution_detected\": false\n}\n```",
+              "usage": {
+                "input_tokens": 1161,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 184,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Limit]",
+        "ts": "2026-10-21T16:58:55.584Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [
+      "M4 offered clearing for Echo, held at floor settled (opportunistic grading correctly did not lower it).",
+      "M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it)."
+    ],
+    "halted": false,
+    "elements": {
+      "grape": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M1",
+        "rawGrades": [
+          {
+            "mech": "M1",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "tell": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "vintage": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "gap": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M5",
+        "rawGrades": [
+          {
+            "mech": "M5",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "echo": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M3",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M4",
+            "offeredState": "clearing"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "turbid"
+          }
+        ]
+      },
+      "limit": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M7",
+        "rawGrades": [
+          {
+            "mech": "M7",
+            "offeredState": "settled"
+          }
+        ]
+      }
+    }
+  }
+}

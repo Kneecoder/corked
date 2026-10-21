@@ -16,8 +16,14 @@
 //   CORKED_LINE=spark (default) sends the spark as typed as the idea's line, as the app does.
 //   CORKED_LINE=m0 sends M0's line instead, as the app did before 10 Oct.
 //   CORKED_OUT=<folder> writes the reports there instead of corked-runner-output/.
+//   CORKED_WORKER=<url> calls that worker instead of the live one (the model bake-off
+//     runs bakeoff/worker-bakeoff.js under wrangler dev). When a response carries the
+//     bake-off's `_bakeoff` record, it is lifted out of the response before logging and
+//     checks, and kept on the log entry as `calls`.
+//   CORKED_JSON=1 also writes spark-NN.json: the whole run record, raw responses included.
 
-const WORKER_URL = 'https://orked-m1-proxy.kneebonewebdesign.workers.dev';
+const WORKER_URL = process.env.CORKED_WORKER || 'https://orked-m1-proxy.kneebonewebdesign.workers.dev';
+const WRITE_JSON = process.env.CORKED_JSON === '1';
 const LINE_SOURCE = process.env.CORKED_LINE === 'm0' ? 'm0' : 'spark';
 const OUT_DIR = new URL('../' + (process.env.CORKED_OUT || 'corked-runner-output').replace(/\/?$/, '/'), import.meta.url);
 
@@ -302,7 +308,12 @@ async function callWorker(path, body) {
     const text = await res.text();
     let data;
     try { data = JSON.parse(text); } catch { data = { error: 'Non-JSON response from worker', raw: text }; }
-    return { ok: res.ok && !data.error, status: res.status, data };
+    let calls;
+    if (data && typeof data === 'object' && '_bakeoff' in data) {
+      calls = data._bakeoff;
+      delete data._bakeoff;
+    }
+    return { ok: res.ok && !data.error, status: res.status, data, calls };
   } catch (err) {
     const msg = err.name === 'AbortError' ? 'Request timed out (30s).' : ('Network error: ' + err.message);
     return { ok: false, status: 0, data: { error: msg } };
@@ -507,12 +518,12 @@ async function runOne(cfg, idx) {
   // M0
   let res = await callWorker('/m0', { raw_spark: R.raw_spark });
   if (!res.ok) {
-    logEntry(R, { mech: 'M0', endpoint: '/m0', kind: 'main', request: { raw_spark: R.raw_spark }, response: res.data, summary: 'ERROR ' + res.status });
+    logEntry(R, { mech: 'M0', endpoint: '/m0', kind: 'main', request: { raw_spark: R.raw_spark }, response: res.data, calls: res.calls, summary: 'ERROR ' + res.status });
     halt(R, 'M0 request failed: ' + (res.data && res.data.error));
     return R;
   }
   let data = res.data;
-  logEntry(R, { mech: 'M0', endpoint: '/m0', kind: 'main', request: { raw_spark: R.raw_spark }, response: data,
+  logEntry(R, { mech: 'M0', endpoint: '/m0', kind: 'main', request: { raw_spark: R.raw_spark }, response: data, calls: res.calls,
     summary: 'digestibility=' + (data.digestibility && data.digestibility.state) + ' · in_scope=' + (data.scope ? data.scope.in_scope !== false : true) + ' · followup_needed=' + !!(data.followup && data.followup.needed) });
   runAssertions(R, 'M0', data);
 
@@ -535,7 +546,7 @@ async function runOne(cfg, idx) {
   if (R.maturity === 3) {
     const req = { mode: 'find', user_line: R.userLine, spark_parse: R.sparkParse, maturity_class: R.maturity, missing: 'grape', grape_name: '', grape_relationship: '', problem: null, element: null };
     const fres = await callWorker('/field', req);
-    logEntry(R, { mech: 'M1', endpoint: '/field', kind: 'park', request: req, response: fres.data,
+    logEntry(R, { mech: 'M1', endpoint: '/field', kind: 'park', request: req, response: fres.data, calls: fres.calls,
       summary: fres.ok ? ('brief target="' + ((fres.data.brief && fres.data.brief.target) || '') + '"') : ('ERROR ' + fres.status) });
     halt(R, 'Maturity class 3: chain stops after M0 (routes to "find a person" park screen), matching real client behaviour.');
     return R;
@@ -555,12 +566,12 @@ async function runOne(cfg, idx) {
     const m1req = { spark_summary: R.userLine, person_name: R.grapeName, relationship: R.grapeRel, maturity_class: R.maturity };
     res = await callWorker('/m1', m1req);
     if (!res.ok) {
-      logEntry(R, { mech: 'M1', endpoint: '/m1', kind: 'main', request: m1req, response: res.data, summary: 'ERROR ' + res.status });
+      logEntry(R, { mech: 'M1', endpoint: '/m1', kind: 'main', request: m1req, response: res.data, calls: res.calls, summary: 'ERROR ' + res.status });
       halt(R, 'M1 request failed.');
       return R;
     }
     changed = applyMechResult('M1', res.data, R);
-    logEntry(R, { mech: 'M1', endpoint: '/m1', kind: 'main', request: m1req, response: res.data, summary: summarize('M1', res.data, changed) });
+    logEntry(R, { mech: 'M1', endpoint: '/m1', kind: 'main', request: m1req, response: res.data, calls: res.calls, summary: summarize('M1', res.data, changed) });
     runAssertions(R, 'M1', res.data);
   }
 
@@ -568,13 +579,13 @@ async function runOne(cfg, idx) {
   const m2aReq = { phase: 'problem', raw_spark: (R.m0 && R.m0.raw_spark) || R.raw_spark, user_line: R.userLine, spark_parse: R.sparkParse, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity };
   res = await callWorker('/m2', m2aReq);
   if (!res.ok) {
-    logEntry(R, { mech: 'M2', endpoint: '/m2 (phase A)', kind: 'main', request: m2aReq, response: res.data, summary: 'ERROR ' + res.status });
+    logEntry(R, { mech: 'M2', endpoint: '/m2 (phase A)', kind: 'main', request: m2aReq, response: res.data, calls: res.calls, summary: 'ERROR ' + res.status });
     halt(R, 'M2 Phase A request failed.');
     return R;
   }
   data = res.data;
   R.phaseAOutcome = data.outcome || null;
-  logEntry(R, { mech: 'M2', endpoint: '/m2 (phase A)', kind: 'main', request: m2aReq, response: data,
+  logEntry(R, { mech: 'M2', endpoint: '/m2 (phase A)', kind: 'main', request: m2aReq, response: data, calls: res.calls,
     summary: 'outcome=' + data.outcome + ' · problem=' + (data.problem ? JSON.stringify(data.problem.text) + ' (' + data.problem.source + ')' : 'none') + ' · gap_in_play=' + data.gap_in_play });
   runAssertions(R, 'M2-phaseA', data);
   if (!data.problem || data.outcome === 'insufficient') {
@@ -595,12 +606,12 @@ async function runOne(cfg, idx) {
     const req = buildMechRequest(mech, answer, R);
     res = await callWorker(mechEndpoint(mech), req);
     if (!res.ok) {
-      logEntry(R, { mech, endpoint: mechEndpoint(mech), kind: 'main', request: req, response: res.data, summary: 'ERROR ' + res.status });
+      logEntry(R, { mech, endpoint: mechEndpoint(mech), kind: 'main', request: req, response: res.data, calls: res.calls, summary: 'ERROR ' + res.status });
       halt(R, mech + ' request failed.');
       return R;
     }
     changed = applyMechResult(mech, res.data, R);
-    logEntry(R, { mech, endpoint: mechEndpoint(mech), kind: 'main', request: req, response: res.data, summary: summarize(mech, res.data, changed) });
+    logEntry(R, { mech, endpoint: mechEndpoint(mech), kind: 'main', request: req, response: res.data, calls: res.calls, summary: summarize(mech, res.data, changed) });
     runAssertions(R, mech, res.data);
     // swirl offered but auto-skipped, mirroring the "Skip swirl" default path — logged, not answered
   }
@@ -701,6 +712,10 @@ async function main() {
     const fname = 'spark-' + String(idx).padStart(2, '0') + '.md';
     await fs.writeFile(new URL(fname, OUT_DIR), report, 'utf8');
     const outcome = judgeOutcome(R, cfg);
+    if (WRITE_JSON) {
+      const jname = 'spark-' + String(idx).padStart(2, '0') + '.json';
+      await fs.writeFile(new URL(jname, OUT_DIR), JSON.stringify({ idx, cfg, outcome, run: R }, null, 2), 'utf8');
+    }
     console.log('done — ' + outcome);
     summary.push({ idx, raw_spark: cfg.raw_spark, maturity: cfg.maturity, outcome, anomalies: R.anomalies, note: cfg.note, file: fname });
   }

@@ -1,0 +1,418 @@
+{
+  "idx": 12,
+  "cfg": {
+    "raw_spark": "An app to stop myself doomchecking my bank balance at the end of every month.",
+    "maturity": 2,
+    "grapeName": "Jamie",
+    "grapeRel": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.",
+    "answers": {
+      "m2": "Last month on the 28th, right before rent was due, I opened my banking app for the eleventh time that day instead of finishing the invoice I still hadn't sent, and gave up and closed the app without doing either.",
+      "m3": "I built a spreadsheet that projects the month forward, I check that instead now.",
+      "m4": "My friend Daniel, who freelances in video, told me in April he moved every client to 50 percent upfront after one late payer wrecked his rent month.",
+      "m5": "I use a budgeting app, but it only shows last month's picture, nothing about the invoice that has not landed yet.",
+      "m6": "I caught myself saying out loud, \"I can't look at it again until the Bakker invoice lands.\"",
+      "m7": "My uncle does the same kind of work but only takes retainer clients, so his balance is flat and boring. He is paid whether the work moves or not."
+    },
+    "expectHalt": false,
+    "note": "Class 2 self battery. Expect: M1 self-mode settled (concrete instance present). M3 echo turbid — the Echo can never be the speaker; observation pivots away from self. M4 settled (separate person satisfies self mode). M5 settled — self's own current tool is the one place self counts as Gap material, and the founder's own build exclusion does not fire on a budgeting app he did not build. M6 response omits the echo field entirely; record how the words bar grades a self-quote (mild corner, real exchange with oneself). M7 settled."
+  },
+  "outcome": "RECORDED (M2 Phase A insufficient: stopped at M2)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8790",
+    "raw_spark": "An app to stop myself doomchecking my bank balance at the end of every month.",
+    "maturity": 2,
+    "grapeName": "Jamie",
+    "grapeRel": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "An app to stop myself doomchecking my bank balance at the end of every month.",
+      "user_line_candidate": "A way for the speaker to stop checking their bank balance at the end of every month.",
+      "spark_parse": {
+        "solution_form": "app",
+        "implied_person": "the speaker",
+        "suspected_problem": "the speaker checks their bank balance at the end of every month in a way they want to stop",
+        "triggering_situation": "the end of every month",
+        "promised_change": "stop doomchecking the bank balance",
+        "domain": "bank balance",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "cellar_ready",
+        "missing": [],
+        "reason": "Cellar-ready. The speaker is visible, the problem of checking the bank balance at month end is stated, and the form is an app.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": false,
+        "question": null
+      },
+      "m1_setup": {
+        "question": "Name the specific month-end you were checking your balance and what you were looking for when you opened it.",
+        "hint": "A good answer names the moment you opened the app or bank page and the number or worry that pulled you there.",
+        "person_label": "Checker",
+        "person_placeholder": "Sam, salaried employee",
+        "when_label": "Month-end moment",
+        "when_placeholder": "the evening rent cleared and I opened the app again",
+        "trying_label": "What you wanted to know",
+        "trying_placeholder": "whether I could afford the next two weeks",
+        "happened_label": "What you saw next",
+        "happened_placeholder": "the balance was lower than expected and I kept refreshing"
+      },
+      "person_in_spark": {
+        "grade": "none",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": false
+      }
+    },
+    "userLine": "An app to stop myself doomchecking my bank balance at the end of every month.",
+    "sparkParse": {
+      "solution_form": "app",
+      "implied_person": "the speaker",
+      "suspected_problem": "the speaker checks their bank balance at the end of every month in a way they want to stop",
+      "triggering_situation": "the end of every month",
+      "promised_change": "stop doomchecking the bank balance",
+      "domain": "bank balance",
+      "solution_is_software": "software"
+    },
+    "domain": "bank balance",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": "insufficient",
+    "answers": {
+      "M1": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid."
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "An app to stop myself doomchecking my bank balance at the end of every month."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "An app to stop myself doomchecking my bank balance at the end of every month.",
+          "user_line_candidate": "A way for the speaker to stop checking their bank balance at the end of every month.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "the speaker",
+            "suspected_problem": "the speaker checks their bank balance at the end of every month in a way they want to stop",
+            "triggering_situation": "the end of every month",
+            "promised_change": "stop doomchecking the bank balance",
+            "domain": "bank balance",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "cellar_ready",
+            "missing": [],
+            "reason": "Cellar-ready. The speaker is visible, the problem of checking the bank balance at month end is stated, and the form is an app.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": false,
+            "question": null
+          },
+          "m1_setup": {
+            "question": "Name the specific month-end you were checking your balance and what you were looking for when you opened it.",
+            "hint": "A good answer names the moment you opened the app or bank page and the number or worry that pulled you there.",
+            "person_label": "Checker",
+            "person_placeholder": "Sam, salaried employee",
+            "when_label": "Month-end moment",
+            "when_placeholder": "the evening rent cleared and I opened the app again",
+            "trying_label": "What you wanted to know",
+            "trying_placeholder": "whether I could afford the next two weeks",
+            "happened_label": "What you saw next",
+            "happened_placeholder": "the balance was lower than expected and I kept refreshing"
+          },
+          "person_in_spark": {
+            "grade": "none",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:50:42Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:50:45Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:50:42Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T16:50:42Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"An app to stop myself doomchecking my bank balance at the end of every month.\",\n  \"user_line_candidate\": \"A way for the speaker to stop checking their bank balance at the end of every month.\",\n  \"spark_parse\": {\n    \"solution_form\": \"app\",\n    \"implied_person\": \"the speaker\",\n    \"suspected_problem\": \"the speaker checks their bank balance at the end of every month in a way they want to stop\",\n    \"triggering_situation\": \"the end of every month\",\n    \"promised_change\": \"stop doomchecking the bank balance\",\n    \"domain\": \"bank balance\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The speaker is visible, the problem of checking the bank balance at month end is stated, and the form is an app.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the specific month-end you were checking your balance and what you were looking for when you opened it.\",\n    \"hint\": \"A good answer names the moment you opened the app or bank page and the number or worry that pulled you there.\",\n    \"person_label\": \"Checker\",\n    \"person_placeholder\": \"Sam, salaried employee\",\n    \"when_label\": \"Month-end moment\",\n    \"when_placeholder\": \"the evening rent cleared and I opened the app again\",\n    \"trying_label\": \"What you wanted to know\",\n    \"trying_placeholder\": \"whether I could afford the next two weeks\",\n    \"happened_label\": \"What you saw next\",\n    \"happened_placeholder\": \"the balance was lower than expected and I kept refreshing\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"none\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}",
+              "usage": {
+                "input_tokens": 4826,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 665,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "digestibility=cellar_ready · in_scope=true · followup_needed=false",
+        "ts": "2026-10-21T16:50:45.318Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "none (self mode, not graded)",
+        "kind": "main",
+        "request": null,
+        "response": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "settled",
+          "grape": {
+            "state": "settled",
+            "named_person": "Jamie",
+            "person_kind": "self"
+          },
+          "observation": {
+            "surface_text": "",
+            "anchor_span": null
+          },
+          "next_question": {
+            "should_advance": true,
+            "framing": null
+          }
+        },
+        "summary": "state=settled · substitution_detected=n/a · swirl=no · changed=[Grape]",
+        "ts": "2026-10-21T16:50:45.318Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (phase A)",
+        "kind": "main",
+        "request": {
+          "phase": "problem",
+          "raw_spark": "An app to stop myself doomchecking my bank balance at the end of every month.",
+          "user_line": "An app to stop myself doomchecking my bank balance at the end of every month.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "the speaker",
+            "suspected_problem": "the speaker checks their bank balance at the end of every month in a way they want to stop",
+            "triggering_situation": "the end of every month",
+            "promised_change": "stop doomchecking the bank balance",
+            "domain": "bank balance",
+            "solution_is_software": "software"
+          },
+          "grape_name": "Jamie",
+          "grape_relationship": "Last month I checked my balance eleven times on the 28th while one client invoice sat unpaid.",
+          "maturity_class": 2
+        },
+        "response": {
+          "schema_version": "m2.v2",
+          "mechanism": "M2",
+          "phase": "problem",
+          "outcome": "insufficient",
+          "problem": null,
+          "gap_in_play": false,
+          "question": null,
+          "recovered_problem": null,
+          "needs_confirmation": false,
+          "server_checks": {
+            "schema_valid": true,
+            "model_outcome": "guessed",
+            "outcome": "insufficient",
+            "downgrades": [
+              {
+                "from": "guessed",
+                "to": "insufficient",
+                "reason": "words_not_in_spark",
+                "words": [
+                  "checking",
+                  "though",
+                  "want"
+                ],
+                "text": "You can't stop checking your bank balance at the end of every month, even though you want to."
+              }
+            ],
+            "unsupported_words": [
+              "checking",
+              "though",
+              "want"
+            ],
+            "visible_style_violations_cleaned": [],
+            "m2_question_repaired": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:50:46Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:50:46Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:50:45Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:50:46Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"schema_version\": \"m2.v2\", \"mechanism\": \"M2\", \"phase\": \"problem\", \"outcome\": \"guessed\", \"stated_span\": null, \"problem\": \"You can't stop checking your bank balance at the end of every month, even though you want to.\", \"gap_in_play\": false, \"question\": \"Think of the most recent end of month when you doomchecked your bank balance, and tell me exactly what you did, step by step, from the moment you opened the app to when you stopped.\"}",
+              "usage": {
+                "input_tokens": 1599,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 152,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "outcome=insufficient · problem=none · gap_in_play=false",
+        "ts": "2026-10-21T16:50:46.487Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M1",
+        "rawGrades": [
+          {
+            "mech": "M1",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M2 Phase A outcome: insufficient, no problem on record. Stopped at M2."
+  }
+}

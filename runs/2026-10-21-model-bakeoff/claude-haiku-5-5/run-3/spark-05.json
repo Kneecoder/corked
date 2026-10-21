@@ -1,0 +1,353 @@
+{
+  "idx": 5,
+  "cfg": {
+    "raw_spark": "A bookstore for homeless people where you pay with cans.",
+    "maturity": 3,
+    "grapeName": "",
+    "grapeRel": "",
+    "expectHalt": "maybe",
+    "note": "Scope asymmetry probe — doctrine tension, either outcome is a finding. Expect one of two outcomes, both worth recording verbatim: (a) Out of scope — \"bookstore\" read as physical store, meaning M0 doctrine's own canonical thin-spark example is unreachable behind the scope gate (a doctrine note for v46, not a code bug); or (b) passes as thin — then assert suspected_problem null, m1_placeholders_nulled true, followup uses only spark nouns (books, cans — never literacy, barter, recycling, currency)."
+  },
+  "outcome": "RECORDED (halted: Maturity class 3: chain stops after M0 (routes to \"find a person\" park screen), matching real client behaviour.)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8790",
+    "raw_spark": "A bookstore for homeless people where you pay with cans.",
+    "maturity": 3,
+    "grapeName": "",
+    "grapeRel": "",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "A bookstore for homeless people where you pay with cans.",
+      "user_line_candidate": "A bookstore for homeless people where cans are used as payment.",
+      "spark_parse": {
+        "solution_form": "bookstore",
+        "implied_person": "homeless people",
+        "suspected_problem": null,
+        "triggering_situation": null,
+        "promised_change": null,
+        "domain": "books",
+        "solution_is_software": "unstated"
+      },
+      "digestibility": {
+        "state": "bottleable_cloudy",
+        "missing": [
+          "suspected_problem"
+        ],
+        "reason": "Bottleable, cloudy. The form, the population, and the cans are visible, but no problem is stated. That is what the cellar will age.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": true,
+        "question": "What problem are homeless people having with books?"
+      },
+      "m1_setup": {
+        "question": "Name the specific homeless person this bookstore starts from and the moment they first ran into the problem of getting books.",
+        "hint": "A good answer names one person and one concrete moment, such as a person who wanted to read on the street and had no way to buy a book.",
+        "person_label": "Reader",
+        "person_placeholder": "Dana, living in a shelter",
+        "when_label": "When",
+        "when_placeholder": "the week after her library card expired",
+        "trying_label": "What they were trying to do",
+        "trying_placeholder": null,
+        "happened_label": "What happened",
+        "happened_placeholder": null
+      },
+      "person_in_spark": {
+        "grade": "turbid",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": true
+      }
+    },
+    "userLine": "A bookstore for homeless people where you pay with cans.",
+    "sparkParse": {
+      "solution_form": "bookstore",
+      "implied_person": "homeless people",
+      "suspected_problem": null,
+      "triggering_situation": null,
+      "promised_change": null,
+      "domain": "books",
+      "solution_is_software": "unstated"
+    },
+    "domain": "books",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {},
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A bookstore for homeless people where you pay with cans."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "A bookstore for homeless people where you pay with cans.",
+          "user_line_candidate": "A bookstore for homeless people where cans are used as payment.",
+          "spark_parse": {
+            "solution_form": "bookstore",
+            "implied_person": "homeless people",
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "books",
+            "solution_is_software": "unstated"
+          },
+          "digestibility": {
+            "state": "bottleable_cloudy",
+            "missing": [
+              "suspected_problem"
+            ],
+            "reason": "Bottleable, cloudy. The form, the population, and the cans are visible, but no problem is stated. That is what the cellar will age.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": true,
+            "question": "What problem are homeless people having with books?"
+          },
+          "m1_setup": {
+            "question": "Name the specific homeless person this bookstore starts from and the moment they first ran into the problem of getting books.",
+            "hint": "A good answer names one person and one concrete moment, such as a person who wanted to read on the street and had no way to buy a book.",
+            "person_label": "Reader",
+            "person_placeholder": "Dana, living in a shelter",
+            "when_label": "When",
+            "when_placeholder": "the week after her library card expired",
+            "trying_label": "What they were trying to do",
+            "trying_placeholder": null,
+            "happened_label": "What happened",
+            "happened_placeholder": null
+          },
+          "person_in_spark": {
+            "grade": "turbid",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:49:11Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T16:49:14Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:11Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T16:49:11Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"A bookstore for homeless people where you pay with cans.\",\n  \"user_line_candidate\": \"A bookstore for homeless people where cans are used as payment.\",\n  \"spark_parse\": {\n    \"solution_form\": \"bookstore\",\n    \"implied_person\": \"homeless people\",\n    \"suspected_problem\": null,\n    \"triggering_situation\": null,\n    \"promised_change\": null,\n    \"domain\": \"books\",\n    \"solution_is_software\": \"unstated\"\n  },\n  \"digestibility\": {\n    \"state\": \"bottleable_cloudy\",\n    \"missing\": [\"suspected_problem\"],\n    \"reason\": \"Bottleable, cloudy. The form, the population, and the cans are visible, but no problem is stated. That is what the cellar will age.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": true,\n    \"question\": \"What problem are homeless people having with books?\"\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the specific homeless person this bookstore starts from and the moment they first ran into the problem of getting books.\",\n    \"hint\": \"A good answer names one person and one concrete moment, such as a person who wanted to read on the street and had no way to buy a book.\",\n    \"person_label\": \"Reader\",\n    \"person_placeholder\": \"Dana, living in a shelter\",\n    \"when_label\": \"When\",\n    \"when_placeholder\": \"the week after her library card expired\",\n    \"trying_label\": \"What they were trying to do\",\n    \"trying_placeholder\": \"get a book to read during the day\",\n    \"happened_label\": \"What happened\",\n    \"happened_placeholder\": \"she had cans to trade but no shop would take them for a book\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"turbid\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}",
+              "usage": {
+                "input_tokens": 4820,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 639,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "digestibility=bottleable_cloudy · in_scope=true · followup_needed=true",
+        "ts": "2026-10-21T16:49:14.083Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/field",
+        "kind": "park",
+        "request": {
+          "mode": "find",
+          "user_line": "A bookstore for homeless people where you pay with cans.",
+          "spark_parse": {
+            "solution_form": "bookstore",
+            "implied_person": "homeless people",
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "books",
+            "solution_is_software": "unstated"
+          },
+          "maturity_class": 3,
+          "missing": "grape",
+          "grape_name": "",
+          "grape_relationship": "",
+          "problem": null,
+          "element": null
+        },
+        "response": {
+          "brief": {
+            "kind": "find",
+            "setup": "Find someone who is currently homeless and has been collecting cans or getting by on odd income.",
+            "question": "Walk me through how you get books or reading material right now, and the last time you wanted one and couldn't get it.",
+            "target": "Homeless people who collect cans"
+          }
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T16:49:15Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:49:15Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:49:14Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T16:49:15Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\"brief\": {\"kind\": \"find\", \"setup\": \"Find someone who is currently homeless and has been collecting cans or getting by on odd income.\", \"question\": \"Walk me through how you get books or reading material right now, and the last time you wanted one and couldn't get it.\", \"target\": \"Homeless people who collect cans\"}}",
+              "usage": {
+                "input_tokens": 1976,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 104,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: disabled"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "brief target=\"Homeless people who collect cans\"",
+        "ts": "2026-10-21T16:49:15.400Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "Maturity class 3: chain stops after M0 (routes to \"find a person\" park screen), matching real client behaviour."
+  }
+}

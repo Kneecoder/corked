@@ -1,0 +1,145 @@
+{
+  "idx": 1,
+  "cfg": {
+    "raw_spark": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+    "maturity": 0,
+    "grapeName": "Lena",
+    "grapeRel": "my cousin, she shoots weddings",
+    "answers": {
+      "m2": "Last Saturday a couple cancelled on Thursday night. Lena spent the morning re-reading her contract clause, then wrote off the deposit and blocked the date in her calendar anyway.",
+      "m3": "My colleague Jordan, another wedding photographer, told me last month he now takes half the fee upfront through a payment link after a March cancellation burned him.",
+      "m4": "Priya, a wedding caterer I met at a market, keeps a paper deposit ledger per event. For her the pain is cancellations inside 48 hours, the payment part is fine.",
+      "m5": "Lena uses a HoneyBook contract template, but it stores no card on file, so when the couple ghosted there was nothing to charge.",
+      "m6": "\"I am done being the bad guy about deposits,\" she said after the March one.",
+      "m7": "Rob shoots corporate headshots on retainer for two agencies. Cancellations cost him nothing because the retainer bills monthly whether shoots happen or not."
+    },
+    "expectHalt": false,
+    "note": "Control — everything settles. Expect: cellar_ready, problem_forced_verbatim true, needs_confirmation false, gap_in_play false (no gap bar in M2 response). All six elements settled by M7. M4 contrast: is_different_kind \"true\", same_or_different \"different\". Zero substitution flags, zero anomalies."
+  },
+  "outcome": "FAIL (unexpected halt: M0 request failed: Parse error)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8788",
+    "raw_spark": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+    "maturity": 0,
+    "grapeName": "Lena",
+    "grapeRel": "my cousin, she shoots weddings",
+    "wordsSource": "real",
+    "m0": null,
+    "userLine": "",
+    "sparkParse": null,
+    "domain": "",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {},
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot."
+        },
+        "response": {
+          "error": "Parse error",
+          "raw": ""
+        },
+        "calls": {
+          "configured_model": "claude-haiku-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:34:41Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1998000",
+                "output-tokens-reset": "2026-10-21T16:34:47Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:34:40Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11996000",
+                "tokens-reset": "2026-10-21T16:34:41Z"
+              },
+              "model": "claude-haiku-5-5",
+              "stop_reason": "max_tokens",
+              "blocks": [
+                "thinking",
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.\",\n  \"user_line_candidate\": \"An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.\",\n  \"spark_parse\": {\n    \"solution_form\": \"app\",\n    \"implied_person\": \"wedding photographers\",\n    \"suspected_problem\": \"lose their deposit when couples cancel two days before the shoot\",\n    \"triggering_situation\": \"couples cancel two days before the shoot\",\n    \"promised_change\": null,\n    \"domain\": \"wedding photography\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The role, wedding photographers, and the stated problem, losing the deposit after a cancellation two days before the shoot, enter cleanly.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the wedding photographer and the booking where a couple cancelled two days before the shoot.\",\n    \"hint\": \"A good answer names one specific photographer, the cancelled booking, and what happened to the deposit.\",\n    \"person_label\": \"Photographer\",\n    \"person_placeholder\": \"Dana, wedding photographer\",\n    \"when_label\": \"When the cancellation came\",\n    \"when_placeholder\": \"two days before a Saturday shoot\",\n    \"trying_label\": \"What the photographer was counting on\",\n    \"trying_placehol",
+              "usage": {
+                "input_tokens": 4833,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 1600,
+                "output_tokens_details": {
+                  "thinking_tokens": 1029
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "ERROR 502",
+        "ts": "2026-10-21T16:34:47.187Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M0 request failed: Parse error"
+  }
+}

@@ -1,0 +1,40 @@
+
+ ⛅️ wrangler 4.107.0 (update available 4.151.3)
+───────────────────────────────────────────────
+Using secrets defined in .dev.vars
+Your Worker has access to the following bindings:
+Binding                                                                 Resource                  Mode
+env.ANTHROPIC_MODEL ("(hidden)")                                        Environment Variable      local
+env.ALLOWED_ORIGINS ("http://localhost:8080,http://localhos...")        Environment Variable      local
+env.ANTHROPIC_API_KEY ("(hidden)")                                      Environment Variable      local
+
+⎔ Starting local server...
+[wrangler:info] Ready on http://127.0.0.1:8788
+[wrangler:info] POST /m0 502 Bad Gateway (7225ms)
+[wrangler:info] POST /m0 502 Bad Gateway (7022ms)
+[wrangler:info] POST /m0 502 Bad Gateway (7251ms)
+[wrangler:info] POST /m0 502 Bad Gateway (6562ms)
+[wrangler:info] POST /m0 502 Bad Gateway (7735ms)
+[wrangler:info] POST /m0 502 Bad Gateway (8180ms)
+[wrangler:info] POST /m0 200 OK (3833ms)
+[wrangler:info] POST /m0 502 Bad Gateway (8116ms)
+[wrangler:info] POST /m0 502 Bad Gateway (6911ms)
+[wrangler:info] POST /m0 502 Bad Gateway (8060ms)
+[wrangler:info] POST /m0 502 Bad Gateway (7288ms)
+[wrangler:info] POST /m0 502 Bad Gateway (7874ms)
+[wrangler:info] POST /m0 200 OK (3924ms)
+[wrangler:info] POST /m2 502 Bad Gateway (3371ms)
+[wrangler:info] POST /m0 502 Bad Gateway (6943ms)
+[wrangler:info] POST /m0 502 Bad Gateway (7158ms)
+[wrangler:info] POST /m0 502 Bad Gateway (6914ms)
+[wrangler:info] POST /m0 502 Bad Gateway (7616ms)
+[wrangler:info] POST /m0 502 Bad Gateway (7294ms)
+[wrangler:info] POST /m0 502 Bad Gateway (7835ms)
+[wrangler:info] POST /m0 502 Bad Gateway (7263ms)
+[wrangler:info] POST /m0 502 Bad Gateway (7253ms)
+[wrangler:info] POST /m0 502 Bad Gateway (7615ms)
+[wrangler:info] POST /m0 502 Bad Gateway (7536ms)
+[wrangler:info] POST /m0 502 Bad Gateway (6761ms)
+[wrangler:info] POST /m0 502 Bad Gateway (7589ms)
+[wrangler:info] POST /m0 502 Bad Gateway (6926ms)
+[wrangler:info] POST /m0 200 OK (2783ms)

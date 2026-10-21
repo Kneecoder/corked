@@ -1,0 +1,255 @@
+{
+  "idx": 6,
+  "cfg": {
+    "raw_spark": "Something that makes life easier.",
+    "maturity": 1,
+    "grapeName": "",
+    "grapeRel": "",
+    "m0FollowupAnswer": "It's for freelancers.",
+    "expectHalt": true,
+    "note": "Unbottleable rescue guard. Expect: unbottleable on first pass. Followup supplies a person only (no domain, no problem), so unbottleable_rescue_blocked true and state stays unbottleable. Chain halts. If it re-bottles, the rescue guard has a hole."
+  },
+  "outcome": "PASS (halted as expected: M0: unbottleable, nothing to bottle.)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8787",
+    "raw_spark": "Something that makes life easier.",
+    "maturity": 1,
+    "grapeName": "",
+    "grapeRel": "",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "Something that makes life easier.",
+      "user_line_candidate": "Something that makes life easier.",
+      "spark_parse": {
+        "solution_form": null,
+        "implied_person": null,
+        "suspected_problem": null,
+        "triggering_situation": null,
+        "promised_change": null,
+        "domain": null,
+        "solution_is_software": "unstated"
+      },
+      "digestibility": {
+        "state": "unbottleable",
+        "missing": [
+          "person or role",
+          "domain",
+          "problem"
+        ],
+        "reason": "Not bottleable yet. No person, no domain, and no problem are present. There is nothing to work with.",
+        "can_seal": false,
+        "requires_followup_before_seal": true
+      },
+      "followup": {
+        "needed": true,
+        "question": "Who is this for, and what problem are they sitting with before they find it?"
+      },
+      "m1_setup": {
+        "question": "Name the specific person this starts from and the moment life got harder for them.",
+        "hint": "A good answer names a real person, what they were dealing with, and what went wrong.",
+        "person_label": "Person",
+        "person_placeholder": null,
+        "when_label": "When",
+        "when_placeholder": null,
+        "trying_label": "What they were trying to do",
+        "trying_placeholder": null,
+        "happened_label": "What happened",
+        "happened_placeholder": null
+      },
+      "person_in_spark": {
+        "grade": "none",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": true
+      }
+    },
+    "userLine": "Something that makes life easier.",
+    "sparkParse": {
+      "solution_form": null,
+      "implied_person": null,
+      "suspected_problem": null,
+      "triggering_situation": null,
+      "promised_change": null,
+      "domain": null,
+      "solution_is_software": "unstated"
+    },
+    "domain": "",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {},
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "Something that makes life easier."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "Something that makes life easier.",
+          "user_line_candidate": "Something that makes life easier.",
+          "spark_parse": {
+            "solution_form": null,
+            "implied_person": null,
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": null,
+            "solution_is_software": "unstated"
+          },
+          "digestibility": {
+            "state": "unbottleable",
+            "missing": [
+              "person or role",
+              "domain",
+              "problem"
+            ],
+            "reason": "Not bottleable yet. No person, no domain, and no problem are present. There is nothing to work with.",
+            "can_seal": false,
+            "requires_followup_before_seal": true
+          },
+          "followup": {
+            "needed": true,
+            "question": "Who is this for, and what problem are they sitting with before they find it?"
+          },
+          "m1_setup": {
+            "question": "Name the specific person this starts from and the moment life got harder for them.",
+            "hint": "A good answer names a real person, what they were dealing with, and what went wrong.",
+            "person_label": "Person",
+            "person_placeholder": null,
+            "when_label": "When",
+            "when_placeholder": null,
+            "trying_label": "What they were trying to do",
+            "trying_placeholder": null,
+            "happened_label": "What happened",
+            "happened_placeholder": null
+          },
+          "person_in_spark": {
+            "grade": "none",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-4-6",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T16:58:10Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T16:58:16Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T16:58:09Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11998000",
+                "tokens-reset": "2026-10-21T16:58:10Z"
+              },
+              "model": "claude-sonnet-4-6",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "```json\n{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"Something that makes life easier.\",\n  \"user_line_candidate\": \"Something that makes life easier.\",\n  \"spark_parse\": {\n    \"solution_form\": null,\n    \"implied_person\": null,\n    \"suspected_problem\": null,\n    \"triggering_situation\": null,\n    \"promised_change\": null,\n    \"domain\": null,\n    \"solution_is_software\": \"unstated\"\n  },\n  \"digestibility\": {\n    \"state\": \"unbottleable\",\n    \"missing\": [\"person or role\", \"domain\", \"problem\"],\n    \"reason\": \"Not bottleable yet. No person, no domain, and no problem are present. There is nothing to work with.\",\n    \"can_seal\": false,\n    \"requires_followup_before_seal\": true\n  },\n  \"followup\": {\n    \"needed\": true,\n    \"question\": \"Who is this for, and what problem are they sitting with before they find it?\"\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the specific person this starts from and the moment life got harder for them.\",\n    \"hint\": \"A good answer names a real person, what they were dealing with, and what went wrong.\",\n    \"person_label\": \"Person\",\n    \"person_placeholder\": null,\n    \"when_label\": \"When\",\n    \"when_placeholder\": null,\n    \"trying_label\": \"What they were trying to do\",\n    \"trying_placeholder\": null,\n    \"happened_label\": \"What happened\",\n    \"happened_placeholder\": null\n  },\n  \"person_in_spark\": {\n    \"grade\": \"none\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}\n```",
+              "usage": {
+                "input_tokens": 3628,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 449,
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ]
+        },
+        "summary": "digestibility=unbottleable · in_scope=true · followup_needed=true",
+        "ts": "2026-10-21T16:58:16.139Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M0: unbottleable, nothing to bottle."
+  }
+}
