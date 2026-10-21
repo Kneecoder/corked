@@ -2498,7 +2498,8 @@ function buildMechs() {
         ? `Set your own experience aside. Who else hits this? Name one person and tell me what they have actually done about it.`
         : `Set ${grapeName} aside. Who else hits this? Name one person and tell me what they have actually done about it.`,
       hint: '',
-      els:['echo','vintage'],
+      // No Vintage here: a third party's moment counts for the Echo. The Vintage comes from M2 only.
+      els:['echo'],
       activeEl:'echo',
       obs: () => S.m3?.observation?.surface_text || null
     },
@@ -2509,7 +2510,7 @@ function buildMechs() {
         ? `You are one kind of person with this. Who is a different kind, and does it look the same for them?`
         : `${grapeName} is one kind of person with this. Who is a different kind, and does it look the same for them?`,
       hint: '',
-      els:['echo','vintage'],
+      els:['echo'],
       activeEl:'echo',
       obs: () => S.m4?.observation?.surface_text || null
     },
@@ -3645,6 +3646,13 @@ function setLastSource(key, mechId) {
   S.lastSource[key] = mechId;
 }
 
+// The mechanism an element reopens through: whichever last graded it, else its canonical source.
+// The Vintage always reopens through M2, also on an older bottle where M3 or M4 last moved it.
+function reopenSource(key, defaults) {
+  if (key === 'vintage') return 'M2';
+  return (S.lastSource && S.lastSource[key]) || defaults[key];
+}
+
 function applyAnchoredResult(key, result, txt, changedRows, settledLabel, weakLabel, mechId) {
   const ok = ['turbid', 'clearing', 'settled'];
   const prior = S.elements[key];
@@ -3701,8 +3709,8 @@ function gradeStatesValid(mechId, data) {
   if (!data || typeof data !== 'object' || !GRADE_STATES.includes(data.state)) return false;
   const bars = {
     M2: ['tell', 'vintage'].concat(S.m2_problem?.gap_in_play ? ['gap'] : []),
-    M3: ['echo', 'vintage'],
-    M4: ['echo', 'vintage'],
+    M3: ['echo'],
+    M4: ['echo'],
     M5: ['gap'],
     M6: ['tell'].concat(data.echo ? ['echo'] : []),
     M7: ['limit']
@@ -4291,8 +4299,7 @@ async function applyM3Result(data, txt, allowSwirl = true) {
   S.m3 = data;
   const changedRows = [];
 
-  applyAnchoredResult('echo',    data.echo,    txt, changedRows, 'Third-party confirmation', 'Partial confirmation', 'M3');
-  applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance',        'Partial moment', 'M3');
+  applyAnchoredResult('echo', data.echo, txt, changedRows, 'Third-party confirmation', 'Partial confirmation', 'M3');
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
 
@@ -4384,8 +4391,7 @@ async function callM4Worker(txt) {
 async function applyM4Result(data, txt, allowSwirl = true) {
   S.m4 = data;
   const changedRows = [];
-  applyAnchoredResult('echo',    data.echo,    txt, changedRows, 'Contrast', 'Partial contrast', 'M4');
-  applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance',   'Partial moment', 'M4');
+  applyAnchoredResult('echo', data.echo, txt, changedRows, 'Contrast', 'Partial contrast', 'M4');
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
 
@@ -5043,7 +5049,7 @@ function reviewEl(key) {
   // Reopen path: offer re-answer if element is not yet settled.
   // tell/echo can be sourced by more than one mechanism, so route to whichever last graded them.
   const REOPEN_DEFAULTS = { tell:'M2', vintage:'M2', gap:'M5', echo:'M3', limit:'M7' };
-  const reopenMechId = (S.lastSource && S.lastSource[key]) || REOPEN_DEFAULTS[key];
+  const reopenMechId = reopenSource(key, REOPEN_DEFAULTS);
   const reopenSection = document.getElementById('rv-reopen');
   if (reopenMechId && S.elements[key] !== 'settled' && S.answers[reopenMechId]) {
     const rm = M.find(m => m.id === reopenMechId);
@@ -5206,7 +5212,7 @@ async function openLabelReopen(key) {
   const st = S.elements[key];
   if ((st !== 'turbid' && st !== 'clearing') || !isElementSourced(key)) return;
 
-  const mechId = (S.lastSource && S.lastSource[key]) || LABEL_REOPEN_DEFAULTS[key];
+  const mechId = reopenSource(key, LABEL_REOPEN_DEFAULTS);
   if (!mechId || (mechId !== 'M1' && !S.answers[mechId])) return;
 
   _labelReopenKey = key;

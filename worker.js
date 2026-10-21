@@ -748,24 +748,14 @@ GRAPE EXCLUSION RULE — critical:
 If the answer describes only what the grape (the person named in the problem) does or has done, Echo is turbid regardless of how specific the behaviour is. M3 is explicitly looking for someone other than the grape.
 You have the grape's name. Apply this rule precisely: if every person in the answer is the grape or the founder, Echo is turbid.
 
-VINTAGE BAR — specific moment:
-settled:  The workaround or behaviour is anchored to a specific past instance. A named time, a concrete situation, one event.
-          "Last month when her client needed it filed" = settled.
-          "When he was setting up his end-of-year accounts" = settled.
-clearing: A workaround is described but recurring or unanchored. A general habit, a pattern. "She always just does it manually" = clearing.
-turbid:   No time anchor at all. No specific instance referenced.
-
 OVERALL STATE:
 state equals echo.state. Full stop.
-The Vintage is opportunistic in M3: grade it only when the answer already
-carries a moment. It may rank the Vintage element up. It never lowers the
-overall state and never blocks. The floor-of-active-bars rule belongs to M2
+The floor-of-active-bars rule belongs to M2
 and must not be applied here.
 
 OBSERVATION:
-Two short declarative sentences. Monotone lab register.
+One short declarative sentence. Monotone lab register.
 Sentence one: what the Echo bar found — whether a real third party is present, and what their concrete behaviour looks like.
-Sentence two: what the Vintage bar found — whether a specific instance is present or only a recurring pattern.
 When a verbatim span from the answer directly supports a finding, use it as anchor_span.
 
 ANTI-FABRICATION:
@@ -826,15 +816,8 @@ SELF-AS-GRAPE (maturity_class 2):
 The grape is the founder. The Echo can never be the speaker. Any answer about the founder's own behaviour
 grades Echo turbid. M4 in self mode is only satisfied by a separate person.
 
-VINTAGE BAR — specific moment (opportunistic):
-settled:  The workaround or behaviour is anchored to one specific past instance.
-clearing: A workaround is described but recurring or unanchored.
-turbid:   No time anchor at all.
-
 OVERALL STATE:
 state equals echo.state. Full stop.
-The Vintage is opportunistic: grade it only when the answer already carries a moment. It may rank up the
-Vintage element. It never lowers the overall state and never blocks.
 
 CONTRAST CAPTURE:
 Independently of the Echo bar, grade whether the answer's second person is a different kind of person than
@@ -849,10 +832,9 @@ This is a capture, not a gate. It never changes echo.state and never blocks sett
 (no real second person), set is_different_kind and same_or_different to "unclear" and anchor_span to null.
 
 OBSERVATION:
-Two short declarative sentences. Monotone lab register.
+One short declarative sentence. Monotone lab register.
 Sentence one: what the Echo bar found — whether a new real third party is present, and what their
 concrete behaviour looks like.
-Sentence two: what the Vintage bar found — whether a specific instance is present or only a pattern.
 
 ANTI-FABRICATION:
 Do not invent person, behaviour, workaround, or moment detail not present in the answer.
@@ -893,12 +875,8 @@ Return exactly this JSON shape:
     "state": "turbid|clearing|settled",
     "anchor_span": "verbatim from user_answer or null"
   },
-  "vintage": {
-    "state": "turbid|clearing|settled",
-    "anchor_span": "verbatim from user_answer or null"
-  },
   "observation": {
-    "surface_text": "max 280 chars, two sentences, lab register",
+    "surface_text": "max 280 chars, one sentence, lab register",
     "anchor_span": "verbatim from user_answer or null"
   },
   "substitution_detected": true|false,
@@ -928,17 +906,13 @@ Return exactly this JSON shape:
     "state": "turbid|clearing|settled",
     "anchor_span": "verbatim from user_answer or null"
   },
-  "vintage": {
-    "state": "turbid|clearing|settled",
-    "anchor_span": "verbatim from user_answer or null"
-  },
   "contrast": {
     "is_different_kind": "true|false|unclear",
     "same_or_different": "same|different|unclear",
     "anchor_span": "verbatim from user_answer or null"
   },
   "observation": {
-    "surface_text": "max 280 chars, two sentences, lab register",
+    "surface_text": "max 280 chars, one sentence, lab register",
     "anchor_span": "verbatim from user_answer or null"
   },
   "substitution_detected": true|false,
@@ -2463,7 +2437,7 @@ async function handleM3(request, env, corsHeaders) {
     mechanism:    'M3',
     doctrine:     M3_DOCTRINE,
     buildMessage: buildM3UserMessage,
-    bars:         ['echo', 'vintage'],
+    bars:         ['echo'],
     primaryBar:   'echo'
   });
 }
@@ -2609,9 +2583,7 @@ async function handleM4(request, env, corsHeaders) {
     throw new Error('Invalid M4 response');
   }
   // A bar without a valid state is a failed grade, never a default Turbid.
-  for (const bar of ['echo', 'vintage']) {
-    if (!allowedStates.includes(parsed[bar]?.state)) throw new Error(`Invalid M4 grade: ${bar} state`);
-  }
+  if (!allowedStates.includes(parsed.echo?.state)) throw new Error('Invalid M4 grade: echo state');
   if (parsed.contrast) {
     parsed.contrast.is_different_kind = String(parsed.contrast.is_different_kind);
     parsed.contrast.same_or_different = String(parsed.contrast.same_or_different);
@@ -2628,7 +2600,7 @@ async function handleM4(request, env, corsHeaders) {
     if (obj?.[key] && !normAnswer.includes(norm(obj[key]))) { obj[key] = null; return false; }
     return !!obj?.[key];
   };
-  for (const bar of ['echo', 'vintage']) verifySpan(parsed[bar], 'anchor_span');
+  verifySpan(parsed.echo, 'anchor_span');
   verifySpan(parsed.contrast, 'anchor_span');
   verifySpan(parsed.observation, 'anchor_span');
 
