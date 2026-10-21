@@ -10,3 +10,6 @@
 - Held questions and parked returns come back on the due day at the start of the builder's picked part of the day. An answer or park before 05:00 counts as the previous day.
 - The door: the spark as typed is the User Line v1, recorded permanently. M0 parses for routing and decides only two things: is it software, and is there anything to bottle. Nothing M0 writes is shown: no line, no grade, no question at the door. The first session proves Corked at the grape step and M2's first question, not with a compressed line. This replaces the v47 M0 sentences that say it produces the User Line and that the first session shows the compressed Line.
 - The maturity questions ask about the person the spark comes from, never "this problem".
+
+## 21 Oct
+- Only a moment that happened to the grape settles the Vintage. A moment that arrives through M3 or M4 belongs to that third party: it counts for the Echo and never moves the Vintage. The Vintage comes from M2 only: its answer, its follow-up and its reopen. A record where one person's moment settles another person's Vintage is the named pair collision v47 already calls Conflicted: the recorded behaviour is not a response to the recorded occasion. This replaces the v47 lines that source the Vintage "from M2, and opportunistically from M3" and that make the Vintage opportunistic in M3.
