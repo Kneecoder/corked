@@ -729,6 +729,11 @@ clearing: A category of known sufferers, with or without a named workaround.
           Also clearing: a third party implied without concrete behaviour.
 turbid:   No third party at all. Only the grape, the founder, or pure
           assumption. The founder's inference about what others must do is turbid.
+          Also turbid: a named person who says the confirmed problem does not
+          apply to them (it is fine for them, they have it under control, their
+          pain is something else). They have not hit the same problem. Echo is
+          turbid however concrete their behaviour. A person without the problem
+          never moves the Echo up.
 
 SUBSTITUTION RULE:
 If the answer describes the founder's build, stack, architecture, or feature
@@ -796,6 +801,9 @@ clearing: A category of additional sufferers, or vague "others I know", or a per
           The workaround does not rescue a category. One identifiable person is the bar.
 turbid:   No new third party at all. Only the grape, the founder, a repetition of the prior echo answer,
           or pure assumption. The founder's inference about what others must do is turbid.
+          Also turbid: a named person who says the confirmed problem does not apply to them (it is fine for
+          them, they have it under control, their pain is something else). They have not hit the same problem.
+          Echo is turbid however concrete their behaviour. A person without the problem never moves the Echo up.
 
 PRIOR ECHO EXCLUSION RULE:
 If prior_echo_context names a person and the current answer appears to describe the same person (same name,
