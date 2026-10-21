@@ -14,7 +14,9 @@ Corked is an idea-aging app for solo software builders. You cork a spark, it age
 - List anything you added that the brief didn't ask for.
 - Commit before every deploy. Commit, push, give the hash.
 - If a deploy needs a login or anything else from Jamie, stop and tell him.
-- Jamie's click-through in his own browser decides whether something works. Never report a pass. Don't open the app in a browser, Playwright or anything else to check your own work.
+- Never report a pass. Jamie checks screens in real use.
+- Logic is checked by scripted runs, not click-throughs: grades, element states, routing and history log entries. The brief states the scenario and the expected results before any code changes. The script drives the real app in a headless browser against the live worker, exports the cellar, and saves the raw JSON in the repo. Report what happened against each expected result. If an expected result fails, report it and stop. Never change the app or the expectations to make a run pass.
+- Outside a scripted run a brief asks for, don't open the app in a browser, Playwright or anything else to check your own work.
 - Every new or changed sentence of user-facing copy goes in the report, in full.
 - Reports in plain words and short sentences.
 
