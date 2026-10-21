@@ -1,0 +1,1132 @@
+{
+  "idx": 2,
+  "cfg": {
+    "raw_spark": "A tool for freelance designers because Moneybird's payment reminders only go out after an invoice is already two weeks overdue.",
+    "maturity": 0,
+    "grapeName": "Sanne",
+    "grapeRel": "my old classmate, freelance designer",
+    "answers": {
+      "m2": "Two Fridays ago Sanne opened Moneybird, saw the reminder for the Bakker invoice had only just gone out on day 15, and called the client herself while it was still on screen.",
+      "m3": "My colleague Jordan, another freelance designer, told me last month he now sends his own manual reminder on day three because he can't wait two weeks for the system to catch it.",
+      "m4": "Priya, a bookkeeper I met at a workshop, keeps a spreadsheet that flags anything unpaid after a week. For her the pain is matching payments to invoices, the reminder timing part is fine.",
+      "m5": "Sanne uses Moneybird's built-in reminder schedule, but it only fires at the two-week mark, so by then the client has already forgotten the invoice existed.",
+      "m6": "\"I am done chasing money like it's my fault,\" she said after the Bakker one.",
+      "m7": "Owen does retainer illustration work for two agencies. Late payments cost him nothing because the retainer bills monthly whether projects ship or not."
+    },
+    "expectHalt": false,
+    "note": "gap_in_play true. Expect: Phase A sets gap_in_play true (tool named plus failure). M2 grades three bars; gap settles from the answer, not the spark text. Floor rule holds."
+  },
+  "outcome": "PASS (completed full chain)",
+  "run": {
+    "workerUrl": "http://127.0.0.1:8791",
+    "raw_spark": "A tool for freelance designers because Moneybird's payment reminders only go out after an invoice is already two weeks overdue.",
+    "maturity": 0,
+    "grapeName": "Sanne",
+    "grapeRel": "my old classmate, freelance designer",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "A tool for freelance designers because Moneybird's payment reminders only go out after an invoice is already two weeks overdue.",
+      "user_line_candidate": "A tool for freelance designers when Moneybird's payment reminders only go out after an invoice is already two weeks overdue.",
+      "spark_parse": {
+        "solution_form": "tool",
+        "implied_person": "freelance designers",
+        "suspected_problem": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
+        "triggering_situation": null,
+        "promised_change": null,
+        "domain": "payment reminders, invoices, Moneybird",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "cellar_ready",
+        "missing": [],
+        "reason": "Cellar-ready. The role is freelance designers and the stated problem is Moneybird reminders going out only after an invoice is two weeks overdue. Both are in the Spark's own words.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": false,
+        "question": null
+      },
+      "m1_setup": {
+        "question": "Name the one freelance designer you saw dealing with an invoice that was already late before Moneybird sent a reminder, and when it happened.",
+        "hint": "A good answer is one real designer and one real invoice, not designers in general.",
+        "person_label": "Designer",
+        "person_placeholder": "Lisa, freelance brand designer",
+        "when_label": "When the invoice was late",
+        "when_placeholder": "the week after the invoice due date passed",
+        "trying_label": "What they were trying to do",
+        "trying_placeholder": "get a client invoice paid",
+        "happened_label": "What happened with the reminder",
+        "happened_placeholder": "The invoice sat unpaid past its due date and no reminder had gone out yet."
+      },
+      "person_in_spark": {
+        "grade": "none",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": false
+      }
+    },
+    "userLine": "A tool for freelance designers because Moneybird's payment reminders only go out after an invoice is already two weeks overdue.",
+    "sparkParse": {
+      "solution_form": "tool",
+      "implied_person": "freelance designers",
+      "suspected_problem": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
+      "triggering_situation": null,
+      "promised_change": null,
+      "domain": "payment reminders, invoices, Moneybird",
+      "solution_is_software": "software"
+    },
+    "domain": "payment reminders, invoices, Moneybird",
+    "gapInPlay": true,
+    "problem": {
+      "text": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
+      "source": "user_stated",
+      "status": "confirmed"
+    },
+    "phaseAOutcome": "stated",
+    "answers": {
+      "M1": "my old classmate, freelance designer",
+      "M2": "Two Fridays ago Sanne opened Moneybird, saw the reminder for the Bakker invoice had only just gone out on day 15, and called the client herself while it was still on screen.",
+      "M3": "My colleague Jordan, another freelance designer, told me last month he now sends his own manual reminder on day three because he can't wait two weeks for the system to catch it.",
+      "M4": "Priya, a bookkeeper I met at a workshop, keeps a spreadsheet that flags anything unpaid after a week. For her the pain is matching payments to invoices, the reminder timing part is fine.",
+      "M5": "Sanne uses Moneybird's built-in reminder schedule, but it only fires at the two-week mark, so by then the client has already forgotten the invoice existed.",
+      "M6": "\"I am done chasing money like it's my fault,\" she said after the Bakker one.",
+      "M7": "Owen does retainer illustration work for two agencies. Late payments cost him nothing because the retainer bills monthly whether projects ship or not."
+    },
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A tool for freelance designers because Moneybird's payment reminders only go out after an invoice is already two weeks overdue."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "A tool for freelance designers because Moneybird's payment reminders only go out after an invoice is already two weeks overdue.",
+          "user_line_candidate": "A tool for freelance designers when Moneybird's payment reminders only go out after an invoice is already two weeks overdue.",
+          "spark_parse": {
+            "solution_form": "tool",
+            "implied_person": "freelance designers",
+            "suspected_problem": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "payment reminders, invoices, Moneybird",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "cellar_ready",
+            "missing": [],
+            "reason": "Cellar-ready. The role is freelance designers and the stated problem is Moneybird reminders going out only after an invoice is two weeks overdue. Both are in the Spark's own words.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": false,
+            "question": null
+          },
+          "m1_setup": {
+            "question": "Name the one freelance designer you saw dealing with an invoice that was already late before Moneybird sent a reminder, and when it happened.",
+            "hint": "A good answer is one real designer and one real invoice, not designers in general.",
+            "person_label": "Designer",
+            "person_placeholder": "Lisa, freelance brand designer",
+            "when_label": "When the invoice was late",
+            "when_placeholder": "the week after the invoice due date passed",
+            "trying_label": "What they were trying to do",
+            "trying_placeholder": "get a client invoice paid",
+            "happened_label": "What happened with the reminder",
+            "happened_placeholder": "The invoice sat unpaid past its due date and no reminder had gone out yet."
+          },
+          "person_in_spark": {
+            "grade": "none",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9998000",
+                "input-tokens-reset": "2026-10-21T17:40:42Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "1999000",
+                "output-tokens-reset": "2026-10-21T17:40:45Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:40:41Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11997000",
+                "tokens-reset": "2026-10-21T17:40:42Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m0.v1\",\n  \"mechanism\": \"M0\",\n  \"raw_spark\": \"A tool for freelance designers because Moneybird's payment reminders only go out after an invoice is already two weeks overdue.\",\n  \"user_line_candidate\": \"A tool for freelance designers when Moneybird's payment reminders only go out after an invoice is already two weeks overdue.\",\n  \"spark_parse\": {\n    \"solution_form\": \"tool\",\n    \"implied_person\": \"freelance designers\",\n    \"suspected_problem\": \"Moneybird's payment reminders only go out after an invoice is already two weeks overdue\",\n    \"triggering_situation\": null,\n    \"promised_change\": null,\n    \"domain\": \"payment reminders, invoices, Moneybird\",\n    \"solution_is_software\": \"software\"\n  },\n  \"digestibility\": {\n    \"state\": \"cellar_ready\",\n    \"missing\": [],\n    \"reason\": \"Cellar-ready. The role is freelance designers and the stated problem is Moneybird reminders going out only after an invoice is two weeks overdue. Both are in the Spark's own words.\",\n    \"can_seal\": true,\n    \"requires_followup_before_seal\": false\n  },\n  \"followup\": {\n    \"needed\": false,\n    \"question\": null\n  },\n  \"m1_setup\": {\n    \"question\": \"Name the one freelance designer you saw dealing with an invoice that was already late before Moneybird sent a reminder, and when it happened.\",\n    \"hint\": \"A good answer is one real designer and one real invoice, not designers in general.\",\n    \"person_label\": \"Designer\",\n    \"person_placeholder\": \"Lisa, freelance brand designer\",\n    \"when_label\": \"When the invoice was late\",\n    \"when_placeholder\": \"the week after the invoice due date passed\",\n    \"trying_label\": \"What they were trying to do\",\n    \"trying_placeholder\": \"get a client invoice paid\",\n    \"happened_label\": \"What happened with the reminder\",\n    \"happened_placeholder\": \"The invoice sat unpaid past its due date and no reminder had gone out yet.\"\n  },\n  \"person_in_spark\": {\n    \"grade\": \"none\",\n    \"named_person\": null,\n    \"relationship_tie\": null\n  }\n}",
+              "usage": {
+                "input_tokens": 4841,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 727,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "digestibility=cellar_ready · in_scope=true · followup_needed=false",
+        "ts": "2026-10-21T17:40:45.889Z"
+      },
+      {
+        "mech": "M1",
+        "endpoint": "/m1",
+        "kind": "main",
+        "request": {
+          "spark_summary": "A tool for freelance designers because Moneybird's payment reminders only go out after an invoice is already two weeks overdue.",
+          "person_name": "Sanne",
+          "relationship": "my old classmate, freelance designer",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "settled",
+          "grape": {
+            "state": "settled",
+            "named_person": "Sanne",
+            "person_kind": "named_individual",
+            "temporal_grounding": "none"
+          },
+          "observation": {
+            "surface_text": "Sanne is a named individual with a stated tie, an old classmate who works as a freelance designer. The grape is settled.",
+            "anchor_span": "my old classmate, freelance designer"
+          },
+          "next_question": {
+            "should_advance": true,
+            "framing": "Move to a specific moment when Sanne dealt with an overdue invoice."
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "anchor_verified": true,
+            "visible_style_violations_cleaned": []
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "10000000",
+                "input-tokens-reset": "2026-10-21T17:40:47Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:40:48Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:40:46Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "12000000",
+                "tokens-reset": "2026-10-21T17:40:47Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m1.v1\",\n  \"mechanism\": \"M1\",\n  \"outcome\": \"settled\",\n  \"grape\": {\n    \"state\": \"settled\",\n    \"named_person\": \"Sanne\",\n    \"person_kind\": \"named_individual\",\n    \"temporal_grounding\": \"none\"\n  },\n  \"observation\": {\n    \"surface_text\": \"Sanne is a named individual with a stated tie, an old classmate who works as a freelance designer. The grape is settled.\",\n    \"anchor_span\": \"my old classmate, freelance designer\"\n  },\n  \"next_question\": {\n    \"should_advance\": true,\n    \"framing\": \"Move to a specific moment when Sanne dealt with an overdue invoice.\"\n  }\n}",
+              "usage": {
+                "input_tokens": 1133,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 236,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=n/a · swirl=no · changed=[Grape]",
+        "ts": "2026-10-21T17:40:48.313Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (phase A)",
+        "kind": "main",
+        "request": {
+          "phase": "problem",
+          "raw_spark": "A tool for freelance designers because Moneybird's payment reminders only go out after an invoice is already two weeks overdue.",
+          "user_line": "A tool for freelance designers because Moneybird's payment reminders only go out after an invoice is already two weeks overdue.",
+          "spark_parse": {
+            "solution_form": "tool",
+            "implied_person": "freelance designers",
+            "suspected_problem": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "payment reminders, invoices, Moneybird",
+            "solution_is_software": "software"
+          },
+          "grape_name": "Sanne",
+          "grape_relationship": "my old classmate, freelance designer",
+          "maturity_class": 0
+        },
+        "response": {
+          "schema_version": "m2.v2",
+          "mechanism": "M2",
+          "phase": "problem",
+          "outcome": "stated",
+          "problem": {
+            "text": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": true,
+          "question": "What specific moment did Sanne run into Moneybird's payment reminders only going out two weeks after an invoice was overdue, and what did she actually do about it?",
+          "recovered_problem": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
+          "needs_confirmation": false,
+          "server_checks": {
+            "schema_valid": true,
+            "model_outcome": "stated",
+            "outcome": "stated",
+            "downgrades": [],
+            "unsupported_words": [],
+            "visible_style_violations_cleaned": [],
+            "m2_question_repaired": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:40:49Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:40:50Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:40:48Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:40:49Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m2.v2\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"problem\",\n  \"outcome\": \"stated\",\n  \"stated_span\": \"Moneybird's payment reminders only go out after an invoice is already two weeks overdue\",\n  \"problem\": null,\n  \"gap_in_play\": true,\n  \"question\": \"What specific moment did Sanne run into Moneybird's payment reminders only going out two weeks after an invoice was overdue, and what did she actually do about it?\"\n}",
+              "usage": {
+                "input_tokens": 1658,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 168,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "outcome=stated · problem=\"Moneybird's payment reminders only go out after an invoice is already two weeks overdue\" (user_stated) · gap_in_play=true",
+        "ts": "2026-10-21T17:40:50.270Z"
+      },
+      {
+        "mech": "M2",
+        "endpoint": "/m2",
+        "kind": "main",
+        "request": {
+          "user_line": "A tool for freelance designers because Moneybird's payment reminders only go out after an invoice is already two weeks overdue.",
+          "grape_name": "Sanne",
+          "grape_relationship": "my old classmate, freelance designer",
+          "maturity_class": 0,
+          "problem": {
+            "text": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "gap_in_play": true,
+          "user_answer": "Two Fridays ago Sanne opened Moneybird, saw the reminder for the Bakker invoice had only just gone out on day 15, and called the client herself while it was still on screen."
+        },
+        "response": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "settled",
+          "tell": {
+            "state": "settled",
+            "anchor_span": "called the client herself while it was still on screen"
+          },
+          "vintage": {
+            "state": "settled",
+            "anchor_span": "Two Fridays ago"
+          },
+          "gap": {
+            "state": "settled",
+            "anchor_span": "the reminder for the Bakker invoice had only just gone out on day 15"
+          },
+          "observation": {
+            "surface_text": "Sanne's action is observable: she phoned the client herself with the reminder still on screen. The moment is anchored to two Fridays ago. Moneybird is named, and its failure is stated as the Bakker reminder going out only on day 15.",
+            "anchor_span": "called the client herself while it was still on screen"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": true,
+            "gap_anchor_verified": true,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:40:51Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:40:53Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:40:50Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:40:51Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m2.v1\",\n  \"mechanism\": \"M2\",\n  \"phase\": \"friction\",\n  \"state\": \"settled\",\n  \"tell\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"called the client herself while it was still on screen\"\n  },\n  \"vintage\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Two Fridays ago\"\n  },\n  \"gap\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"the reminder for the Bakker invoice had only just gone out on day 15\"\n  },\n  \"observation\": {\n    \"surface_text\": \"Sanne's action is observable: she phoned the client herself with the reminder still on screen. The moment is anchored to two Fridays ago. Moneybird is named, and its failure is stated as the Bakker reminder going out only on day 15.\",\n    \"anchor_span\": \"called the client herself while it was still on screen\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 2055,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 315,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Tell, Vintage, Gap]",
+        "ts": "2026-10-21T17:40:53.307Z"
+      },
+      {
+        "mech": "M3",
+        "endpoint": "/m3",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Sanne",
+          "grape_relationship": "my old classmate, freelance designer",
+          "maturity_class": 0,
+          "user_answer": "My colleague Jordan, another freelance designer, told me last month he now sends his own manual reminder on day three because he can't wait two weeks for the system to catch it."
+        },
+        "response": {
+          "schema_version": "m3.v1",
+          "mechanism": "M3",
+          "state": "settled",
+          "echo": {
+            "state": "settled",
+            "anchor_span": "he now sends his own manual reminder on day three because he can't wait two weeks for the system to catch it"
+          },
+          "observation": {
+            "surface_text": "The answer names one separate person, Jordan, who is neither the grape nor the founder, and records one concrete behaviour: a manual reminder on day three to work around the two-week delay.",
+            "anchor_span": "he now sends his own manual reminder on day three"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:40:54Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:40:55Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:40:53Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:40:54Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m3.v1\",\n  \"mechanism\": \"M3\",\n  \"state\": \"settled\",\n  \"echo\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"he now sends his own manual reminder on day three because he can't wait two weeks for the system to catch it\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names one separate person, Jordan, who is neither the grape nor the founder, and records one concrete behaviour: a manual reminder on day three to work around the two-week delay.\",\n    \"anchor_span\": \"he now sends his own manual reminder on day three\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 1884,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 215,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Echo]",
+        "ts": "2026-10-21T17:40:55.367Z"
+      },
+      {
+        "mech": "M4",
+        "endpoint": "/m4",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Sanne",
+          "grape_relationship": "my old classmate, freelance designer",
+          "maturity_class": 0,
+          "prior_echo_context": "My colleague Jordan, another freelance designer, told me last month he now sends his own manual reminder on day three because he can't wait two weeks for the system to catch it.",
+          "user_answer": "Priya, a bookkeeper I met at a workshop, keeps a spreadsheet that flags anything unpaid after a week. For her the pain is matching payments to invoices, the reminder timing part is fine."
+        },
+        "response": {
+          "schema_version": "m4.v1",
+          "mechanism": "M4",
+          "state": "turbid",
+          "echo": {
+            "state": "turbid",
+            "anchor_span": "For her the pain is matching payments to invoices, the reminder timing part is fine."
+          },
+          "contrast": {
+            "is_different_kind": "unclear",
+            "same_or_different": "unclear",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "The answer names a new person with concrete behaviour, but she states the reminder timing is fine for her, so she has not hit the confirmed problem.",
+            "anchor_span": "the reminder timing part is fine"
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "Is there a person you know who has actually waited on a late payment and acted on it, rather than one whose pain sits somewhere else?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:40:57Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:40:58Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:40:55Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:40:57Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m4.v1\",\n  \"mechanism\": \"M4\",\n  \"state\": \"turbid\",\n  \"echo\": {\n    \"state\": \"turbid\",\n    \"anchor_span\": \"For her the pain is matching payments to invoices, the reminder timing part is fine.\"\n  },\n  \"contrast\": {\n    \"is_different_kind\": \"unclear\",\n    \"same_or_different\": \"unclear\",\n    \"anchor_span\": null\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names a new person with concrete behaviour, but she states the reminder timing is fine for her, so she has not hit the confirmed problem.\",\n    \"anchor_span\": \"the reminder timing part is fine\"\n  },\n  \"substitution_detected\": false,\n  \"swirl\": {\n    \"kind\": \"reality\",\n    \"question\": \"Is there a person you know who has actually waited on a late payment and acted on it, rather than one whose pain sits somewhere else?\"\n  }\n}",
+              "usage": {
+                "input_tokens": 2369,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 314,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=turbid · substitution_detected=false · swirl=yes · changed=[none]",
+        "ts": "2026-10-21T17:40:58.912Z"
+      },
+      {
+        "mech": "M5",
+        "endpoint": "/m5",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Sanne",
+          "grape_relationship": "my old classmate, freelance designer",
+          "maturity_class": 0,
+          "user_answer": "Sanne uses Moneybird's built-in reminder schedule, but it only fires at the two-week mark, so by then the client has already forgotten the invoice existed."
+        },
+        "response": {
+          "schema_version": "m5.v1",
+          "mechanism": "M5",
+          "state": "settled",
+          "gap": {
+            "state": "settled",
+            "anchor_span": "Sanne uses Moneybird's built-in reminder schedule, but it only fires at the two-week mark, so by then the client has already forgotten the invoice existed."
+          },
+          "observation": {
+            "surface_text": "The answer names an existing solution: Moneybird's built-in reminder schedule. It also states the precise failure point: reminders fire only at the two-week mark, after the client has forgotten the invoice.",
+            "anchor_span": "it only fires at the two-week mark"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:41:00Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:41:01Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:40:59Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:41:00Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m5.v1\",\n  \"mechanism\": \"M5\",\n  \"state\": \"settled\",\n  \"gap\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"Sanne uses Moneybird's built-in reminder schedule, but it only fires at the two-week mark, so by then the client has already forgotten the invoice existed.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names an existing solution: Moneybird's built-in reminder schedule. It also states the precise failure point: reminders fire only at the two-week mark, after the client has forgotten the invoice.\",\n    \"anchor_span\": \"it only fires at the two-week mark\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 1727,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 239,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[none]",
+        "ts": "2026-10-21T17:41:01.220Z"
+      },
+      {
+        "mech": "M6",
+        "endpoint": "/m6",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Sanne",
+          "grape_relationship": "my old classmate, freelance designer",
+          "maturity_class": 0,
+          "words_source": "real",
+          "user_answer": "\"I am done chasing money like it's my fault,\" she said after the Bakker one."
+        },
+        "response": {
+          "schema_version": "m6.v1",
+          "mechanism": "M6",
+          "state": "settled",
+          "words": {
+            "state": "settled",
+            "anchor_span": "\"I am done chasing money like it's my fault,\" she said after the Bakker one."
+          },
+          "tell": {
+            "state": "clearing",
+            "anchor_span": "\"I am done chasing money like it's my fault,\""
+          },
+          "echo": {
+            "state": "turbid",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "The answer carries a direct quote from a real exchange, attributed to Sanne and flagged real. The words state a feeling and a complaint but contain no filmable action and name no third-party statement or act.",
+            "anchor_span": "\"I am done chasing money like it's my fault,\""
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": false
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:41:02Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:41:04Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:41:01Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:41:02Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m6.v1\",\n  \"mechanism\": \"M6\",\n  \"state\": \"settled\",\n  \"words\": {\n    \"state\": \"settled\",\n    \"anchor_span\": \"\\\"I am done chasing money like it's my fault,\\\" she said after the Bakker one.\"\n  },\n  \"tell\": {\n    \"state\": \"clearing\",\n    \"anchor_span\": \"\\\"I am done chasing money like it's my fault,\\\"\"\n  },\n  \"echo\": {\n    \"state\": \"turbid\",\n    \"anchor_span\": null\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer carries a direct quote from a real exchange, attributed to Sanne and flagged real. The words state a feeling and a complaint but contain no filmable action and name no third-party statement or act.\",\n    \"anchor_span\": \"\\\"I am done chasing money like it's my fault,\\\"\"\n  },\n  \"substitution_detected\": false\n}",
+              "usage": {
+                "input_tokens": 2297,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 296,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[none]",
+        "ts": "2026-10-21T17:41:04.313Z"
+      },
+      {
+        "mech": "M7",
+        "endpoint": "/m7",
+        "kind": "main",
+        "request": {
+          "problem": {
+            "text": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          "grape_name": "Sanne",
+          "grape_relationship": "my old classmate, freelance designer",
+          "maturity_class": 0,
+          "user_answer": "Owen does retainer illustration work for two agencies. Late payments cost him nothing because the retainer bills monthly whether projects ship or not."
+        },
+        "response": {
+          "schema_version": "m7.v1",
+          "mechanism": "M7",
+          "state": "clearing",
+          "limit": {
+            "state": "clearing",
+            "anchor_span": "Owen does retainer illustration work for two agencies."
+          },
+          "observation": {
+            "surface_text": "The answer names a bounded exclusion in Owen, a retainer illustrator for two agencies. The stated reason concerns cost of late payment, while the problem is reminders sent two weeks after the due date, so the link to immunity from this problem is unclear.",
+            "anchor_span": "Late payments cost him nothing because the retainer bills monthly whether projects ship or not."
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "Is Owen a person you have seen invoice and wait on payment, or a fitting example assembled to answer the question?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_primary": true,
+            "swirl_included": true
+          }
+        },
+        "calls": {
+          "configured_model": "claude-sonnet-5-5",
+          "calls": [
+            {
+              "status": 200,
+              "ratelimit": {
+                "input-tokens-limit": "10000000",
+                "input-tokens-remaining": "9999000",
+                "input-tokens-reset": "2026-10-21T17:41:05Z",
+                "output-tokens-limit": "2000000",
+                "output-tokens-remaining": "2000000",
+                "output-tokens-reset": "2026-10-21T17:41:07Z",
+                "requests-limit": "10000",
+                "requests-remaining": "9999",
+                "requests-reset": "2026-10-21T17:41:04Z",
+                "tokens-limit": "12000000",
+                "tokens-remaining": "11999000",
+                "tokens-reset": "2026-10-21T17:41:05Z"
+              },
+              "model": "claude-sonnet-5-5",
+              "stop_reason": "end_turn",
+              "blocks": [
+                "text"
+              ],
+              "text": "{\n  \"schema_version\": \"m7.v1\",\n  \"mechanism\": \"M7\",\n  \"state\": \"clearing\",\n  \"limit\": {\n    \"state\": \"clearing\",\n    \"anchor_span\": \"Owen does retainer illustration work for two agencies.\"\n  },\n  \"observation\": {\n    \"surface_text\": \"The answer names a bounded exclusion in Owen, a retainer illustrator for two agencies. The stated reason concerns cost of late payment, while the problem is reminders sent two weeks after the due date, so the link to immunity from this problem is unclear.\",\n    \"anchor_span\": \"Late payments cost him nothing because the retainer bills monthly whether projects ship or not.\"\n  },\n  \"substitution_detected\": false,\n  \"swirl\": {\n    \"kind\": \"reality\",\n    \"question\": \"Is Owen a person you have seen invoice and wait on payment, or a fitting example assembled to answer the question?\"\n  }\n}",
+              "usage": {
+                "input_tokens": 1593,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 0
+                },
+                "output_tokens": 305,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "service_tier": "standard",
+                "inference_geo": "global",
+                "speed": "standard"
+              }
+            }
+          ],
+          "adapter": [
+            {
+              "request_changes": [
+                "thinking: between_tools"
+              ],
+              "original_blocks": [
+                "text"
+              ],
+              "removed_blocks": []
+            }
+          ]
+        },
+        "summary": "state=clearing · substitution_detected=false · swirl=yes · changed=[Limit]",
+        "ts": "2026-10-21T17:41:07.669Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [
+      "M4 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it).",
+      "M6 offered clearing for Tell, held at floor settled (opportunistic grading correctly did not lower it).",
+      "M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it)."
+    ],
+    "halted": false,
+    "elements": {
+      "grape": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M1",
+        "rawGrades": [
+          {
+            "mech": "M1",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "tell": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "clearing"
+          }
+        ]
+      },
+      "vintage": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "gap": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M5",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M5",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "echo": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M6",
+        "rawGrades": [
+          {
+            "mech": "M3",
+            "offeredState": "settled"
+          },
+          {
+            "mech": "M4",
+            "offeredState": "turbid"
+          },
+          {
+            "mech": "M6",
+            "offeredState": "turbid"
+          }
+        ]
+      },
+      "limit": {
+        "state": "clearing",
+        "history": [
+          "inert",
+          "clearing"
+        ],
+        "mech": "M7",
+        "rawGrades": [
+          {
+            "mech": "M7",
+            "offeredState": "clearing"
+          }
+        ]
+      }
+    }
+  }
+}

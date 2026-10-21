@@ -2,9 +2,12 @@
 // no thresholds, no verdict.
 //
 //   node bakeoff/score-bakeoff.mjs runs/2026-10-21-model-bakeoff [--baseline claude-sonnet-4-6]
+//     [--add "<label>=<folder with run-N>"]... [--focus <sparks>:<mechanisms>:<element>]
 //
 // Reads <root>/<model>/run-N/spark-NN.json (written by run-corked-batch.mjs with
 // CORKED_JSON=1 against bakeoff/worker-bakeoff.js) and writes <root>/REPORT.md.
+// --add scores another folder's runs under a label, e.g. a baseline kept elsewhere.
+// --focus adds a per-run table, e.g. 1,2,7:M3,M4:echo.
 //
 // A grade is one element state one mechanism offered in one run. A slot is
 // (spark, mechanism, element). The bar-to-element map mirrors applyMechResult()
@@ -26,10 +29,18 @@ const PRICES = {
 const CACHE_WRITE_X = 1.25;
 const CACHE_READ_X = 0.1;
 
-const args = process.argv.slice(2);
-const root = args.find(a => !a.startsWith('--'));
-const baseline = args.includes('--baseline') ? args[args.indexOf('--baseline') + 1] : 'claude-sonnet-4-6';
-if (!root) { console.error('usage: node bakeoff/score-bakeoff.mjs <runs folder> [--baseline <model>]'); process.exit(1); }
+let root = null, baseline = 'claude-sonnet-4-6', focus = null;
+const adds = [];
+{
+  const args = process.argv.slice(2);
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--baseline') baseline = args[++i];
+    else if (args[i] === '--focus') focus = args[++i];
+    else if (args[i] === '--add') { const a = args[++i]; const eq = a.indexOf('='); adds.push([a.slice(0, eq), a.slice(eq + 1)]); }
+    else root = args[i];
+  }
+}
+if (!root) { console.error('usage: node bakeoff/score-bakeoff.mjs <runs folder> [--baseline <model>] [--add <label>=<folder>]... [--focus <sparks>:<mechanisms>:<element>]'); process.exit(1); }
 
 // ── Load ───────────────────────────────────────────────────────────────────
 
@@ -38,24 +49,31 @@ async function listDirs(dir) {
   return entries.filter(e => e.isDirectory()).map(e => e.name).sort();
 }
 
+async function loadRuns(modelDir) {
+  const runs = [];
+  for (const runDir of (await listDirs(modelDir)).filter(d => /^run-\d+$/.test(d))) {
+    const files = (await fs.readdir(path.join(modelDir, runDir))).filter(f => /^spark-\d+\.json$/.test(f)).sort();
+    const sparks = {};
+    for (const f of files) {
+      const rec = JSON.parse(await fs.readFile(path.join(modelDir, runDir, f), 'utf8'));
+      sparks[rec.idx] = rec;
+    }
+    runs.push({ name: runDir, sparks });
+  }
+  return runs;
+}
+
+// Baseline first, then --add folders in the order given, then the root's own models.
 async function load() {
   const models = {};
+  for (const [label, dir] of adds) models[label] = await loadRuns(dir);
   for (const model of await listDirs(root)) {
-    const runs = [];
-    const runDirs = (await listDirs(path.join(root, model))).filter(d => /^run-\d+$/.test(d));
-    if (!runDirs.length) continue; // smoke/, as-written/ and anything else that is not a model's runs
-    for (const runDir of runDirs) {
-      const files = (await fs.readdir(path.join(root, model, runDir))).filter(f => /^spark-\d+\.json$/.test(f)).sort();
-      const sparks = {};
-      for (const f of files) {
-        const rec = JSON.parse(await fs.readFile(path.join(root, model, runDir, f), 'utf8'));
-        sparks[rec.idx] = rec;
-      }
-      runs.push({ name: runDir, sparks });
-    }
-    models[model] = runs;
+    if (model in models) continue;
+    const runs = await loadRuns(path.join(root, model));
+    if (runs.length) models[model] = runs; // smoke/, as-written/ and other folders without run-N are skipped
   }
-  return models;
+  const order = [baseline].concat(Object.keys(models).filter(m => m !== baseline));
+  return Object.fromEntries(order.filter(m => models[m]).map(m => [m, models[m]]));
 }
 
 // ── Grades ─────────────────────────────────────────────────────────────────
@@ -245,7 +263,7 @@ function cost(model, runs) {
         if ((c.apiBlocks || []).includes('thinking')) thinkingCalls++;
         cin += (c.usage.input_tokens || 0) + (c.usage.cache_creation_input_tokens || 0) + (c.usage.cache_read_input_tokens || 0);
         cout += c.usage.output_tokens || 0;
-        cusd += dollars(model, c.usage) || 0;
+        cusd += dollars(PRICES[c.model] ? c.model : model, c.usage) || 0;
       }
       inTok += cin; outTok += cout; usd += cusd;
       if (!rec.run.halted) chains.push({ in: cin, out: cout, usd: cusd });
@@ -439,7 +457,7 @@ async function main() {
   L.push('');
   L.push('## What each model ran with');
   L.push('');
-  L.push('worker.js unchanged for every model. Where a model ran through an adapter in the bake-off wrapper, the changes it made to each Anthropic call are counted here.');
+  L.push('Which worker.js each model ran is in this folder\'s README. Where a model ran through an adapter in the bake-off wrapper, the changes it made to each Anthropic call are counted here.');
   L.push('');
   L.push('| Model | Anthropic calls | Calls through an adapter | Changes to the request | Replies where blocks were taken out before the worker saw them |');
   L.push('|---|---|---|---|---|');
@@ -449,6 +467,7 @@ async function main() {
     L.push('| ' + m + ' | ' + a.calls + ' | ' + a.adapted + ' | ' + ch + ' | ' + a.removed + ' |');
   }
   L.push('');
+  if (focus) L.push(...renderFocus(focus, order, models, grades));
 
   // A
   L.push('## A. Leniency');
@@ -560,7 +579,7 @@ async function main() {
   // D
   L.push('## D. Cost');
   L.push('');
-  L.push('Tokens and dollars from the usage block of every Anthropic reply, recorded by bakeoff/worker-bakeoff.js. Output tokens include thinking tokens, which are billed as output. A full chain is a spark that ran M0 to M7 without stopping. Prices per million tokens: ' + order.map(m => PRICES[m] ? m + ' $' + PRICES[m].input + ' in, $' + PRICES[m].output + ' out' : m + ' no price on file').join('; ') + '.');
+  L.push('Tokens and dollars from the usage block of every Anthropic reply, recorded by bakeoff/worker-bakeoff.js. Output tokens include thinking tokens, which are billed as output. A full chain is a spark that ran M0 to M7 without stopping. Prices per million tokens, by the model that served the call: ' + Object.entries(PRICES).map(([m, p]) => m + ' $' + p.input + ' in, $' + p.output + ' out').join('; ') + '.');
   L.push('');
   L.push('| Model | Full chains | Mean input tokens per chain | Mean output tokens per chain | Mean $ per chain | Cheapest chain | Dearest chain | Calls where the API sent a thinking block |');
   L.push('|---|---|---|---|---|---|---|---|');
@@ -582,6 +601,39 @@ async function main() {
 
   await fs.writeFile(path.join(root, 'REPORT.md'), L.join('\n'), 'utf8');
   console.log('Wrote ' + path.join(root, 'REPORT.md'));
+}
+
+// --focus 1,2,7:M3,M4:echo → each listed slot, every run of every model, and the
+// answer that was graded (the battery's answers are the same for every model).
+function renderFocus(spec, order, models, grades) {
+  const [sp, mc, el] = spec.split(':');
+  const sparks = sp.split(',').map(Number);
+  const mechs = mc.split(',');
+  const answerFor = (idx, mech) => {
+    for (const m of order) for (const runRec of models[m]) {
+      const rec = runRec.sparks[idx];
+      const entry = rec && rec.run.log.find(e => mechOf(e) === mech);
+      if (entry && entry.request && entry.request.user_answer) return entry.request.user_answer;
+    }
+    return '(not reached)';
+  };
+  const L = [];
+  L.push('## Focus: ' + ELEMENT_NAME[el] + ' on ' + mechs.join(' and ') + ', sparks ' + sparks.join(', '));
+  L.push('');
+  L.push('| Spark | Mechanism | ' + order.map(m => m + ' (run 1, 2, 3)').join(' | ') + ' |');
+  L.push('|---|---|' + order.map(() => '---').join('|') + '|');
+  for (const idx of sparks) for (const mech of mechs) {
+    const key = idx + '|' + mech + '|' + el;
+    L.push('| ' + idx + ' | ' + mech + ' | ' + order.map(m => fmt(grades[m][key] || models[m].map(() => null))).join(' | ') + ' |');
+  }
+  L.push('');
+  L.push('The answers graded:');
+  L.push('');
+  L.push('| Spark | Mechanism | Answer |');
+  L.push('|---|---|---|');
+  for (const idx of sparks) for (const mech of mechs) L.push('| ' + idx + ' | ' + mech + ' | ' + answerFor(idx, mech).replace(/\|/g, '/') + ' |');
+  L.push('');
+  return L;
 }
 
 function renderFabrication(order, fabRes) {
