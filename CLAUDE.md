@@ -87,6 +87,8 @@ All POST, JSON in and out, at https://orked-m1-proxy.kneebonewebdesign.workers.d
 - `m3_test_bench.html`, `m4-bench.html`, `m5-m6-m7-bench.html`, `cross-mech-bench.html`, `park-rhythm-bench.html`: mechanism and flow benches. Browser pages.
 - `corked-bench-logs/`: notes from a bench run.
 - No Phase A only battery is committed. The 20-spark battery runs Phase A as one step of the chain.
+- `scripts/run-scenario.mjs`: scripted runs. Plays a scenario against the real app at http://localhost:8080/corked_v6.html?rhythmtest=1 in headless Chromium, against the live worker, with a fresh browser profile per run. Example: `node scripts/run-scenario.mjs finding1 --runs 3 --out runs/2026-10-21-finding1`. Per run it saves `run-N-cellar.json` (the app's own Export cellar) and `run-N-observed.json` (screens, checkpoints, what happened against each expected result). Serves the repo on port 8080 itself when Start Corked.bat isn't running. Scenarios live in the script. First time on a machine: `npm install`, then `npx playwright install chromium`.
+- `runs/`: scripted run output, tracked in git. One folder per run date and scenario.
 
 ### Running the app
 - `Start Corked.bat` on the Desktop, outside the repo, serves this folder on http://localhost:8080 with `npx http-server`. That origin is in `ALLOWED_ORIGINS`.
