@@ -1,0 +1,410 @@
+{
+  "scenario": "finding1",
+  "title": "Finding 1: only a moment that happened to the grape settles the Vintage",
+  "run": 3,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-10-21T15:28:41.510Z",
+  "finished_at": "2026-10-21T15:31:47.250Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-10-21T15:28:41.657Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-10-21T15:29:24.516Z",
+      "step": "bottled the spark",
+      "note": "screen asks \"Have you spoken to a real person this spark comes from?\""
+    },
+    {
+      "at": "2026-10-21T15:29:24.531Z",
+      "step": "picked",
+      "note": "Yes."
+    },
+    {
+      "at": "2026-10-21T15:29:24.564Z",
+      "step": "picked",
+      "note": "Yes, I can name them and I know the moment."
+    },
+    {
+      "at": "2026-10-21T15:29:27.477Z",
+      "step": "entered the grape",
+      "note": "Lotte, \"my cousin, she shoots weddings\""
+    },
+    {
+      "at": "2026-10-21T15:29:27.521Z",
+      "step": "skipped the Phase 1 intro"
+    },
+    {
+      "at": "2026-10-21T15:29:28.555Z",
+      "step": "set the rhythm",
+      "note": "Daily, Morning"
+    },
+    {
+      "at": "2026-10-21T15:29:30.855Z",
+      "step": "M2 opened",
+      "note": "friction stage"
+    },
+    {
+      "at": "2026-10-21T15:29:37.133Z",
+      "step": "answered",
+      "note": "Element 2 of 7  ·  The Friction Test"
+    },
+    {
+      "at": "2026-10-21T15:29:44.062Z",
+      "step": "answered the follow-up"
+    },
+    {
+      "at": "2026-10-21T15:29:44.101Z",
+      "step": "back in the cellar, waiting out the hold",
+      "note": "question due 2026-10-21T15:31:42.139Z"
+    },
+    {
+      "at": "2026-10-21T15:31:43.218Z",
+      "step": "the hold is over",
+      "note": "card reads \"Question ready\""
+    },
+    {
+      "at": "2026-10-21T15:31:43.311Z",
+      "step": "opened the bottle",
+      "note": "Element 2 of 7  ·  The Friction Test"
+    },
+    {
+      "at": "2026-10-21T15:31:43.471Z",
+      "step": "errand warning shown, continuing anyway"
+    },
+    {
+      "at": "2026-10-21T15:31:43.870Z",
+      "step": "next question open",
+      "note": "Element 3 of 7  ·  Third-Party Workarounds"
+    },
+    {
+      "at": "2026-10-21T15:31:47.009Z",
+      "step": "answered",
+      "note": "Element 3 of 7  ·  Third-Party Workarounds"
+    },
+    {
+      "at": "2026-10-21T15:31:47.049Z",
+      "step": "opened vintage",
+      "note": "M2 · The Friction Test · answer again"
+    },
+    {
+      "at": "2026-10-21T15:31:47.246Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-10-21-finding1\\run-3-cellar.json"
+    }
+  ],
+  "screens": {
+    "after_bottling": "Have you spoken to a real person this spark comes from?",
+    "m2_stage": "friction",
+    "m2_problem_shown": "lose their deposit when couples cancel two days before the shoot",
+    "m2_question": "Walk me through the last time a couple cancelled close to the shoot date and Lotte lost her deposit: what did she do first when she found out?",
+    "m2_reading": "The Tell names a repeated pattern of actions across an unspecified set of cancellations. No single past instance is named in the answer, leaving the Vintage bar without a time anchor.",
+    "m2_follow_up": "Which specific cancellation is Lotte still thinking about, the one that stung enough that she stopped chasing?",
+    "m2_reading_after_follow_up": "The Tell names a recurring pattern of behaviour rather than a single filmable instance. The Vintage contains no specific moment; the answer explicitly withdraws any particular event.",
+    "m3_question": "Set Lotte aside. Who else hits this? Name one person and tell me what they have actually done about it.",
+    "m3_reading": "The answer names one identifiable person separate from both the grape and the founder, with a concrete behaviour in response to the confirmed problem.",
+    "m3_follow_up": null,
+    "vintage_review": {
+      "review_shown": true,
+      "reopen_shown": true,
+      "reopen_label": "M2 · The Friction Test · answer again",
+      "reopen_question": "Walk me through the last time a couple cancelled close to the shoot date and Lotte lost her deposit: what did she do first when she found out?"
+    }
+  },
+  "checkpoints": {
+    "after_m2": {
+      "mechIndex": 1,
+      "elements": {
+        "grape": "settled",
+        "tell": "clearing",
+        "vintage": "turbid",
+        "gap": "inert",
+        "echo": "inert",
+        "limit": "inert"
+      },
+      "problem": {
+        "text": "lose their deposit when couples cancel two days before the shoot",
+        "source": "user_stated",
+        "status": "confirmed"
+      },
+      "m2_question": "Walk me through the last time a couple cancelled close to the shoot date and Lotte lost her deposit: what did she do first when she found out?",
+      "m2": {
+        "schema_version": "m2.v1",
+        "mechanism": "M2",
+        "phase": "friction",
+        "state": "turbid",
+        "tell": {
+          "state": "clearing",
+          "anchor_span": "emails them twice asking for the fee, then gives up"
+        },
+        "vintage": {
+          "state": "turbid",
+          "anchor_span": "I don't remember one in particular"
+        },
+        "observation": {
+          "surface_text": "The Tell names a recurring pattern of behaviour rather than a single filmable instance. The Vintage contains no specific moment; the answer explicitly withdraws any particular event.",
+          "anchor_span": "I don't remember one in particular"
+        },
+        "substitution_detected": false,
+        "swirl": {
+          "kind": "reality",
+          "question": "Is there a single cancellation Lotte mentioned to you directly, or is this account assembled from general impressions of how she handles these situations?"
+        },
+        "server_checks": {
+          "schema_valid": true,
+          "tell_anchor_verified": true,
+          "vintage_anchor_verified": true,
+          "obs_anchor_verified": true,
+          "visible_style_violations_cleaned": [],
+          "overall_state_is_floor": true,
+          "swirl_included": true
+        }
+      },
+      "m3": null,
+      "log": [
+        {
+          "at": "2026-10-21T15:29:27.440Z",
+          "type": "answer",
+          "mech": "M1",
+          "kind": "first_answer",
+          "question": "How do you know them?",
+          "answer": "my cousin, she shoots weddings",
+          "moved": [
+            {
+              "element": "grape",
+              "from": "inert",
+              "to": "settled",
+              "words": "Lotte"
+            }
+          ],
+          "fields": [
+            {
+              "label": "Name",
+              "value": "Lotte"
+            },
+            {
+              "label": "How do you know them?",
+              "value": "my cousin, she shoots weddings"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-21T15:29:30.731Z",
+          "type": "problem_recorded",
+          "text": "lose their deposit when couples cancel two days before the shoot",
+          "source": "user_stated",
+          "status": "confirmed"
+        },
+        {
+          "at": "2026-10-21T15:29:36.931Z",
+          "type": "answer",
+          "mech": "M2",
+          "kind": "first_answer",
+          "question": "Walk me through the last time a couple cancelled close to the shoot date and Lotte lost her deposit: what did she do first when she found out?",
+          "answer": "Whenever a couple cancels late, Lotte emails them twice asking for the fee, then gives up.",
+          "moved": [
+            {
+              "element": "tell",
+              "from": "inert",
+              "to": "clearing",
+              "words": "emails them twice asking for the fee, then gives up"
+            },
+            {
+              "element": "vintage",
+              "from": "inert",
+              "to": "turbid",
+              "words": null
+            }
+          ]
+        },
+        {
+          "at": "2026-10-21T15:29:42.139Z",
+          "type": "answer",
+          "mech": "M2",
+          "kind": "follow_up",
+          "question": "Which specific cancellation is Lotte still thinking about, the one that stung enough that she stopped chasing?",
+          "answer": "It happens a few times a year. I don't remember one in particular.",
+          "moved": [],
+          "read_as": "Whenever a couple cancels late, Lotte emails them twice asking for the fee, then gives up. It happens a few times a year. I don't remember one in particular."
+        }
+      ]
+    },
+    "after_m3": {
+      "mechIndex": 2,
+      "elements": {
+        "grape": "settled",
+        "tell": "clearing",
+        "vintage": "turbid",
+        "gap": "inert",
+        "echo": "settled",
+        "limit": "inert"
+      },
+      "problem": {
+        "text": "lose their deposit when couples cancel two days before the shoot",
+        "source": "user_stated",
+        "status": "confirmed"
+      },
+      "m2_question": "Walk me through the last time a couple cancelled close to the shoot date and Lotte lost her deposit: what did she do first when she found out?",
+      "m2": {
+        "schema_version": "m2.v1",
+        "mechanism": "M2",
+        "phase": "friction",
+        "state": "turbid",
+        "tell": {
+          "state": "clearing",
+          "anchor_span": "emails them twice asking for the fee, then gives up"
+        },
+        "vintage": {
+          "state": "turbid",
+          "anchor_span": "I don't remember one in particular"
+        },
+        "observation": {
+          "surface_text": "The Tell names a recurring pattern of behaviour rather than a single filmable instance. The Vintage contains no specific moment; the answer explicitly withdraws any particular event.",
+          "anchor_span": "I don't remember one in particular"
+        },
+        "substitution_detected": false,
+        "swirl": {
+          "kind": "reality",
+          "question": "Is there a single cancellation Lotte mentioned to you directly, or is this account assembled from general impressions of how she handles these situations?"
+        },
+        "server_checks": {
+          "schema_valid": true,
+          "tell_anchor_verified": true,
+          "vintage_anchor_verified": true,
+          "obs_anchor_verified": true,
+          "visible_style_violations_cleaned": [],
+          "overall_state_is_floor": true,
+          "swirl_included": true
+        }
+      },
+      "m3": {
+        "schema_version": "m3.v1",
+        "mechanism": "M3",
+        "state": "settled",
+        "echo": {
+          "state": "settled",
+          "anchor_span": "Marco, another wedding photographer in Utrecht, started charging a non-refundable booking fee upfront after a couple cancelled on him a week before their wedding in 2024"
+        },
+        "observation": {
+          "surface_text": "The answer names one identifiable person separate from both the grape and the founder, with a concrete behaviour in response to the confirmed problem.",
+          "anchor_span": "Marco, another wedding photographer in Utrecht, started charging a non-refundable booking fee upfront after a couple cancelled on him a week before their wedding in 2024"
+        },
+        "substitution_detected": false,
+        "server_checks": {
+          "schema_valid": true,
+          "visible_style_violations_cleaned": [],
+          "overall_state_is_primary": true,
+          "swirl_included": false
+        }
+      },
+      "log": [
+        {
+          "at": "2026-10-21T15:29:27.440Z",
+          "type": "answer",
+          "mech": "M1",
+          "kind": "first_answer",
+          "question": "How do you know them?",
+          "answer": "my cousin, she shoots weddings",
+          "moved": [
+            {
+              "element": "grape",
+              "from": "inert",
+              "to": "settled",
+              "words": "Lotte"
+            }
+          ],
+          "fields": [
+            {
+              "label": "Name",
+              "value": "Lotte"
+            },
+            {
+              "label": "How do you know them?",
+              "value": "my cousin, she shoots weddings"
+            }
+          ]
+        },
+        {
+          "at": "2026-10-21T15:29:30.731Z",
+          "type": "problem_recorded",
+          "text": "lose their deposit when couples cancel two days before the shoot",
+          "source": "user_stated",
+          "status": "confirmed"
+        },
+        {
+          "at": "2026-10-21T15:29:36.931Z",
+          "type": "answer",
+          "mech": "M2",
+          "kind": "first_answer",
+          "question": "Walk me through the last time a couple cancelled close to the shoot date and Lotte lost her deposit: what did she do first when she found out?",
+          "answer": "Whenever a couple cancels late, Lotte emails them twice asking for the fee, then gives up.",
+          "moved": [
+            {
+              "element": "tell",
+              "from": "inert",
+              "to": "clearing",
+              "words": "emails them twice asking for the fee, then gives up"
+            },
+            {
+              "element": "vintage",
+              "from": "inert",
+              "to": "turbid",
+              "words": null
+            }
+          ]
+        },
+        {
+          "at": "2026-10-21T15:29:42.139Z",
+          "type": "answer",
+          "mech": "M2",
+          "kind": "follow_up",
+          "question": "Which specific cancellation is Lotte still thinking about, the one that stung enough that she stopped chasing?",
+          "answer": "It happens a few times a year. I don't remember one in particular.",
+          "moved": [],
+          "read_as": "Whenever a couple cancels late, Lotte emails them twice asking for the fee, then gives up. It happens a few times a year. I don't remember one in particular."
+        },
+        {
+          "at": "2026-10-21T15:31:46.914Z",
+          "type": "answer",
+          "mech": "M3",
+          "kind": "first_answer",
+          "question": "Set Lotte aside. Who else hits this? Name one person and tell me what they have actually done about it.",
+          "answer": "Marco, another wedding photographer in Utrecht, started charging a non-refundable booking fee upfront after a couple cancelled on him a week before their wedding in 2024. He now sends every couple a payment link the same day they sign.",
+          "moved": [
+            {
+              "element": "echo",
+              "from": "inert",
+              "to": "settled",
+              "words": "Marco, another wedding photographer in Utrecht, started charging a non-refundable booking fee upfront after a couple cancelled on him a week before their wedding in 2024"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "expected": [
+    {
+      "n": 1,
+      "expected": "After bottling, the screen asks \"Have you spoken to a real person this spark comes from?\"",
+      "happened": "Screen asked: \"Have you spoken to a real person this spark comes from?\""
+    },
+    {
+      "n": 2,
+      "expected": "After M2, the Vintage is not Settled. If it is, the run can't test the call.",
+      "happened": "Vintage after M2: turbid. Follow-up shown: yes, \"Which specific cancellation is Lotte still thinking about, the one that stung enough that she stopped chasing?\"."
+    },
+    {
+      "n": 3,
+      "expected": "After M3: the Echo is Settled, the Vintage is unchanged, the M3 reading doesn't contain \"vintage\" in any capitalisation, and the M3 history log entry lists no Vintage move.",
+      "happened": "Echo after M3: settled. Vintage before M3: turbid, after M3: turbid. \"vintage\" in the M3 reading: no (stored reading: \"The answer names one identifiable person separate from both the grape and the founder, with a concrete behaviour in response to the confirmed problem.\"; on screen: \"The answer names one identifiable person separate from both the grape and the founder, with a concrete behaviour in response to the confirmed problem.\"). \"vintage\" anywhere in the stored M3 reply: no. M3 log entries: 1. Moves listed: echo inert→settled. Vintage moves: 0. No follow-up at M3."
+    },
+    {
+      "n": 4,
+      "expected": "The Vintage reopen shows M2's question.",
+      "happened": "Reopen shown: \"M2 · The Friction Test · answer again\". Question: \"Walk me through the last time a couple cancelled close to the shoot date and Lotte lost her deposit: what did she do first when she found out?\". M2's question as shown at M2: \"Walk me through the last time a couple cancelled close to the shoot date and Lotte lost her deposit: what did she do first when she found out?\". Same text: yes."
+    }
+  ]
+}
