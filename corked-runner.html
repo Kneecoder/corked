@@ -140,6 +140,7 @@
 </div>
 <textarea id="report-preview" readonly style="margin-top:8px"></textarea>
 
+<script src="shared/mechanisms.js"></script>
 <script>
 // ── ELEMENT MODEL ──────────────────────────────────────────────────────────
 const EL_META = {
@@ -308,23 +309,20 @@ function applyMechResult(mech, data) {
   if (mech === 'M2') {
     if (!R.gapInPlay && ('gap' in data)) R.anomalies.push('M2: gap bar present in response despite gap_in_play=false');
     if (R.gapInPlay && !('gap' in data)) R.anomalies.push('M2: gap bar missing despite gap_in_play=true');
-    return applyEvidenceBars('M2', data, { tell:'tell', vintage:'vintage', gap: R.gapInPlay ? 'gap' : null });
   }
-  if (mech === 'M3') return applyEvidenceBars('M3', data, { echo:'echo', vintage:'vintage' });
   if (mech === 'M4') {
     const c = data.contrast;
     const triOk = c && ['true','false','unclear'].indexOf(String(c.is_different_kind)) > -1;
     const sdOk = c && ['same','different','unclear'].indexOf(String(c.same_or_different)) > -1;
     if (!triOk || !sdOk) R.anomalies.push('M4: missing or malformed contrast object');
-    return applyEvidenceBars('M4', data, { echo:'echo', vintage:'vintage' });
   }
-  if (mech === 'M5') return applyEvidenceBars('M5', data, { gap:'gap' });
   if (mech === 'M6') {
     if (R.maturity === 2 && ('echo' in data)) R.anomalies.push('M6: echo bar present despite self mode (maturity_class 2)');
     if (R.maturity !== 2 && !('echo' in data)) R.anomalies.push('M6: echo bar missing despite non-self mode');
-    return applyEvidenceBars('M6', data, { tell:'tell', echo: R.maturity === 2 ? null : 'echo' });
   }
-  if (mech === 'M7') return applyEvidenceBars('M7', data, { limit:'limit' });
+  // What a reading may move comes from the app's own table.
+  const elements = CorkedMechanisms.elements(mech, { gapInPlay: R.gapInPlay, selfMode: R.maturity === 2 });
+  return applyEvidenceBars(mech, data, Object.fromEntries(elements.map(k => [k, k])));
 }
 
 function summarize(mech, data, changed) {

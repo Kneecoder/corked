@@ -27,6 +27,8 @@ const WRITE_JSON = process.env.CORKED_JSON === '1';
 const LINE_SOURCE = process.env.CORKED_LINE === 'm0' ? 'm0' : 'spark';
 const OUT_DIR = new URL('../' + (process.env.CORKED_OUT || 'corked-runner-output').replace(/\/?$/, '/'), import.meta.url);
 
+import '../shared/mechanisms.js';
+
 const EL_META = {
   grape:   { name: 'Grape' },
   tell:    { name: 'Tell' },
@@ -394,12 +396,9 @@ function applyMechResult(mech, data, R) {
     if (st) { return setElementState(R, 'grape', 'M1', st) ? ['Grape'] : []; }
     return [];
   }
-  if (mech === 'M2') return applyEvidenceBars('M2', data, { tell: 'tell', vintage: 'vintage', gap: R.gapInPlay ? 'gap' : null }, R);
-  if (mech === 'M3') return applyEvidenceBars('M3', data, { echo: 'echo', vintage: 'vintage' }, R);
-  if (mech === 'M4') return applyEvidenceBars('M4', data, { echo: 'echo', vintage: 'vintage' }, R);
-  if (mech === 'M5') return applyEvidenceBars('M5', data, { gap: 'gap' }, R);
-  if (mech === 'M6') return applyEvidenceBars('M6', data, { tell: 'tell', echo: R.maturity === 2 ? null : 'echo' }, R);
-  if (mech === 'M7') return applyEvidenceBars('M7', data, { limit: 'limit' }, R);
+  // What a reading may move comes from the app's own table.
+  const elements = globalThis.CorkedMechanisms.elements(mech, { gapInPlay: R.gapInPlay, selfMode: R.maturity === 2 });
+  return applyEvidenceBars(mech, data, Object.fromEntries(elements.map(k => [k, k])), R);
 }
 function summarize(mech, data, changed) {
   const state = data.state || data.outcome || (data.grape && data.grape.state) || '-';

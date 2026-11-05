@@ -10,11 +10,15 @@
 // --focus adds a per-run table, e.g. 1,2,7:M3,M4:echo.
 //
 // A grade is one element state one mechanism offered in one run. A slot is
-// (spark, mechanism, element). The bar-to-element map mirrors applyMechResult()
-// in run-corked-batch.mjs, so a slot is exactly what moves an element in the app.
+// (spark, mechanism, element). The elements come from the app's own mechanism table,
+// so a slot is exactly what moves an element in the app.
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import '../shared/mechanisms.js';
+import '../shared/provenance.js';
+
+const { CorkedMechanisms, CorkedProvenance } = globalThis;
 
 const RANK = { inert: 0, turbid: 1, clearing: 2, settled: 3 };
 const ELEMENT_NAME = { grape: 'Grape', tell: 'Tell', vintage: 'Vintage', gap: 'Gap', echo: 'Echo', limit: 'Limit' };
@@ -88,16 +92,8 @@ function mechOf(entry) {
 
 function barsFor(mech, data, run) {
   const s = k => (data && data[k] && typeof data[k] === 'object') ? data[k].state : undefined;
-  switch (mech) {
-    case 'M1': return [['grape', s('grape')]];
-    case 'M2': return [['tell', s('tell')], ['vintage', s('vintage')]].concat(run.gapInPlay ? [['gap', s('gap')]] : []);
-    case 'M3':
-    case 'M4': return [['echo', s('echo')], ['vintage', s('vintage')]];
-    case 'M5': return [['gap', s('gap')]];
-    case 'M6': return [['tell', s('tell')]].concat(run.maturity === 2 ? [] : [['echo', s('echo')]]);
-    case 'M7': return [['limit', s('limit')]];
-  }
-  return [];
+  if (!CorkedMechanisms.MECHANISMS[mech]) return [];
+  return CorkedMechanisms.elements(mech, { gapInPlay: run.gapInPlay, selfMode: run.maturity === 2 }).map(k => [k, s(k)]);
 }
 
 // grades[model][slotKey] = [state per run, null when that run has no grade]
@@ -308,19 +304,15 @@ function parseModelText(rawText) {
   try { return JSON.parse(text); } catch { return null; }
 }
 
-const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
-
-// Anchor paths per route, and the text each must come from (worker.js rules).
-const ANCHORS = {
-  M1: { paths: ['observation'], source: req => (req.person_name || '') + ' ' + (req.relationship || '') },
-  M2: { paths: ['tell', 'vintage', 'gap', 'observation'], source: req => req.user_answer },
-  M3: { paths: ['echo', 'observation'], source: req => req.user_answer },
-  M4: { paths: ['echo', 'contrast', 'observation'], source: req => req.user_answer },
-  M5: { paths: ['gap', 'observation'], source: req => req.user_answer },
-  M6: { paths: ['words', 'tell', 'echo', 'observation'], source: req => req.user_answer },
-  M7: { paths: ['limit', 'observation'], source: req => req.user_answer }
-};
-const PRIMARY_BAR = { M3: 'echo', M4: 'echo', M5: 'gap', M6: 'words', M7: 'limit' };
+// Anchor paths per route, from the app's own table, and the text each must come from.
+const anchorSource = route => route === 'M1'
+  ? (req => (req.person_name || '') + ' ' + (req.relationship || ''))
+  : (req => req.user_answer);
+const ANCHORS = Object.fromEntries(CorkedMechanisms.ORDER.map(id =>
+  [id, { paths: CorkedMechanisms.anchors(id, { gapInPlay: true }), source: anchorSource(id) }]));
+const PRIMARY_BAR = Object.fromEntries(CorkedMechanisms.ORDER
+  .filter(id => CorkedMechanisms.get(id).primaryBar)
+  .map(id => [id, CorkedMechanisms.get(id).primaryBar]));
 
 function routeOf(entry) {
   if (entry.endpoint === '/m0') return 'M0';
@@ -399,12 +391,12 @@ function fabrication(runs) {
         }
         const raw = parseModelText((calls[calls.length - 1] || {}).text);
         if (!raw || !ANCHORS[route]) continue;
-        const source = norm(ANCHORS[route].source(entry.request));
+        const source = ANCHORS[route].source(entry.request);
         for (const p of ANCHORS[route].paths) {
           const a = raw[p] && raw[p].anchor_span;
           if (!a || typeof a !== 'string') continue;
           t.anchorsTried++;
-          if (!source.includes(norm(a))) {
+          if (!CorkedProvenance.anchorSpan(a, source)) {
             t.anchorsBad++;
             cases.push({ run: runRec.name, spark: Number(idx), route, what: p + '.anchor_span not in the builder\'s words: "' + a + '"' });
           }

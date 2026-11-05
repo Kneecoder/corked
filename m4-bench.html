@@ -108,7 +108,7 @@ footer { margin-top:3.5rem; font-size:.67rem; color:var(--muted); font-style:ita
   <div class="eyebrow">Corked · M4 · Manual Flow Bench</div>
   <h1>A second person, a different kind.</h1>
   <div class="sub">Run each flow end-to-end in Corked. Copy the inputs in order. Record what comes back. Mechanical verification only — payload shapes, rankUp routing, state persistence. Judgment happens later.</div>
-  <div class="rule-note">M4 rule: overall state equals Echo state. Vintage ranks up independently and never moves the bottle. M4 only renders if M3 left Echo short of settled — if M3 already settled Echo, M4 is skipped silently.</div>
+  <div class="rule-note">M4 rule: overall state equals Echo state. M4 never moves the Vintage. M4 only renders if M3 left Echo short of settled — if M3 already settled Echo, M4 is skipped silently.</div>
 
   <div class="scorebar" id="scorebar">
     <div class="score-pill"><div class="pill-num total" id="sc-done">0</div><div class="pill-lbl">logged</div></div>
@@ -122,10 +122,15 @@ footer { margin-top:3.5rem; font-size:.67rem; color:var(--muted); font-style:ita
 
   <div id="flows"></div>
 
-  <footer>The Echo is the only bar that earns the verdict. Contrast and Vintage are context.</footer>
+  <footer>The Echo is the only bar that earns the verdict. Contrast is context.</footer>
 </div>
 
+<script src="shared/mechanisms.js"></script>
 <script>
+// What the app asks at M4, from the app's own table.
+const M4_QUESTION = CorkedMechanisms.get('M4').copy.question({ grapeName: 'Priya' });
+const M4_QUESTION_SELF = CorkedMechanisms.get('M4').copy.question({ selfMode: true });
+
 // Shared base scenario (cases a, b, c, d, f, g1, g2, i): Priya / freelance invoice chasing.
 // Maturity path for the base scenario: Q1 Yes -> Q2 Yes (class 0).
 const BASE_STEPS = [
@@ -168,58 +173,58 @@ const FLOWS = [
   {
     key:'a', title:'A genuinely different kind of person', concept:'Case a — new named third party, concrete behaviour, distinct from M3\'s person',
     target:'settled', watch:'Marcus is named, his behaviour is concrete (calls directly, threatens to pause work), and he is a different kind of person than the freelance-community category M3 named. Contrast should capture is_different_kind true / same_or_different different.',
-    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    steps: BASE_STEPS, m4Question:M4_QUESTION,
     m4Answer:'My cousin Marcus runs a small contracting business, and every time a client is late paying he calls them directly within three days and tells them he is pausing work until it clears. It works for him because he can afford to walk away from small clients, which looks completely different from how it goes for Priya.',
-    resultType:'echo-vintage'
+    resultType:'echo'
   },
   {
     key:'b', title:'Same person, rephrased', concept:'Case b — the M3 answer restated, no genuinely new individual',
     target:'clearing', watch:'This just restates the freelance-community category from M3 in different words. No new distinct person, so Echo should not settle.',
-    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    steps: BASE_STEPS, m4Question:M4_QUESTION,
     m4Answer:'The freelancers in my design community mostly just build late fees into their contracts, like I mentioned, and hope that discourages people from paying slow.',
-    resultType:'echo-vintage'
+    resultType:'echo'
   },
   {
     key:'c', title:'More freelancers, done manually', concept:'Case c — generic category, no named individual',
     target:'clearing', watch:'A vague plural ("more freelancers I know") with a generic workaround (a spreadsheet). No one identifiable.',
-    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    steps: BASE_STEPS, m4Question:M4_QUESTION,
     m4Answer:'More freelancers I know do it manually — they just keep a spreadsheet and remind themselves to email people when a payment is late.',
-    resultType:'echo-vintage'
+    resultType:'echo'
   },
   {
     key:'d', title:'Grape-only answer', concept:'Case d — the answer only describes the grape again',
     target:'turbid', watch:'Grape exclusion rule: the only person in the answer is Priya herself. M4 needs a different person entirely.',
-    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    steps: BASE_STEPS, m4Question:M4_QUESTION,
     m4Answer:"Honestly it's really just Priya who deals with this. She's the one who ends up chasing every client herself whenever it happens.",
-    resultType:'echo-vintage'
+    resultType:'echo'
   },
   {
     key:'e', title:'Self mode, founder\'s own behaviour again', concept:'Case e — class 2, the answer just re-describes the founder',
     target:'turbid', watch:'Self mode. M4 needs someone who is not the founder. This answer stays inside the founder\'s own experience, so it should read the same as a grape-only answer.',
-    steps: SELF_STEPS, m4Question:'You are one kind of person with this. Who is a different kind, and does it look the same for them?',
+    steps: SELF_STEPS, m4Question:M4_QUESTION_SELF,
     m4Answer:'Honestly it\'s really just me — when it happens I just wait it out and eventually the client pays anyway.',
-    resultType:'echo-vintage'
+    resultType:'echo'
   },
   {
     key:'f', title:'Category stacked with a real name', concept:'Case f — vague category plus one identifiable third party in the same answer',
     target:'clearing', watch:'The answer opens with a vague category ("other freelancers... somehow") then swaps to a specific person (Marcus). Watch whether the observation surface text names the swap from category to individual.',
-    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    steps: BASE_STEPS, m4Question:M4_QUESTION,
     m4Answer:'Other freelancers I know probably deal with this differently somehow, but also my cousin Marcus, who does contracting work, just calls clients directly within a few days of a late payment.',
-    resultType:'echo-vintage'
+    resultType:'echo'
   },
   {
     key:'g1', title:'Dated moment', concept:'Case g (part 1) — same settled contrast answer as case a, with a specific date attached',
-    target:'settled', watch:'This is case a\'s content with "Last Tuesday" added. Echo should settle as before, and Vintage should rank up because the moment is now dated.',
-    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    target:'settled', watch:'This is case a\'s content with "Last Tuesday" added. Echo should settle as before. The dated moment is Marcus\'s, so it counts for the Echo and the Vintage must not move.',
+    steps: BASE_STEPS, m4Question:M4_QUESTION,
     m4Answer:'Last Tuesday my cousin Marcus, who runs a small contracting business, called a late-paying client directly and told them he was pausing work until it cleared. It worked because he can afford to walk away from small clients, unlike Priya.',
-    resultType:'echo-vintage', vintageNote:'Watch for: Vintage should rank UP here. A response vintage of "turbid" (no moment) must never move an existing settled/clearing Vintage state — but a genuine dated moment should be free to rank it up.'
+    resultType:'echo', vintageNote:'Watch for: the Vintage stays where it was. Only a moment that happened to the grape settles the Vintage, and it comes from M2 only (v48 call, 21 Oct).'
   },
   {
     key:'g2', title:'No moment', concept:'Case g (part 2) — same settled contrast answer as case a, with the date removed',
-    target:'settled', watch:'Same content as case a, generalised instead of dated. Echo should still settle (Marcus is still named and concrete), but Vintage should NOT rank up — no specific instance was given.',
-    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    target:'settled', watch:'Same content as case a, generalised instead of dated. Echo should still settle (Marcus is still named and concrete), and the Vintage must not move.',
+    steps: BASE_STEPS, m4Question:M4_QUESTION,
     m4Answer:'My cousin Marcus, who runs a contracting business, generally calls late-paying clients directly and tells them he\'s pausing work until it clears. He can walk away from small clients more easily than Priya can.',
-    resultType:'echo-vintage', vintageNote:'Watch for: Vintage chip should stay wherever it already was — this answer carries no dated moment, so a turbid vintage response here must not move an already-settled or clearing Vintage state backward, and must not rank an unset one up.'
+    resultType:'echo', vintageNote:'Watch for: the Vintage chip stays wherever it already was.'
   },
   {
     key:'h', title:'M3 already settled Echo', concept:'Case h — chain-position skip check',
@@ -230,7 +235,7 @@ const FLOWS = [
   {
     key:'i', title:'Park exit from M4', concept:'Case i — CONTRAST field brief on park',
     target:'field-brief', watch:'Instead of answering M4, click "Park it." Corked should call the worker\'s CONTRAST field mode (not the ECHO mode M3 uses) and hand back a brief naming a kind of person who is NOT Priya — a different role or context, past-behaviour anchored ("talk me through how it shows up for you" register), no pitch language, no "would you" phrasing, no mention of an app/tool/product.',
-    steps: BASE_STEPS, m4Question:'Priya is one kind of person with this. Who is a different kind, and does it look the same for them?',
+    steps: BASE_STEPS, m4Question:M4_QUESTION,
     m4Answer:null,
     resultType:'field-brief'
   }
@@ -300,7 +305,7 @@ function renderFlow(f, i) {
   }
 
   let resultHtml = '';
-  if (f.resultType === 'echo-vintage') {
+  if (f.resultType === 'echo') {
     resultHtml = `<div class="result-section">
       <div class="result-label">Echo — what did Corked return?</div>
       <div class="result-options">
@@ -309,11 +314,10 @@ function renderFlow(f, i) {
         <button class="result-btn" onclick="setResult('${f.key}','turbid',this)">Turbid</button>
         <button class="result-btn" onclick="setResult('${f.key}','wrong',this)">Something unexpected</button>
       </div>
-      <div class="sub-result-label">Vintage — ranked up, or unchanged?</div>
+      <div class="sub-result-label">Vintage — M4 never moves it. Did it stay?</div>
       <div class="result-options">
-        <button class="result-btn" onclick="setSubResult('${f.key}','ranked-up',this)">Ranked up</button>
-        <button class="result-btn" onclick="setSubResult('${f.key}','unchanged',this)">Unchanged</button>
-        <button class="result-btn" onclick="setSubResult('${f.key}','wrong',this)">Something unexpected</button>
+        <button class="result-btn" onclick="setSubResult('${f.key}','unchanged',this)">Stayed</button>
+        <button class="result-btn" onclick="setSubResult('${f.key}','wrong',this)">Moved</button>
       </div>
       ${f.vintageNote ? `<div class="watch-note" style="margin-top:.9rem;margin-bottom:0">${f.vintageNote}</div>` : ''}
       <div class="obs-box" id="obs-${f.key}">
