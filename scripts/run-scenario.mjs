@@ -74,7 +74,12 @@ function driver(page, rec) {
       if (fromCellar) await page.getByRole('button', { name: 'Add Spark' }).click();
       else await page.locator('#bottle-cta-svg').click();
       await page.locator('#screen-intake.active #f-inp').waitFor({ timeout: STEP_TIMEOUT });
-      await page.locator('#f-inp').fill(spark);
+      // The field moves itself on its first focus and drops that focus, so a first click doesn't
+      // take typing. A person clicks again, and so does the script.
+      const field = page.locator('#f-inp');
+      await field.click();
+      await field.fill(spark);
+      if ((await field.inputValue()) !== spark) throw new Error('The spark did not reach the field.');
       await page.locator('#v6-bottle-btn').click();
       if (await visible('#m0-config')) {
         await page.locator('#v6-worker-url').fill(WORKER_URL);
@@ -943,7 +948,11 @@ async function playOnce(browser, scenarioName, scenario, run, outDir) {
     app.step('broke off', { note: rec.broke_off });
   }
   try {
-    if (!rec.exported) await app.exportCellar(join(outDir, `run-${run}-cellar.json`));
+    if (!rec.exported) {
+      const path = join(outDir, `run-${run}-cellar.json`);
+      await app.exportCellar(path);
+      rec.cellars = { first: JSON.parse(await readFile(path, 'utf8')) };
+    }
   } catch (err) {
     rec.export_error = String(err && err.message || err);
     app.step('export failed', { note: rec.export_error });
