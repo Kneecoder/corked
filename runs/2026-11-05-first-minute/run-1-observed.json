@@ -1,0 +1,261 @@
+{
+  "scenario": "first-minute",
+  "title": "First minute",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-05T16:08:51.753Z",
+  "finished_at": "2026-11-05T16:09:46.329Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-05T16:08:54.653Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-05T16:08:59.766Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-05T16:08:59.821Z",
+      "step": "the gate is showing",
+      "note": "Is this about a problem someone has, or something you want to make for its own sake?"
+    },
+    {
+      "at": "2026-11-05T16:09:38.812Z",
+      "step": "bottled the spark",
+      "note": "screen asks \"Have you spoken to a real person this spark comes from?\""
+    },
+    {
+      "at": "2026-11-05T16:09:38.835Z",
+      "step": "picked",
+      "note": "No."
+    },
+    {
+      "at": "2026-11-05T16:09:38.866Z",
+      "step": "picked",
+      "note": "Yes. This comes from my own experience."
+    },
+    {
+      "at": "2026-11-05T16:09:38.973Z",
+      "step": "entered the grape",
+      "note": "Sam, \"My basil keeps dying.\""
+    },
+    {
+      "at": "2026-11-05T16:09:40.019Z",
+      "step": "set the rhythm",
+      "note": "Weekly, Morning"
+    },
+    {
+      "at": "2026-11-05T16:09:42.831Z",
+      "step": "M2 opened",
+      "note": "friction stage"
+    },
+    {
+      "at": "2026-11-05T16:09:43.008Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-05T16:09:43.052Z",
+      "step": "the gate is showing",
+      "note": "Is this about a problem someone has, or something you want to make for its own sake?"
+    },
+    {
+      "at": "2026-11-05T16:09:46.096Z",
+      "step": "turned away",
+      "note": "The cellar only takes ideas that fix a problem someone has. Something you make for its own sake needs a different test, and the cellar doesn't have one yet."
+    },
+    {
+      "at": "2026-11-05T16:09:46.117Z",
+      "step": "back in the cellar"
+    },
+    {
+      "at": "2026-11-05T16:09:46.323Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-05-first-minute\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "looks": [
+      {
+        "when": "landing",
+        "words_seen": []
+      },
+      {
+        "when": "bottle 1: spark typed",
+        "words_seen": []
+      },
+      {
+        "when": "bottle 1: gate",
+        "words_seen": []
+      },
+      {
+        "when": "bottle 1: maturity question",
+        "words_seen": []
+      },
+      {
+        "when": "bottle 1: person step",
+        "words_seen": []
+      },
+      {
+        "when": "bottle 1: Phase 1",
+        "words_seen": []
+      },
+      {
+        "when": "bottle 1: M2 question",
+        "words_seen": []
+      },
+      {
+        "when": "bottle 2: spark typed",
+        "words_seen": []
+      },
+      {
+        "when": "bottle 2: gate",
+        "words_seen": []
+      },
+      {
+        "when": "bottle 2: turn-away",
+        "words_seen": []
+      },
+      {
+        "when": "cellar after the turn-away",
+        "words_seen": []
+      }
+    ],
+    "screens_in_order": [
+      "screen-landing",
+      "screen-intake",
+      "screen-phase1",
+      "screen-cellar",
+      "screen-intake",
+      "screen-cellar"
+    ],
+    "bottle_1": {
+      "typed": {
+        "clicks_on_field": 1,
+        "focus_after_click": "f-inp",
+        "field_value": "An app that tells me which of my plants need water, because I keep forgetting until they die."
+      },
+      "gate": {
+        "question": "Is this about a problem someone has, or something you want to make for its own sake?",
+        "buttons": [
+          "A problem someone has",
+          "Something to make for its own sake"
+        ],
+        "maturity_options_on_screen": 0,
+        "m0_requests_so_far": 0
+      },
+      "after_gate": "Have you spoken to a real person this spark comes from?",
+      "person_step": {
+        "question": "You're the person with this problem.",
+        "note": "Your own experience can be the starting point."
+      },
+      "rhythm": {
+        "choices": [
+          "Daily",
+          "Every other day",
+          "Weekly",
+          "Monthly",
+          "Morning",
+          "Midday",
+          "Evening",
+          "Late"
+        ],
+        "summary": "Weekly, in the morning. Corked will bring the next question back weekly in the morning."
+      },
+      "m2": {
+        "stage": "friction",
+        "problem_shown": "I keep forgetting until they die",
+        "wording_taken": false,
+        "label": "Element 2 of 7  ·  The Friction Test",
+        "question": "Tell me about the last plant you forgot to water until it died, what did you notice, and what did you actually do when you realized it?"
+      }
+    },
+    "bottle_2": {
+      "cellar_before": {
+        "stored": [
+          {
+            "id": "mw3qq9a51vt14",
+            "idea": "An app that tells me which of my plants need water, because I keep forgetting until they die."
+          }
+        ],
+        "cards": 1,
+        "count_line": "1 bottle"
+      },
+      "typed": {
+        "clicks_on_field": 1,
+        "focus_after_click": "f-inp",
+        "field_value": "A daily game where you describe a picture in one sentence and see how others described it."
+      },
+      "gate": {
+        "question": "Is this about a problem someone has, or something you want to make for its own sake?",
+        "buttons": [
+          "A problem someone has",
+          "Something to make for its own sake"
+        ],
+        "maturity_options_on_screen": 0,
+        "m0_requests_so_far": 1,
+        "m0_requests_before_this_spark": 1
+      },
+      "turned_away": {
+        "line": "The cellar only takes ideas that fix a problem someone has. Something you make for its own sake needs a different test, and the cellar doesn't have one yet.",
+        "buttons": [
+          "Back to the cellar"
+        ],
+        "whole_screen": "The cellar only takes ideas that fix a problem someone has. Something you make for its own sake needs a different test, and the cellar doesn't have one yet.\nBACK TO THE CELLAR"
+      },
+      "cellar_after": {
+        "stored": [
+          {
+            "id": "mw3qq9a51vt14",
+            "idea": "An app that tells me which of my plants need water, because I keep forgetting until they die."
+          }
+        ],
+        "cards": 1,
+        "count_line": "1 bottle"
+      },
+      "worker_requests": []
+    }
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "\"Before the cellar\" and \"The cellar is making champagne\" appear nowhere, and intake goes from its last step straight to Phase 1.",
+      "happened": "\"Before the cellar\": page checked at 11 points, found at none; in the export: no. \"The cellar is making champagne\": page checked at 11 points, found at none; in the export: no. Screens in order: screen-landing > screen-intake > screen-phase1 > screen-cellar > screen-intake > screen-cellar."
+    },
+    {
+      "n": 2,
+      "expected": "One click on the spark field puts the typed text in it.",
+      "happened": "Bottle 1: 1 click, focus on f-inp, field holds \"An app that tells me which of my plants need water, because I keep forgetting until they die.\". Same as typed: yes. Bottle 2: 1 click, focus on f-inp, field holds \"A daily game where you describe a picture in one sentence and see how others described it.\". Same as typed: yes."
+    },
+    {
+      "n": 3,
+      "expected": "The gate question shows right after the spark, before the maturity question.",
+      "happened": "Bottle 1: \"Is this about a problem someone has, or something you want to make for its own sake?\" Buttons: \"A problem someone has\", \"Something to make for its own sake\". Maturity question on screen at that point: no. /m0 requests before the answer: 0. After \"A problem someone has\" the screen asked: \"Have you spoken to a real person this spark comes from?\". Bottle 2: \"Is this about a problem someone has, or something you want to make for its own sake?\" Buttons: \"A problem someone has\", \"Something to make for its own sake\". Maturity question on screen at that point: no."
+    },
+    {
+      "n": 4,
+      "expected": "Bottle 1 reaches M2's first question as before, and its person step says \"You're the person with this problem.\" \"You are the grape\" appears nowhere.",
+      "happened": "M2's first question showed. Label: \"Element 2 of 7  ·  The Friction Test\". Question: \"Tell me about the last plant you forgot to water until it died, what did you notice, and what did you actually do when you realized it?\". Stage: friction. Wording shown for the problem: \"I keep forgetting until they die\". \"That's the problem\" clicked on the way: no. Person step: \"You're the person with this problem.\" Note under it: \"Your own experience can be the starting point.\". \"You are the grape\": page checked at 11 points, found at none; in the export: no. Page errors: none. Broke off: no."
+    },
+    {
+      "n": 5,
+      "expected": "Bottle 2 shows the turn-away line, makes no /m0 request, and leaves no new bottle in the cellar.",
+      "happened": "Screen showed: \"The cellar only takes ideas that fix a problem someone has. Something you make for its own sake needs a different test, and the cellar doesn't have one yet.\nBACK TO THE CELLAR\". Buttons: \"Back to the cellar\". /m0 requests for this spark: 0. All worker requests for this spark: none. Bottles stored before: 1, after: 1. Cards before: 1, after: 1. Count line after: \"1 bottle\". The spark in the export: no."
+    }
+  ],
+  "worker_requests": [
+    {
+      "at": "2026-11-05T16:08:59.901Z",
+      "path": "/m0"
+    },
+    {
+      "at": "2026-11-05T16:09:40.018Z",
+      "path": "/m2"
+    }
+  ]
+}
