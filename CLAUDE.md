@@ -48,7 +48,6 @@ Scores, streaks or counts. Accounts, payments, push or email delivery, sharing. 
 
 ## Known gaps, scheduled, don't patch
 - The label screen: "Cork another spark" as the main action, "Phase 1 Complete" and the settled count. The end of Phase 1 and the Object replace it.
-- The "element 3 of 7" counts. They go in the Object pass.
 
 ## Repo map
 The repo is `C:\Users\James\Desktop\ClaudeCodeTest`. GitHub: Kneecoder/corked, branch `main`.
