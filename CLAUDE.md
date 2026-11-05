@@ -53,9 +53,14 @@ Scores, streaks or counts. Accounts, payments, push or email delivery, sharing. 
 The repo is `C:\Users\James\Desktop\ClaudeCodeTest`. GitHub: Kneecoder/corked, branch `main`.
 
 ### Files that matter
-- `corked_v6.html`: the whole app in one file (HTML, CSS, script). Intake (M0 spark, the setup question, the person step), Phase 1 (M1 to M7), the cellar, parking, the label screen.
+- `corked_v6.html`: the app (HTML, CSS, script). Intake (M0 spark, the setup question, the person step), Phase 1 (M1 to M7), the cellar, parking, the label screen. It loads the four files in `shared/`, so it has to be served from the repo folder.
+- `shared/mechanisms.js`: the mechanism table. Each mechanism's route, bars, primary bar, the elements it may move, its anchors, its errand and its copy. The app, the worker and the test tools all read it. A doctrine call about what a mechanism grades is one row here.
+- `shared/provenance.js`: the one rule for "is this the builder's own words". Anchors, quotes from the spark, and the never-invent word check. The worker, the app and the bake-off scoring ask it.
+- `shared/cellar-clock.js`: pace, part of the day, the 05:00 rule, and every comeback, stall and wording answer. It takes `now` as an input.
+- `shared/cellar-store.js`: the one writer of `corked-cellar-v1`. It takes its storage as an input. Cellar import is the one other way in: it restores a whole export.
 - Bottles live in the browser's localStorage under `corked-cellar-v1`. The worker URL is typed in the spark step and saved as `corked_worker_url`.
-- `worker.js`: the Cloudflare Worker. Every prompt (the `*_DOCTRINE` strings), every model call, and every server-side check: anchors, the Phase A word check, length caps, dash and style cleaning.
+- `worker.js`: the Cloudflare Worker. Every prompt (the `*_DOCTRINE` strings), every route, and every server-side check: length caps, dash and style cleaning. It reads `shared/mechanisms.js` and `shared/provenance.js`.
+- `model-adapters.js`: the seam under `callClaude()`. Anthropic in production, the bake-off options, and a replay adapter for recorded replies. `ANTHROPIC_MODEL` stays pinned in `wrangler.toml`.
 - `wrangler.toml`: worker name `orked-m1-proxy`, the account, `ANTHROPIC_MODEL`, `ALLOWED_ORIGINS`. The Anthropic key is a worker secret (`ANTHROPIC_API_KEY`). It is not in the repo.
 - `docs/audit-2026-09-24.md`: code audit with numbered findings. Briefs cite them as "audit #5".
 - `docs/Corked_Test_Run_2026-09-25.md`: notes from a test run.
@@ -79,6 +84,7 @@ All POST, JSON in and out, at https://orked-m1-proxy.kneebonewebdesign.workers.d
 - Later requests carry the problem as `problem: { text, source, status }`. The worker still accepts the old `confirmed_problem` string.
 
 ### Test runners and batteries
+- `tests/`: offline tests, `npm test`. No browser, no key, no cost. The shared modules with plain inputs, and the worker's own checks driven by recorded replies from `runs/` through the replay adapter. They check code, not screens, and they add to the scripted runs a brief asks for. They replace nothing.
 - `scripts/run-corked-batch.mjs`: the 20-spark Phase 1 battery. Runs in Node with no browser: `node scripts/run-corked-batch.mjs`. Calls the live worker for M0 to M7. Writes one report per spark to `corked-runner-output/`, which is tracked in git.
 - `scripts/run-corked-batch-2026-07-12.mjs`: the same runner. Writes to `corked-runner-output-2026-07-12/`.
 - `corked-runner.html`: a browser runner that steps one spark through the chain.
