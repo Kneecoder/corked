@@ -1,6 +1,6 @@
 # Corked look, 5 Nov 2026 (direction D)
 
-The design Code builds to. `png/` shows each screen at laptop (1440×900) and phone (390×844) width. `source/` holds the HTML each picture was rendered from: open it in a browser for exact colours and sizes, but don't copy its markup into the app.
+The design Code builds to. `png/` shows each screen at laptop (1440×900) and phone (390×844) width. The cellar and landing pictures (`D5`, `D6`) show the whole scrolling page. `source/` holds the HTML each picture was rendered from: open it in a browser for exact colours and sizes, but don't copy its markup into the app.
 
 Paper ground, ink text, one wine-red accent. Your words are in a serif, Corked's questions and buttons in a sans, and Corked's spoken lines and small labels in a typewriter mono.
 
@@ -23,7 +23,7 @@ Paper ground, ink text, one wine-red accent. Your words are in a serif, Corked's
 
 ## Type
 
-- **Newsreader** (serif): the builder's own words only. That means the spark, answers, the recorded excerpts and the grape's name. Desktop sizes are 21–25px, phone 16–18px.
+- **Newsreader** (serif): the builder's own words only. That means the spark, answers, the recorded excerpts and the grape's name. Desktop sizes are 21–25px, phone 16–18px. The one exception is the "Corked" wordmark on the landing and the cellar.
 - **Inter**: Corked's questions, buttons and interface text. Questions are 28px/600 on desktop (40px on the spark screen) and 20–22px on phone. Buttons are 16px/500.
 - **IBM Plex Mono**: Corked's spoken lines and small labels.
   - Spoken lines (the one-line observation after an answer) are 17px on desktop and 15px on phone.
@@ -61,6 +61,30 @@ Paper ground, ink text, one wine-red accent. Your words are in a serif, Corked's
 
 Substitution (the same question asked again) keeps its current behaviour in this look.
 
+## The cellar (`D5`)
+
+- **Header**: the "Corked" wordmark, the bottle count in mono under it, and "Add spark" as a second button. It is never the main button, because the next move in the cellar is a bottle with a question ready.
+- **Cards**: two columns on laptop, one on phone. Each card has:
+  - the small bottle with the same layers as in the bottle view, which replaces the dots and the coloured card background;
+  - the status in mono capitals;
+  - the spark in Newsreader;
+  - the date in mono and a quiet "Archive".
+- **Question ready**: the only status in wine, and the only card with the ink border and hard shadow. Every other card has a hairline border and no shadow, so the bottles that need you stand out.
+- **Parked and in flight**: these cards look like any other card and don't fade. The status line says they're parked.
+- **Behind pace (the sag)**: the card's bottle leans in three steps of 5°, 10° and 16°. This replaces the card fading and dropping, and the text never fades.
+- **Archive on a card** asks once before it archives (the browser confirm, like removing a spark), because archiving can't be undone.
+- **Archived bottles** sit in their own group under the rack, headed "Archived". Their cards are flat on paper with the spark in ink-2 and no Archive link. Today they're mixed into the rack, and archiving moves a bottle to the top of the list.
+- **The export line** moves to the bottom of the page as one quiet line.
+- **The × that removes a spark** stays as it works now.
+- **Empty cellar**: "The cellar is empty. Cork an idea to begin." in mono, centred.
+
+## The landing (`D6`)
+
+- **First screen**: the "Corked" wordmark with the short wine rule, Corked's three opening lines in mono, and "Cork an idea" as the main button. On laptop the bottle stands to the right of the text. On phone it sits next to the wordmark.
+- **The opening lines** type out once, on the first visit. The button is there from the start, and a click, tap or key shows the lines at once. Reserve the lines' full height so nothing below them moves while they type.
+- **"The cellar knows what to ask."** and **"The cellar becomes a record."** sit below the first screen in Inter, side by side on laptop and stacked on phone. They don't rotate any more.
+- **The bottle** is the same drawing as in the app, standing, and it's a picture, not the button. "Cork an idea" does what clicking the bottle does now.
+
 ## Typed lines
 
 - Corked's new lines type out at about 60 characters a second, once, the first time they appear. These are the observation, a follow-up, a question the first time it's shown, and the prompts when adding a spark.
@@ -82,8 +106,13 @@ Substitution (the same question asked again) keeps its current behaviour in this
 - The curved line from the label to the question.
 - The phase and next-question lines in the sidebar.
 - "Archive this spark" in the sidebar. It moves to the bottle's card in the cellar.
+- The dots and the coloured background on cellar cards.
+- The landing's rotating sections and their dots.
+- The landing bottle's glow, the ember on hover and the cork animation.
 
 ## Wording in the pictures
 
 - **App wording, build it as shown**: the failed-send message, "View label", the state words, the disclosure labels, the errand card's split into who to find and the question to ask, and the Grape name line.
+- **Cellar status**: "Still aging · N elements remain" becomes "Still aging", with no count. The other statuses keep their current wording.
+- **Made-up examples**: the sparks in the cellar picture.
 - **Worker output shown as an example of the tone**: the one-line observations, the follow-up question and the field question. Today the worker writes longer text. That belongs to a separate worker brief, so put whatever the worker returns in those places for now.
