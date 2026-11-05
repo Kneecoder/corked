@@ -68,19 +68,38 @@ function driver(page, rec) {
       app.step('opened the app on an empty cellar');
     },
 
-    // From the empty cellar's landing: cork an idea, type the spark, bottle it. The worker URL is
-    // typed into the spark step's field when the app asks for it, as a person would.
-    async addSpark(spark, { fromCellar = false } = {}) {
+    // From the landing or the cellar: open the spark step, click the field once and type. Keys go
+    // wherever the focus is, so the text only lands if that one click took. It waits for the
+    // cycling placeholder first, because a field that hasn't got one isn't the field a person meets.
+    async typeSpark(spark, { fromCellar = false } = {}) {
       if (fromCellar) await page.getByRole('button', { name: 'Add Spark' }).click();
       else await page.locator('#bottle-cta-svg').click();
-      await page.locator('#screen-intake.active #f-inp').waitFor({ timeout: STEP_TIMEOUT });
-      // The field moves itself on its first focus and drops that focus, so a first click doesn't
-      // take typing. A person clicks again, and so does the script.
+      await page.locator('#screen-intake.active .ph-overlay').waitFor({ state: 'attached', timeout: STEP_TIMEOUT });
       const field = page.locator('#f-inp');
       await field.click();
-      await field.fill(spark);
-      if ((await field.inputValue()) !== spark) throw new Error('The spark did not reach the field.');
+      const focus = await page.evaluate(() => document.activeElement?.id || document.activeElement?.tagName || null);
+      await page.keyboard.type(spark);
+      const value = await field.inputValue();
+      app.step('clicked the spark field once and typed', { note: `focus on ${focus}` });
+      return { clicks_on_field: 1, focus_after_click: focus, field_value: value };
+    },
+
+    // The button under the spark. Returns what the gate shows.
+    async openGate() {
       await page.locator('#v6-bottle-btn').click();
+      await page.locator('#spark-gate').waitFor({ state: 'visible', timeout: STEP_TIMEOUT });
+      const gate = {
+        question: await text('#spark-gate .step-q'),
+        buttons: await page.locator('#spark-gate button').allTextContents()
+      };
+      app.step('the gate is showing', { note: gate.question });
+      return gate;
+    },
+
+    // "A problem someone has", then the same road as before the gate: M0. The worker URL is typed
+    // into the spark step's field when the app asks for it, as a person would.
+    async passGate() {
+      await page.locator('#spark-gate button', { hasText: 'A problem someone has' }).click();
       if (await visible('#m0-config')) {
         await page.locator('#v6-worker-url').fill(WORKER_URL);
         await page.locator('#v6-bottle-btn').click();
@@ -97,6 +116,13 @@ function driver(page, rec) {
       const question = await text('#intake-body .step-q');
       app.step('bottled the spark', { note: `screen asks "${question}"` });
       return question;
+    },
+
+    async addSpark(spark, options) {
+      const typed = await app.typeSpark(spark, options);
+      if (typed.field_value !== spark) throw new Error('The spark did not reach the field.');
+      await app.openGate();
+      return app.passGate();
     },
 
     async pickOption(optionText) {
@@ -126,11 +152,7 @@ function driver(page, rec) {
       app.step('entered the grape', { note: `${name}, "${relationship}"` });
     },
 
-    async skipPhase1IntroIfShown() {
-      if (await visible('#screen-phase1-intro.active')) {
-        await page.locator('.p1i-skip').click();
-        app.step('skipped the Phase 1 intro');
-      }
+    async waitForPhase1() {
       await page.locator('#screen-phase1.active').waitFor({ timeout: STEP_TIMEOUT });
     },
 
@@ -499,7 +521,7 @@ async function reviewPlayBottleA(app, rec) {
   await app.pickOption('Yes, I can name them and I know the moment.');
   await app.intakeContinue();
   await app.enterGrape(b.name, b.rel);
-  await app.skipPhase1IntroIfShown();
+  await app.waitForPhase1();
   await app.setRhythm(b.pace, b.timing);
   rec.screens.A.rhythm_picker = app.rhythmShown;
   await reviewFirstQuestions(app, rec, key);
@@ -565,7 +587,7 @@ async function reviewPlayBottleB(app, rec) {
   await app.pickOption('Yes. This comes from my own experience.');
   await app.intakeContinue();
   await app.enterGrape(b.name, b.rel);
-  await app.skipPhase1IntroIfShown();
+  await app.waitForPhase1();
   await app.setRhythm(b.pace, b.timing);
   rec.screens.B.rhythm_picker = app.rhythmShown;
   await reviewFirstQuestions(app, rec, key);
@@ -617,11 +639,211 @@ function reviewRecordLines(bottle) {
   return lines;
 }
 
+// ── THE FIRST MINUTE SCENARIO: ITS INPUTS ──
+
+const FIRST_MINUTE = {
+  bottle_1: {
+    spark: 'An app that tells me which of my plants need water, because I keep forgetting until they die.',
+    name: 'Sam',
+    rel: 'My basil keeps dying.',
+    pace: 'Weekly',
+    timing: 'Morning'
+  },
+  bottle_2: {
+    spark: 'A daily game where you describe a picture in one sentence and see how others described it.'
+  },
+  gone: ['Before the cellar', 'The cellar is making champagne', 'You are the grape']
+};
+
 // ── SCENARIOS ──
 // Each scenario plays its steps into rec.screens and rec.checkpoints, then reports, for every
 // expected result, what happened. A report states facts. It never says pass or fail.
 
 const SCENARIOS = {
+  'first-minute': {
+    title: 'First minute',
+    expected: [
+      '"Before the cellar" and "The cellar is making champagne" appear nowhere, and intake goes from its last step straight to Phase 1.',
+      'One click on the spark field puts the typed text in it.',
+      'The gate question shows right after the spark, before the maturity question.',
+      'Bottle 1 reaches M2\'s first question as before, and its person step says "You\'re the person with this problem." "You are the grape" appears nowhere.',
+      'Bottle 2 shows the turn-away line, makes no /m0 request, and leaves no new bottle in the cellar.'
+    ],
+
+    async play(app, rec) {
+      const page = app.page;
+      const s = rec.screens = { looks: [], screens_in_order: [], bottle_1: {}, bottle_2: {} };
+      const requests = rec.worker_requests = [];
+      page.on('request', r => {
+        if (r.url().startsWith(WORKER_URL) && r.method() === 'POST') {
+          requests.push({ at: new Date().toISOString(), path: new URL(r.url()).pathname });
+        }
+      });
+      const m0Calls = list => list.filter(r => r.path === '/m0').length;
+
+      // A server left on the port would serve another copy of the app.
+      const served = await fetch(APP_URL.split('?')[0], { cache: 'no-store' }).then(r => r.text());
+      if (served !== await readFile(join(REPO, 'corked_v6.html'), 'utf8')) {
+        throw new Error('The page on port 8080 is not this checkout\'s app. Close Start Corked and run again.');
+      }
+
+      // Notes every screen the app lands on, in order, so a screen shown for a moment still counts.
+      await page.addInitScript(() => {
+        window.__screens = [];
+        const note = () => {
+          const id = document.querySelector('.screen.active')?.id;
+          if (id && window.__screens[window.__screens.length - 1] !== id) window.__screens.push(id);
+        };
+        const start = () => {
+          note();
+          new MutationObserver(note).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
+        };
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+        else start();
+      });
+
+      // The whole page each time, hidden parts and the app's own script included.
+      const look = async when => {
+        const seen = await page.evaluate(words => {
+          const page = document.documentElement.outerHTML.toLowerCase();
+          return { words: words.filter(w => page.includes(w.toLowerCase())), screens: window.__screens };
+        }, FIRST_MINUTE.gone);
+        s.looks.push({ when, words_seen: seen.words });
+        s.screens_in_order = seen.screens;
+      };
+      const cellarNow = () => page.evaluate(key => ({
+        stored: JSON.parse(localStorage.getItem(key) || '[]').map(b => ({ id: b.id, idea: b.s?.idea ?? null })),
+        cards: document.querySelectorAll('.bottle-card').length,
+        count_line: document.getElementById('cellar-count')?.textContent || null
+      }), CELLAR_KEY);
+      const gateState = async () => ({
+        maturity_options_on_screen: await page.locator('#intake-body .options').count(),
+        m0_requests_so_far: m0Calls(requests)
+      });
+
+      await app.open();
+      await look('landing');
+
+      // Bottle 1.
+      const b1 = FIRST_MINUTE.bottle_1;
+      const one = s.bottle_1;
+      app.spark = b1.spark;
+      one.typed = await app.typeSpark(b1.spark);
+      await look('bottle 1: spark typed');
+      if (one.typed.field_value !== b1.spark) throw new Error('The spark did not reach the field.');
+      one.gate = await app.openGate();
+      Object.assign(one.gate, await gateState());
+      await look('bottle 1: gate');
+      one.after_gate = await app.passGate();
+      await look('bottle 1: maturity question');
+      await app.pickOption('No.');
+      await app.pickOption('Yes. This comes from my own experience.');
+      await app.intakeContinue();
+      one.person_step = { question: await app.text('#intake-body .step-q'), note: await app.text('#intake-body .step-note') };
+      await look('bottle 1: person step');
+      await app.enterGrape(b1.name, b1.rel);
+      await app.waitForPhase1();
+      await look('bottle 1: Phase 1');
+      await app.setRhythm(b1.pace, b1.timing);
+      one.rhythm = app.rhythmShown;
+      const m2 = await app.waitForM2();
+      one.m2 = {
+        stage: m2.stage,
+        problem_shown: m2.problemShown,
+        wording_taken: rec.steps.some(st => st.step === 'took the wording'),
+        label: await app.text('#m-label'),
+        question: await app.text('#m-q')
+      };
+      await look('bottle 1: M2 question');
+
+      // Bottle 2.
+      const b2 = FIRST_MINUTE.bottle_2;
+      const two = s.bottle_2;
+      await page.locator('.sb-back').first().click();
+      await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+      two.cellar_before = await cellarNow();
+      const mark = requests.length;
+      const m0Before = m0Calls(requests);
+      app.spark = null;
+      two.typed = await app.typeSpark(b2.spark, { fromCellar: true });
+      await look('bottle 2: spark typed');
+      if (two.typed.field_value !== b2.spark) throw new Error('The spark did not reach the field.');
+      two.gate = await app.openGate();
+      Object.assign(two.gate, await gateState(), { m0_requests_before_this_spark: m0Before });
+      await look('bottle 2: gate');
+      await page.locator('#spark-gate button', { hasText: 'Something to make for its own sake' }).click();
+      await page.locator('#spark-turned-away').waitFor({ state: 'visible', timeout: STEP_TIMEOUT });
+      await page.waitForTimeout(3000);   // room for a late worker call to show up
+      two.turned_away = {
+        line: await app.text('#spark-turned-away .m0-stamp-line'),
+        buttons: await page.locator('#intake-body button:visible').allTextContents(),
+        whole_screen: (await page.locator('#intake-body').innerText()).trim()
+      };
+      app.step('turned away', { note: two.turned_away.line });
+      await look('bottle 2: turn-away');
+      await page.locator('#intake-body button', { hasText: 'Back to the cellar' }).click();
+      await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+      app.step('back in the cellar');
+      two.cellar_after = await cellarNow();
+      await look('cellar after the turn-away');
+      two.worker_requests = requests.slice(mark).map(r => r.path);
+    },
+
+    report(rec) {
+      const s = rec.screens || {};
+      const one = s.bottle_1 || {};
+      const two = s.bottle_2 || {};
+      const exported = rec.cellars?.first ? JSON.stringify(rec.cellars.first) : null;
+      const wordsSeen = word => (s.looks || []).filter(l => l.words_seen.includes(word)).map(l => l.when);
+      const inExport = word => exported === null ? 'no export to read' : (exported.toLowerCase().includes(word.toLowerCase()) ? 'yes' : 'no');
+      const seenLine = word => `"${word}": page checked at ${(s.looks || []).length} points, found at ${wordsSeen(word).join(', ') || 'none'}; in the export: ${inExport(word)}.`;
+      const typedLine = (name, t, spark) => !t ? `${name}: not reached.`
+        : `${name}: ${t.clicks_on_field} click, focus on ${t.focus_after_click}, field holds "${t.field_value}". Same as typed: ${t.field_value === spark ? 'yes' : 'no'}.`;
+      const gateLine = (name, g) => !g ? `${name}: not reached.`
+        : `${name}: "${g.question}" Buttons: ${g.buttons.map(b => `"${b}"`).join(', ')}. Maturity question on screen at that point: ${g.maturity_options_on_screen ? 'yes' : 'no'}.`;
+      const out = [];
+
+      out.push([
+        seenLine(FIRST_MINUTE.gone[0]),
+        seenLine(FIRST_MINUTE.gone[1]),
+        `Screens in order: ${(s.screens_in_order || []).join(' > ') || 'none noted'}.`
+      ].join(' '));
+
+      out.push([
+        typedLine('Bottle 1', one.typed, FIRST_MINUTE.bottle_1.spark),
+        typedLine('Bottle 2', two.typed, FIRST_MINUTE.bottle_2.spark)
+      ].join(' '));
+
+      out.push([
+        gateLine('Bottle 1', one.gate),
+        one.gate ? `/m0 requests before the answer: ${one.gate.m0_requests_so_far}. After "A problem someone has" the screen asked: "${one.after_gate ?? 'not reached'}".` : '',
+        gateLine('Bottle 2', two.gate)
+      ].filter(Boolean).join(' '));
+
+      out.push([
+        one.m2 ? `M2's first question showed. Label: "${one.m2.label}". Question: "${one.m2.question}". Stage: ${one.m2.stage}. Wording shown for the problem: "${one.m2.problem_shown}". "That's the problem" clicked on the way: ${one.m2.wording_taken ? 'yes' : 'no'}.` : "M2's first question not reached.",
+        one.person_step ? `Person step: "${one.person_step.question}" Note under it: "${one.person_step.note}".` : 'Person step not reached.',
+        seenLine(FIRST_MINUTE.gone[2]),
+        `Page errors: ${rec.page_errors.length ? rec.page_errors.join('; ') : 'none'}.`,
+        rec.broke_off ? `Broke off: ${rec.broke_off}` : 'Broke off: no.'
+      ].join(' '));
+
+      if (!two.turned_away) out.push('Turn-away not reached.');
+      else {
+        const before = two.cellar_before;
+        const after = two.cellar_after;
+        const m0 = (two.worker_requests || []).filter(p => p === '/m0').length;
+        out.push([
+          `Screen showed: "${two.turned_away.whole_screen}". Buttons: ${two.turned_away.buttons.map(b => `"${b}"`).join(', ')}.`,
+          `/m0 requests for this spark: ${m0}. All worker requests for this spark: ${(two.worker_requests || []).join(', ') || 'none'}.`,
+          `Bottles stored before: ${before?.stored.length}, after: ${after?.stored.length}. Cards before: ${before?.cards}, after: ${after?.cards}. Count line after: "${after?.count_line}".`,
+          `The spark in the export: ${inExport(FIRST_MINUTE.bottle_2.spark)}.`
+        ].join(' '));
+      }
+      return out;
+    }
+  },
+
   'architecture-review': {
     title: 'Architecture review',
     expected: [
@@ -829,7 +1051,7 @@ const SCENARIOS = {
       await app.pickOption('Yes, I can name them and I know the moment.');
       await app.intakeContinue();
       await app.enterGrape('Lotte', 'my cousin, she shoots weddings');
-      await app.skipPhase1IntroIfShown();
+      await app.waitForPhase1();
       // Daily, any part of the day: in rhythm-test mode every part of the day returns alike.
       await app.setRhythm('Daily', 'Morning');
 
