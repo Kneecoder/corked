@@ -1352,7 +1352,14 @@ body {
   <div id="label-reopen-box">
     <div class="ew-eyebrow" id="lr-eyebrow">Reopen</div>
     <div class="review-q" id="lr-question" style="font-style:normal;margin-bottom:1rem"></div>
+    <div id="lr-ws-row" style="display:none;margin-bottom:.9rem">
+      <div class="rhythm-choices" style="grid-template-columns:repeat(2, minmax(0, 1fr))">
+        <button type="button" class="rhythm-choice" id="lr-ws-real" onclick="pickReopenWordsSource('real')">Their words, from a real exchange</button>
+        <button type="button" class="rhythm-choice" id="lr-ws-recon" onclick="pickReopenWordsSource('reconstructed')">Reconstructed, we have not talked in these terms</button>
+      </div>
+    </div>
     <textarea class="answer-box" id="lr-ans" placeholder="Write here. The more specific you are, the more this can work with." style="resize:vertical;height:140px;margin-bottom:1rem"></textarea>
+    <div class="dormant-error" id="lr-error"></div>
     <div class="ew-actions">
       <button class="ew-cancel" onclick="closeLabelReopen()">Cancel</button>
       <button class="ew-cancel" id="lr-park-btn" onclick="parkLabelReopenAction()">Come back to this</button>
@@ -1763,7 +1770,14 @@ body {
       <div id="rv-reopen" style="display:none;margin-top:1.6rem;padding-top:1.4rem;border-top:1px solid var(--border)">
         <div class="review-mech-id" id="rv-reopen-mech" style="margin-bottom:.55rem"></div>
         <div class="review-q" id="rv-reopen-q" style="margin-bottom:1.1rem"></div>
+        <div id="rv-ws-row" style="display:none;margin-bottom:.9rem">
+          <div class="rhythm-choices" style="grid-template-columns:repeat(2, minmax(0, 1fr))">
+            <button type="button" class="rhythm-choice" id="rv-ws-real" onclick="pickReopenWordsSource('real')">Their words, from a real exchange</button>
+            <button type="button" class="rhythm-choice" id="rv-ws-recon" onclick="pickReopenWordsSource('reconstructed')">Reconstructed, we have not talked in these terms</button>
+          </div>
+        </div>
         <textarea class="answer-box" id="rv-reopen-ans" placeholder="Write here. The more specific you are, the more this can work with." style="resize:vertical;height:140px;margin-bottom:1rem"></textarea>
+        <div class="dormant-error" id="rv-reopen-error"></div>
         <div style="display:flex;justify-content:flex-end">
           <button class="btn" id="rv-reopen-btn" onclick="submitReopen()">Submit →</button>
         </div>
@@ -1796,7 +1810,25 @@ body {
   </div>
 </div>
 
+<script src="shared/provenance.js"></script>
+<script src="shared/mechanisms.js"></script>
+<script src="shared/cellar-clock.js"></script>
+<script src="shared/cellar-store.js"></script>
 <script>
+// The shared modules, also read by the worker and the test tools.
+const Provenance = globalThis.CorkedProvenance;
+const Mechanisms = globalThis.CorkedMechanisms;
+
+const Cellar = globalThis.CorkedCellarStore.createCellarStore(localStorage);
+
+// Rhythm-test mode (?rhythmtest=1, or localStorage 'corked_rhythm_test'='1') collapses every pace
+// to a near-zero interval and brings every question back after two minutes, so the park -> locked
+// -> open cycle can be watched inside a bench session instead of waiting real days.
+const CellarClock = globalThis.CorkedCellarClock.createCellarClock({
+  testMode: new URLSearchParams(location.search).has('rhythmtest')
+    || localStorage.getItem('corked_rhythm_test') === '1'
+});
+
 // ── STATE ──
 let S = freshState();
 
@@ -1858,19 +1890,8 @@ function currentPhasePanel() {
   return 'question';
 }
 
-// Bottle-record status is a cache derived from S.qLifecycle, recomputed on every save.
-// This is what keeps the cellar card from going stale (e.g. staying "Parked" after the
-// parked question has actually been answered): whichever code path changes qLifecycle,
-// the very next save fixes the cellar label, with no separate "wake up" bookkeeping to forget.
-function deriveBottleStatus(priorStatus, s) {
-  if (priorStatus === 'rested') return 'rested';
-  if (s && s.qLifecycle === 'parked') return s.parkKind === 'in_flight' ? 'in_flight' : 'dormant';
-  return 'active';
-}
-
 // ── PERSISTENCE ──
 const SAVE_KEY = 'corked-v1';
-const CELLAR_KEY = 'corked-cellar-v1';
 const DOORSTEP_KEY = 'corked-doorstep-v1';
 let saveTimer = null;
 let activeBottleId = null;
@@ -1883,8 +1904,21 @@ let _sessionBottleId = null;
 function enterBottleSession(id) { _bottleSession++; _sessionBottleId = id; }
 function leaveBottleSession() { _bottleSession++; _sessionBottleId = null; }
 
+// The open bottle's position. mi is the screen's copy, S.mechIndex the bottle's.
+function moveBottleTo(index) {
+  mi = index;
+  S.mechIndex = index;
+}
+
+// Call before going out to the worker. The function it returns says whether this is still the same
+// visit to the same bottle.
+function bottleVisit() {
+  const session = _bottleSession;
+  return () => session === _bottleSession;
+}
+
 function saveState() {
-  if (activeBottleId) saveBottle(activeBottleId, S, mi);
+  if (activeBottleId) Cellar.save(activeBottleId, S, mi);
   const ind = document.getElementById('sb-save');
   if (ind) { ind.classList.add('show'); clearTimeout(saveTimer); saveTimer = setTimeout(()=>ind.classList.remove('show'), 2000); }
   updateRhythmStatus();
@@ -1944,19 +1978,6 @@ function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
 
-function getAllBottles() {
-  try {
-    const raw = localStorage.getItem(CELLAR_KEY);
-    if (!raw) return [];
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr : [];
-  } catch(e) { return []; }
-}
-
-function saveAllBottles(bottles) {
-  localStorage.setItem(CELLAR_KEY, JSON.stringify(bottles));
-}
-
 function cellarStorageKeys() {
   const keys = [];
   for (let i = 0; i < localStorage.length; i++) {
@@ -2013,44 +2034,6 @@ function cellarImport(event) {
   reader.readAsText(file);
 }
 
-function saveBottle(id, s, mechIdx) {
-  const bottles = getAllBottles();
-  const now = new Date().toISOString();
-  const idx = bottles.findIndex(b => b.id === id);
-  if (idx >= 0) {
-    const status = deriveBottleStatus(bottles[idx].status, s);
-    const keepParkFields = status === 'dormant' || status === 'in_flight';
-    bottles[idx] = {
-      ...bottles[idx], s, mechIndex: mechIdx, status, updated_at: now,
-      brief: keepParkFields ? bottles[idx].brief : null,
-      nextQuestionAt: keepParkFields ? bottles[idx].nextQuestionAt : null
-    };
-  } else {
-    bottles.push({ id, created_at: now, updated_at: now, status: deriveBottleStatus('active', s), s, mechIndex: mechIdx });
-  }
-  saveAllBottles(bottles);
-}
-
-function loadBottle(id) {
-  return getAllBottles().find(b => b.id === id) || null;
-}
-
-function parkBottleDormant(id, brief, status = 'dormant', s = S, mechIdx = mi, parkMech = null) {
-  s.qLifecycle = 'parked';
-  s.parkKind = status;
-  s.parkMech = parkMech;
-  const bottles = getAllBottles();
-  const now = new Date().toISOString();
-  const nextQuestionAt = status === 'dormant' ? computeNextQuestionAt(s.pace, s.notifTiming) : null;
-  const i = bottles.findIndex(b => b.id === id);
-  if (i >= 0) {
-    bottles[i] = { ...bottles[i], s, status, brief, nextQuestionAt, updated_at: now };
-  } else {
-    bottles.push({ id, created_at: now, updated_at: now, status, brief, nextQuestionAt, s, mechIndex: mechIdx });
-  }
-  saveAllBottles(bottles);
-}
-
 // Parks capture the bottle they started on, because the brief fetch can outlast the visit.
 // If the person has left by the time it lands, the park is still recorded on that bottle but
 // never pulls them back to the cellar. If they have already reopened that same bottle, the
@@ -2098,13 +2081,16 @@ function noteParkInFlight() {
 }
 
 function beginPark(mechId) {
-  return { id: activeBottleId, s: S, mechIdx: mi, mechId: mechId || null, session: _bottleSession };
+  return { id: activeBottleId, s: S, mechIdx: mi, mechId: mechId || null, stillHere: bottleVisit() };
 }
 
 function finishPark(park, brief, status) {
-  const stillOpen = park.session === _bottleSession;
+  const stillOpen = park.stillHere();
   if (!stillOpen && _sessionBottleId === park.id) return;
-  parkBottleDormant(park.id, brief, status, park.s, park.mechIdx, park.mechId);
+  Cellar.park(park.id, {
+    s: park.s, mechIndex: park.mechIdx, status, brief, parkMech: park.mechId,
+    nextQuestionAt: status === 'dormant' ? CellarClock.nextReturnAt(park.s.pace, park.s.notifTiming) : null
+  });
   if (stillOpen) showCellar();
 }
 
@@ -2125,33 +2111,6 @@ async function runPark(dispatch, buttonId = null) {
   return true;
 }
 
-
-function updateBottleBrief(id, brief) {
-  const bottles = getAllBottles();
-  const i = bottles.findIndex(b => b.id === id);
-  if (i >= 0) {
-    bottles[i] = { ...bottles[i], brief, updated_at: new Date().toISOString() };
-    saveAllBottles(bottles);
-  }
-}
-
-function wakeBottle(id) {
-  setQLifecycle('active');
-  S.parkKind = null;
-  S.parkMech = null;
-  const bottles = getAllBottles();
-  const i = bottles.findIndex(b => b.id === id);
-  if (i >= 0) {
-    // Persist the corrected S (qLifecycle/parkKind already flipped above) atomically with
-    // the outer status/brief/nextQuestionAt. Without this, storage could hold an inner
-    // s.qLifecycle still 'parked' next to an outer status:'active' — and if the render
-    // that would normally flush the corrected S never runs (e.g. mechIndex already at or
-    // past the end, so renderMech() bails straight to the label screen), that mismatch
-    // never gets fixed, and the bottle reads as parked again forever.
-    bottles[i] = { ...bottles[i], s: S, status: 'active', brief: null, nextQuestionAt: null, updated_at: new Date().toISOString() };
-    saveAllBottles(bottles);
-  }
-}
 
 // ── DEMURRAGE / STALL / ARCHIVE ──
 function bottleHasUnresolvedTurbid(s) {
@@ -2177,12 +2136,7 @@ function questionClockStart(bottle) {
 function bottlePaceMultiples(bottle) {
   const s = bottle.s || {};
   if (typeof s.pace !== 'number' || s.pace < 0) return 0;
-  const dur = PACE_DURATIONS[s.pace];
-  if (!dur) return 0;
-  const start = questionClockStart(bottle);
-  const last = start ? new Date(start).getTime() : 0;
-  if (!last) return 0;
-  return Math.floor((Date.now() - last) / dur);
+  return CellarClock.paceLengthsSince(s.pace, questionClockStart(bottle));
 }
 
 // Active + behind pace + unresolved amber -> visible sag, scaling with pace multiples.
@@ -2207,44 +2161,31 @@ function isStallAcknowledged(bottle) {
 }
 
 function markStallAcknowledged(id) {
-  const bottles = getAllBottles();
-  const i = bottles.findIndex(b => b.id === id);
-  if (i >= 0) {
-    bottles[i] = { ...bottles[i], stallAckAt: new Date().toISOString(), stallAckClock: questionClockStart(bottles[i]) };
-    saveAllBottles(bottles);
-  }
-}
-
-function archiveBottle(id) {
-  const bottles = getAllBottles();
-  const i = bottles.findIndex(b => b.id === id);
-  if (i >= 0) {
-    bottles[i] = { ...bottles[i], status: 'rested', updated_at: new Date().toISOString() };
-    saveAllBottles(bottles);
-  }
+  const bottle = Cellar.get(id);
+  if (bottle) Cellar.ackStall(id, questionClockStart(bottle));
 }
 
 function archiveBottleAction(id) {
-  archiveBottle(id);
+  Cellar.archive(id);
   showCellar();
 }
 
 function archiveBottleFromView() {
   if (!activeBottleId) return;
-  archiveBottle(activeBottleId);
+  Cellar.archive(activeBottleId);
   showCellar();
 }
 
 // Informational only — a parked question is never blocked from answering. This just tells
 // openDormantFind/Ask/Echo whether to show the "this would normally wait" note.
 function dormantIsLocked(bottle) {
-  return bottle.status === 'dormant' && bottle.nextQuestionAt && new Date(bottle.nextQuestionAt).getTime() > Date.now();
+  return bottle.status === 'dormant' && bottle.nextQuestionAt && CellarClock.isAhead(bottle.nextQuestionAt);
 }
 
 function deleteBottle(id, event) {
   event.stopPropagation();
   if (!confirm('Remove this spark from the cellar? This cannot be undone.')) return;
-  saveAllBottles(getAllBottles().filter(b => b.id !== id));
+  Cellar.remove(id);
   renderCellar();
 }
 
@@ -2254,18 +2195,18 @@ function migrateOldSave() {
     if (!raw) return;
     const old = JSON.parse(raw);
     if (!old || !old.S || !old.S.idea) { localStorage.removeItem(SAVE_KEY); return; }
-    if (getAllBottles().length > 0) { localStorage.removeItem(SAVE_KEY); return; }
+    if (Cellar.all().length > 0) { localStorage.removeItem(SAVE_KEY); return; }
     const id = generateId();
     const now = new Date().toISOString();
     const bottles = [{ id, created_at: now, updated_at: now, status: 'active', s: old.S, mechIndex: old.mechIndex || 0 }];
-    saveAllBottles(bottles);
-    if (getAllBottles().find(b => b.id === id)) localStorage.removeItem(SAVE_KEY);
+    Cellar.replaceAll(bottles);
+    if (Cellar.all().find(b => b.id === id)) localStorage.removeItem(SAVE_KEY);
   } catch(e) {}
 }
 
 // Fixed mechanism count for Phase 1 (M1-M7): used to tell a complete bottle apart from one
 // still mid-flight, wherever "has Phase 1 actually finished" matters for state derivation.
-const PHASE1_MECH_COUNT = 7;
+const PHASE1_MECH_COUNT = Mechanisms.ORDER.length;
 
 // Backfills S.qLifecycle/S.parkKind onto bottles saved before the canonical lifecycle field
 // existed, so in-flight/dormant/active test bottles already in localStorage keep working
@@ -2276,7 +2217,7 @@ const PHASE1_MECH_COUNT = 7;
 // migration/save and never touch this "never migrated" branch again.
 function migrateQLifecycleSchema() {
   try {
-    const bottles = getAllBottles();
+    const bottles = Cellar.all();
     let changed = false;
     const migrated = bottles.map(b => {
       const s = b.s || {};
@@ -2286,7 +2227,7 @@ function migrateQLifecycleSchema() {
       const newS = { ...s, qLifecycle: parked ? 'parked' : 'active', parkKind: parked ? b.status : null };
       return { ...b, s: newS };
     });
-    if (changed) saveAllBottles(migrated);
+    if (changed) Cellar.replaceAll(migrated);
   } catch (e) {}
 }
 
@@ -2296,7 +2237,7 @@ function migrateQLifecycleSchema() {
 // that was never confirmed comes across as a proposal still waiting for the builder.
 function migrateProblemSchema() {
   try {
-    const bottles = getAllBottles();
+    const bottles = Cellar.all();
     let changed = false;
     const migrated = bottles.map(b => {
       const s = b.s;
@@ -2319,7 +2260,7 @@ function migrateProblemSchema() {
         }
       };
     });
-    if (changed) saveAllBottles(migrated);
+    if (changed) Cellar.replaceAll(migrated);
   } catch (e) {}
 }
 
@@ -2327,7 +2268,7 @@ function migrateProblemSchema() {
 // me" settles the Grape, with no note, so there is nothing left to retry.
 function migrateSelfGrape() {
   try {
-    const bottles = getAllBottles();
+    const bottles = Cellar.all();
     let changed = false;
     const migrated = bottles.map(b => {
       const s = b.s;
@@ -2336,16 +2277,13 @@ function migrateSelfGrape() {
       changed = true;
       return { ...b, s: { ...s, elements: { ...s.elements, grape: 'settled' }, m1: selfGrapeRecord(s.grape_name) } };
     });
-    if (changed) saveAllBottles(migrated);
+    if (changed) Cellar.replaceAll(migrated);
   } catch (e) {}
 }
 
 function sparkHoldsWordForWord(s, text) {
-  const norm = t => String(t || '').toLowerCase().replace(/[‘’]/g, "'").replace(/\s+/g, ' ')
-    .replace(/^[\s"'.,;:!?]+|[\s"'.,;:!?]+$/g, '');
-  const want = norm(text);
-  return !!want && [s.m0?.raw_spark, s.m0?.user_line, s.m0?.user_line_candidate, s.idea]
-    .some(src => src && norm(src).includes(want));
+  return [s.m0?.raw_spark, s.m0?.user_line, s.m0?.user_line_candidate, s.idea]
+    .some(src => src && Provenance.holds(text, src));
 }
 
 // Enforces two structural invariants on every load (cheap, idempotent, not gated behind
@@ -2358,7 +2296,7 @@ function sparkHoldsWordForWord(s, text) {
 // only ever gets one shot per bottle, so a bad value it wrote earlier would otherwise stick forever.
 function healPhantomParkedBottles() {
   try {
-    const bottles = getAllBottles();
+    const bottles = Cellar.all();
     let changed = false;
     const healed = bottles.map(b => {
       const s = b.s || {};
@@ -2371,7 +2309,7 @@ function healPhantomParkedBottles() {
       const newS = { ...s, qLifecycle: 'active', parkKind: null, parkMech: null };
       return { ...b, s: newS, status: 'active', brief: null, nextQuestionAt: null };
     });
-    if (changed) saveAllBottles(healed);
+    if (changed) Cellar.replaceAll(healed);
   } catch (e) {}
 }
 
@@ -2382,13 +2320,7 @@ function updateRhythmStatus() {
     el.textContent = '';
     return;
   }
-  el.textContent = `Next question: ${formatRhythmShort(S.pace, S.notifTiming)}`;
-}
-
-function formatRhythmShort(pace, timing) {
-  const cadence = ['daily', 'every other day', 'weekly', 'monthly'][pace] || 'on rhythm';
-  const when = ['in the morning', 'at midday', 'in the evening', 'late'][timing] || '';
-  return `${cadence}${when ? ' ' + when : ''}`;
+  el.textContent = `Next question: ${CellarClock.rhythmShort(S.pace, S.notifTiming)}`;
 }
 
 function normalizeGrapeState(state) {
@@ -2448,9 +2380,6 @@ function buildMechs() {
   // Self mode keeps no note on the Grape: the builder named themselves and nothing was graded.
   const grapeObservation = selfMode && !S.m1?.observation?.surface_text ? ''
     : sanitizeBeforeMomentCopy(S.m1?.observation?.surface_text || 'The Grape has been answered during intake.');
-  const grapeQ = selfMode
-    ? `You are the person this spark must answer to.`
-    : `${grapeName} is the person this spark must answer to.`;
   const grapeHint = grapeState === 'settled'
     ? (selfMode
       ? `The elements ahead test whether this idea holds when you are actually in front of it.`
@@ -2459,90 +2388,32 @@ function buildMechs() {
       ? `You are named, but the picture is still forming. The elements ahead will sharpen it.`
       : `${grapeName} is named, but the picture is still forming. The elements ahead will sharpen it.`);
 
-  return [
-    {
-      id:'M1', name:'The Grape',
-      q:grapeQ,
-      hint:grapeHint,
-      els:['grape'],
-      activeEl:'grape',
-      prefilled:true,
+  const copy = { selfMode, grapeName, grape: g, m2Question: S.m2_problem?.question };
+  const bottle = { gapInPlay: S.m2_problem?.gap_in_play };
+  return Mechanisms.ORDER.map(id => {
+    const mech = Mechanisms.get(id);
+    const m = {
+      id,
+      name: mech.name,
+      q: mech.copy.question(copy),
+      // No hint under a question: it would explain what counts, and Corked never shows that.
+      hint: '',
+      els: Mechanisms.elements(id, bottle),
+      activeEl: mech.activeElement,
+      // obs reads what the worker wrote, not computed locally.
+      obs: () => S[id.toLowerCase()]?.observation?.surface_text || null
+    };
+    if (!mech.prefilled) return m;
+    return {
+      ...m,
+      hint: grapeHint,
+      prefilled: true,
       obs: () => [
         `${grapeName} · ${grapeRelation}`,
         grapeObservation
       ].filter(Boolean).join('\n\n')
-    },
-    {
-      id:'M2', name:'The Friction Test',
-      // q is the friction question Phase A (or the scene route) wrote for the problem on record.
-      // The static strings below are fallbacks only. With no problem on record, M2 asks for the
-      // scene instead: m2QuestionText() picks between them.
-      q: S.m2_problem?.question || (selfMode
-        ? `Stay inside the instance you just described.\n\nWhat did you actually do next? Write the observable steps. What could a camera capture?`
-        : `Describe a specific moment when ${g} encountered this. What did they actually do? Write the exact behaviour you could film if you were there.`),
-      // No hint under the M2 question: it would explain what counts, and Corked never shows that.
-      hint: '',
-      // M2 conditionally tests the gap element when Phase A flagged gap_in_play.
-      // gap_in_play means the recovered problem names an existing solution + its failure.
-      // The Gap element only clears from the user's friction answer (Phase B), not from spark text.
-      // NOTE: M2-clears-gap is new, untested doctrine — not canon yet.
-      els: S.m2_problem?.gap_in_play ? ['tell', 'vintage', 'gap'] : ['tell', 'vintage'],
-      activeEl:'tell',
-      // obs reads from S.m2 set by the Phase B worker call, not computed locally.
-      obs: () => S.m2?.observation?.surface_text || null
-    },
-    {
-      id:'M3', name:'Third-Party Workarounds',
-      // q is updated dynamically in renderMech once the problem is on record.
-      q: selfMode
-        ? `Set your own experience aside. Who else hits this? Name one person and tell me what they have actually done about it.`
-        : `Set ${grapeName} aside. Who else hits this? Name one person and tell me what they have actually done about it.`,
-      hint: '',
-      // No Vintage here: a third party's moment counts for the Echo. The Vintage comes from M2 only.
-      els:['echo'],
-      activeEl:'echo',
-      obs: () => S.m3?.observation?.surface_text || null
-    },
-    {
-      id:'M4', name:'Second Person',
-      // q is updated dynamically in renderMech to use the current grape name and problem.
-      q: selfMode
-        ? `You are one kind of person with this. Who is a different kind, and does it look the same for them?`
-        : `${grapeName} is one kind of person with this. Who is a different kind, and does it look the same for them?`,
-      hint: '',
-      els:['echo'],
-      activeEl:'echo',
-      obs: () => S.m4?.observation?.surface_text || null
-    },
-    {
-      id:'M5', name:'The Existing Fix',
-      q: selfMode
-        ? `What do you use for this problem now, and exactly where does it fall short?`
-        : `What do people use for this problem now, and exactly where does it fall short?`,
-      hint: '',
-      els:['gap'],
-      activeEl:'gap',
-      obs: () => S.m5?.observation?.surface_text || null
-    },
-    {
-      id:'M6', name:'Their Words, Not Yours',
-      q: selfMode
-        ? `What have you actually said or written about this, before Corked asked?`
-        : `How would ${g} describe this in their own words?`,
-      hint: '',
-      els:['tell','echo'],
-      activeEl:'echo',
-      obs: () => S.m6?.observation?.surface_text || null
-    },
-    {
-      id:'M7', name:'The Non-Case',
-      q:`Who looks like they should have this problem but doesn't? Why not?`,
-      hint: '',
-      els:['limit'],
-      activeEl:'limit',
-      obs: () => S.m7?.observation?.surface_text || null
-    }
-  ];
+    };
+  });
 }
 
 // ── INTAKE ──
@@ -2818,45 +2689,29 @@ async function intakeNext() {
     intakeSel['grape_rel']   = rel;
     intakeSel['grape_error'] = null;
     const labels = [...document.querySelectorAll('#intake-body .grape-input-label')].map(el => el.textContent.trim());
-    const grapeLog = {
-      kind: 'first_answer',
-      question: labels[1] || '',
-      fields: [{ label: labels[0] || '', value: name }, { label: labels[1] || '', value: rel }]
-    };
-
-    const workerUrl = v6GetWorkerUrl();
-    if (S.maturity === 2) {
-      // Self mode: a name plus "This is me" settles the Grape. No grading call, no note, no retry.
-      // A past instance is M2's bar, and the self answer goes to M2 Phase A.
-      writeM1Logged(name, rel, selfGrapeRecord(name), grapeLog);
-    } else if (workerUrl) {
-      const btn = document.getElementById('grape-continue-btn');
-      if (btn) { btn.disabled = true; btn.textContent = 'Reading person...'; }
-      try {
-        const data = await workerFetch('/m1', {
-          spark_summary: getSparkSummary(),
-          person_name: name,
-          relationship: rel,
-          maturity_class: S.maturity
-        });
-        const grapeState = normalizeGrapeState(data.grape?.state || 'turbid');
-        if (grapeState === 'turbid') {
-          logAnswer({ mech: 'M1', ...grapeLog, answer: rel });
-          intakeSel['grape_error'] = data.observation?.surface_text
-            || 'A more specific person is needed. Name them and state your connection to them.';
-          if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
-          renderIntake();
-          return;
-        }
-        writeM1Logged(name, rel, data, grapeLog);
-      } catch (err) {
-        intakeSel['grape_error'] = 'Could not reach the worker. Check your Worker URL in the spark step.';
-        if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
-        renderIntake();
-        return;
-      }
-    } else {
-      writeM1Logged(name, rel, null, grapeLog);
+    // Self mode: a name plus "This is me" settles the Grape, with no call. A past instance is M2's
+    // bar, and the self answer goes to M2 Phase A.
+    const btn = document.getElementById('grape-continue-btn');
+    if (btn && S.maturity !== 2 && v6GetWorkerUrl()) { btn.disabled = true; btn.textContent = 'Reading person...'; }
+    let outcome;
+    try {
+      outcome = await answerGrape({
+        name, rel, kind: 'first_answer', asked: labels[1] || '', refuseTurbid: true,
+        fields: [{ label: labels[0] || '', value: name }, { label: labels[1] || '', value: rel }]
+      });
+    } catch (err) {
+      intakeSel['grape_error'] = 'Could not reach the worker. Check your Worker URL in the spark step.';
+      if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
+      renderIntake();
+      return;
+    }
+    if (!outcome) return; // the bottle was left; the reply was discarded
+    if (outcome.refused) {
+      intakeSel['grape_error'] = outcome.note
+        || 'A more specific person is needed. Name them and state your connection to them.';
+      if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
+      renderIntake();
+      return;
     }
     step.save();
 
@@ -3103,21 +2958,15 @@ function updateBottle() {
   if (murk) murk.style.opacity = String(Math.max(0.08, 0.75-(settled/6)*0.67));
 }
 
+// How mechanism copy names the grape.
+function grapeLabelName() {
+  return S.label.grape || S.grape_name || 'the person you named';
+}
+
 // The question a mechanism asks, exactly as renderMech shows it.
 function mechQuestion(m) {
-  const gn = S.label.grape || S.grape_name || 'the person you named';
-  const selfMode = S.maturity === 2;
-  if (m.id === 'M3') return selfMode
-    ? `Set your own experience aside. Who else hits this? Name one person and tell me what they have actually done about it.`
-    : `Set ${gn} aside. Who else hits this? Name one person and tell me what they have actually done about it.`;
-  if (m.id === 'M4') return selfMode
-    ? `You are one kind of person with this. Who is a different kind, and does it look the same for them?`
-    : `${gn} is one kind of person with this. Who is a different kind, and does it look the same for them?`;
-  if (m.id === 'M6') return selfMode
-    ? `What have you actually said or written about this, before Corked asked?`
-    : `How would ${gn} describe this in their own words?`;
   if (m.id === 'M2') return m2QuestionText();
-  return m.q;
+  return Mechanisms.get(m.id).copy.question({ selfMode: S.maturity === 2, grapeName: grapeLabelName() });
 }
 
 function renderMech() {
@@ -3125,15 +2974,14 @@ function renderMech() {
   // While no problem is on record, nothing after M2 opens.
   const m2Index = M.findIndex(x => x.id === 'M2');
   if (m2Index >= 0 && mi > m2Index && !problemOnRecord()) {
-    mi = m2Index;
-    S.mechIndex = mi;
+    moveBottleTo(m2Index);
   }
   const m = M[mi];
 
-  // M4 conditional skip: echo already confirmed by M3, second-person question is unnecessary.
-  if (m.id === 'M4' && S.elements.echo === 'settled') {
-    mi++;
-    S.mechIndex = mi;
+  // A mechanism whose element is already settled is passed over (M4 once M3 has settled the Echo).
+  const mech = Mechanisms.get(m.id);
+  if (mech.skippedWhenSettled && S.elements[mech.skippedWhenSettled] === 'settled') {
+    moveBottleTo(mi + 1);
     saveState();
     renderMech();
     return;
@@ -3187,58 +3035,30 @@ function renderMech() {
   m2AwaitingConfirm = false;
   const m2ProblemBlock = document.getElementById('m2-problem');
   if (m2ProblemBlock) m2ProblemBlock.style.display = 'none';
+  const goFind = mech.copy.goFind ? mech.copy.goFind({ selfMode: S.maturity === 2, grapeName: grapeLabelName() }) : '';
   if (m.id === 'M2') {
-    const gn2 = S.label.grape || S.grape_name || 'the person you named';
-    // In self mode there is no one to go and speak to.
-    if (wmBrief) wmBrief.textContent = S.maturity === 2 ? ''
-      : `Haven't spoken to ${gn2} about this yet? Go have that conversation. Come back and write what they actually said.`;
+    if (wmBrief) wmBrief.textContent = goFind;
     if (m2Stage() === 'loading') triggerM2PhaseA();
     else renderM2Stage();
   }
 
-  // M3: inject confirmed problem into question, show brief and exit.
-  if (m.id === 'M3') {
+  // M3 to M7: the question with the current grape name, the brief and the exits row.
+  if (!m.prefilled && m.id !== 'M2') {
     m.q = mechQuestion(m);
     document.getElementById('m-q').textContent = m.q;
-    if (wmBrief) {
-      wmBrief.textContent = `Haven't found someone yet? Go find them. Come back with their name and what they've actually done about it.`;
+    if (wmBrief && goFind) {
+      wmBrief.textContent = goFind;
       wmBrief.style.display = 'block';
     }
-    const exitsRowM3 = document.getElementById('real-world-exits');
-    if (exitsRowM3) exitsRowM3.style.display = 'flex';
+    if (exitsRow) exitsRow.style.display = 'flex';
   }
 
-  // M4: update question with current grape name and problem, show brief and exits row.
-  if (m.id === 'M4') {
-    m.q = mechQuestion(m);
-    document.getElementById('m-q').textContent = m.q;
-    if (wmBrief) {
-      wmBrief.textContent = `Haven't found a different kind of person yet? Go find one. Come back with their name, what they've actually done about it, and whether it looks the same for them.`;
-      wmBrief.style.display = 'block';
-    }
-    const exitsRowM4 = document.getElementById('real-world-exits');
-    if (exitsRowM4) exitsRowM4.style.display = 'flex';
-  }
-
-  // M5: show brief and exits row.
-  if (m.id === 'M5') {
-    if (wmBrief) {
-      wmBrief.textContent = `Haven't found what people use for this now? Go find out. Come back with what it is and exactly where it falls short.`;
-      wmBrief.style.display = 'block';
-    }
-    const exitsRowM5 = document.getElementById('real-world-exits');
-    if (exitsRowM5) exitsRowM5.style.display = 'flex';
-  }
-
-  // M6: interstitial nudge (classes 0/1 only, first render, dismissible), required words-source toggle, show brief and exits row.
+  // M6: interstitial nudge (classes 0/1 only, first render, dismissible) and the required words-source toggle.
   if (m.id === 'M6') {
-    const gn6 = S.label.grape || S.grape_name || 'the person you named';
-    m.q = mechQuestion(m);
-    document.getElementById('m-q').textContent = m.q;
     const showM6Nudge = (S.maturity === 0 || S.maturity === 1) && !S.m6_nudge_dismissed;
     if (m6Interstitial) {
       if (showM6Nudge) {
-        m6Interstitial.innerHTML = `Your grape is ${escHtml(gn6)}. M6 will ask for their exact words. A conversation before then makes that question real rather than reconstructed. <a href="#" onclick="dismissM6Nudge();return false;" style="color:var(--muted);text-decoration:underline">Got it</a>`;
+        m6Interstitial.innerHTML = `Your grape is ${escHtml(grapeLabelName())}. M6 will ask for their exact words. A conversation before then makes that question real rather than reconstructed. <a href="#" onclick="dismissM6Nudge();return false;" style="color:var(--muted);text-decoration:underline">Got it</a>`;
         m6Interstitial.style.display = 'block';
       } else {
         m6Interstitial.style.display = 'none';
@@ -3247,23 +3067,6 @@ function renderMech() {
     }
     if (m6WordsSourceRow) m6WordsSourceRow.style.display = 'block';
     if (S.answers.M6 && S.m6_words_source) pickM6WordsSource(S.m6_words_source);
-    // In self mode there is no one to go and talk to.
-    if (wmBrief && S.maturity !== 2) {
-      wmBrief.textContent = `Haven't talked to ${gn6} in these terms yet? Go have that conversation. Come back with their exact words.`;
-      wmBrief.style.display = 'block';
-    }
-    const exitsRowM6 = document.getElementById('real-world-exits');
-    if (exitsRowM6) exitsRowM6.style.display = 'flex';
-  }
-
-  // M7: show brief and exits row.
-  if (m.id === 'M7') {
-    if (wmBrief) {
-      wmBrief.textContent = `Haven't found your non-case yet? Go find them. Come back with who they are and why they don't have this.`;
-      wmBrief.style.display = 'block';
-    }
-    const exitsRowM7 = document.getElementById('real-world-exits');
-    if (exitsRowM7) exitsRowM7.style.display = 'flex';
   }
 
   showPhasePanel('question');
@@ -3271,12 +3074,12 @@ function renderMech() {
   if (m.id === 'M2' && m2AwaitingConfirm) setQLifecycle('needs_clarification');
   setActiveElementThread(m.activeEl || m.els[0]);
 
-  S.mechIndex = mi;
-  saveState();
-  updateRhythmStatus();
+  moveBottleTo(mi);
 
   // Re-entry: if this mechanism was already answered, restore post-answer UI
   restoreAnsweredMechUI(m);
+  // The store keeps the bottle as it is when this draw changed nothing.
+  saveState();
   renderPaceHold();
 }
 
@@ -3387,15 +3190,9 @@ function hideWhatChanged() {
   el.innerHTML = '';
 }
 
-function answerHasExactSpan(answer, span) {
-  const cleanAnswer = String(answer || '').replace(/\s+/g, ' ').trim().toLowerCase();
-  const cleanSpan = String(span || '').replace(/\s+/g, ' ').trim().toLowerCase();
-  return !!cleanSpan && cleanSpan.length >= 3 && cleanAnswer.includes(cleanSpan);
-}
-
+// The builder's own text for this result's anchor, or nothing when the answer doesn't hold it.
 function verifiedAnchor(result, answer) {
-  const span = result?.anchor_span || '';
-  return answerHasExactSpan(answer, span) ? span.trim() : '';
+  return (Provenance.anchorSpan(result?.anchor_span, answer) || '').trim();
 }
 
 function showWhatChanged(rows) {
@@ -3646,13 +3443,6 @@ function setLastSource(key, mechId) {
   S.lastSource[key] = mechId;
 }
 
-// The mechanism an element reopens through: whichever last graded it, else its canonical source.
-// The Vintage always reopens through M2, also on an older bottle where M3 or M4 last moved it.
-function reopenSource(key, defaults) {
-  if (key === 'vintage') return 'M2';
-  return (S.lastSource && S.lastSource[key]) || defaults[key];
-}
-
 function applyAnchoredResult(key, result, txt, changedRows, settledLabel, weakLabel, mechId) {
   const ok = ['turbid', 'clearing', 'settled'];
   const prior = S.elements[key];
@@ -3688,72 +3478,171 @@ function applyAnchoredResult(key, result, txt, changedRows, settledLabel, weakLa
 // One reopening question, first below-settled grade only, per mechanism, ever.
 
 // ── ONE ANSWER PATH ──────────────────────────────────────────────────────
-// Every M2–M7 answer, from every entry point (normal submit, swirl, park re-entry, label and
-// sidebar reopen), goes through gradeAnswer(): grade first, store second, and only ever into
-// the bottle that asked. On any failure it throws and nothing in the bottle has changed.
-// If the bottle was left while the call was out, it resolves null and touches nothing.
-const ANSWER_GRADERS = {
-  M2: { call: txt => callM2Worker(txt), apply: applyM2Result },
-  M3: { call: txt => callM3Worker(txt), apply: applyM3Result },
-  M4: { call: txt => callM4Worker(txt), apply: applyM4Result },
-  M5: { call: txt => callM5Worker(txt), apply: applyM5Result },
-  M6: { call: (txt, wordsSource) => callM6Worker(txt, wordsSource), apply: applyM6Result },
-  M7: { call: txt => callM7Worker(txt), apply: applyM7Result }
-};
-
+// Every answer, from every entry point (normal submit, swirl, park re-entry, label and sidebar
+// reopen, the grape step, M2's scene), comes through one of the three functions below. A caller
+// says what was asked and what the builder typed. The path grades first and stores second, and
+// only ever into the bottle that asked. It logs the question as it was shown and it saves.
+// On any failure it throws and nothing in the bottle has changed. If the bottle was left while the
+// call was out, it resolves null and touches nothing.
 const GRADE_STATES = ['turbid', 'clearing', 'settled'];
 
 // Every element the mechanism grades must come back with a real state. A missing or unknown
 // state is a failed grade, never a default Turbid.
 function gradeStatesValid(mechId, data) {
   if (!data || typeof data !== 'object' || !GRADE_STATES.includes(data.state)) return false;
-  const bars = {
-    M2: ['tell', 'vintage'].concat(S.m2_problem?.gap_in_play ? ['gap'] : []),
-    M3: ['echo'],
-    M4: ['echo'],
-    M5: ['gap'],
-    M6: ['tell'].concat(data.echo ? ['echo'] : []),
-    M7: ['limit']
-  }[mechId];
-  return !!bars && bars.every(k => GRADE_STATES.includes(data[k]?.state));
+  return mechElements(mechId, data).every(k => GRADE_STATES.includes(data[k]?.state));
 }
 
-// log: { kind, question, answer }. answer is what the builder typed, when it differs from txt (a follow-up).
-async function gradeAnswer(mechId, txt, { allowSwirl = true, wordsSource, keepDraft = false, beforeStore, log } = {}) {
-  const grader = ANSWER_GRADERS[mechId];
-  if (!grader) throw new Error(`No grader for ${mechId}`);
-  const session = _bottleSession;
-  const stillOpen = () => session === _bottleSession;
+// The elements this reply can move on this bottle. M6's Echo counts when the reply carries one:
+// the worker leaves it out in self mode.
+function mechElements(mechId, data) {
+  return Mechanisms.elements(mechId, { gapInPlay: S.m2_problem?.gap_in_play, selfMode: !data.echo });
+}
 
-  if (keepDraft) { setAnswerDraft(mechId, txt); saveState(); }
+// M2 to M7.
+//   asked: the question as it was shown. typed: what the builder typed. kind: first_answer,
+//   follow_up, reopen or reply.
+//   read: what the worker reads, when it isn't what was typed (a follow-up reads the whole answer).
+//   wordsSource: M6 only, real or reconstructed. Nothing picked reads as reconstructed.
+//   beforeStore: runs once the grade is valid, in the same step that stores it.
+//   finishes: this answer closes the question on screen, so its lifecycle moves to answered.
+async function answerMechanism({ mechId, asked, typed, kind, read = typed, wordsSource, allowSwirl = true, keepDraft = false, beforeStore, finishes = true }) {
+  if (!isAnsweredMech(mechId)) throw new Error(`No grader for ${mechId}`);
+  const stillHere = bottleVisit();
 
+  if (keepDraft) { setAnswerDraft(mechId, read); saveState(); }
+
+  const source = mechId === 'M6' ? (wordsSource === 'real' ? 'real' : 'reconstructed') : null;
   let data;
   try {
-    data = await grader.call(txt, wordsSource);
+    data = await callMechWorker(mechId, read, source);
   } catch (err) {
-    if (!stillOpen()) return null;
+    if (!stillHere()) return null;
     throw err;
   }
-  if (!stillOpen()) return null;
+  if (!stillHere()) return null;
   if (!gradeStatesValid(mechId, data)) throw new Error('Invalid grade from the worker.');
 
   if (beforeStore) beforeStore();
-  S.answers[mechId] = txt;
+  S.answers[mechId] = read;
   setAnswerDraft(mechId, '');
+  if (source) S.m6_words_source = source;
   // The apply step writes the grade synchronously, then may await an errand brief. Save the
   // grade straight away so it is kept even if the person leaves while the brief is loading.
   openRecordCapture();
-  const applying = grader.apply(data, txt, allowSwirl);
+  const applying = applyMechResult(mechId, data, read, allowSwirl);
   const moves = closeRecordCapture();
-  if (log) {
-    const typed = log.answer ?? txt;
-    logAnswer({ mech: mechId, kind: log.kind, question: log.question, answer: typed, moves,
-      ...(typed !== txt ? { read_as: txt } : {}) });
-  }
+  logAnswer({ mech: mechId, kind, question: asked, answer: typed, moves,
+    ...(typed !== read ? { read_as: read } : {}) });
   markReading(mechId);
   saveState();
   await applying;
-  return stillOpen() ? data : null;
+  if (!stillHere()) return null;
+  if (finishes && S.qLifecycle !== 'needs_clarification') setQLifecycle('answered');
+  saveState();
+  return data;
+}
+
+// M2 with no problem on record: the worker reads the answer as a scene. The caller applies the
+// reading, because what happens next depends on where the answer came from.
+async function answerScene({ asked, typed, kind, read = typed }) {
+  const stillHere = bottleVisit();
+  let data;
+  try {
+    data = await callM2Scene(read);
+  } catch (err) {
+    if (!stillHere()) return null;
+    throw err;
+  }
+  if (!stillHere()) return null;
+  logAnswer({ mech: 'M2', part: 'scene', kind, question: asked, answer: typed,
+    ...(typed !== read ? { read_as: read } : {}) });
+  saveState();
+  return data;
+}
+
+// M1, at the grape step and on a reopen. Self mode settles on the name, with no call and no note.
+// No worker URL records the person ungraded.
+//   refuseTurbid: a person too thin to name is logged and not recorded. Resolves { refused, note }.
+//   beforeStore: runs once the person is going on record.
+// Otherwise resolves { recorded: true }.
+async function answerGrape({ name, rel, asked, kind, fields, refuseTurbid = false, beforeStore }) {
+  const log = { kind, question: asked, ...(fields ? { fields } : {}) };
+  const record = data => {
+    if (beforeStore) beforeStore();
+    writeM1Logged(name, rel, data, log);
+    return { recorded: true };
+  };
+  if (S.maturity === 2) return record(selfGrapeRecord(name));
+  if (!v6GetWorkerUrl()) return record(null);
+
+  const stillHere = bottleVisit();
+  let data;
+  try {
+    data = await workerFetch('/m1', {
+      spark_summary:  getSparkSummary(),
+      person_name:    name,
+      relationship:   rel,
+      maturity_class: S.maturity
+    });
+  } catch (err) {
+    if (!stillHere()) return null;
+    throw err;
+  }
+  if (!stillHere()) return null;
+  if (refuseTurbid && normalizeGrapeState(data.grape?.state || 'turbid') === 'turbid') {
+    logAnswer({ mech: 'M1', ...log, answer: rel });
+    return { refused: true, note: data.observation?.surface_text || '' };
+  }
+  return record(data);
+}
+
+// A reopen from the sidebar or the label: the Grape's route, or the mechanism's. No swirl.
+async function answerReopen(mechId, { asked, typed, wordsSource }) {
+  if (mechId === 'M1') {
+    const outcome = await answerGrape({ name: S.grape_name || '', rel: typed, asked, kind: 'reopen' });
+    if (outcome) saveState();
+    return outcome;
+  }
+  return answerMechanism({ mechId, asked, typed, kind: 'reopen', allowSwirl: false, wordsSource, finishes: false });
+}
+
+// M6 asks where its words came from on a reopen too. The two reopen forms share this choice, and
+// only one is ever open.
+let _reopenWordsSource = null;
+
+function pickReopenWordsSource(v) {
+  _reopenWordsSource = v;
+  for (const prefix of ['rv', 'lr']) {
+    document.getElementById(`${prefix}-ws-real`)?.classList.toggle('is-selected', v === 'real');
+    document.getElementById(`${prefix}-ws-recon`)?.classList.toggle('is-selected', v === 'reconstructed');
+  }
+}
+
+// Self mode has no choice here: its buttons speak in the third person, so a self reopen reads as
+// reconstructed, as it always has.
+function reopenAsksWordsSource(mechId) {
+  return mechId === 'M6' && S.maturity !== 2;
+}
+
+function showReopenWordsSource(rowId, mechId) {
+  pickReopenWordsSource(null);
+  const row = document.getElementById(rowId);
+  if (row) row.style.display = reopenAsksWordsSource(mechId) ? 'block' : 'none';
+}
+
+// True when M6 is still waiting on that choice. Brings the choice into view.
+function reopenWaitsForWordsSource(rowId, mechId) {
+  if (!reopenAsksWordsSource(mechId) || _reopenWordsSource) return false;
+  document.getElementById(rowId)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  return true;
+}
+
+function showReopenError(id, message) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = message || '';
+  el.style.display = message ? 'block' : 'none';
 }
 
 // Drafts are the ungraded text in the answer box, kept apart from S.answers (graded only).
@@ -3765,9 +3654,9 @@ function setAnswerDraft(mechId, text) {
 
 function onAnswerInput() {
   clearTimeout(window._autosave);
-  const session = _bottleSession;
+  const stillHere = bottleVisit();
   window._autosave = setTimeout(() => {
-    if (session !== _bottleSession) return;
+    if (!stillHere()) return;
     const m = M[mi];
     const ans = document.getElementById('ans');
     if (m && ans && !m.prefilled && !obsShown) setAnswerDraft(m.id, ans.value);
@@ -3791,14 +3680,13 @@ function markSwirlShown(mechId) {
 // answer flow (allowSwirl left true) — reopen and resolve regrades pass allowSwirl=false.
 function maybeShowSwirl(mechId, data, originalAnswer) {
   if (!data?.swirl?.question || data.state === 'settled' || swirlAlreadyShown(mechId)) return false;
-  // Marked done in submitSwirl() only once the follow-up is graded, so a failed swirl can be retried.
   openSwirlPanel(data.swirl.question, { mechId, originalAnswer });
   return true;
 }
 
 // pending.scene marks M2's scene follow-up: its answer goes back through the scene route.
 function openSwirlPanel(question, pending) {
-  _pendingSwirl = pending;
+  _pendingSwirl = { ...pending, question };
   const swirlBtn = document.getElementById('swirl-btn');
   if (swirlBtn) { swirlBtn.disabled = false; swirlBtn.textContent = 'Continue →'; }
   setQLifecycle('needs_clarification');
@@ -3830,29 +3718,25 @@ async function submitSwirl() {
   const swirlAnswer = (ansEl?.value || '').trim();
   if (!swirlAnswer) return;
 
-  const { mechId, originalAnswer } = _pendingSwirl;
+  const { mechId, originalAnswer, question: asked } = _pendingSwirl;
   const combined = `${originalAnswer} ${swirlAnswer}`.trim();
-  const swirlQ = document.getElementById('swirl-q')?.textContent || '';
   const btn = document.getElementById('swirl-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
   setQLifecycle('evaluating');
 
   if (_pendingSwirl.scene) {
     // M2's scene follow-up: the combined answer goes back through the scene route, once.
-    const session = _bottleSession;
     let data;
     try {
-      data = await callM2Scene(combined);
+      data = await answerScene({ asked, typed: swirlAnswer, read: combined, kind: 'follow_up' });
     } catch (err) {
-      if (session !== _bottleSession) return;
       // Nothing was stored: the swirl stays open with its text, so it can be sent again.
       setQLifecycle('needs_clarification');
       showPhaseObservation('Worker error. ' + err.message);
       if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
       return;
     }
-    if (session !== _bottleSession) return;
-    logAnswer({ mech: 'M2', part: 'scene', kind: 'follow_up', question: swirlQ, answer: swirlAnswer, read_as: combined });
+    if (!data) return;
     markSwirlShown(M2_SCENE_SWIRL);
     hideSwirl();
     if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
@@ -3867,8 +3751,10 @@ async function submitSwirl() {
 
   let graded;
   try {
-    graded = await gradeAnswer(mechId, combined, { allowSwirl: false, wordsSource: S.m6_words_source,
-      log: { kind: 'follow_up', question: swirlQ, answer: swirlAnswer } });
+    graded = await answerMechanism({ mechId, asked, typed: swirlAnswer, read: combined, kind: 'follow_up', allowSwirl: false,
+      wordsSource: S.m6_words_source,
+      // Marked done only once the follow-up is graded, so a failed swirl can be retried.
+      beforeStore: () => markSwirlShown(mechId) });
   } catch (err) {
     // Nothing was stored: the swirl stays open with its text, so it can be sent again.
     setQLifecycle('needs_clarification');
@@ -3878,16 +3764,9 @@ async function submitSwirl() {
   }
   if (!graded) return; // the bottle was left while grading; the reply was discarded
 
-  markSwirlShown(mechId);
   const ansMain = document.getElementById('ans');
   if (ansMain) ansMain.value = combined;
-  setQLifecycle('answered');
-  saveState();
-  _pendingSwirl = null;
-  const panel = document.getElementById('swirl-panel');
-  if (panel) panel.style.display = 'none';
-  const phaseRow = document.getElementById('q-phase-row');
-  if (phaseRow) phaseRow.style.display = '';
+  hideSwirl();
   if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
   renderPaceHold();
 }
@@ -3895,22 +3774,6 @@ async function submitSwirl() {
 // ── M2: THE FRICTION TEST ──────────────────────────────────────────────────
 
 let m2AwaitingConfirm = false;
-
-async function parkM2Ask(status = 'dormant') {
-  const park = beginPark('M2');
-  let brief = S.m2_pending_brief || null;
-  S.m2_pending_brief = null;
-  if (!brief) {
-    try {
-      const gapElement = S.m2_problem?.gap_in_play && S.elements.gap !== 'settled';
-      brief = await fetchMechErrand('M2', { mode: 'ask', element: gapElement ? 'gap' : 'tell' });
-    } catch (e) {
-      const question = S.m2_problem?.question || null;
-      brief = { kind: 'ask', text: question, pending: !question, created_at: new Date().toISOString() };
-    }
-  }
-  finishPark(park, brief, status);
-}
 
 // ── THE PROBLEM ON RECORD ──
 // S.problem is { text, source, status }. Source is user_stated, system_hypothesis or
@@ -3969,13 +3832,12 @@ function m2OpenErrandText() {
     : "What's been the most annoying part of your week?";
 }
 
-// M2, M5 and M6 point at the grape. In self mode the grape is the builder, so their errand is the
-// builder's own next occurrence: parked only, with no reply to wait on and nothing to copy.
-const SELF_ERRAND_MECHS = ['M2', 'M5', 'M6'];
-const SELF_ERRAND = 'Next time it happens, write down what you did right then.';
+// Some errands point at the grape (M2, M5 and M6). In self mode the grape is the builder, so their
+// errand is the builder's own next occurrence: parked only, with no reply to wait on and nothing to copy.
+const SELF_ERRAND = Mechanisms.SELF_ERRAND_TEXT;
 
 function selfErrandFor(mechId) {
-  return S.maturity === 2 && SELF_ERRAND_MECHS.includes(mechId);
+  return S.maturity === 2 && !!Mechanisms.get(mechId).errand?.selfErrand;
 }
 
 // A mechanism's errand: the self errand where it applies, otherwise the field generator's brief.
@@ -4079,7 +3941,7 @@ function renderM2Stage() {
 // Phase A runs once per bottle, when nothing is stored yet. Reopening never reruns it.
 async function triggerM2PhaseA() {
   const workerUrl = v6GetWorkerUrl();
-  const session = _bottleSession;
+  const stillHere = bottleVisit();
   const ans = document.getElementById('ans');
   const qEl = document.getElementById('m-q');
   const hintEl = document.getElementById('m-hint');
@@ -4114,13 +3976,13 @@ async function triggerM2PhaseA() {
     });
     if (!['stated', 'self_answer', 'guessed', 'insufficient'].includes(data?.outcome)) throw new Error('Invalid reply from the worker.');
   } catch (err) {
-    if (session !== _bottleSession) return;
+    if (!stillHere()) return;
     // Phase A failed: say so under the buttons, and Continue tries again.
     showM2Error('Could not recover a clear line from this spark. ' + err.message);
     setPhaseBusy(false, 'Try again →');
     return;
   }
-  if (session !== _bottleSession) return;
+  if (!stillHere()) return;
   applyM2PhaseAResult(data);
 }
 
@@ -4150,18 +4012,6 @@ function m2ConfirmProblem() {
   document.getElementById('ans')?.focus();
 }
 
-async function callM2Worker(txt) {
-  return workerFetch('/m2', {
-    user_line:          getSparkSummary(),
-    grape_name:         S.grape_name || '',
-    grape_relationship: S.grape_relationship || '',
-    maturity_class:     S.maturity,
-    problem:            problemForWorker(),
-    gap_in_play:        !!(S.m2_problem?.gap_in_play),
-    user_answer:        txt
-  });
-}
-
 // ── M2 SCENE ROUTE ──
 // No problem in the spark: M2 asks for the scene, and the worker builds a problem from the
 // builder's own words, anchored to the span it came from. No scene in the answer: one follow-up
@@ -4185,25 +4035,20 @@ async function submitM2Scene(txt) {
     if (ans) ans.style.borderColor = 'var(--wine)';
     return;
   }
-  const session = _bottleSession;
-  const shownQ = document.getElementById('m-q')?.textContent || '';
   hideM2Error();
   setAnswerDraft('M2', txt);
   saveState();
   setPhaseBusy(true, 'Reading moment...');
   let data;
   try {
-    data = await callM2Scene(txt);
+    data = await answerScene({ asked: m2QuestionText(), typed: txt, kind: 'first_answer' });
   } catch (err) {
-    if (session !== _bottleSession) return;
     showM2Error('Worker error. ' + err.message);
     setPhaseBusy(false, 'Try again →');
     return;
   }
-  if (session !== _bottleSession) return;
+  if (!data) return;
   setPhaseBusy(false, 'Continue →');
-  logAnswer({ mech: 'M2', part: 'scene', kind: 'first_answer', question: shownQ, answer: txt });
-  saveState();
   applyM2SceneResult(data, txt, !swirlAlreadyShown(M2_SCENE_SWIRL));
 }
 
@@ -4230,109 +4075,132 @@ async function showM2NoProblemErrand() {
   const exitsRow = document.getElementById('real-world-exits');
   if (exitsRow) exitsRow.style.display = 'flex';
   showInlineErrand(null);
-  const session = _bottleSession;
+  const stillHere = bottleVisit();
   try {
     const brief = await fetchMechErrand('M2', { mode: 'ask', element: 'tell' });
-    if (session !== _bottleSession) return;
+    if (!stillHere()) return;
     S.m2_pending_brief = brief;
     showInlineErrand(brief.question || brief.text ? brief : m2OpenErrandText());
   } catch (e) {
-    if (session !== _bottleSession) return;
+    if (!stillHere()) return;
     S.m2_pending_brief = { kind: 'ask', text: null, pending: true, created_at: new Date().toISOString() };
     showInlineErrand(m2OpenErrandText());
   }
   saveState();
 }
 
-async function applyM2Result(data, txt, allowSwirl = true) {
-  S.m2 = data;
-  const changedRows = [];
-
-  applyAnchoredResult('tell', data.tell, txt, changedRows, 'Observable action', 'Partial action', 'M2');
-  applyAnchoredResult('vintage', data.vintage, txt, changedRows, 'Specific instance', 'Partial moment', 'M2');
-  if (S.m2_problem?.gap_in_play) {
-    applyAnchoredResult('gap', data.gap, txt, changedRows, 'Workaround failure', 'Partial failure point', 'M2');
-  }
-  showPhaseObservation(data.observation?.surface_text || '');
-  showWhatChanged(changedRows);
-
-  if (allowSwirl && maybeShowSwirl('M2', data, txt)) return;
-
-  if (data.state !== 'settled' && !data.substitution_detected && txt.trim()) {
-    showInlineErrand(null);
-    const session = _bottleSession;
-    try {
-      const gapElement = S.m2_problem?.gap_in_play && data.gap?.state !== 'settled';
-      const brief = await fetchMechErrand('M2', { mode: 'ask', element: gapElement ? 'gap' : 'tell' });
-      if (session !== _bottleSession) return;
-      S.m2_pending_brief = brief;
-      showInlineErrand(brief.question || brief.text ? brief : S.m2_problem?.question || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?`);
-    } catch (e) {
-      if (session !== _bottleSession) return;
-      S.m2_pending_brief = { kind: 'ask', text: null, pending: true, created_at: new Date().toISOString() };
-      showInlineErrand(S.m2_problem?.question || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?`);
-    }
-  } else {
-    S.m2_pending_brief = null;
-    hideInlineErrand();
-  }
-}
-
-// ── END M2 ────────────────────────────────────────────────────────────────
-
-// ── M3: THIRD-PARTY WORKAROUNDS ───────────────────────────────────────────
-
 let _reopenKey = null;
 let _reopenMechId = null;
 
-async function callM3Worker(txt) {
-  return workerFetch('/m3', {
+// ── THE MECHANISMS, FROM THE TABLE ──
+// One worker call, one way to apply a reading, one park. What varies by mechanism is a row in
+// shared/mechanisms.js.
+
+// M2 to M7 grade an answer. M1 is the grape step.
+function isAnsweredMech(mechId) {
+  return !!Mechanisms.MECHANISMS[mechId] && !Mechanisms.get(mechId).prefilled;
+}
+
+function hasErrand(mechId) {
+  return !!Mechanisms.MECHANISMS[mechId]?.errand;
+}
+
+function pendingBriefKey(mechId) {
+  return `${mechId.toLowerCase()}_pending_brief`;
+}
+
+// What the request carries beyond the problem, the person and the answer.
+const MECH_REQUEST_EXTRAS = {
+  M2: () => ({ user_line: getSparkSummary(), gap_in_play: !!(S.m2_problem?.gap_in_play) }),
+  M4: () => ({ prior_echo_context: (S.answers.M3 || '').slice(0, 300) }),
+  M6: wordsSource => ({ words_source: wordsSource })
+};
+
+async function callMechWorker(mechId, txt, wordsSource) {
+  return workerFetch(Mechanisms.get(mechId).route, {
     problem:            problemForWorker(),
     grape_name:         S.grape_name || '',
     grape_relationship: S.grape_relationship || '',
     maturity_class:     S.maturity,
-    user_answer:        txt
+    user_answer:        txt,
+    ...(MECH_REQUEST_EXTRAS[mechId] ? MECH_REQUEST_EXTRAS[mechId](wordsSource) : {})
   });
 }
 
-async function applyM3Result(data, txt, allowSwirl = true) {
-  S.m3 = data;
+// What an errand's copy and request read off the bottle. A reply is passed in when there is one:
+// M2's errand goes by the reply's Gap, a park's by the element.
+function errandContext(mechId, data) {
+  return {
+    grapeRef: grapeRef(),
+    grapeName: S.grape_name || 'the person you named',
+    selfErrand: selfErrandFor(mechId),
+    selfErrandText: SELF_ERRAND,
+    problemOnRecord: problemOnRecord(),
+    m2Question: S.m2_problem?.question || null,
+    openErrandText: m2OpenErrandText(),
+    gapInPlay: !!S.m2_problem?.gap_in_play,
+    gapState: data ? data.gap?.state : S.elements.gap
+  };
+}
+
+function errandRequest(mechId, context) {
+  const { errand } = Mechanisms.get(mechId);
+  return { mode: errand.mode, element: errand.element(context) };
+}
+
+function mechErrandFallback(mechId, context) {
+  return Mechanisms.get(mechId).errand.fallback(context);
+}
+
+async function applyMechResult(mechId, data, txt, allowSwirl = true) {
+  const mech = Mechanisms.get(mechId);
+  S[mechId.toLowerCase()] = data;
   const changedRows = [];
 
-  applyAnchoredResult('echo', data.echo, txt, changedRows, 'Third-party confirmation', 'Partial confirmation', 'M3');
+  for (const key of mechElements(mechId, data)) {
+    const [settledLabel, weakLabel] = mech.copy.rows[key];
+    applyAnchoredResult(key, data[key], txt, changedRows, settledLabel, weakLabel, mechId);
+  }
   showPhaseObservation(data.observation?.surface_text || '');
   showWhatChanged(changedRows);
 
-  if (allowSwirl && maybeShowSwirl('M3', data, txt)) return;
+  if (allowSwirl && maybeShowSwirl(mechId, data, txt)) return;
 
-  if (data.echo?.state !== 'settled' && !data.substitution_detected && txt.trim()) {
+  const pendingKey = pendingBriefKey(mechId);
+  const state = mech.errandBar ? data[mech.errandBar]?.state : data.state;
+  if (state !== 'settled' && !data.substitution_detected && txt.trim()) {
     showInlineErrand(null);
-    const session = _bottleSession;
+    const stillHere = bottleVisit();
+    const context = errandContext(mechId, data);
     try {
-      const brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
-      if (session !== _bottleSession) return;
-      S.m3_pending_brief = brief;
-      showInlineErrand(brief.question || brief.text ? brief : `Find someone who hits this problem and is not ${grapeRef()}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`);
+      const brief = await fetchMechErrand(mechId, errandRequest(mechId, context));
+      if (!stillHere()) return;
+      S[pendingKey] = brief;
+      showInlineErrand(brief.question || brief.text ? brief : mechErrandFallback(mechId, context));
     } catch (e) {
-      if (session !== _bottleSession) return;
-      S.m3_pending_brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
-      showInlineErrand(`Find someone who hits this problem and is not ${grapeRef()}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`);
+      if (!stillHere()) return;
+      S[pendingKey] = { kind: mech.errand.mode, text: null, pending: true, created_at: new Date().toISOString() };
+      showInlineErrand(mechErrandFallback(mechId, context));
     }
   } else {
-    S.m3_pending_brief = null;
+    S[pendingKey] = null;
     hideInlineErrand();
   }
 }
 
-async function parkM3Echo(status = 'dormant') {
-  const park = beginPark('M3');
-  let brief = S.m3_pending_brief || null;
-  S.m3_pending_brief = null;
+async function parkMechanism(mechId, status = 'dormant') {
+  const { errand } = Mechanisms.get(mechId);
+  const pendingKey = pendingBriefKey(mechId);
+  const context = errandContext(mechId);
+  const park = beginPark(mechId);
+  let brief = S[pendingKey] || null;
+  S[pendingKey] = null;
   if (!brief) {
     try {
-      brief = await fetchFieldBrief({ mode: 'echo', element: 'echo' });
+      brief = await fetchMechErrand(mechId, errandRequest(mechId, context));
     } catch (e) {
-      brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
+      const text = errand.savedText ? errand.savedText(context) : null;
+      brief = { kind: errand.mode, text, pending: !text, created_at: new Date().toISOString() };
     }
   }
   finishPark(park, brief, status);
@@ -4353,15 +4221,7 @@ async function parkItAction(status = 'dormant') {
     return;
   }
 
-  const dispatch = () => {
-    if (m.id === 'M2') return parkM2Ask(status);
-    if (m.id === 'M3') return parkM3Echo(status);
-    if (m.id === 'M4') return parkM4Echo(status);
-    if (m.id === 'M5') return parkM5Gap(status);
-    if (m.id === 'M6') return parkM6Words(status);
-    if (m.id === 'M7') return parkM7Limit(status);
-    return Promise.resolve();
-  };
+  const dispatch = () => hasErrand(m.id) ? parkMechanism(m.id, status) : Promise.resolve();
   const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('This is taking too long. Check your connection and try again.')), PARK_TIMEOUT_MS));
 
   try {
@@ -4372,123 +4232,6 @@ async function parkItAction(status = 'dormant') {
   }
 }
 
-
-// ── END M3 ────────────────────────────────────────────────────────────────
-
-// ── M4: SECOND PERSON ─────────────────────────────────────────────────────
-
-async function callM4Worker(txt) {
-  return workerFetch('/m4', {
-    problem:            problemForWorker(),
-    grape_name:         S.grape_name || '',
-    grape_relationship: S.grape_relationship || '',
-    maturity_class:     S.maturity,
-    prior_echo_context: (S.answers.M3 || '').slice(0, 300),
-    user_answer:        txt
-  });
-}
-
-async function applyM4Result(data, txt, allowSwirl = true) {
-  S.m4 = data;
-  const changedRows = [];
-  applyAnchoredResult('echo', data.echo, txt, changedRows, 'Contrast', 'Partial contrast', 'M4');
-  showPhaseObservation(data.observation?.surface_text || '');
-  showWhatChanged(changedRows);
-
-  if (allowSwirl && maybeShowSwirl('M4', data, txt)) return;
-
-  if (data.echo?.state !== 'settled' && !data.substitution_detected && txt.trim()) {
-    showInlineErrand(null);
-    const session = _bottleSession;
-    try {
-      const brief = await fetchFieldBrief({ mode: 'contrast', element: 'echo' });
-      if (session !== _bottleSession) return;
-      S.m4_pending_brief = brief;
-      showInlineErrand(brief.question || brief.text ? brief : `Find a second person who hits this problem, someone other than ${grapeRef()} and whoever you named before. Ask what they've actually done about it.`);
-    } catch (e) {
-      if (session !== _bottleSession) return;
-      S.m4_pending_brief = { kind: 'echo', text: null, pending: true, created_at: new Date().toISOString() };
-      showInlineErrand(`Find a second person who hits this problem, someone other than ${grapeRef()} and whoever you named before. Ask what they've actually done about it.`);
-    }
-  } else {
-    S.m4_pending_brief = null;
-    hideInlineErrand();
-  }
-}
-
-async function parkM4Echo(status = 'dormant') {
-  const park = beginPark('M4');
-  let brief = S.m4_pending_brief || null;
-  S.m4_pending_brief = null;
-  if (!brief) {
-    try {
-      brief = await fetchFieldBrief({ mode: 'contrast', element: 'echo' });
-    } catch (e) {
-      brief = { kind: 'contrast', text: null, pending: true, created_at: new Date().toISOString() };
-    }
-  }
-  finishPark(park, brief, status);
-}
-
-// ── END M4 ────────────────────────────────────────────────────────────────
-
-// ── M5: THE EXISTING FIX ──────────────────────────────────────────────────
-
-async function callM5Worker(txt) {
-  return workerFetch('/m5', {
-    problem:            problemForWorker(),
-    grape_name:         S.grape_name || '',
-    grape_relationship: S.grape_relationship || '',
-    maturity_class:     S.maturity,
-    user_answer:        txt
-  });
-}
-
-async function applyM5Result(data, txt, allowSwirl = true) {
-  S.m5 = data;
-  const changedRows = [];
-  applyAnchoredResult('gap', data.gap, txt, changedRows, 'Existing fix and failure point', 'Partial fix', 'M5');
-  showPhaseObservation(data.observation?.surface_text || '');
-  showWhatChanged(changedRows);
-
-  if (allowSwirl && maybeShowSwirl('M5', data, txt)) return;
-
-  if (data.gap?.state !== 'settled' && !data.substitution_detected && txt.trim()) {
-    showInlineErrand(null);
-    const session = _bottleSession;
-    try {
-      const brief = await fetchMechErrand('M5', { mode: 'ask', element: 'gap' });
-      if (session !== _bottleSession) return;
-      S.m5_pending_brief = brief;
-      showInlineErrand(brief.question || brief.text ? brief : `Find out what people currently use for this problem and exactly where it falls short.`);
-    } catch (e) {
-      if (session !== _bottleSession) return;
-      S.m5_pending_brief = { kind: 'ask', text: null, pending: true, created_at: new Date().toISOString() };
-      showInlineErrand(`Find out what people currently use for this problem and exactly where it falls short.`);
-    }
-  } else {
-    S.m5_pending_brief = null;
-    hideInlineErrand();
-  }
-}
-
-async function parkM5Gap(status = 'dormant') {
-  const park = beginPark('M5');
-  let brief = S.m5_pending_brief || null;
-  S.m5_pending_brief = null;
-  if (!brief) {
-    try {
-      brief = await fetchMechErrand('M5', { mode: 'ask', element: 'gap' });
-    } catch (e) {
-      brief = { kind: 'ask', text: null, pending: true, created_at: new Date().toISOString() };
-    }
-  }
-  finishPark(park, brief, status);
-}
-
-// ── END M5 ────────────────────────────────────────────────────────────────
-
-// ── M6: THEIR WORDS ───────────────────────────────────────────────────────
 
 let _m6WordsSource = null;
 
@@ -4504,121 +4247,6 @@ function pickM6WordsSource(v) {
   document.getElementById('m6-ws-real')?.classList.toggle('is-selected', v === 'real');
   document.getElementById('m6-ws-recon')?.classList.toggle('is-selected', v === 'reconstructed');
 }
-
-async function callM6Worker(txt, wordsSourceOverride) {
-  return workerFetch('/m6', {
-    problem:            problemForWorker(),
-    grape_name:         S.grape_name || '',
-    grape_relationship: S.grape_relationship || '',
-    maturity_class:     S.maturity,
-    words_source:       wordsSourceOverride || _m6WordsSource || 'reconstructed',
-    user_answer:        txt
-  });
-}
-
-async function applyM6Result(data, txt, allowSwirl = true) {
-  S.m6 = data;
-  S.m6_words_source = _m6WordsSource;
-  const changedRows = [];
-  applyAnchoredResult('tell', data.tell, txt, changedRows, 'Filmable behaviour', 'Partial behaviour', 'M6');
-  if (data.echo) {
-    applyAnchoredResult('echo', data.echo, txt, changedRows, 'Third-party echo', 'Partial echo', 'M6');
-  }
-  showPhaseObservation(data.observation?.surface_text || '');
-  showWhatChanged(changedRows);
-
-  if (allowSwirl && maybeShowSwirl('M6', data, txt)) return;
-
-  if (data.state !== 'settled' && !data.substitution_detected && txt.trim()) {
-    showInlineErrand(null);
-    const session = _bottleSession;
-    try {
-      const brief = await fetchMechErrand('M6', { mode: 'words', element: 'words' });
-      if (session !== _bottleSession) return;
-      S.m6_pending_brief = brief;
-      showInlineErrand(brief.question || brief.text ? brief : `Talk to ${S.grape_name || 'the person you named'} and bring back their exact words about this problem.`);
-    } catch (e) {
-      if (session !== _bottleSession) return;
-      S.m6_pending_brief = { kind: 'words', text: null, pending: true, created_at: new Date().toISOString() };
-      showInlineErrand(`Talk to ${S.grape_name || 'the person you named'} and bring back their exact words about this problem.`);
-    }
-  } else {
-    S.m6_pending_brief = null;
-    hideInlineErrand();
-  }
-}
-
-async function parkM6Words(status = 'dormant') {
-  const park = beginPark('M6');
-  let brief = S.m6_pending_brief || null;
-  S.m6_pending_brief = null;
-  if (!brief) {
-    try {
-      brief = await fetchMechErrand('M6', { mode: 'words', element: 'words' });
-    } catch (e) {
-      brief = { kind: 'words', text: null, pending: true, created_at: new Date().toISOString() };
-    }
-  }
-  finishPark(park, brief, status);
-}
-
-// ── END M6 ────────────────────────────────────────────────────────────────
-
-// ── M7: THE NON-CASE ──────────────────────────────────────────────────────
-
-async function callM7Worker(txt) {
-  return workerFetch('/m7', {
-    problem:            problemForWorker(),
-    grape_name:         S.grape_name || '',
-    grape_relationship: S.grape_relationship || '',
-    maturity_class:     S.maturity,
-    user_answer:        txt
-  });
-}
-
-async function applyM7Result(data, txt, allowSwirl = true) {
-  S.m7 = data;
-  const changedRows = [];
-  applyAnchoredResult('limit', data.limit, txt, changedRows, 'Bounded exclusion and reason', 'Partial exclusion', 'M7');
-  showPhaseObservation(data.observation?.surface_text || '');
-  showWhatChanged(changedRows);
-
-  if (allowSwirl && maybeShowSwirl('M7', data, txt)) return;
-
-  if (data.limit?.state !== 'settled' && !data.substitution_detected && txt.trim()) {
-    showInlineErrand(null);
-    const session = _bottleSession;
-    try {
-      const brief = await fetchFieldBrief({ mode: 'limit', element: 'limit' });
-      if (session !== _bottleSession) return;
-      S.m7_pending_brief = brief;
-      showInlineErrand(brief.question || brief.text ? brief : `Find someone who looks like they should have this problem but doesn't, and find out why not.`);
-    } catch (e) {
-      if (session !== _bottleSession) return;
-      S.m7_pending_brief = { kind: 'limit', text: null, pending: true, created_at: new Date().toISOString() };
-      showInlineErrand(`Find someone who looks like they should have this problem but doesn't, and find out why not.`);
-    }
-  } else {
-    S.m7_pending_brief = null;
-    hideInlineErrand();
-  }
-}
-
-async function parkM7Limit(status = 'dormant') {
-  const park = beginPark('M7');
-  let brief = S.m7_pending_brief || null;
-  S.m7_pending_brief = null;
-  if (!brief) {
-    try {
-      brief = await fetchFieldBrief({ mode: 'limit', element: 'limit' });
-    } catch (e) {
-      brief = { kind: 'limit', text: null, pending: true, created_at: new Date().toISOString() };
-    }
-  }
-  finishPark(park, brief, status);
-}
-
-// ── END M7 ────────────────────────────────────────────────────────────────
 
 async function p1Next(bypassErrandWarn = false) {
   if (_pendingSwirl) {
@@ -4663,14 +4291,15 @@ async function p1Next(bypassErrandWarn = false) {
     let graded;
     try {
       setPhaseBusy(true, m.id === 'M2' ? 'Reading moment...' : 'Reading answer...');
-      setQLifecycle('answering');
       setQLifecycle('evaluating');
-      if (ANSWER_GRADERS[m.id]) {
-        const shownQ = document.getElementById('m-q')?.textContent || '';
-        graded = await gradeAnswer(m.id, txt, { keepDraft: true, log: { kind: 'first_answer', question: shownQ } });
+      if (isAnsweredMech(m.id)) {
+        graded = await answerMechanism({ mechId: m.id, asked: mechQuestion(m), typed: txt, kind: 'first_answer', keepDraft: true,
+          wordsSource: m.id === 'M6' ? _m6WordsSource : undefined });
       } else {
         S.answers[m.id] = txt;
         applyLocalMechanismResult(m, txt);
+        setQLifecycle('answered');
+        saveState();
         graded = true;
       }
     } catch (err) {
@@ -4690,8 +4319,6 @@ async function p1Next(bypassErrandWarn = false) {
     ans.setAttribute('readonly','true');
     document.getElementById('p1-btn').textContent = 'Continue →';
     obsShown = true;
-    if (S.qLifecycle === 'evaluating') setQLifecycle('answered');
-    saveState();
     renderPaceHold();
 
   } else {
@@ -4706,58 +4333,12 @@ async function p1Next(bypassErrandWarn = false) {
       }
       return;
     }
-    mi++;
-    S.mechIndex = mi;
+    moveBottleTo(mi + 1);
     saveState();
     renderMech();
   }
 }
 
-
-// ── RHYTHM GATE ──
-// One config constant: ms per declared pace index (0=daily, 1=every other day, 2=weekly, 3=monthly).
-// Demurrage counts in these lengths. Rhythm-test mode (?rhythmtest=1, or localStorage
-// 'corked_rhythm_test'='1') collapses every pace to a near-zero interval, and brings every
-// question back after two minutes, so the park -> locked -> open cycle can be watched inside a
-// bench session instead of waiting real days.
-const RHYTHM_TEST_MODE = new URLSearchParams(location.search).has('rhythmtest')
-  || localStorage.getItem('corked_rhythm_test') === '1';
-const PACE_DURATIONS = RHYTHM_TEST_MODE
-  ? { 0: 15000, 1: 30000, 2: 60000, 3: 120000 }
-  : { 0: 1 * 86400000, 1: 2 * 86400000, 2: 7 * 86400000, 3: 30 * 86400000 };
-
-// Local hour each part of the day starts, by notifTiming: morning, midday, evening, late.
-const PART_OF_DAY_HOURS = [9, 13, 18, 22];
-const RHYTHM_TEST_RETURN_MS = 2 * 60000;
-// Before this local hour, an answer or park counts as the previous day.
-const DAY_STARTS_HOUR = 5;
-
-// When a question comes back, for held questions and parked returns alike: the due day (today
-// plus the pace's days, local time) at the start of the builder's part of the day. No pace yet
-// counts as weekly, no part of the day as morning. Rhythm-test mode: two minutes, any time of day.
-function computeNextQuestionAt(pace, timing) {
-  if (RHYTHM_TEST_MODE) return new Date(Date.now() + RHYTHM_TEST_RETURN_MS).toISOString();
-  const days = THRESHOLD_STEPS[0].opts[pace]?.days || 7;
-  const next = new Date();
-  if (next.getHours() < DAY_STARTS_HOUR) next.setDate(next.getDate() - 1);
-  next.setDate(next.getDate() + days);
-  next.setHours(PART_OF_DAY_HOURS[timing] ?? PART_OF_DAY_HOURS[0], 0, 0, 0);
-  return next.toISOString();
-}
-
-function formatLockedUntil(iso) {
-  const date = new Date(iso);
-  if (isNaN(date.getTime())) return 'soon';
-  const diff = date - new Date();
-  if (diff <= 0) return 'now';
-  const mins = Math.round(diff / 60000);
-  if (mins < 1)  return 'in under a minute';
-  if (mins < 60) return `in ${mins} minute${mins === 1 ? '' : 's'}`;
-  const hours = Math.round(diff / 3600000);
-  if (hours < 24) return `in ${hours} hour${hours === 1 ? '' : 's'}`;
-  const days = Math.round(diff / 86400000);
-  return `in ${days} day${days === 1 ? '' : 's'}`;
-}
 
 // ── PACED RETURNS ──
 // A reading of the bottle's current question holds its next new question until it comes back,
@@ -4765,14 +4346,15 @@ function formatLockedUntil(iso) {
 // new question waits: the swirl, the scene question, reopens, replies and parked errands never do.
 function markReading(mechId) {
   if (M[mi]?.id !== mechId || nextNewMechIndex(S, mi) < 0) return;
-  S.questionOpensAt = computeNextQuestionAt(S.pace, S.notifTiming);
+  S.questionOpensAt = CellarClock.nextReturnAt(S.pace, S.notifTiming);
 }
 
 // The first unanswered question after idx, or -1. M4 is passed over once Echo has settled.
 function nextNewMechIndex(s, idx) {
   for (let j = idx + 1; j < PHASE1_MECH_COUNT; j++) {
     const id = `M${j + 1}`;
-    if (id === 'M4' && s.elements?.echo === 'settled') continue;
+    const skip = Mechanisms.get(id).skippedWhenSettled;
+    if (skip && s.elements?.[skip] === 'settled') continue;
     if (!s.answers?.[id]) return j;
   }
   return -1;
@@ -4783,14 +4365,7 @@ function nextQuestionHeldUntil(s) {
   const idx = s.mechIndex || 0;
   if (idx >= PHASE1_MECH_COUNT || !s.answers?.[`M${idx + 1}`]) return null;
   if (nextNewMechIndex(s, idx) < 0 || !s.questionOpensAt) return null;
-  return new Date(s.questionOpensAt).getTime() > Date.now() ? s.questionOpensAt : null;
-}
-
-// The cellar card's wording for when a question is due. The bottle uses the same words.
-function questionDueWording(iso, timing) {
-  const due = new Date(iso);
-  if (isNaN(due.getTime()) || due.getTime() <= Date.now()) return 'Question ready';
-  return `Next question ${formatNextQuestion(iso, timing)}`;
+  return CellarClock.isAhead(s.questionOpensAt) ? s.questionOpensAt : null;
 }
 
 // While the next question is held, after a reading: one line says when it is due, and the main
@@ -4799,7 +4374,7 @@ function renderPaceHold() {
   const line = document.getElementById('pace-line');
   const until = obsShown && !_pendingSwirl ? nextQuestionHeldUntil(S) : null;
   if (line) {
-    line.textContent = until ? questionDueWording(until, S.notifTiming) : '';
+    line.textContent = until ? CellarClock.dueWording(until, S.notifTiming) : '';
     line.style.display = until ? 'block' : 'none';
   }
   if (until) setPhaseBusy(false, 'Back to the cellar');
@@ -4811,23 +4386,13 @@ const THRESHOLD_STEPS = [
     id:'pace',
     q:'How often should this spark return to you?',
     note:'Not a commitment. It sets the aging rhythm.',
-    opts:[
-      { l:'A', t:'Daily',        s:'The cellar keeps it close.', days:1, cadence:'daily' },
-      { l:'B', t:'Any other day', s:'A steady rhythm without making it heavy.', days:2, cadence:'every other day' },
-      { l:'C', t:'Weekly',       s:'A slow burn. The spark stays alive.', days:7, cadence:'weekly' },
-      { l:'D', t:'Monthly',      s:'Back-burner. Still aging, not urgent.', days:30, cadence:'monthly' }
-    ]
+    opts: CellarClock.paces.map((p, i) => ({ l:'ABCD'[i], t:p.label, s:p.note }))
   },
   {
     id:'notifTiming',
     q:'When should it surface?',
     note:"The cellar returns it when your head is already in the right place.",
-    opts:[
-      { l:'A', t:'Morning', s:'Before the day gets in the way.' },
-      { l:'B', t:'Midday',  s:'During a break between things.' },
-      { l:'C', t:'Evening', s:'Once the day is done.' },
-      { l:'D', t:'Late',    s:'After the house is quiet.' }
-    ]
+    opts: CellarClock.partsOfDay.map((p, i) => ({ l:'ABCD'[i], t:p.label, s:p.note }))
   }
 ];
 
@@ -4876,7 +4441,7 @@ function renderCellarRhythm() {
   });
   h += `</div>
         <div class="rhythm-summary${bothPicked ? ' is-visible' : ''}" id="rhythm-summary">
-          ${bothPicked ? buildRhythmSummary(thresholdSel.pace, thresholdSel.notifTiming) : ''}
+          ${bothPicked ? CellarClock.rhythmSummary(thresholdSel.pace, thresholdSel.notifTiming) : ''}
         </div>`;
   panel.innerHTML = h;
   panel.classList.add('is-visible');
@@ -4893,44 +4458,12 @@ function completeCellarRhythm() {
   S.notifTiming = thresholdSel.notifTiming;
   S.thresholdDone = true;
   // The first question after intake opens straight away.
-  S.questionOpensAt = new Date().toISOString();
+  S.questionOpensAt = CellarClock.nowIso();
   saveState();
   hideCellarRhythm();
-  mi = 1;
-  S.mechIndex = mi;
+  moveBottleTo(1);
   saveState();
   renderMech();
-}
-
-// When a held question opens: the day, counted from today, with the part of the day the sidebar
-// names. A time that is not the start of the builder's part of the day (a question held before
-// parts of the day were kept) gets the day alone. Rhythm-test mode counts the last hour in minutes.
-const NEXT_QUESTION_TODAY    = ['this morning', 'today at midday', 'this evening', 'late today'];
-const NEXT_QUESTION_TOMORROW = ['tomorrow morning', 'tomorrow at midday', 'tomorrow evening', 'late tomorrow'];
-const NEXT_QUESTION_LATER    = ['in the morning', 'at midday', 'in the evening', 'late'];
-
-function formatNextQuestion(iso, timing) {
-  const date = new Date(iso);
-  const diff = date.getTime() - Date.now();
-  if (RHYTHM_TEST_MODE && diff < 3600000) {
-    const mins = Math.max(1, Math.ceil(diff / 60000));
-    return `in ${mins} minute${mins === 1 ? '' : 's'}`;
-  }
-  const dayStart = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-  const days = Math.round((dayStart(date) - dayStart(new Date())) / 86400000);
-  const onPart = PART_OF_DAY_HOURS[timing] !== undefined
-    && date.getHours() === PART_OF_DAY_HOURS[timing] && date.getMinutes() === 0;
-  if (days <= 0) return onPart ? NEXT_QUESTION_TODAY[timing] : 'today';
-  if (days === 1) return onPart ? NEXT_QUESTION_TOMORROW[timing] : 'tomorrow';
-  return `in ${days} days${onPart ? ', ' + NEXT_QUESTION_LATER[timing] : ''}`;
-}
-
-function buildRhythmSummary(pace, timing) {
-  const cadenceLabels = ['Daily', 'Every other day', 'Weekly', 'Monthly'];
-  const timingShort   = ['in the morning', 'at midday', 'in the evening', 'late'];
-  const cadence = cadenceLabels[pace] ?? 'Weekly';
-  const tShort  = timingShort[timing]  ?? 'in the morning';
-  return `${cadence}, ${tShort}. Corked will bring the next question back ${String(cadence).toLowerCase()} ${tShort}.`;
 }
 
 function pickPaceOpt(i) {
@@ -4952,28 +4485,18 @@ function restoreAnsweredMechUI(m) {
   if (ans) ans.setAttribute('readonly', 'true');
 
   let obsText = null;
-  if (m.id === 'M2') obsText = S.m2?.observation?.surface_text || null;
-  else if (m.id === 'M3') obsText = S.m3?.observation?.surface_text || null;
-  else if (m.id === 'M4') obsText = S.m4?.observation?.surface_text || null;
-  else if (typeof m.obs === 'function') { try { obsText = m.obs(S.answers[m.id]); } catch(e) {} }
+  try { obsText = m.obs(S.answers[m.id]); } catch(e) {}
   if (obsText) showPhaseObservation(obsText);
   obsShown = true;
 
   const exitsRow = document.getElementById('real-world-exits');
   if (exitsRow) exitsRow.style.display = 'flex';
 
-  if (m.id === 'M2' && S.m2?.state !== 'settled' && (S.m2_pending_brief?.question || S.m2_pending_brief?.text)) {
-    showInlineErrand(S.m2_pending_brief);
-  } else if (m.id === 'M3' && S.elements.echo !== 'settled' && (S.m3_pending_brief?.question || S.m3_pending_brief?.text)) {
-    showInlineErrand(S.m3_pending_brief);
-  } else if (m.id === 'M4' && S.elements.echo !== 'settled' && (S.m4_pending_brief?.question || S.m4_pending_brief?.text)) {
-    showInlineErrand(S.m4_pending_brief);
-  } else if (m.id === 'M5' && S.elements.gap !== 'settled' && (S.m5_pending_brief?.question || S.m5_pending_brief?.text)) {
-    showInlineErrand(S.m5_pending_brief);
-  } else if (m.id === 'M6' && S.m6?.state !== 'settled' && (S.m6_pending_brief?.question || S.m6_pending_brief?.text)) {
-    showInlineErrand(S.m6_pending_brief);
-  } else if (m.id === 'M7' && S.elements.limit !== 'settled' && (S.m7_pending_brief?.question || S.m7_pending_brief?.text)) {
-    showInlineErrand(S.m7_pending_brief);
+  const { errandBar } = Mechanisms.get(m.id);
+  const state = errandBar ? S.elements[errandBar] : S[m.id.toLowerCase()]?.state;
+  const pending = S[pendingBriefKey(m.id)];
+  if (state !== 'settled' && (pending?.question || pending?.text)) {
+    showInlineErrand(pending);
   } else {
     const wmBrief = document.getElementById('wm-brief');
     if (wmBrief) wmBrief.style.display = 'none';
@@ -4982,6 +4505,23 @@ function restoreAnsweredMechUI(m) {
 
 // ── REVIEW ──
 let _reviewReturnPanel = 'question';
+let _reopenAsked = '';
+
+// The sidebar's reopen form. What it asked is kept apart from the screen, so an error can never be
+// logged as the question.
+function openReopenForm(key, mechId, label, question, value = '') {
+  document.getElementById('rv-reopen-mech').textContent = label;
+  document.getElementById('rv-reopen-q').textContent = question;
+  document.getElementById('rv-reopen-ans').value = value;
+  const btn = document.getElementById('rv-reopen-btn');
+  if (btn) { btn.disabled = false; btn.textContent = 'Submit →'; }
+  showReopenError('rv-reopen-error', '');
+  showReopenWordsSource('rv-ws-row', mechId);
+  document.getElementById('rv-reopen').style.display = 'block';
+  _reopenKey = key;
+  _reopenMechId = mechId;
+  _reopenAsked = question;
+}
 
 function reviewEl(key) {
   if (S.elements[key] === 'inert' || !isElementSourced(key)) return;
@@ -5009,15 +4549,7 @@ function reviewEl(key) {
 
     const reopenSection = document.getElementById('rv-reopen');
     if (grapeState !== 'settled') {
-      const gn = S.grape_name || 'this person';
-      document.getElementById('rv-reopen-mech').textContent = 'M1 · The Grape · describe again';
-      document.getElementById('rv-reopen-q').textContent = `How do you know ${gn}? Describe your connection and what you have seen them do.`;
-      document.getElementById('rv-reopen-ans').value = S.grape_relationship || '';
-      const btn = document.getElementById('rv-reopen-btn');
-      if (btn) { btn.disabled = false; btn.textContent = 'Submit →'; }
-      reopenSection.style.display = 'block';
-      _reopenKey = 'grape';
-      _reopenMechId = 'M1';
+      openReopenForm('grape', 'M1', 'M1 · The Grape · describe again', labelSourceQuestion('M1'), S.grape_relationship || '');
     } else {
       reopenSection.style.display = 'none';
       _reopenKey = null;
@@ -5048,22 +4580,11 @@ function reviewEl(key) {
 
   // Reopen path: offer re-answer if element is not yet settled.
   // tell/echo can be sourced by more than one mechanism, so route to whichever last graded them.
-  const REOPEN_DEFAULTS = { tell:'M2', vintage:'M2', gap:'M5', echo:'M3', limit:'M7' };
-  const reopenMechId = reopenSource(key, REOPEN_DEFAULTS);
+  const reopenMechId = Mechanisms.reopenSource(key, S.lastSource);
   const reopenSection = document.getElementById('rv-reopen');
   if (reopenMechId && S.elements[key] !== 'settled' && S.answers[reopenMechId]) {
     const rm = M.find(m => m.id === reopenMechId);
-    const q = reopenMechId === 'M2'
-      ? (S.m2_problem?.question || rm?.q || '')
-      : (rm?.q || '');
-    document.getElementById('rv-reopen-mech').textContent = reopenMechId + ' · ' + (rm?.name || reopenMechId) + ' · answer again';
-    document.getElementById('rv-reopen-q').textContent = q;
-    document.getElementById('rv-reopen-ans').value = '';
-    const btn = document.getElementById('rv-reopen-btn');
-    if (btn) { btn.disabled = false; btn.textContent = 'Submit →'; }
-    reopenSection.style.display = 'block';
-    _reopenKey = key;
-    _reopenMechId = reopenMechId;
+    openReopenForm(key, reopenMechId, reopenMechId + ' · ' + (rm?.name || reopenMechId) + ' · answer again', labelSourceQuestion(reopenMechId));
   } else {
     reopenSection.style.display = 'none';
     _reopenKey = null;
@@ -5086,40 +4607,19 @@ async function submitReopen() {
   const txt = (document.getElementById('rv-reopen-ans')?.value || '').trim();
   if (!txt || !_reopenKey || !_reopenMechId) return;
 
-  const key = _reopenKey;
   const mechId = _reopenMechId;
-  const shownQ = document.getElementById('rv-reopen-q')?.textContent || '';
+  if (reopenWaitsForWordsSource('rv-ws-row', mechId)) return;
   const btn = document.getElementById('rv-reopen-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
+  showReopenError('rv-reopen-error', '');
 
   try {
-    if (mechId === 'M1') {
-      const session = _bottleSession;
-      const workerUrl = v6GetWorkerUrl();
-      if (workerUrl) {
-        const data = await workerFetch('/m1', {
-          spark_summary:   getSparkSummary(),
-          person_name:     S.grape_name || '',
-          relationship:    txt,
-          maturity_class:  S.maturity
-        });
-        if (session !== _bottleSession) return;
-        writeM1Logged(S.grape_name || '', txt, data, { kind: 'reopen', question: shownQ });
-      } else {
-        writeM1Logged(S.grape_name || '', txt, null, { kind: 'reopen', question: shownQ });
-      }
-    } else {
-      // Reopen has no real/reconstructed toggle; M6 is graded with the conservative default.
-      const graded = await gradeAnswer(mechId, txt, { allowSwirl: false, wordsSource: 'reconstructed',
-        log: { kind: 'reopen', question: shownQ } });
-      if (!graded) return;
-    }
-    saveState();
+    const outcome = await answerReopen(mechId, { asked: _reopenAsked, typed: txt, wordsSource: _reopenWordsSource });
+    if (!outcome) return;
     exitReview();
   } catch (err) {
     if (btn) { btn.disabled = false; btn.textContent = 'Submit →'; }
-    const qEl = document.getElementById('rv-reopen-q');
-    if (qEl) qEl.textContent = 'Worker error · ' + err.message;
+    showReopenError('rv-reopen-error', 'Worker error · ' + err.message);
   }
 }
 
@@ -5141,9 +4641,8 @@ function showLabel() {
   const yr  = now.getFullYear();
   const mo  = now.toLocaleString('default',{month:'long'});
   const settled = Object.values(S.elements).filter(v=>v==='settled').length;
-  const paceLabels = ['Daily','Any other day','Weekly','Monthly'];
 
-  const record = activeBottleId ? loadBottle(activeBottleId) : null;
+  const record = activeBottleId ? Cellar.get(activeBottleId) : null;
   const eyebrowEl = document.getElementById('label-eyebrow');
   if (eyebrowEl) {
     eyebrowEl.textContent = record?.status === 'rested'
@@ -5179,7 +4678,7 @@ function showLabel() {
   h += `<div class="vc-rule"></div>
         <div class="vc-foot">
           <span>${settled} of 6 elements settled</span>
-          <span>Pace · ${paceLabels[S.pace] || '—'}</span>
+          <span>Pace · ${CellarClock.paceLabel(S.pace) || '—'}</span>
         </div>`;
 
   h += settled < 6
@@ -5190,12 +4689,9 @@ function showLabel() {
 }
 
 // ── LABEL REOPEN / RESOLVE ──
-// Source map matches the sidebar reopen path: whichever mechanism last graded the
-// element, falling back to its canonical source when nothing has graded it yet.
-const LABEL_REOPEN_DEFAULTS = { grape:'M1', tell:'M2', vintage:'M2', gap:'M5', echo:'M3', limit:'M7' };
-
 let _labelReopenKey = null;
 let _labelReopenMechId = null;
+let _labelAsked = '';
 
 function labelSourceQuestion(mechId) {
   if (mechId === 'M1') {
@@ -5207,16 +4703,18 @@ function labelSourceQuestion(mechId) {
 }
 
 async function openLabelReopen(key) {
-  const record = activeBottleId ? loadBottle(activeBottleId) : null;
+  const record = activeBottleId ? Cellar.get(activeBottleId) : null;
   if (record?.status === 'rested') return;
   const st = S.elements[key];
   if ((st !== 'turbid' && st !== 'clearing') || !isElementSourced(key)) return;
 
-  const mechId = reopenSource(key, LABEL_REOPEN_DEFAULTS);
+  const mechId = Mechanisms.reopenSource(key, S.lastSource);
   if (!mechId || (mechId !== 'M1' && !S.answers[mechId])) return;
 
   _labelReopenKey = key;
   _labelReopenMechId = mechId;
+  // What the form asked is kept apart from the screen, so an error can never be logged as the question.
+  _labelAsked = labelSourceQuestion(mechId);
 
   const ambers = EL_KEYS.filter(k => S.elements[k] === 'turbid' || S.elements[k] === 'clearing');
   const overlay = document.getElementById('label-reopen-overlay');
@@ -5230,11 +4728,14 @@ async function openLabelReopen(key) {
   if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Submit →'; }
   if (parkBtn) parkBtn.style.display = (mechId === 'M1') ? 'none' : '';
   renderParkState();
+  showReopenError('lr-error', '');
+  showReopenWordsSource('lr-ws-row', mechId);
 
   if (ambers.length === 1) {
     eyebrowEl.textContent = 'One thing left';
     qEl.textContent = 'Reading the cellar…';
     overlay.classList.add('show');
+    const stillHere = bottleVisit();
     try {
       const data = await workerFetch('/resolve', {
         element: key,
@@ -5245,14 +4746,18 @@ async function openLabelReopen(key) {
         grape_name: S.grape_name || '',
         domain: S.m0?.spark_parse?.domain || ''
       });
+      // A late reply: this form was closed or the bottle was left, so it isn't this form's question.
+      if (!stillHere() || _labelReopenKey !== key) return;
       qEl.textContent = data.question;
+      _labelAsked = data.question;
     } catch (e) {
+      if (!stillHere() || _labelReopenKey !== key) return;
       eyebrowEl.textContent = mechId + ' · answer again';
-      qEl.textContent = labelSourceQuestion(mechId);
+      qEl.textContent = _labelAsked;
     }
   } else {
     eyebrowEl.textContent = mechId + ' · answer again';
-    qEl.textContent = labelSourceQuestion(mechId);
+    qEl.textContent = _labelAsked;
     overlay.classList.add('show');
   }
 }
@@ -5268,39 +4773,19 @@ async function submitLabelReopen() {
   const mechId = _labelReopenMechId;
   if (!txt || !mechId) return;
 
-  const shownQ = document.getElementById('lr-question')?.textContent || '';
+  if (reopenWaitsForWordsSource('lr-ws-row', mechId)) return;
   const btn = document.getElementById('lr-submit-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
+  showReopenError('lr-error', '');
 
   try {
-    if (mechId === 'M1') {
-      const session = _bottleSession;
-      const workerUrl = v6GetWorkerUrl();
-      if (workerUrl) {
-        const data = await workerFetch('/m1', {
-          spark_summary:  getSparkSummary(),
-          person_name:    S.grape_name || '',
-          relationship:   txt,
-          maturity_class: S.maturity
-        });
-        if (session !== _bottleSession) return;
-        writeM1Logged(S.grape_name || '', txt, data, { kind: 'reopen', question: shownQ });
-      } else {
-        writeM1Logged(S.grape_name || '', txt, null, { kind: 'reopen', question: shownQ });
-      }
-    } else {
-      // Reopen has no real/reconstructed toggle; M6 is graded with the conservative default.
-      const graded = await gradeAnswer(mechId, txt, { allowSwirl: false, wordsSource: 'reconstructed',
-        log: { kind: 'reopen', question: shownQ } });
-      if (!graded) return;
-    }
-    saveState();
+    const outcome = await answerReopen(mechId, { asked: _labelAsked, typed: txt, wordsSource: _reopenWordsSource });
+    if (!outcome) return;
     closeLabelReopen();
     showLabel();
   } catch (err) {
     if (btn) { btn.disabled = false; btn.textContent = 'Submit →'; }
-    const qEl = document.getElementById('lr-question');
-    if (qEl) qEl.textContent = 'Worker error · ' + err.message;
+    showReopenError('lr-error', 'Worker error · ' + err.message);
   }
 }
 
@@ -5309,14 +4794,7 @@ async function parkLabelReopenAction() {
   if (!mechId || mechId === 'M1') return;
   if (noteParkInFlight()) return;
   closeLabelReopen();
-  await runPark(() => {
-    if (mechId === 'M2') return parkM2Ask('dormant');
-    if (mechId === 'M3') return parkM3Echo('dormant');
-    if (mechId === 'M4') return parkM4Echo('dormant');
-    if (mechId === 'M5') return parkM5Gap('dormant');
-    if (mechId === 'M6') return parkM6Words('dormant');
-    if (mechId === 'M7') return parkM7Limit('dormant');
-  });
+  await runPark(() => parkMechanism(mechId, 'dormant'));
 }
 
 // ── NAV / UTIL ──
@@ -5691,7 +5169,7 @@ function bottleCardGlow(elements) {
 }
 
 function renderCellar() {
-  const bottles = getAllBottles()
+  const bottles = Cellar.all()
     .filter(b => b.s && b.s.idea)
     .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
 
@@ -5714,7 +5192,7 @@ function renderCellar() {
       return `<div class="bottle-card-dot ${st}"></div>`;
     }).join('');
     const waiting = escHtml(getCellarWaiting(b));
-    const date = formatCellarDate(b.updated_at);
+    const date = CellarClock.cardDate(b.updated_at);
     const isDormant  = b.status === 'dormant';
     const isInFlight = b.status === 'in_flight';
     const sagLevel = getSagLevel(b);
@@ -5752,28 +5230,10 @@ function getBottleDisplayLine(bottle) {
   return bottleLine(bottle.s) || '—';
 }
 
-// Each parkable mechanism's errand: how its brief is requested (same request its park makes),
-// the line shown when the worker can't write one, and how the cellar card names it.
-const PARK_ERRANDS = {
-  M2: { label: 'a question to ask', mode: 'ask',
-        element: () => (S.m2_problem?.gap_in_play && S.elements.gap !== 'settled') ? 'gap' : 'tell',
-        fallback: () => (!problemOnRecord() || selfErrandFor('M2')) ? m2OpenErrandText()
-          : S.m2_problem?.question || `Ask ${S.grape_name || 'the person you named'}: walk me through the last time this happened. What did you actually do?` },
-  M3: { label: 'find another person', mode: 'echo', element: () => 'echo',
-        fallback: () => `Find someone who hits this problem and is not ${grapeRef()}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?` },
-  M4: { label: 'find a different kind of person', mode: 'contrast', element: () => 'echo',
-        fallback: () => `Find a second person who hits this problem, someone other than ${grapeRef()} and whoever you named before. Ask what they've actually done about it.` },
-  M5: { label: 'find what they use now', mode: 'ask', element: () => 'gap',
-        fallback: () => selfErrandFor('M5') ? SELF_ERRAND : `Find out what people currently use for this problem and exactly where it falls short.` },
-  M6: { label: 'their exact words', mode: 'words', element: () => 'words',
-        fallback: () => selfErrandFor('M6') ? SELF_ERRAND : `Talk to ${S.grape_name || 'the person you named'} and bring back their exact words about this problem.` },
-  M7: { label: "find someone who doesn't have it", mode: 'limit', element: () => 'limit',
-        fallback: () => `Find someone who looks like they should have this problem but doesn't, and find out why not.` }
-};
-
 // How a parked errand is named. A self errand has no one to ask, so it names the moment.
 function parkErrandLabel(mechId, maturity) {
-  return maturity === 2 && SELF_ERRAND_MECHS.includes(mechId) ? 'in the moment' : PARK_ERRANDS[mechId].label;
+  const { errand } = Mechanisms.get(mechId);
+  return maturity === 2 && errand.selfErrand ? 'in the moment' : errand.label;
 }
 
 // The mechanism a parked bottle came from. Every park records it (s.parkMech). Bottles parked
@@ -5781,10 +5241,10 @@ function parkErrandLabel(mechId, maturity) {
 // from before then can't be placed and returns null (openBottle wakes it).
 function parkedMechOf(bottle) {
   const s = bottle.s || {};
-  if (s.parkMech) return PARK_ERRANDS[s.parkMech] ? s.parkMech : null;
+  if (s.parkMech) return hasErrand(s.parkMech) ? s.parkMech : null;
   const idx = typeof s.mechIndex === 'number' ? s.mechIndex : bottle.mechIndex;
   const id = (typeof idx === 'number' && idx < PHASE1_MECH_COUNT) ? `M${idx + 1}` : null;
-  return PARK_ERRANDS[id] ? id : null;
+  return hasErrand(id) ? id : null;
 }
 
 function getCellarWaiting(bottle) {
@@ -5815,26 +5275,13 @@ function getCellarWaiting(bottle) {
   const idx = s.mechIndex || 0;
   if (idx < PHASE1_MECH_COUNT && s.thresholdDone) {
     const heldUntil = nextQuestionHeldUntil(s);
-    if (heldUntil) return questionDueWording(heldUntil, s.notifTiming);
+    if (heldUntil) return CellarClock.dueWording(heldUntil, s.notifTiming);
     if (!s.answers?.[`M${idx + 1}`] || nextNewMechIndex(s, idx) >= 0) return 'Question ready';
   }
 
   const remaining = EL_KEYS.filter(k => els[k] !== 'settled').length;
   if (remaining === 0) return 'All elements settled';
   return `Still aging · ${remaining} element${remaining === 1 ? '' : 's'} remain`;
-}
-
-function formatCellarDate(iso) {
-  if (!iso) return '';
-  try {
-    const d = new Date(iso);
-    if (isNaN(d.getTime())) return '';
-    const days = Math.floor((new Date() - d) / 86400000);
-    if (days === 0) return 'today';
-    if (days === 1) return 'yesterday';
-    if (days < 7)  return `${days} days ago`;
-    return d.toLocaleDateString(undefined, { month:'short', day:'numeric' });
-  } catch(e) { return ''; }
 }
 
 function createAndOpenBottle() {
@@ -5846,7 +5293,7 @@ function createAndOpenBottle() {
 }
 
 function openBottle(id) {
-  const record = loadBottle(id);
+  const record = Cellar.get(id);
   if (!record) return;
   activeBottleId = id;
   enterBottleSession(id);
@@ -5877,7 +5324,7 @@ function openBottle(id) {
     if (hasBrief && parkMech) return openParkedReentry(id, record, parkMech);
     // A parked state with no real brief, or one that can't be placed, is stale park data,
     // not a genuine park: wake the bottle and fall through to where it actually is.
-    wakeBottle(id);
+    Cellar.wake(id, S);
   }
 
   if (mi >= M.length) {
@@ -5936,13 +5383,13 @@ async function openDormantFind(id, record) {
   const pending = brief.pending && !brief.question && !brief.text;
 
   if (pending && v6GetWorkerUrl()) {
-    const session = _bottleSession;
+    const stillHere = bottleVisit();
     try {
       const freshBrief = await fetchFieldBrief({ mode: 'find', missing: 'grape' });
       record.brief = freshBrief;
-      updateBottleBrief(id, freshBrief);
+      Cellar.setBrief(id, freshBrief);
     } catch (e) {}
-    if (session !== _bottleSession) return;
+    if (!stillHere()) return;
   }
 
   const finalBrief = record.brief || {};
@@ -5958,7 +5405,7 @@ async function openDormantFind(id, record) {
 
   document.getElementById('dormant-panel-body').innerHTML = `
     <div class="mech-eyebrow" style="margin-bottom:.9rem">Dormant · find the person</div>
-    ${wasLocked ? `<div class="dormant-locked">This would normally come back ${escHtml(formatLockedUntil(record.nextQuestionAt))}. Answer now instead, any time.</div>` : ''}
+    ${wasLocked ? `<div class="dormant-locked">This would normally come back ${escHtml(CellarClock.lockedWording(record.nextQuestionAt))}. Answer now instead, any time.</div>` : ''}
     <div class="dormant-brief">
       ${renderBriefHTML(fallbackBrief, 'find', '')}
     </div>
@@ -5997,52 +5444,37 @@ async function submitDormantFind(id) {
   if (!rel)  { if (relEl)  relEl.style.borderColor  = 'var(--wine)'; return; }
   if (errEl) errEl.style.display = 'none';
   const labels = [...document.querySelectorAll('#dormant-panel-body .dormant-field-label')].map(el => el.textContent.trim());
-  const grapeLog = {
-    kind: 'first_answer',
-    question: labels[1] || '',
-    fields: [{ label: labels[0] || '', value: name }, { label: labels[1] || '', value: rel }]
-  };
 
-  const workerUrl = v6GetWorkerUrl();
-  if (workerUrl) {
+  if (v6GetWorkerUrl()) {
     if (btn) { btn.disabled = true; btn.textContent = 'Reading person...'; }
     setQLifecycle('evaluating');
-    const session = _bottleSession;
-    try {
-      const data = await workerFetch('/m1', {
-        spark_summary:  getSparkSummary(),
-        person_name:    name,
-        relationship:   rel,
-        maturity_class: S.maturity
-      });
-      if (session !== _bottleSession) return; // the bottle was left; discard the reply
-      const grapeState = normalizeGrapeState(data.grape?.state || 'turbid');
-      if (grapeState === 'turbid') {
-        logAnswer({ mech: 'M1', ...grapeLog, answer: rel });
-        setQLifecycle('parked');
-        saveBottle(id, S, mi);
-        if (errEl) {
-          errEl.textContent = data.observation?.surface_text || 'A more specific person is needed.';
-          errEl.style.display = 'block';
-        }
-        if (btn) { btn.disabled = false; btn.textContent = 'Enter the person →'; }
-        return;
-      }
-      wakeBottle(id);
-      writeM1Logged(name, rel, data, grapeLog);
-    } catch (err) {
-      if (session !== _bottleSession) return;
-      setQLifecycle('parked');
-      if (errEl) {
-        errEl.textContent = 'Could not reach the worker. Check your Worker URL.';
-        errEl.style.display = 'block';
-      }
-      if (btn) { btn.disabled = false; btn.textContent = 'Enter the person →'; }
-      return;
+  }
+  let outcome;
+  try {
+    outcome = await answerGrape({
+      name, rel, kind: 'first_answer', asked: labels[1] || '', refuseTurbid: true,
+      fields: [{ label: labels[0] || '', value: name }, { label: labels[1] || '', value: rel }],
+      beforeStore: () => Cellar.wake(id, S)
+    });
+  } catch (err) {
+    setQLifecycle('parked');
+    if (errEl) {
+      errEl.textContent = 'Could not reach the worker. Check your Worker URL.';
+      errEl.style.display = 'block';
     }
-  } else {
-    wakeBottle(id);
-    writeM1Logged(name, rel, null, grapeLog);
+    if (btn) { btn.disabled = false; btn.textContent = 'Enter the person →'; }
+    return;
+  }
+  if (!outcome) return; // the bottle was left; discard the reply
+  if (outcome.refused) {
+    setQLifecycle('parked');
+    Cellar.save(id, S, mi);
+    if (errEl) {
+      errEl.textContent = outcome.note || 'A more specific person is needed.';
+      errEl.style.display = 'block';
+    }
+    if (btn) { btn.disabled = false; btn.textContent = 'Enter the person →'; }
+    return;
   }
 
   if (S.maturity === 3) S.maturity = 1;
@@ -6052,26 +5484,27 @@ async function submitDormantFind(id) {
 // ── PARKED RE-ENTRY (M2–M7) ──
 // One panel for every parked mechanism: the saved brief, then an answer box under that
 // mechanism's own question. The bottle stays parked until the answer grades; the answer is
-// passed straight to gradeAnswer(), never held anywhere another bottle could pick it up.
+// passed straight to answerMechanism(), never held anywhere another bottle could pick it up.
 async function openParkedReentry(id, record, mechId) {
-  const session = _bottleSession;
-  const errand = PARK_ERRANDS[mechId];
+  const stillHere = bottleVisit();
+  const { errand } = Mechanisms.get(mechId);
+  const errandCopy = errandContext(mechId);
   const wasLocked = dormantIsLocked(record);
   const brief = record.brief || {};
 
   if (brief.pending && !brief.question && !brief.text && v6GetWorkerUrl()) {
     try {
-      const freshBrief = await fetchMechErrand(mechId, { mode: errand.mode, element: errand.element() });
+      const freshBrief = await fetchMechErrand(mechId, errandRequest(mechId, errandCopy));
       record.brief = freshBrief;
-      updateBottleBrief(id, freshBrief);
+      Cellar.setBrief(id, freshBrief);
     } catch (e) {}
-    if (session !== _bottleSession) return;
+    if (!stillHere()) return;
   }
 
   const finalBrief = record.brief || {};
   const shownBrief = finalBrief.question || finalBrief.text
     ? finalBrief
-    : { question: errand.fallback(), kind: errand.mode, setup: null, target: finalBrief.target || null };
+    : { question: mechErrandFallback(mechId, errandCopy), kind: errand.mode, setup: null, target: finalBrief.target || null };
   const addressing = finalBrief.kind || errand.mode;
   const m = M.find(x => x.id === mechId);
   const question = m ? mechQuestion(m) : '';
@@ -6090,7 +5523,7 @@ async function openParkedReentry(id, record, mechId) {
 
   document.getElementById('dormant-panel-body').innerHTML = `
     <div class="mech-eyebrow" style="margin-bottom:.9rem">${escHtml(eyebrow)}</div>
-    ${wasLocked ? `<div class="dormant-locked">This would normally come back ${escHtml(formatLockedUntil(record.nextQuestionAt))}. Answer now instead, any time.</div>` : ''}
+    ${wasLocked ? `<div class="dormant-locked">This would normally come back ${escHtml(CellarClock.lockedWording(record.nextQuestionAt))}. Answer now instead, any time.</div>` : ''}
     <div class="dormant-brief">
       ${renderBriefHTML(shownBrief, addressing, grapeName)}
     </div>
@@ -6130,13 +5563,12 @@ async function submitParkedAnswer(id, mechId) {
   }
   // A reply answers a question that was asked and waited on. A parked errand answered is the
   // mechanism's first answer, or a reopen when it was parked from the label.
-  const log = {
-    kind: S.parkKind === 'in_flight' ? 'reply' : (S.answers[mechId] ? 'reopen' : 'first_answer'),
-    question: document.querySelector('#dormant-panel-body .mech-q')?.textContent || ''
-  };
+  const kind = S.parkKind === 'in_flight' ? 'reply' : (S.answers[mechId] ? 'reopen' : 'first_answer');
+  const parkedMech = M.find(x => x.id === mechId);
+  const asked = parkedMech ? mechQuestion(parkedMech) : '';
   // Parked from M2 with no problem on record: the answer is a scene, not a friction answer.
   if (mechId === 'M2' && !problemOnRecord()) {
-    await submitParkedScene(answer, errEl, btn, log);
+    await submitParkedScene(answer, errEl, btn, asked, kind);
     return;
   }
   let wordsSource;
@@ -6159,19 +5591,19 @@ async function submitParkedAnswer(id, mechId) {
 
   let graded;
   try {
-    graded = await gradeAnswer(mechId, answer, {
+    graded = await answerMechanism({
+      mechId, asked, typed: answer, kind,
       keepDraft: true,
       allowSwirl: !fromLabel,
       wordsSource,
-      log,
+      finishes: !fromLabel,
       // Runs only once the grade is valid, in the same step that stores it: the park ends here.
       beforeStore: () => {
         S.qLifecycle = 'active';
         S.parkKind = null;
         S.parkMech = null;
         if (!fromLabel) {
-          mi = idx;
-          S.mechIndex = mi;
+          moveBottleTo(idx);
           renderMech();
         }
         if (mechId === 'M6') pickM6WordsSource(wordsSource);
@@ -6194,35 +5626,29 @@ async function submitParkedAnswer(id, mechId) {
   if (ans) { ans.value = answer; ans.setAttribute('readonly', 'true'); ans.style.display = ''; }
   document.getElementById('p1-btn').textContent = 'Continue →';
   obsShown = true;
-  if (!_pendingSwirl) setQLifecycle('answered');
-  saveState();
   renderPaceHold();
 }
 
 // The bottle stays parked until the worker has read the scene; then the park ends and M2 opens
 // on the result, the same as Continue in the scene stage.
-async function submitParkedScene(answer, errEl, btn, log) {
-  const session = _bottleSession;
+async function submitParkedScene(answer, errEl, btn, asked, kind) {
   if (errEl) errEl.style.display = 'none';
   if (btn) { btn.disabled = true; btn.textContent = 'Reading answer...'; }
   setAnswerDraft('M2', answer);
   saveState();
   let data;
   try {
-    data = await callM2Scene(answer);
+    data = await answerScene({ asked, typed: answer, kind });
   } catch (err) {
-    if (session !== _bottleSession) return;
     if (errEl) { errEl.textContent = 'Worker error. ' + err.message; errEl.style.display = 'block'; }
     if (btn) { btn.disabled = false; btn.textContent = 'Answer now →'; }
     return;
   }
-  if (session !== _bottleSession) return;
-  logAnswer({ mech: 'M2', part: 'scene', ...log, answer });
+  if (!data) return;
   S.qLifecycle = 'active';
   S.parkKind = null;
   S.parkMech = null;
-  mi = M.findIndex(m => m.id === 'M2');
-  S.mechIndex = mi;
+  moveBottleTo(M.findIndex(m => m.id === 'M2'));
   renderMech();
   const ans = document.getElementById('ans');
   if (ans) ans.value = answer;
@@ -6384,7 +5810,7 @@ function v6Rewrite() {
   migrateProblemSchema();
   migrateSelfGrape();
   healPhantomParkedBottles();
-  if (getAllBottles().length > 0) {
+  if (Cellar.all().length > 0) {
     showCellar();
   } else {
     showScreen('landing');

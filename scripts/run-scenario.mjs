@@ -53,8 +53,12 @@ function driver(page, rec) {
       }, CELLAR_KEY);
     },
 
-    async open() {
-      await page.goto(APP_URL, { waitUntil: 'domcontentloaded' });
+    // A scenario on the real calendar instead of the two-minute test rhythm:
+    // app.open({ rhythmTest: false, at: '2026-11-05T01:00:00' }) sets the page's clock, and
+    // page.clock.setFixedTime() moves it on later, so nothing waits real days.
+    async open({ rhythmTest = true, at = null } = {}) {
+      if (at) await page.clock.setFixedTime(new Date(at));
+      await page.goto(rhythmTest ? APP_URL : APP_URL.replace('?rhythmtest=1', ''), { waitUntil: 'domcontentloaded' });
       await page.locator('#screen-landing.active').waitFor({ timeout: STEP_TIMEOUT });
       app.step('opened the app on an empty cellar');
     },

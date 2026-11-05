@@ -95,7 +95,7 @@ footer { margin-top:3.5rem; font-size:.67rem; color:var(--muted); font-style:ita
       <li>Run <code>localStorage.setItem('corked_rhythm_test','1')</code> once in that tab's console, then reload.</li>
     </ol>
     <ol start="3">
-      <li>With test mode on, <code>PACE_DURATIONS</code> is <code>{ daily: 15s, every-other-day: 30s, weekly: 60s, monthly: 120s }</code>. Every flow below assumes a <b>Weekly</b> pace choice at the rhythm step, so "the gate opens" means <b>60 seconds</b> after park.</li>
+      <li>With test mode on, the pace-lengths in <code>shared/cellar-clock.js</code> are <code>{ daily: 15s, every-other-day: 30s, weekly: 60s, monthly: 120s }</code>. Every flow below assumes a <b>Weekly</b> pace choice at the rhythm step, so "the gate opens" means <b>60 seconds</b> after park.</li>
       <li>All flows start from the same base chain: a spark, the maturity tree, a grape, then the rhythm picker where you should pick <b>Weekly</b>. From there you'll reach the M2 question — that's where each flow branches.</li>
     </ol>
   </div>
@@ -125,11 +125,11 @@ const BASE = `<b>Shared setup</b> (repeat for each flow unless it says otherwise
 const FLOWS = [
   {
     key: 'f1', title: 'The pace constant collapses to seconds', concept: 'Config check',
-    watch: 'Confirms PACE_DURATIONS is one config map, and its test-mode default is near zero rather than real days.',
+    watch: 'Confirms the pace table in shared/cellar-clock.js is one table, and its test-mode lengths are near zero rather than real days.',
     steps: `1. Open corked_v6.html with <code>?rhythmtest=1</code> on the URL.<br>
-    2. Open devtools console on that tab and type <code>PACE_DURATIONS</code>, then Enter.<br>
-    3. Confirm it returns <code>{0: 15000, 1: 30000, 2: 60000, 3: 120000}</code> — all in milliseconds, none in days.<br>
-    4. Reload without the query param (or clear <code>corked_rhythm_test</code> from localStorage) and check <code>PACE_DURATIONS</code> again — it should now show real day-length values (86400000 and up).`,
+    2. Open devtools console on that tab and type <code>CellarClock.paces.map(p => CellarClock.testMode ? p.testMs : p.days * 86400000)</code>, then Enter.<br>
+    3. Confirm it returns <code>[15000, 30000, 60000, 120000]</code> — all in milliseconds, none in days.<br>
+    4. Reload without the query param (or clear <code>corked_rhythm_test</code> from localStorage) and run the same line again — it should now show real day-length values (86400000 and up).`,
     resultLabel: 'Did the constant collapse to seconds in test mode and real days outside it?'
   },
   {
