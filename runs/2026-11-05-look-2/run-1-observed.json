@@ -1,0 +1,1832 @@
+{
+  "scenario": "look-and-states",
+  "title": "Look and states",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-05T20:59:41.544Z",
+  "finished_at": "2026-11-05T21:05:58.404Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-05T20:59:44.418Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-05T20:59:49.143Z",
+      "step": "screenshot",
+      "note": "01-landing"
+    },
+    {
+      "at": "2026-11-05T20:59:49.175Z",
+      "step": "reloaded the landing"
+    },
+    {
+      "at": "2026-11-05T20:59:49.300Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-05T20:59:49.904Z",
+      "step": "screenshot",
+      "note": "02-spark"
+    },
+    {
+      "at": "2026-11-05T20:59:49.925Z",
+      "step": "the gate is showing",
+      "note": "Is this about a problem someone has, or something you want to make for its own sake?"
+    },
+    {
+      "at": "2026-11-05T20:59:51.943Z",
+      "step": "screenshot",
+      "note": "03-gate"
+    },
+    {
+      "at": "2026-11-05T21:00:01.955Z",
+      "step": "bottled the spark",
+      "note": "screen asks \"Have you spoken to a real person this spark comes from?\""
+    },
+    {
+      "at": "2026-11-05T21:00:02.526Z",
+      "step": "screenshot",
+      "note": "04-maturity-first"
+    },
+    {
+      "at": "2026-11-05T21:00:02.551Z",
+      "step": "picked",
+      "note": "Yes."
+    },
+    {
+      "at": "2026-11-05T21:00:04.561Z",
+      "step": "screenshot",
+      "note": "05-maturity-second"
+    },
+    {
+      "at": "2026-11-05T21:00:04.584Z",
+      "step": "picked",
+      "note": "Yes, I can name them and I know the moment."
+    },
+    {
+      "at": "2026-11-05T21:00:05.850Z",
+      "step": "screenshot",
+      "note": "06-person-step"
+    },
+    {
+      "at": "2026-11-05T21:00:08.767Z",
+      "step": "entered the grape",
+      "note": "Lotte, \"my cousin, she shoots weddings\""
+    },
+    {
+      "at": "2026-11-05T21:00:14.571Z",
+      "step": "screenshot",
+      "note": "07-grape-recap"
+    },
+    {
+      "at": "2026-11-05T21:00:15.302Z",
+      "step": "screenshot",
+      "note": "08-rhythm-picker"
+    },
+    {
+      "at": "2026-11-05T21:00:15.319Z",
+      "step": "set the rhythm",
+      "note": "Every other day, Evening"
+    },
+    {
+      "at": "2026-11-05T21:00:18.712Z",
+      "step": "M2 opened",
+      "note": "friction stage"
+    },
+    {
+      "at": "2026-11-05T21:00:21.552Z",
+      "step": "screenshot",
+      "note": "09-a-m2-question"
+    },
+    {
+      "at": "2026-11-05T21:00:22.154Z",
+      "step": "screenshot",
+      "note": "09-a-m2-question"
+    },
+    {
+      "at": "2026-11-05T21:00:29.774Z",
+      "step": "screenshot",
+      "note": "10-a-m2-after-answer"
+    },
+    {
+      "at": "2026-11-05T21:00:30.365Z",
+      "step": "screenshot",
+      "note": "11-cellar-one-bottle"
+    },
+    {
+      "at": "2026-11-05T21:02:27.407Z",
+      "step": "the hold is over"
+    },
+    {
+      "at": "2026-11-05T21:02:27.465Z",
+      "step": "next question open",
+      "note": "Third-Party Workarounds"
+    },
+    {
+      "at": "2026-11-05T21:02:30.065Z",
+      "step": "screenshot",
+      "note": "12-a-m3-question"
+    },
+    {
+      "at": "2026-11-05T21:02:30.652Z",
+      "step": "screenshot",
+      "note": "12-a-m3-question"
+    },
+    {
+      "at": "2026-11-05T21:02:34.100Z",
+      "step": "screenshot",
+      "note": "13-a-m3-failed-send"
+    },
+    {
+      "at": "2026-11-05T21:02:36.799Z",
+      "step": "screenshot",
+      "note": "14-a-m3-reopened-with-draft"
+    },
+    {
+      "at": "2026-11-05T21:02:46.759Z",
+      "step": "screenshot",
+      "note": "15-a-m3-after-answer"
+    },
+    {
+      "at": "2026-11-05T21:02:47.366Z",
+      "step": "screenshot",
+      "note": "15-a-m3-after-answer"
+    },
+    {
+      "at": "2026-11-05T21:02:54.170Z",
+      "step": "answered the follow-up at M3"
+    },
+    {
+      "at": "2026-11-05T21:02:56.737Z",
+      "step": "screenshot",
+      "note": "15b-a-m3-after-follow-up"
+    },
+    {
+      "at": "2026-11-05T21:02:56.778Z",
+      "step": "copied the question"
+    },
+    {
+      "at": "2026-11-05T21:02:57.452Z",
+      "step": "screenshot",
+      "note": "16-a-row-opens-reopen"
+    },
+    {
+      "at": "2026-11-05T21:02:58.126Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-05T21:02:58.164Z",
+      "step": "the gate is showing",
+      "note": "Is this about a problem someone has, or something you want to make for its own sake?"
+    },
+    {
+      "at": "2026-11-05T21:03:08.661Z",
+      "step": "bottled the spark",
+      "note": "screen asks \"Have you spoken to a real person this spark comes from?\""
+    },
+    {
+      "at": "2026-11-05T21:03:08.676Z",
+      "step": "picked",
+      "note": "Yes."
+    },
+    {
+      "at": "2026-11-05T21:03:08.710Z",
+      "step": "picked",
+      "note": "Yes, I can name them and I know the moment."
+    },
+    {
+      "at": "2026-11-05T21:03:11.639Z",
+      "step": "entered the grape",
+      "note": "Sanne, \"my friend, she shoots weddings\""
+    },
+    {
+      "at": "2026-11-05T21:03:11.778Z",
+      "step": "set the rhythm",
+      "note": "Every other day, Evening"
+    },
+    {
+      "at": "2026-11-05T21:03:14.591Z",
+      "step": "M2 opened",
+      "note": "friction stage"
+    },
+    {
+      "at": "2026-11-05T21:03:17.288Z",
+      "step": "screenshot",
+      "note": "18-b-m2-question"
+    },
+    {
+      "at": "2026-11-05T21:03:17.851Z",
+      "step": "screenshot",
+      "note": "18-b-m2-question"
+    },
+    {
+      "at": "2026-11-05T21:03:25.039Z",
+      "step": "screenshot",
+      "note": "19-b-m2-after-answer"
+    },
+    {
+      "at": "2026-11-05T21:03:25.619Z",
+      "step": "screenshot",
+      "note": "19-b-m2-after-answer"
+    },
+    {
+      "at": "2026-11-05T21:03:26.258Z",
+      "step": "screenshot",
+      "note": "20-b-row-opens-reopen"
+    },
+    {
+      "at": "2026-11-05T21:03:27.004Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\.claude\\worktrees\\look\\runs\\2026-11-05-look-2\\run-1-cellar.json"
+    },
+    {
+      "at": "2026-11-05T21:03:27.569Z",
+      "step": "screenshot",
+      "note": "22-cellar-two-bottles"
+    },
+    {
+      "at": "2026-11-05T21:03:30.202Z",
+      "step": "screenshot",
+      "note": "23-cellar-parked"
+    },
+    {
+      "at": "2026-11-05T21:03:30.907Z",
+      "step": "screenshot",
+      "note": "24-dormant-parked"
+    },
+    {
+      "at": "2026-11-05T21:05:55.446Z",
+      "step": "screenshot",
+      "note": "25-stalled"
+    },
+    {
+      "at": "2026-11-05T21:05:56.036Z",
+      "step": "screenshot",
+      "note": "26-cellar-question-ready"
+    },
+    {
+      "at": "2026-11-05T21:05:56.861Z",
+      "step": "screenshot",
+      "note": "27-cellar-archived"
+    },
+    {
+      "at": "2026-11-05T21:05:57.545Z",
+      "step": "screenshot",
+      "note": "28-label-screen"
+    },
+    {
+      "at": "2026-11-05T21:05:57.656Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\.claude\\worktrees\\look\\runs\\2026-11-05-look-2\\run-1-cellar-after-extras.json"
+    },
+    {
+      "at": "2026-11-05T21:05:58.399Z",
+      "step": "screenshot",
+      "note": "29-cellar-empty"
+    },
+    {
+      "at": "2026-11-05T21:05:58.399Z",
+      "step": "done"
+    }
+  ],
+  "screens": {
+    "gone_checks": [
+      {
+        "when": "landing",
+        "winemaster_anywhere_in_page": false,
+        "circle_parts": 0,
+        "progress_bars_on_question_screen": 0,
+        "element_count_on_screen": false,
+        "spark_and_person_box": 0,
+        "curved_line": 0
+      },
+      {
+        "when": "grape recap",
+        "winemaster_anywhere_in_page": false,
+        "circle_parts": 0,
+        "progress_bars_on_question_screen": 0,
+        "element_count_on_screen": false,
+        "spark_and_person_box": 0,
+        "curved_line": 0
+      },
+      {
+        "when": "after intake",
+        "winemaster_anywhere_in_page": false,
+        "circle_parts": 0,
+        "progress_bars_on_question_screen": 0,
+        "element_count_on_screen": false,
+        "spark_and_person_box": 0,
+        "curved_line": 0
+      },
+      {
+        "when": "Bottle A, M2 question",
+        "winemaster_anywhere_in_page": false,
+        "circle_parts": 0,
+        "progress_bars_on_question_screen": 0,
+        "element_count_on_screen": false,
+        "spark_and_person_box": 0,
+        "curved_line": 0
+      },
+      {
+        "when": "Bottle A, M2 reading",
+        "winemaster_anywhere_in_page": false,
+        "circle_parts": 0,
+        "progress_bars_on_question_screen": 0,
+        "element_count_on_screen": false,
+        "spark_and_person_box": 0,
+        "curved_line": 0
+      },
+      {
+        "when": "Bottle A, M3 question",
+        "winemaster_anywhere_in_page": false,
+        "circle_parts": 0,
+        "progress_bars_on_question_screen": 0,
+        "element_count_on_screen": false,
+        "spark_and_person_box": 0,
+        "curved_line": 0
+      },
+      {
+        "when": "Bottle A, M3 reading",
+        "winemaster_anywhere_in_page": false,
+        "circle_parts": 0,
+        "progress_bars_on_question_screen": 0,
+        "element_count_on_screen": false,
+        "spark_and_person_box": 0,
+        "curved_line": 0
+      },
+      {
+        "when": "Bottle A, M3 after the follow-up",
+        "winemaster_anywhere_in_page": false,
+        "circle_parts": 0,
+        "progress_bars_on_question_screen": 0,
+        "element_count_on_screen": false,
+        "spark_and_person_box": 0,
+        "curved_line": 0
+      },
+      {
+        "when": "Bottle B, M2 question",
+        "winemaster_anywhere_in_page": false,
+        "circle_parts": 0,
+        "progress_bars_on_question_screen": 0,
+        "element_count_on_screen": false,
+        "spark_and_person_box": 0,
+        "curved_line": 0
+      },
+      {
+        "when": "Bottle B, M2 reading",
+        "winemaster_anywhere_in_page": false,
+        "circle_parts": 0,
+        "progress_bars_on_question_screen": 0,
+        "element_count_on_screen": false,
+        "spark_and_person_box": 0,
+        "curved_line": 0
+      }
+    ],
+    "typing": {
+      "landing_on_first_open": {
+        "typing": true,
+        "button_shown": true,
+        "button_top": 663
+      },
+      "landing_when_typed": {
+        "typing": false,
+        "button_shown": true,
+        "button_top": 663
+      },
+      "landing_after_a_reload": {
+        "typing": false,
+        "button_shown": true,
+        "button_top": 663
+      },
+      "after_bottle_b_answer": {
+        "line_still_typing": {
+          "where": "obs-box",
+          "left": 165
+        },
+        "half_a_second_later": {
+          "where": "obs-box",
+          "left": 135
+        },
+        "characters_per_second": 60
+      },
+      "after_a_click": {
+        "still_typing": false
+      }
+    },
+    "fit_390x500": {
+      "Bottle A, M2 question": {
+        "scroll_y": 0,
+        "viewport_height": 500,
+        "question_top": 83,
+        "question_bottom": 235,
+        "field_top": 275,
+        "field_bottom": 399
+      },
+      "Bottle A, M3 question": {
+        "scroll_y": 0,
+        "viewport_height": 500,
+        "question_top": 83,
+        "question_bottom": 204,
+        "field_top": 245,
+        "field_bottom": 369
+      },
+      "Bottle A, M3 follow-up": {
+        "scroll_y": 0,
+        "viewport_height": 500,
+        "question_top": 223,
+        "question_bottom": 358,
+        "field_top": 372,
+        "field_bottom": 468
+      },
+      "Bottle B, M2 question": {
+        "scroll_y": 0,
+        "viewport_height": 500,
+        "question_top": 83,
+        "question_bottom": 235,
+        "field_top": 275,
+        "field_bottom": 399
+      },
+      "Bottle B, follow-up": {
+        "scroll_y": 0,
+        "viewport_height": 500,
+        "question_top": 246,
+        "question_bottom": 355,
+        "field_top": 369,
+        "field_bottom": 465
+      }
+    },
+    "shots": [
+      {
+        "screen": "01-landing",
+        "files": [
+          "01-landing-1440x900.png",
+          "01-landing-1440x900-full.png",
+          "01-landing-390x844.png",
+          "01-landing-390x844-full.png"
+        ]
+      },
+      {
+        "screen": "02-spark",
+        "files": [
+          "02-spark-1440x900.png",
+          "02-spark-390x844.png"
+        ]
+      },
+      {
+        "screen": "03-gate",
+        "files": [
+          "03-gate-1440x900.png",
+          "03-gate-390x844.png"
+        ]
+      },
+      {
+        "screen": "04-maturity-first",
+        "files": [
+          "04-maturity-first-1440x900.png",
+          "04-maturity-first-390x844.png"
+        ]
+      },
+      {
+        "screen": "05-maturity-second",
+        "files": [
+          "05-maturity-second-1440x900.png",
+          "05-maturity-second-390x844.png"
+        ]
+      },
+      {
+        "screen": "06-person-step",
+        "files": [
+          "06-person-step-1440x900.png",
+          "06-person-step-390x844.png"
+        ]
+      },
+      {
+        "screen": "07-grape-recap",
+        "files": [
+          "07-grape-recap-1440x900.png",
+          "07-grape-recap-390x844.png"
+        ]
+      },
+      {
+        "screen": "08-rhythm-picker",
+        "files": [
+          "08-rhythm-picker-1440x900.png",
+          "08-rhythm-picker-1440x900-full.png",
+          "08-rhythm-picker-390x844.png",
+          "08-rhythm-picker-390x844-full.png"
+        ]
+      },
+      {
+        "screen": "09-a-m2-question",
+        "files": [
+          "09-a-m2-question-1440x900.png",
+          "09-a-m2-question-390x844.png"
+        ]
+      },
+      {
+        "screen": "09-a-m2-question",
+        "files": [
+          "09-a-m2-question-390x500.png",
+          "09-a-m2-question-390x500-full.png"
+        ]
+      },
+      {
+        "screen": "10-a-m2-after-answer",
+        "files": [
+          "10-a-m2-after-answer-1440x900.png",
+          "10-a-m2-after-answer-390x844.png"
+        ]
+      },
+      {
+        "screen": "11-cellar-one-bottle",
+        "files": [
+          "11-cellar-one-bottle-1440x900.png",
+          "11-cellar-one-bottle-390x844.png"
+        ]
+      },
+      {
+        "screen": "12-a-m3-question",
+        "files": [
+          "12-a-m3-question-1440x900.png",
+          "12-a-m3-question-390x844.png"
+        ]
+      },
+      {
+        "screen": "12-a-m3-question",
+        "files": [
+          "12-a-m3-question-390x500.png",
+          "12-a-m3-question-390x500-full.png"
+        ]
+      },
+      {
+        "screen": "13-a-m3-failed-send",
+        "files": [
+          "13-a-m3-failed-send-1440x900.png",
+          "13-a-m3-failed-send-390x844.png"
+        ]
+      },
+      {
+        "screen": "14-a-m3-reopened-with-draft",
+        "files": [
+          "14-a-m3-reopened-with-draft-1440x900.png",
+          "14-a-m3-reopened-with-draft-390x844.png"
+        ]
+      },
+      {
+        "screen": "15-a-m3-after-answer",
+        "files": [
+          "15-a-m3-after-answer-1440x900.png",
+          "15-a-m3-after-answer-390x844.png"
+        ]
+      },
+      {
+        "screen": "15-a-m3-after-answer",
+        "files": [
+          "15-a-m3-after-answer-390x500.png",
+          "15-a-m3-after-answer-390x500-full.png"
+        ]
+      },
+      {
+        "screen": "15b-a-m3-after-follow-up",
+        "files": [
+          "15b-a-m3-after-follow-up-1440x900.png",
+          "15b-a-m3-after-follow-up-390x844.png",
+          "15b-a-m3-after-follow-up-390x844-full.png"
+        ]
+      },
+      {
+        "screen": "16-a-row-opens-reopen",
+        "files": [
+          "16-a-row-opens-reopen-1440x900.png",
+          "16-a-row-opens-reopen-390x844.png",
+          "16-a-row-opens-reopen-390x844-full.png"
+        ]
+      },
+      {
+        "screen": "17-a-label-phone",
+        "files": [
+          "17-a-label-phone-390x844.png"
+        ]
+      },
+      {
+        "screen": "18-b-m2-question",
+        "files": [
+          "18-b-m2-question-1440x900.png",
+          "18-b-m2-question-390x844.png"
+        ]
+      },
+      {
+        "screen": "18-b-m2-question",
+        "files": [
+          "18-b-m2-question-390x500.png",
+          "18-b-m2-question-390x500-full.png"
+        ]
+      },
+      {
+        "screen": "19-b-m2-after-answer",
+        "files": [
+          "19-b-m2-after-answer-1440x900.png",
+          "19-b-m2-after-answer-390x844.png"
+        ]
+      },
+      {
+        "screen": "19-b-m2-after-answer",
+        "files": [
+          "19-b-m2-after-answer-390x500.png",
+          "19-b-m2-after-answer-390x500-full.png"
+        ]
+      },
+      {
+        "screen": "20-b-row-opens-reopen",
+        "files": [
+          "20-b-row-opens-reopen-1440x900.png",
+          "20-b-row-opens-reopen-390x844.png",
+          "20-b-row-opens-reopen-390x844-full.png"
+        ]
+      },
+      {
+        "screen": "21-b-label-phone",
+        "files": [
+          "21-b-label-phone-390x844.png"
+        ]
+      },
+      {
+        "screen": "22-cellar-two-bottles",
+        "files": [
+          "22-cellar-two-bottles-1440x900.png",
+          "22-cellar-two-bottles-390x844.png"
+        ]
+      },
+      {
+        "screen": "23-cellar-parked",
+        "files": [
+          "23-cellar-parked-1440x900.png",
+          "23-cellar-parked-390x844.png"
+        ]
+      },
+      {
+        "screen": "24-dormant-parked",
+        "files": [
+          "24-dormant-parked-1440x900.png",
+          "24-dormant-parked-1440x900-full.png",
+          "24-dormant-parked-390x844.png",
+          "24-dormant-parked-390x844-full.png"
+        ]
+      },
+      {
+        "screen": "25-stalled",
+        "files": [
+          "25-stalled-1440x900.png",
+          "25-stalled-390x844.png"
+        ]
+      },
+      {
+        "screen": "26-cellar-question-ready",
+        "files": [
+          "26-cellar-question-ready-1440x900.png",
+          "26-cellar-question-ready-390x844.png"
+        ]
+      },
+      {
+        "screen": "27-cellar-archived",
+        "files": [
+          "27-cellar-archived-1440x900.png",
+          "27-cellar-archived-390x844.png"
+        ]
+      },
+      {
+        "screen": "28-label-screen",
+        "files": [
+          "28-label-screen-1440x900.png",
+          "28-label-screen-1440x900-full.png",
+          "28-label-screen-390x844.png",
+          "28-label-screen-390x844-full.png"
+        ]
+      },
+      {
+        "screen": "29-cellar-empty",
+        "files": [
+          "29-cellar-empty-1440x900.png",
+          "29-cellar-empty-390x844.png"
+        ]
+      }
+    ],
+    "A": {
+      "m2_stage": "friction",
+      "m2_question_screen": {
+        "view": "question",
+        "mechanism_label": "The Friction Test",
+        "phone_mechanism_label": "The Friction Test",
+        "question": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date, what did she actually do when she found out?",
+        "observation": null,
+        "what_changed_shown": false,
+        "what_changed": [],
+        "next_question_line": null,
+        "main_button": "Continue →",
+        "come_back_shown": true,
+        "asked_waiting_shown": true,
+        "answer_field_shown": true,
+        "answer_field_value": "",
+        "failed_message": null,
+        "follow_up": null,
+        "errand": null,
+        "fold": null
+      },
+      "after_m2": {
+        "view": "settled",
+        "mechanism_label": "The Friction Test",
+        "phone_mechanism_label": "The Friction Test",
+        "question": null,
+        "observation": "The answer names a specific action: Lotte emailed the couple twice and then abandoned the claim. The moment is anchored to a single instance last March, two days before the scheduled shoot.",
+        "what_changed_shown": true,
+        "what_changed": [
+          {
+            "tag": "The Tell · settled",
+            "words": "She emailed them twice asking for the fee, got no reply, and let it go"
+          },
+          {
+            "tag": "Vintage · settled",
+            "words": "Last March a couple cancelled two days before their wedding"
+          }
+        ],
+        "next_question_line": "Next question in 2 minutes",
+        "main_button": "Back to the cellar",
+        "come_back_shown": false,
+        "asked_waiting_shown": false,
+        "answer_field_shown": false,
+        "answer_field_value": "Last March a couple cancelled two days before their wedding. Lotte had already turned down another booking for that date. She emailed them twice asking for the fee, got no reply, and let it go.",
+        "failed_message": null,
+        "follow_up": null,
+        "errand": null,
+        "fold": "The question and your full answer"
+      },
+      "after_m2_bottle": {
+        "mechIndex": 1,
+        "elements": {
+          "grape": "settled",
+          "tell": "settled",
+          "vintage": "settled",
+          "gap": "inert",
+          "echo": "inert",
+          "limit": "inert"
+        },
+        "problem": {
+          "text": "lose their deposit when couples cancel two days before the shoot",
+          "source": "user_stated",
+          "status": "confirmed"
+        },
+        "m2_question": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date, what did she actually do when she found out?",
+        "m2": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "settled",
+          "tell": {
+            "state": "settled",
+            "anchor_span": "She emailed them twice asking for the fee, got no reply, and let it go"
+          },
+          "vintage": {
+            "state": "settled",
+            "anchor_span": "Last March a couple cancelled two days before their wedding"
+          },
+          "observation": {
+            "surface_text": "The answer names a specific action: Lotte emailed the couple twice and then abandoned the claim. The moment is anchored to a single instance last March, two days before the scheduled shoot.",
+            "anchor_span": "Last March a couple cancelled two days before their wedding"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": true,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": false
+          }
+        },
+        "m3": null,
+        "log": [
+          {
+            "at": "2026-11-05T21:00:08.715Z",
+            "type": "answer",
+            "mech": "M1",
+            "kind": "first_answer",
+            "question": "How do you know them?",
+            "answer": "my cousin, she shoots weddings",
+            "moved": [
+              {
+                "element": "grape",
+                "from": "inert",
+                "to": "settled",
+                "words": "Lotte"
+              }
+            ],
+            "fields": [
+              {
+                "label": "Name",
+                "value": "Lotte"
+              },
+              {
+                "label": "How do you know them?",
+                "value": "my cousin, she shoots weddings"
+              }
+            ]
+          },
+          {
+            "at": "2026-11-05T21:00:18.466Z",
+            "type": "problem_recorded",
+            "text": "lose their deposit when couples cancel two days before the shoot",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          {
+            "at": "2026-11-05T21:00:25.985Z",
+            "type": "answer",
+            "mech": "M2",
+            "kind": "first_answer",
+            "question": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date, what did she actually do when she found out?",
+            "answer": "Last March a couple cancelled two days before their wedding. Lotte had already turned down another booking for that date. She emailed them twice asking for the fee, got no reply, and let it go.",
+            "moved": [
+              {
+                "element": "tell",
+                "from": "inert",
+                "to": "settled",
+                "words": "She emailed them twice asking for the fee, got no reply, and let it go"
+              },
+              {
+                "element": "vintage",
+                "from": "inert",
+                "to": "settled",
+                "words": "Last March a couple cancelled two days before their wedding"
+              }
+            ]
+          }
+        ]
+      },
+      "after_m2_label": {
+        "rows": [
+          {
+            "id": "grape",
+            "name": "Grape · Lotte",
+            "state_word": "settled",
+            "marker": "settled",
+            "is_button": false,
+            "chevron": false,
+            "raised": false
+          },
+          {
+            "id": "tell",
+            "name": "The Tell",
+            "state_word": "settled",
+            "marker": "settled",
+            "is_button": false,
+            "chevron": false,
+            "raised": true
+          },
+          {
+            "id": "vintage",
+            "name": "Vintage",
+            "state_word": "settled",
+            "marker": "settled",
+            "is_button": false,
+            "chevron": false,
+            "raised": true
+          },
+          {
+            "id": "gap",
+            "name": "The Gap",
+            "state_word": "—",
+            "marker": "inert",
+            "is_button": false,
+            "chevron": false,
+            "raised": false
+          },
+          {
+            "id": "echo",
+            "name": "The Echo",
+            "state_word": "—",
+            "marker": "inert",
+            "is_button": false,
+            "chevron": false,
+            "raised": false
+          },
+          {
+            "id": "limit",
+            "name": "The Limit",
+            "state_word": "—",
+            "marker": "inert",
+            "is_button": false,
+            "chevron": false,
+            "raised": false
+          }
+        ],
+        "bottle": {
+          "line_elements": 0,
+          "layers": [
+            "grape #B24A61",
+            "tell #B24A61",
+            "vintage #B24A61",
+            "gap #2E1218",
+            "echo #2E1218",
+            "limit #2E1218"
+          ]
+        }
+      },
+      "m2_return_visit": {
+        "still_typing_on_arrival": false,
+        "stalled_note": false,
+        "screen": {
+          "view": "settled",
+          "mechanism_label": "The Friction Test",
+          "phone_mechanism_label": "The Friction Test",
+          "question": null,
+          "observation": "The answer names a specific action: Lotte emailed the couple twice and then abandoned the claim. The moment is anchored to a single instance last March, two days before the scheduled shoot.",
+          "what_changed_shown": true,
+          "what_changed": [
+            {
+              "tag": "The Tell · settled",
+              "words": "She emailed them twice asking for the fee, got no reply, and let it go"
+            },
+            {
+              "tag": "Vintage · settled",
+              "words": "Last March a couple cancelled two days before their wedding"
+            }
+          ],
+          "next_question_line": null,
+          "main_button": "Continue →",
+          "come_back_shown": false,
+          "asked_waiting_shown": false,
+          "answer_field_shown": false,
+          "answer_field_value": "Last March a couple cancelled two days before their wedding. Lotte had already turned down another booking for that date. She emailed them twice asking for the fee, got no reply, and let it go.",
+          "failed_message": null,
+          "follow_up": null,
+          "errand": null,
+          "fold": "The question and your full answer"
+        }
+      },
+      "m3_question_screen": {
+        "view": "question",
+        "mechanism_label": "Third-Party Workarounds",
+        "phone_mechanism_label": "Third-Party Workarounds",
+        "question": "Set Lotte aside. Who else hits this? Name one person and tell me what they have actually done about it.",
+        "observation": null,
+        "what_changed_shown": false,
+        "what_changed": [],
+        "next_question_line": null,
+        "main_button": "Continue →",
+        "come_back_shown": true,
+        "asked_waiting_shown": true,
+        "answer_field_shown": true,
+        "answer_field_value": "",
+        "failed_message": null,
+        "follow_up": null,
+        "errand": null,
+        "fold": null
+      },
+      "blocked": {
+        "blocked_calls": 1,
+        "screen": {
+          "view": "failed",
+          "mechanism_label": "Third-Party Workarounds",
+          "phone_mechanism_label": "Third-Party Workarounds",
+          "question": "Set Lotte aside. Who else hits this? Name one person and tell me what they have actually done about it.",
+          "observation": null,
+          "what_changed_shown": false,
+          "what_changed": [],
+          "next_question_line": null,
+          "main_button": "Try again",
+          "come_back_shown": true,
+          "asked_waiting_shown": true,
+          "answer_field_shown": true,
+          "answer_field_value": "I don't know other wedding photographers well. I'd guess most of them just eat the loss.",
+          "failed_message": "Not sent. Corked couldn't be reached, so nothing went on record. Your answer is still here.",
+          "follow_up": null,
+          "errand": null,
+          "fold": null
+        },
+        "log_entries_for_this_answer": 0,
+        "elements_before": {
+          "grape": "settled",
+          "tell": "settled",
+          "vintage": "settled",
+          "gap": "inert",
+          "echo": "inert",
+          "limit": "inert"
+        },
+        "elements_after": {
+          "grape": "settled",
+          "tell": "settled",
+          "vintage": "settled",
+          "gap": "inert",
+          "echo": "inert",
+          "limit": "inert"
+        },
+        "answers_m3_on_bottle": null,
+        "draft_on_bottle": "I don't know other wedding photographers well. I'd guess most of them just eat the loss.",
+        "label": {
+          "rows": [
+            {
+              "id": "grape",
+              "name": "Grape · Lotte",
+              "state_word": "settled",
+              "marker": "settled",
+              "is_button": false,
+              "chevron": false,
+              "raised": false
+            },
+            {
+              "id": "tell",
+              "name": "The Tell",
+              "state_word": "settled",
+              "marker": "settled",
+              "is_button": false,
+              "chevron": false,
+              "raised": false
+            },
+            {
+              "id": "vintage",
+              "name": "Vintage",
+              "state_word": "settled",
+              "marker": "settled",
+              "is_button": false,
+              "chevron": false,
+              "raised": false
+            },
+            {
+              "id": "gap",
+              "name": "The Gap",
+              "state_word": "—",
+              "marker": "inert",
+              "is_button": false,
+              "chevron": false,
+              "raised": false
+            },
+            {
+              "id": "echo",
+              "name": "The Echo",
+              "state_word": "—",
+              "marker": "inert",
+              "is_button": false,
+              "chevron": false,
+              "raised": false
+            },
+            {
+              "id": "limit",
+              "name": "The Limit",
+              "state_word": "—",
+              "marker": "inert",
+              "is_button": false,
+              "chevron": false,
+              "raised": false
+            }
+          ],
+          "bottle": {
+            "line_elements": 0,
+            "layers": [
+              "grape #B24A61",
+              "tell #B24A61",
+              "vintage #B24A61",
+              "gap #2E1218",
+              "echo #2E1218",
+              "limit #2E1218"
+            ]
+          }
+        }
+      },
+      "reopened": {
+        "still_typing_on_arrival": false,
+        "stalled_note": false,
+        "screen": {
+          "view": "failed",
+          "mechanism_label": "Third-Party Workarounds",
+          "phone_mechanism_label": "Third-Party Workarounds",
+          "question": "Set Lotte aside. Who else hits this? Name one person and tell me what they have actually done about it.",
+          "observation": null,
+          "what_changed_shown": false,
+          "what_changed": [],
+          "next_question_line": null,
+          "main_button": "Try again",
+          "come_back_shown": true,
+          "asked_waiting_shown": true,
+          "answer_field_shown": true,
+          "answer_field_value": "I don't know other wedding photographers well. I'd guess most of them just eat the loss.",
+          "failed_message": "Not sent. Corked couldn't be reached, so nothing went on record. Your answer is still here.",
+          "follow_up": null,
+          "errand": null,
+          "fold": null
+        },
+        "log_entries_for_this_answer": 0
+      },
+      "after_retry": {
+        "screen": {
+          "view": "followup",
+          "mechanism_label": "Third-Party Workarounds",
+          "phone_mechanism_label": "Third-Party Workarounds",
+          "question": null,
+          "observation": "The answer offers only the founder's inference about an unnamed category, with no identifiable separate person and no concrete observed behaviour.",
+          "what_changed_shown": false,
+          "what_changed": [],
+          "next_question_line": null,
+          "main_button": null,
+          "come_back_shown": false,
+          "asked_waiting_shown": false,
+          "answer_field_shown": false,
+          "answer_field_value": "I don't know other wedding photographers well. I'd guess most of them just eat the loss.",
+          "failed_message": null,
+          "follow_up": {
+            "question": "Is there one specific photographer, by name or clear description, whose response to a cancellation the founder has actually witnessed or heard about firsthand?",
+            "field_shown": true,
+            "continue_button": "Continue →",
+            "back_link": "Back to the cellar"
+          },
+          "errand": null,
+          "fold": "The question and your first answer"
+        },
+        "log_entries_for_this_answer": 1,
+        "log_entries_for_m3": [
+          {
+            "kind": "first_answer",
+            "answer": "I don't know other wedding photographers well. I'd guess most of them just eat the loss.",
+            "moved": [
+              {
+                "element": "echo",
+                "from": "inert",
+                "to": "turbid",
+                "words": null
+              }
+            ]
+          }
+        ],
+        "echo": "turbid",
+        "stored_brief": null,
+        "draft_left": null,
+        "failed_flag_left": false
+      },
+      "after_m3": {
+        "screen": {
+          "view": "errand",
+          "mechanism_label": "Third-Party Workarounds",
+          "phone_mechanism_label": "Third-Party Workarounds",
+          "question": null,
+          "observation": "The answer contains no third party at all, only the founder's inference about what others must experience, with no named person, no observed behaviour, and no reported workaround.",
+          "what_changed_shown": false,
+          "what_changed": [],
+          "next_question_line": null,
+          "main_button": null,
+          "come_back_shown": true,
+          "asked_waiting_shown": true,
+          "answer_field_shown": false,
+          "answer_field_value": "I don't know other wedding photographers well. I'd guess most of them just eat the loss. I haven't asked anyone else about it. I just assume others have it too.",
+          "failed_message": null,
+          "follow_up": null,
+          "errand": {
+            "tag": "Not Lotte",
+            "who": "Find another wedding photographer, not Lotte, someone you can reach this week.",
+            "question": "The last time a couple cancelled close to the shoot date, what did you actually do about the deposit?",
+            "copy_button": true
+          },
+          "fold": "The question and your answer"
+        },
+        "echo": "turbid",
+        "stored_brief": {
+          "kind": "echo",
+          "setup": "Find another wedding photographer, not Lotte, someone you can reach this week.",
+          "question": "The last time a couple cancelled close to the shoot date, what did you actually do about the deposit?",
+          "target": "wedding photographer, cancellation experience",
+          "created_at": "2026-11-05T21:02:54.084Z"
+        },
+        "log_entries_for_the_first_answer": 1,
+        "log_entries_for_m3": [
+          {
+            "kind": "first_answer",
+            "answer": "I don't know other wedding photographers well. I'd guess most of them just eat the loss.",
+            "moved": [
+              {
+                "element": "echo",
+                "from": "inert",
+                "to": "turbid",
+                "words": null
+              }
+            ]
+          },
+          {
+            "kind": "follow_up",
+            "answer": "I haven't asked anyone else about it. I just assume others have it too.",
+            "moved": []
+          }
+        ],
+        "copied": "The last time a couple cancelled close to the shoot date, what did you actually do about the deposit?"
+      },
+      "label_after_m3": {
+        "rows": [
+          {
+            "id": "grape",
+            "name": "Grape · Lotte",
+            "state_word": "settled",
+            "marker": "settled",
+            "is_button": false,
+            "chevron": false,
+            "raised": false
+          },
+          {
+            "id": "tell",
+            "name": "The Tell",
+            "state_word": "settled",
+            "marker": "settled",
+            "is_button": false,
+            "chevron": false,
+            "raised": false
+          },
+          {
+            "id": "vintage",
+            "name": "Vintage",
+            "state_word": "settled",
+            "marker": "settled",
+            "is_button": false,
+            "chevron": false,
+            "raised": false
+          },
+          {
+            "id": "gap",
+            "name": "The Gap",
+            "state_word": "—",
+            "marker": "inert",
+            "is_button": false,
+            "chevron": false,
+            "raised": false
+          },
+          {
+            "id": "echo",
+            "name": "The Echo",
+            "state_word": "turbid",
+            "marker": "turbid",
+            "is_button": true,
+            "chevron": true,
+            "raised": false
+          },
+          {
+            "id": "limit",
+            "name": "The Limit",
+            "state_word": "—",
+            "marker": "inert",
+            "is_button": false,
+            "chevron": false,
+            "raised": false
+          }
+        ],
+        "bottle": {
+          "line_elements": 0,
+          "layers": [
+            "grape #B24A61",
+            "tell #B24A61",
+            "vintage #B24A61",
+            "gap #2E1218",
+            "echo #2E1218",
+            "limit #2E1218"
+          ]
+        }
+      },
+      "rows_opened": {
+        "echo": {
+          "state": "turbid",
+          "was_button": true,
+          "review_shown": true,
+          "reopen_shown": true,
+          "reopen_label": "M3 · Third-Party Workarounds · answer again",
+          "reopen_question": "Set Lotte aside. Who else hits this? Name one person and tell me what they have actually done about it."
+        }
+      },
+      "phone_buttons": [
+        "View label",
+        "The Echoturbid"
+      ],
+      "after_rows_view": {
+        "view": "errand",
+        "mechanism_label": "Third-Party Workarounds",
+        "phone_mechanism_label": "Third-Party Workarounds",
+        "question": null,
+        "observation": "The answer contains no third party at all, only the founder's inference about what others must experience, with no named person, no observed behaviour, and no reported workaround.",
+        "what_changed_shown": false,
+        "what_changed": [],
+        "next_question_line": null,
+        "main_button": null,
+        "come_back_shown": true,
+        "asked_waiting_shown": true,
+        "answer_field_shown": false,
+        "answer_field_value": "I don't know other wedding photographers well. I'd guess most of them just eat the loss. I haven't asked anyone else about it. I just assume others have it too.",
+        "failed_message": null,
+        "follow_up": null,
+        "errand": {
+          "tag": "Not Lotte",
+          "who": "Find another wedding photographer, not Lotte, someone you can reach this week.",
+          "question": "The last time a couple cancelled close to the shoot date, what did you actually do about the deposit?",
+          "copy_button": true
+        },
+        "fold": "The question and your answer"
+      }
+    },
+    "B": {
+      "m2_stage": "friction",
+      "m2_question_screen": {
+        "view": "question",
+        "mechanism_label": "The Friction Test",
+        "phone_mechanism_label": "The Friction Test",
+        "question": "Walk me through the last time Sanne lost a deposit because a couple cancelled close to the shoot date, what did she do when she found out?",
+        "observation": null,
+        "what_changed_shown": false,
+        "what_changed": [],
+        "next_question_line": null,
+        "main_button": "Continue →",
+        "come_back_shown": true,
+        "asked_waiting_shown": true,
+        "answer_field_shown": true,
+        "answer_field_value": "",
+        "failed_message": null,
+        "follow_up": null,
+        "errand": null,
+        "fold": null
+      },
+      "after_m2": {
+        "view": "followup",
+        "mechanism_label": "The Friction Test",
+        "phone_mechanism_label": "The Friction Test",
+        "question": null,
+        "observation": "The Tell contains an emotional state and a vague pattern where a filmable action is required. No specific instance is named in the answer, only a frequency estimate.",
+        "what_changed_shown": false,
+        "what_changed": [],
+        "next_question_line": null,
+        "main_button": null,
+        "come_back_shown": false,
+        "asked_waiting_shown": false,
+        "answer_field_shown": false,
+        "answer_field_value": "It happens a few times a year. She gets annoyed and moves on.",
+        "failed_message": null,
+        "follow_up": {
+          "question": "Is there a single cancellation Sanne mentioned to you by name or date, or is this a composite picture built from general conversation?",
+          "field_shown": true,
+          "continue_button": "Continue →",
+          "back_link": "Back to the cellar"
+        },
+        "errand": null,
+        "fold": "The question and your first answer"
+      },
+      "after_m2_bottle": {
+        "mechIndex": 1,
+        "elements": {
+          "grape": "settled",
+          "tell": "clearing",
+          "vintage": "turbid",
+          "gap": "inert",
+          "echo": "inert",
+          "limit": "inert"
+        },
+        "problem": {
+          "text": "lose their deposit when couples cancel two days before the shoot",
+          "source": "user_stated",
+          "status": "confirmed"
+        },
+        "m2_question": "Walk me through the last time Sanne lost a deposit because a couple cancelled close to the shoot date, what did she do when she found out?",
+        "m2": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "turbid",
+          "tell": {
+            "state": "clearing",
+            "anchor_span": "gets annoyed and moves on"
+          },
+          "vintage": {
+            "state": "turbid",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "The Tell contains an emotional state and a vague pattern where a filmable action is required. No specific instance is named in the answer, only a frequency estimate.",
+            "anchor_span": "a few times a year"
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "Is there a single cancellation Sanne mentioned to you by name or date, or is this a composite picture built from general conversation?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": false,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": true
+          }
+        },
+        "m3": null,
+        "log": [
+          {
+            "at": "2026-11-05T21:03:11.412Z",
+            "type": "answer",
+            "mech": "M1",
+            "kind": "first_answer",
+            "question": "How do you know them?",
+            "answer": "my friend, she shoots weddings",
+            "moved": [
+              {
+                "element": "grape",
+                "from": "inert",
+                "to": "settled",
+                "words": "Sanne"
+              }
+            ],
+            "fields": [
+              {
+                "label": "Name",
+                "value": "Sanne"
+              },
+              {
+                "label": "How do you know them?",
+                "value": "my friend, she shoots weddings"
+              }
+            ]
+          },
+          {
+            "at": "2026-11-05T21:03:14.329Z",
+            "type": "problem_recorded",
+            "text": "lose their deposit when couples cancel two days before the shoot",
+            "source": "user_stated",
+            "status": "confirmed"
+          },
+          {
+            "at": "2026-11-05T21:03:22.358Z",
+            "type": "answer",
+            "mech": "M2",
+            "kind": "first_answer",
+            "question": "Walk me through the last time Sanne lost a deposit because a couple cancelled close to the shoot date, what did she do when she found out?",
+            "answer": "It happens a few times a year. She gets annoyed and moves on.",
+            "moved": [
+              {
+                "element": "tell",
+                "from": "inert",
+                "to": "clearing",
+                "words": "gets annoyed and moves on"
+              },
+              {
+                "element": "vintage",
+                "from": "inert",
+                "to": "turbid",
+                "words": null
+              }
+            ]
+          }
+        ]
+      },
+      "follow_up_position": {
+        "observation": 96,
+        "follow_up": 210,
+        "what_changed": null,
+        "errand": null,
+        "fold": 674
+      },
+      "label": {
+        "rows": [
+          {
+            "id": "grape",
+            "name": "Grape · Sanne",
+            "state_word": "settled",
+            "marker": "settled",
+            "is_button": false,
+            "chevron": false,
+            "raised": false
+          },
+          {
+            "id": "tell",
+            "name": "The Tell",
+            "state_word": "clearing",
+            "marker": "clearing",
+            "is_button": true,
+            "chevron": true,
+            "raised": false
+          },
+          {
+            "id": "vintage",
+            "name": "Vintage",
+            "state_word": "turbid",
+            "marker": "turbid",
+            "is_button": true,
+            "chevron": true,
+            "raised": false
+          },
+          {
+            "id": "gap",
+            "name": "The Gap",
+            "state_word": "—",
+            "marker": "inert",
+            "is_button": false,
+            "chevron": false,
+            "raised": false
+          },
+          {
+            "id": "echo",
+            "name": "The Echo",
+            "state_word": "—",
+            "marker": "inert",
+            "is_button": false,
+            "chevron": false,
+            "raised": false
+          },
+          {
+            "id": "limit",
+            "name": "The Limit",
+            "state_word": "—",
+            "marker": "inert",
+            "is_button": false,
+            "chevron": false,
+            "raised": false
+          }
+        ],
+        "bottle": {
+          "line_elements": 0,
+          "layers": [
+            "grape #B24A61",
+            "tell #6E2A3A",
+            "vintage #2E1218",
+            "gap #2E1218",
+            "echo #2E1218",
+            "limit #2E1218"
+          ]
+        }
+      },
+      "rows_opened": {
+        "tell": {
+          "state": "clearing",
+          "was_button": true,
+          "review_shown": true,
+          "reopen_shown": true,
+          "reopen_label": "M2 · The Friction Test · answer again",
+          "reopen_question": "Walk me through the last time Sanne lost a deposit because a couple cancelled close to the shoot date, what did she do when she found out?"
+        },
+        "vintage": {
+          "state": "turbid",
+          "was_button": true,
+          "review_shown": true,
+          "reopen_shown": true,
+          "reopen_label": "M2 · The Friction Test · answer again",
+          "reopen_question": "Walk me through the last time Sanne lost a deposit because a couple cancelled close to the shoot date, what did she do when she found out?"
+        }
+      },
+      "phone_buttons": [
+        "View label",
+        "The Tellclearing",
+        "Vintageturbid"
+      ],
+      "after_rows_view": {
+        "view": "followup",
+        "mechanism_label": "The Friction Test",
+        "phone_mechanism_label": "The Friction Test",
+        "question": null,
+        "observation": "The Tell contains an emotional state and a vague pattern where a filmable action is required. No specific instance is named in the answer, only a frequency estimate.",
+        "what_changed_shown": false,
+        "what_changed": [],
+        "next_question_line": null,
+        "main_button": null,
+        "come_back_shown": false,
+        "asked_waiting_shown": false,
+        "answer_field_shown": false,
+        "answer_field_value": "It happens a few times a year. She gets annoyed and moves on.",
+        "failed_message": null,
+        "follow_up": {
+          "question": "Is there a single cancellation Sanne mentioned to you by name or date, or is this a composite picture built from general conversation?",
+          "field_shown": true,
+          "continue_button": "Continue →",
+          "back_link": "Back to the cellar"
+        },
+        "errand": null,
+        "fold": "The question and your first answer"
+      }
+    },
+    "extras": {
+      "cellar_two_bottles": {
+        "archived_heading": null,
+        "export_line_is_last": true,
+        "cards": [
+          {
+            "group": "rack",
+            "status": "Next question in 2 minutes",
+            "status_colour": "rgb(92, 83, 72)",
+            "date": "today",
+            "border": "rgb(217, 208, 194)",
+            "shadow": "none",
+            "background": "rgb(251, 248, 242)",
+            "opacity": "1",
+            "spark_colour": "rgb(30, 26, 21)",
+            "bottle_transform": "none",
+            "archive_links": 1,
+            "dots": 0
+          },
+          {
+            "group": "rack",
+            "status": "Next question in 2 minutes",
+            "status_colour": "rgb(92, 83, 72)",
+            "date": "today",
+            "border": "rgb(217, 208, 194)",
+            "shadow": "none",
+            "background": "rgb(251, 248, 242)",
+            "opacity": "1",
+            "spark_colour": "rgb(30, 26, 21)",
+            "bottle_transform": "none",
+            "archive_links": 1,
+            "dots": 0
+          }
+        ]
+      },
+      "confirms": [
+        "Archive this spark? This cannot be undone.",
+        "Remove this spark from the cellar? This cannot be undone.",
+        "Remove this spark from the cellar? This cannot be undone."
+      ],
+      "parked_card": "Parked · find another person",
+      "cellar_parked": {
+        "archived_heading": null,
+        "export_line_is_last": true,
+        "cards": [
+          {
+            "group": "rack",
+            "status": "Parked · find another person",
+            "status_colour": "rgb(92, 83, 72)",
+            "date": "today",
+            "border": "rgb(217, 208, 194)",
+            "shadow": "none",
+            "background": "rgb(251, 248, 242)",
+            "opacity": "1",
+            "spark_colour": "rgb(30, 26, 21)",
+            "bottle_transform": "none",
+            "archive_links": 1,
+            "dots": 0
+          },
+          {
+            "group": "rack",
+            "status": "Next question in 2 minutes",
+            "status_colour": "rgb(92, 83, 72)",
+            "date": "today",
+            "border": "rgb(217, 208, 194)",
+            "shadow": "none",
+            "background": "rgb(251, 248, 242)",
+            "opacity": "1",
+            "spark_colour": "rgb(30, 26, 21)",
+            "bottle_transform": "none",
+            "archive_links": 1,
+            "dots": 0
+          }
+        ]
+      },
+      "dormant_panel": "DORMANT · FIND ANOTHER PERSON\nThis would normally come back in 2 minutes. Answer now instead, any time.\nNOT LOTTE\nFind another wedding photographer, not Lotte, someone you can reach this week.\nThe last time a couple cancelled close to the shoot date, what did you actually do about the deposit?\nCopy question\nSet Lotte aside. Who else hits this? Name one person and tell me what they have actually done about it.\nAnswer now →",
+      "stalled_shown": true,
+      "stalled_panel": "STALLED\nThis bottle has not moved.\nArchive\nOpen the question →",
+      "cellar_question_ready": {
+        "archived_heading": null,
+        "export_line_is_last": true,
+        "cards": [
+          {
+            "group": "rack",
+            "status": "Parked · find another person",
+            "status_colour": "rgb(92, 83, 72)",
+            "date": "today",
+            "border": "rgb(217, 208, 194)",
+            "shadow": "none",
+            "background": "rgb(251, 248, 242)",
+            "opacity": "1",
+            "spark_colour": "rgb(30, 26, 21)",
+            "bottle_transform": "none",
+            "archive_links": 1,
+            "dots": 0
+          },
+          {
+            "group": "rack",
+            "status": "Question ready",
+            "status_colour": "rgb(122, 34, 50)",
+            "date": "today",
+            "border": "rgb(30, 26, 21)",
+            "shadow": "rgb(30, 26, 21) 4px 4px 0px 0px",
+            "background": "rgb(251, 248, 242)",
+            "opacity": "1",
+            "spark_colour": "rgb(30, 26, 21)",
+            "bottle_transform": "matrix(0.996195, 0.0871557, -0.0871557, 0.996195, 0, 0)",
+            "archive_links": 1,
+            "dots": 0
+          }
+        ]
+      },
+      "archived_card": "Archived",
+      "archive_button_left_on_that_card": 0,
+      "archive_button_in_sidebar": 0,
+      "cellar_archived": {
+        "archived_heading": "Archived",
+        "export_line_is_last": true,
+        "cards": [
+          {
+            "group": "rack",
+            "status": "Parked · find another person",
+            "status_colour": "rgb(92, 83, 72)",
+            "date": "today",
+            "border": "rgb(217, 208, 194)",
+            "shadow": "none",
+            "background": "rgb(251, 248, 242)",
+            "opacity": "1",
+            "spark_colour": "rgb(30, 26, 21)",
+            "bottle_transform": "none",
+            "archive_links": 1,
+            "dots": 0
+          },
+          {
+            "group": "archived",
+            "status": "Archived",
+            "status_colour": "rgb(110, 100, 88)",
+            "date": "today",
+            "border": "rgb(217, 208, 194)",
+            "shadow": "none",
+            "background": "rgb(243, 238, 228)",
+            "opacity": "1",
+            "spark_colour": "rgb(92, 83, 72)",
+            "bottle_transform": "none",
+            "archive_links": 0,
+            "dots": 0
+          }
+        ]
+      },
+      "label_screen": [
+        {
+          "name": "Grape · The person who has it",
+          "state_word": "settled",
+          "is_button": false
+        },
+        {
+          "name": "The Tell · What the person visibly does because of it.",
+          "state_word": "clearing",
+          "is_button": false
+        },
+        {
+          "name": "Vintage · The exact moment it happened.",
+          "state_word": "turbid",
+          "is_button": false
+        },
+        {
+          "name": "The Gap · What the current workaround fails to do.",
+          "state_word": "—",
+          "is_button": false
+        },
+        {
+          "name": "The Echo · Confirmation from outside",
+          "state_word": "—",
+          "is_button": false
+        },
+        {
+          "name": "The Limit · Where the need stops",
+          "state_word": "—",
+          "is_button": false
+        }
+      ],
+      "empty_cellar": "The cellar is empty. Cork an idea to begin."
+    }
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "No Winemaster circle or \"THE WINEMASTER\" anywhere. Question screens show the mechanism name, with no progress bar, \"Element 2 of 7\" or \"Phase 1 element 2 of 7\".",
+      "happened": "Checked the whole page at 10 points (landing, grape recap, after intake, Bottle A, M2 question, Bottle A, M2 reading, Bottle A, M3 question, Bottle A, M3 reading, Bottle A, M3 after the follow-up, Bottle B, M2 question, Bottle B, M2 reading). Found: nothing. Bottle A M2: label \"The Friction Test\", phone top bar \"The Friction Test\". Bottle A M3: label \"Third-Party Workarounds\", phone top bar \"Third-Party Workarounds\". Bottle B M2: label \"The Friction Test\", phone top bar \"The Friction Test\"."
+    },
+    {
+      "n": 2,
+      "expected": "After Bottle A's M2: if something settled, the screen shows the observation, \"What changed\" with excerpts that appear character for character in the answer, the next-question line and \"Back to the cellar\", and no park buttons. If nothing settled, report it as not tested.",
+      "happened": "Moves: tell inert→settled, vintage inert→settled. View: settled. Observation: \"The answer names a specific action: Lotte emailed the couple twice and then abandoned the claim. The moment is anchored to a single instance last March, two days before the scheduled shoot.\". \"What changed\" shown: yes. Rows: The Tell · settled: \"She emailed them twice asking for the fee, got no reply, and let it go\" (character for character in the answer: yes); Vintage · settled: \"Last March a couple cancelled two days before their wedding\" (character for character in the answer: yes). Next-question line: \"Next question in 2 minutes\". Main button: \"Back to the cellar\". \"Come back to this\" shown: no. \"Asked, waiting on a reply\" shown: no. No follow-up."
+    },
+    {
+      "n": 3,
+      "expected": "After the blocked M3 send: the answer is still in the field with the failure message and \"Try again\". After leaving and reopening the bottle, the answer is there again. After the retry, the history log holds that answer once.",
+      "happened": "Calls blocked: 1. Field shown: yes. Field holds the answer: yes. Message: \"Not sent. Corked couldn't be reached, so nothing went on record. Your answer is still here.\". Same as the brief's line: yes. Main button: \"Try again\". Park links shown: both. On the bottle after the block: log entries for this answer 0, answers.M3 none, elements changed no, draft is the answer yes. After leaving and reopening: field shown yes, holds the answer yes, message \"Not sent. Corked couldn't be reached, so nothing went on record. Your answer is still here.\", main button \"Try again\", a line typing on arrival no. After the retry: log entries holding this answer 1. Draft left: none. At the end of M3: log entries holding this answer 1. All M3 entries: [{\"kind\":\"first_answer\",\"answer\":\"I don't know other wedding photographers well. I'd guess most of them just eat the loss.\",\"moved\":[\"echo inert→turbid\"]},{\"kind\":\"follow_up\",\"answer\":\"I haven't asked anyone else about it. I just assume others have it too.\",\"moved\":[]}]."
+    },
+    {
+      "n": 4,
+      "expected": "After Bottle A's M3, and its follow-up if one appears: if the Echo is turbid or clearing, the errand card shows, \"Copy question\" puts only the question on the clipboard, both park buttons show, and there is no \"What changed\". If the Echo settled, report it as not tested.",
+      "happened": "Follow-up at M3: \"Is there one specific photographer, by name or clear description, whose response to a cancellation the founder has actually witnessed or heard about firsthand?\", answered \"I haven't asked anyone else about it. I just assume others have it too.\". Echo: turbid. View: errand. Observation: \"The answer contains no third party at all, only the founder's inference about what others must experience, with no named person, no observed behaviour, and no reported workaround.\". Errand card shown. Tag: \"Not Lotte\". Who: \"Find another wedding photographer, not Lotte, someone you can reach this week.\". Question: \"The last time a couple cancelled close to the shoot date, what did you actually do about the deposit?\". Clipboard after \"Copy question\": \"The last time a couple cancelled close to the shoot date, what did you actually do about the deposit?\". Same as the question on the card: yes. Holds the who line: no. \"Come back to this\" shown: yes. \"Asked, waiting on a reply\" shown: yes. \"What changed\" shown: no. The stored brief: {\"kind\":\"echo\",\"setup\":\"Find another wedding photographer, not Lotte, someone you can reach this week.\",\"question\":\"The last time a couple cancelled close to the shoot date, what did you actually do about the deposit?\",\"target\":\"wedding photographer, cancellation experience\",\"created_at\":\"2026-11-05T21:02:54.084Z\"}."
+    },
+    {
+      "n": 5,
+      "expected": "After Bottle B's M2: if a follow-up appears, it leads the screen with its field and \"Continue →\". If none appears, report it as not tested.",
+      "happened": "View: followup. Observation: \"The Tell contains an emotional state and a vague pattern where a filmable action is required. No specific instance is named in the answer, only a frequency estimate.\". Follow-up: \"Is there a single cancellation Sanne mentioned to you by name or date, or is this a composite picture built from general conversation?\". Field shown: yes. Button: \"Continue →\". Quiet link: \"Back to the cellar\". Top of each part on the page, in pixels: observation 96, follow-up 210, What changed not shown, errand not shown, fold 674. Park buttons shown: no. Fold title: \"The question and your first answer\"."
+    },
+    {
+      "n": 6,
+      "expected": "The label spells out the states, clearing and turbid rows are buttons that open the reopen, the bottle has no ticks, and the Grape row shows the name.",
+      "happened": "Bottle A after M3 rows: Grape · Lotte [settled, settled]; The Tell [settled, settled]; Vintage [settled, settled]; The Gap [—, inert]; The Echo [turbid, turbid, button, chevron]; The Limit [—, inert]. Rows clicked: echo (turbid): reopen shown yes, \"M3 · Third-Party Workarounds · answer again\", question \"Set Lotte aside. Who else hits this? Name one person and tell me what they have actually done about it.\". Bottle: 0 line elements. Layers: grape #B24A61, tell #B24A61, vintage #B24A61, gap #2E1218, echo #2E1218, limit #2E1218. Bottle B after M2 rows: Grape · Sanne [settled, settled]; The Tell [clearing, clearing, button, chevron]; Vintage [turbid, turbid, button, chevron]; The Gap [—, inert]; The Echo [—, inert]; The Limit [—, inert]. Rows clicked: tell (clearing): reopen shown yes, \"M2 · The Friction Test · answer again\", question \"Walk me through the last time Sanne lost a deposit because a couple cancelled close to the shoot date, what did she do when she found out?\"; vintage (turbid): reopen shown yes, \"M2 · The Friction Test · answer again\", question \"Walk me through the last time Sanne lost a deposit because a couple cancelled close to the shoot date, what did she do when she found out?\". Bottle: 0 line elements. Layers: grape #B24A61, tell #6E2A3A, vintage #2E1218, gap #2E1218, echo #2E1218, limit #2E1218. Phone buttons: Bottle A [\"View label\",\"The Echoturbid\"], Bottle B [\"View label\",\"The Tellclearing\",\"Vintageturbid\"]. On Bottle A's M2 reading, rows raised: The Tell, Vintage. Label screen: Grape · The person who has it [settled]; The Tell · What the person visibly does because of it. [clearing]; Vintage · The exact moment it happened. [turbid]; The Gap · What the current workaround fails to do. [—]; The Echo · Confirmation from outside [—]; The Limit · Where the need stops [—]."
+    },
+    {
+      "n": 7,
+      "expected": "At 390×500, the question and the top of the answer field are visible without scrolling.",
+      "happened": "Bottle A, M2 question: scrolled 0px; question 83 to 235; field top 275; screen ends at 500. Question all in view: yes. Top of the field in view: yes, 225px of it. Bottle A, M3 question: scrolled 0px; question 83 to 204; field top 245; screen ends at 500. Question all in view: yes. Top of the field in view: yes, 255px of it. Bottle A, M3 follow-up: scrolled 0px; question 223 to 358; field top 372; screen ends at 500. Question all in view: yes. Top of the field in view: yes, 128px of it. Bottle B, M2 question: scrolled 0px; question 83 to 235; field top 275; screen ends at 500. Question all in view: yes. Top of the field in view: yes, 225px of it. Bottle B, follow-up: scrolled 0px; question 246 to 355; field top 369; screen ends at 500. Question all in view: yes. Top of the field in view: yes, 131px of it. Page errors: none."
+    }
+  ],
+  "exported": true
+}
