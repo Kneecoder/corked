@@ -46,11 +46,16 @@ function driver(page, rec) {
       console.log(`[run ${rec.run}] ${name}${detail.note ? ': ' + detail.note : ''}`);
     },
 
+    // The bottle the run is working on: the one holding app.spark, else the first in the cellar.
     async bottle() {
-      return page.evaluate(key => {
+      return page.evaluate(({ key, spark }) => {
         const all = JSON.parse(localStorage.getItem(key) || '[]');
-        return all[0] || null;
-      }, CELLAR_KEY);
+        return (spark ? all.find(b => b.s?.idea === spark) : all[0]) || null;
+      }, { key: CELLAR_KEY, spark: app.spark || null });
+    },
+
+    card() {
+      return app.spark ? page.locator('.bottle-card', { hasText: app.spark.slice(0, 40) }) : page.locator('.bottle-card').first();
     },
 
     // A scenario on the real calendar instead of the two-minute test rhythm:
@@ -65,8 +70,9 @@ function driver(page, rec) {
 
     // From the empty cellar's landing: cork an idea, type the spark, bottle it. The worker URL is
     // typed into the spark step's field when the app asks for it, as a person would.
-    async addSpark(spark) {
-      await page.locator('#bottle-cta-svg').click();
+    async addSpark(spark, { fromCellar = false } = {}) {
+      if (fromCellar) await page.getByRole('button', { name: 'Add Spark' }).click();
+      else await page.locator('#bottle-cta-svg').click();
       await page.locator('#screen-intake.active #f-inp').waitFor({ timeout: STEP_TIMEOUT });
       await page.locator('#f-inp').fill(spark);
       await page.locator('#v6-bottle-btn').click();
@@ -128,6 +134,10 @@ function driver(page, rec) {
       await page.locator('#rhythm-panel.is-visible').waitFor({ timeout: STEP_TIMEOUT });
       await page.locator('#rhythm-panel .rhythm-choice', { hasText: new RegExp(`^${pace}$`) }).click();
       await page.locator('#rhythm-panel .rhythm-choice', { hasText: new RegExp(`^${timing}$`) }).click();
+      app.rhythmShown = {
+        choices: await page.locator('#rhythm-panel .rhythm-choice').allTextContents(),
+        summary: await text('#rhythm-summary')
+      };
       await page.locator('#p1-btn:not([disabled])').click();
       app.step('set the rhythm', { note: `${pace}, ${timing}` });
     },
@@ -204,20 +214,90 @@ function driver(page, rec) {
       await page.locator('#p1-btn').click();
       await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
       app.step('back in the cellar, waiting out the hold', { note: `question due ${due}` });
-      await waitFor(() => {
+      await app.waitForHoldToEnd();
+      await app.openFromCellar();
+    },
+
+    async waitForHoldToEnd() {
+      await waitFor(spark => {
         const all = JSON.parse(localStorage.getItem('corked-cellar-v1') || '[]');
-        const at = all[0]?.s?.questionOpensAt;
+        const at = (spark ? all.find(b => b.s?.idea === spark) : all[0])?.s?.questionOpensAt;
         return !at || new Date(at).getTime() <= Date.now();
-      }, undefined, HOLD_TIMEOUT);
+      }, app.spark || null, HOLD_TIMEOUT);
       await page.waitForTimeout(1000);
-      app.step('the hold is over', { note: `card reads "${await text('.bottle-card-status')}"` });
-      await page.locator('.bottle-card').first().click();
+      app.step('the hold is over', { note: `card reads "${await app.card().locator('.bottle-card-status').textContent()}"` });
+    },
+
+    async openFromCellar() {
+      await app.card().click();
       await page.locator('#screen-phase1.active').waitFor({ timeout: STEP_TIMEOUT });
       if (await visible('#stalled-panel')) {
         app.step('stalled note shown, opening the question');
         await page.getByRole('button', { name: 'Open the question →' }).click();
       }
       app.step('opened the bottle', { note: await text('#m-label') });
+    },
+
+    // A follow-up the scenario has no answer for: back to the cellar through the sidebar, wait out
+    // any hold, and open the bottle again, so nothing is typed that the scenario doesn't give.
+    async leaveFollowUpUnanswered() {
+      await page.locator('.sb-back').first().click();
+      await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+      app.step('left the follow-up unanswered');
+      await app.waitForHoldToEnd();
+      await app.openFromCellar();
+    },
+
+    // "Come back to this", then wait for the return time and open the parked card.
+    async parkAndComeBack() {
+      await page.locator('#rw-park-btn').click();
+      await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+      const card = (await app.card().locator('.bottle-card-status').textContent()).trim();
+      const due = (await app.bottle())?.nextQuestionAt;
+      app.step('parked, waiting for it to come back', { note: `card reads "${card}", due ${due}` });
+      await waitFor(spark => {
+        const all = JSON.parse(localStorage.getItem('corked-cellar-v1') || '[]');
+        const at = all.find(b => b.s?.idea === spark)?.nextQuestionAt;
+        return !at || new Date(at).getTime() <= Date.now();
+      }, app.spark, HOLD_TIMEOUT);
+      await page.waitForTimeout(1000);
+      await app.card().click();
+      await page.locator('#dormant-panel').waitFor({ state: 'visible', timeout: STEP_TIMEOUT });
+      app.step('the parked question came back');
+      return { card, question: await text('#dormant-panel-body .mech-q') };
+    },
+
+    // Answers the parked card. wordsButton: the words-source button to pick first.
+    async answerParked(answerText, wordsButton = null) {
+      if (wordsButton) await page.locator(wordsButton).click();
+      await page.locator('#dr-answer').fill(answerText);
+      await page.locator('#dr-submit-btn').click();
+      await waitFor(() => {
+        const err = document.getElementById('dr-error');
+        if (err && err.style.display === 'block') return true;
+        const ans = document.getElementById('ans');
+        const btn = document.getElementById('p1-btn');
+        const panel = document.getElementById('dormant-panel');
+        return panel.style.display === 'none' && ans.hasAttribute('readonly') && !btn.disabled;
+      });
+      if (await visible('#dr-error')) throw new Error(await text('#dr-error'));
+      const followUp = await visible('#swirl-panel') ? await text('#swirl-q') : null;
+      app.step('answered the parked question', { note: await text('#m-label') });
+      return { reading: await text('#obs-box'), followUp };
+    },
+
+    // Every piece of copy on the question screen that is showing right now.
+    async screenCopy() {
+      return page.evaluate(() => {
+        const out = {};
+        const ids = ['m-label', 'm-q', 'm-hint', 'm6-interstitial', 'wm-brief', 'm6-ws-real', 'm6-ws-recon', 'obs-box', 'change-block',
+          'inline-errand', 'pace-line', 'swirl-q', 'sb-rhythm', 'dormant-panel-body', 'p1-btn', 'rw-park-btn', 'rw-flight-btn'];
+        for (const id of ids) {
+          const el = document.getElementById(id);
+          if (el && el.offsetParent !== null && el.textContent.trim()) out[id] = el.textContent.trim().replace(/\s+/g, ' ');
+        }
+        return out;
+      });
     },
 
     // Continue to the next question. The errand warning, if it comes up, is passed with
@@ -235,6 +315,42 @@ function driver(page, rec) {
       }
       app.step('next question open', { note: await text('#m-label') });
       return text('#m-q');
+    },
+
+    // Like continueToNext, for a question that may be passed over.
+    async continueToEither(names) {
+      await page.locator('#p1-btn').click();
+      const arrived = list => {
+        const warn = document.getElementById('errand-warn-overlay');
+        const label = document.getElementById('m-label')?.textContent || '';
+        return warn.classList.contains('show') || list.some(n => label.includes(n));
+      };
+      await waitFor(arrived, names);
+      if (await visible('#errand-warn-overlay')) {
+        app.step('errand warning shown, continuing anyway');
+        await page.locator('#errand-warn-overlay .ew-go').click();
+        await waitFor(arrived, names);
+      }
+      app.step('next question open', { note: await text('#m-label') });
+      return text('#m-q');
+    },
+
+    // From the last question on to the label screen.
+    async continueToLabel() {
+      await page.locator('#p1-btn').click();
+      await waitFor(() => document.getElementById('errand-warn-overlay').classList.contains('show')
+        || !!document.querySelector('#screen-label.active'));
+      if (await visible('#errand-warn-overlay')) {
+        app.step('errand warning shown, continuing anyway');
+        await page.locator('#errand-warn-overlay .ew-go').click();
+        await page.locator('#screen-label.active').waitFor({ timeout: STEP_TIMEOUT });
+      }
+      app.step('label screen open');
+    },
+
+    async labelBackToCellar() {
+      await page.locator('#screen-label button', { hasText: 'Back to the cellar' }).click();
+      await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
     },
 
     // Click an element in the sidebar label and read the review panel and its reopen.
@@ -285,11 +401,410 @@ function checkpoint(bottle) {
   };
 }
 
+// ── THE ARCHITECTURE REVIEW SCENARIO: ITS INPUTS AND STEPS ──
+
+const REVIEW_BOTTLES = {
+  A: {
+    spark: 'An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.',
+    name: 'Lotte', rel: 'my cousin, she shoots weddings', pace: 'Every other day', timing: 'Evening',
+    answers: {
+      M2: 'Last March a couple cancelled two days before their wedding. Lotte had already turned down another booking for that date. She emailed them twice asking for the fee, got no reply, and let it go.',
+      M3: 'Marco, another wedding photographer in Utrecht, started charging a non-refundable booking fee upfront after a couple cancelled on him in 2024.',
+      M4: 'Sanne shoots company events. When a company cancels late, her cancellation fee gets paid without any discussion.',
+      M5: "Lotte uses a contract template she found online. It has a cancellation clause, but she has never used it because she's afraid of a bad review.",
+      M6: "Lotte told me: I can't chase a couple for money the week their wedding falls apart.",
+      M7: "Probably some photographers don't have this."
+    }
+  },
+  B: {
+    spark: 'An app that tells me which of my plants need water, because I keep forgetting until they die.',
+    name: 'me', rel: 'me', pace: 'Weekly', timing: 'Morning',
+    answers: {
+      M2: "Last Sunday I found my basil dead on the windowsill. I'd watered it the Sunday before and didn't think about it again.",
+      M3: "My neighbour Fatima keeps a note on her fridge with each plant's watering day.",
+      M4: 'My colleague Joost travels for work and comes home to dried-out plants every few weeks.',
+      M5: 'I set a weekly phone reminder, then turned it off because it went off while I was away.',
+      M6: "I just forget they're there until they're dead.",
+      M7: "My sister doesn't have this, because she's out in her garden every day."
+    }
+  }
+};
+
+// Notes what the screen shows, and any place the old pace label turns up in the page.
+async function reviewSnapshot(app, rec, key, when) {
+  const b = rec.screens[key];
+  b.screens.push({ when, copy: await app.screenCopy() });
+  const old = await app.page.evaluate(() => /any other day/i.test(document.documentElement.innerHTML));
+  if (old) rec.screens.old_pace_label_seen.push(`${key}: ${when}`);
+}
+
+// Answers the question on screen, keeps what came back, and gets past any hold or follow-up.
+async function reviewAnswer(app, rec, key, mech, wordsButton = null) {
+  const b = rec.screens[key];
+  await reviewSnapshot(app, rec, key, `${mech} question`);
+  if (wordsButton) await app.page.locator(wordsButton).click();
+  const got = await app.answer(REVIEW_BOTTLES[key].answers[mech]);
+  b.readings[mech] = got;
+  await reviewSnapshot(app, rec, key, `${mech} reading`);
+  return got;
+}
+
+async function reviewParkThenAnswer(app, rec, key, mech, { wordsButton = null } = {}) {
+  const b = rec.screens[key];
+  await reviewSnapshot(app, rec, key, `${mech} question, before parking`);
+  const asked = await app.text('#m-q');
+  const back = await app.parkAndComeBack();
+  await reviewSnapshot(app, rec, key, `${mech} parked card`);
+  b.parked = { mech, asked_before_parking: asked, asked_when_back: back.question, card: back.card };
+  const got = await app.answerParked(REVIEW_BOTTLES[key].answers[mech], wordsButton);
+  b.readings[mech] = { question: back.question, ...got };
+  await reviewSnapshot(app, rec, key, `${mech} reading`);
+  return got;
+}
+
+async function reviewMoveOn(app, got) {
+  if (got.followUp) await app.leaveFollowUpUnanswered();
+  else await app.waitOutHold();
+}
+
+// M2 to M4, the same in both bottles.
+async function reviewFirstQuestions(app, rec, key) {
+  const m2 = await app.waitForM2();
+  rec.screens[key].m2_stage = m2.stage;
+  rec.screens[key].problem_shown = m2.problemShown;
+  if (m2.stage === 'scene') throw new Error('M2 asked for the scene. The scenario has no scene answer.');
+  await reviewMoveOn(app, await reviewAnswer(app, rec, key, 'M2'));
+  await app.continueToNext('Third-Party Workarounds');
+  await reviewMoveOn(app, await reviewAnswer(app, rec, key, 'M3'));
+  await app.continueToEither(['Second Person', 'The Existing Fix']);
+  if ((await app.text('#m-label')).includes('Second Person')) {
+    await reviewMoveOn(app, await reviewAnswer(app, rec, key, 'M4'));
+    await app.continueToNext('The Existing Fix');
+  } else {
+    rec.screens[key].m4_skipped = true;
+  }
+}
+
+async function reviewPlayBottleA(app, rec) {
+  const key = 'A';
+  const b = REVIEW_BOTTLES.A;
+  app.spark = b.spark;
+  await app.addSpark(b.spark);
+  await app.pickOption('Yes.');
+  await app.pickOption('Yes, I can name them and I know the moment.');
+  await app.intakeContinue();
+  await app.enterGrape(b.name, b.rel);
+  await app.skipPhase1IntroIfShown();
+  await app.setRhythm(b.pace, b.timing);
+  rec.screens.A.rhythm_picker = app.rhythmShown;
+  await reviewFirstQuestions(app, rec, key);
+
+  await reviewMoveOn(app, await reviewParkThenAnswer(app, rec, key, 'M5'));
+  await app.continueToNext('Their Words, Not Yours');
+  await reviewMoveOn(app, await reviewAnswer(app, rec, key, 'M6', '#m6-ws-real'));
+  await app.continueToNext('The Non-Case');
+  const m7 = await reviewAnswer(app, rec, key, 'M7');
+  if (m7.followUp) await app.leaveFollowUpUnanswered();
+  await app.continueToLabel();
+  rec.screens.A.label_foot = await app.text('.vc-foot');
+
+  // Reopen the Limit. The worker call is blocked on the first submit only.
+  const page = app.page;
+  const before = await app.bottle();
+  const reopen = { limit_state: before.s.elements.limit };
+  rec.screens.A.reopen = reopen;
+  const field = page.locator('.vc-field.tappable', { hasText: 'The Limit' });
+  reopen.amber = (await field.count()) > 0;
+  if (reopen.amber) {
+    await field.click();
+    await page.locator('#label-reopen-overlay.show').waitFor({ timeout: STEP_TIMEOUT });
+    await page.waitForFunction(() => {
+      const t = document.getElementById('lr-question')?.textContent || '';
+      return t && t !== 'Reading the cellar…';
+    }, undefined, { timeout: STEP_TIMEOUT, polling: 250 });
+    reopen.question_shown = await app.text('#lr-question');
+    reopen.buttons_shown = await page.locator('#lr-ws-row').isVisible();
+    let blocked = 0;
+    const handler = route => {
+      if (route.request().method() === 'POST' && !blocked) { blocked++; return route.abort('failed'); }
+      return route.continue();
+    };
+    await page.route('**/m7', handler);
+    const answerText = b.answers.M7;
+    reopen.answer = answerText;
+    await page.locator('#lr-ans').fill(answerText);
+    await page.locator('#lr-submit-btn').click();
+    await page.locator('#lr-error').waitFor({ state: 'visible', timeout: STEP_TIMEOUT });
+    reopen.blocked_calls = blocked;
+    reopen.error_on_screen = await app.text('#lr-error');
+    reopen.question_after_block = await app.text('#lr-question');
+    reopen.log_entries_after_block = (await app.bottle()).s.log.filter(x => x.type === 'answer' && x.mech === 'M7').length;
+    app.step('blocked the reopen submit', { note: reopen.error_on_screen });
+    await page.unroute('**/m7', handler);
+    await page.locator('#lr-submit-btn').click();
+    await page.locator('#label-reopen-overlay.show').waitFor({ state: 'hidden', timeout: STEP_TIMEOUT });
+    await page.locator('#screen-label.active').waitFor({ timeout: STEP_TIMEOUT });
+    app.step('the retry went through');
+  } else {
+    app.step('the Limit is not amber', { note: reopen.limit_state });
+  }
+  await app.labelBackToCellar();
+}
+
+async function reviewPlayBottleB(app, rec) {
+  const key = 'B';
+  const b = REVIEW_BOTTLES.B;
+  app.spark = b.spark;
+  await app.addSpark(b.spark, { fromCellar: true });
+  await app.pickOption('No.');
+  await app.pickOption('Yes. This comes from my own experience.');
+  await app.intakeContinue();
+  await app.enterGrape(b.name, b.rel);
+  await app.skipPhase1IntroIfShown();
+  await app.setRhythm(b.pace, b.timing);
+  rec.screens.B.rhythm_picker = app.rhythmShown;
+  await reviewFirstQuestions(app, rec, key);
+
+  await reviewMoveOn(app, await reviewAnswer(app, rec, key, 'M5'));
+  await app.continueToNext('Their Words, Not Yours');
+  await reviewMoveOn(app, await reviewParkThenAnswer(app, rec, key, 'M6', { wordsButton: '#dr-ws-recon' }));
+  await app.continueToNext('The Non-Case');
+  const m7 = await reviewAnswer(app, rec, key, 'M7');
+  if (m7.followUp) await app.leaveFollowUpUnanswered();
+  await app.continueToLabel();
+  rec.screens.B.label_foot = await app.text('.vc-foot');
+  await app.labelBackToCellar();
+}
+
+async function reviewLookAtCellar(app) {
+  return app.page.evaluate(() => {
+    const stored = JSON.parse(localStorage.getItem('corked-cellar-v1') || '[]');
+    return {
+      cards: [...document.querySelectorAll('.bottle-card')].map(c => ({
+        line: c.querySelector('.bottle-card-line')?.textContent.trim(),
+        status: c.querySelector('.bottle-card-status')?.textContent.trim(),
+        date: c.querySelector('.bottle-card-date')?.textContent.trim()
+      })),
+      stored: stored.map(x => ({ idea: x.s?.idea, updated_at: x.updated_at }))
+    };
+  });
+}
+
+// Everything the scenario typed for a bottle: the only places a line on its record may come from.
+function reviewTyped(key) {
+  const b = REVIEW_BOTTLES[key];
+  return [b.spark, b.name, b.rel, ...Object.values(b.answers)];
+}
+
+function reviewBottleFromExport(cellar, key) {
+  const raw = cellar?.keys?.[CELLAR_KEY];
+  return raw ? JSON.parse(raw).find(x => x.s?.idea === REVIEW_BOTTLES[key].spark) : null;
+}
+
+function reviewRecordLines(bottle) {
+  const s = bottle.s;
+  const lines = [];
+  for (const [element, text] of Object.entries(s.label || {})) if (text) lines.push({ where: `label ${element}`, text });
+  if (s.problem?.text) lines.push({ where: `problem (${s.problem.source})`, text: s.problem.text });
+  for (const entry of s.log || []) {
+    for (const move of entry.moved || []) if (move.words) lines.push({ where: `log ${entry.mech} ${move.element}`, text: move.words });
+  }
+  return lines;
+}
+
 // ── SCENARIOS ──
 // Each scenario plays its steps into rec.screens and rec.checkpoints, then reports, for every
 // expected result, what happened. A report states facts. It never says pass or fail.
 
 const SCENARIOS = {
+  'architecture-review': {
+    title: 'Architecture review',
+    expected: [
+      '"Every other day" shows wherever pace appears. "Any other day" appears nowhere.',
+      'In both bottles, every mechanism shows its question, takes the answer and shows a reading through to the end of the chain, with no error on screen. M4 may be skipped.',
+      'In the export, each answer is recorded once, in the order given, and every line on the record appears character for character in something I typed.',
+      "Bottle A's M5 comes back with the question it was parked on.",
+      "After the blocked submit, the reopen question stays on screen, and the retry's history log entry has that question word for word as shown. If the Limit isn't amber, report that this run couldn't test it.",
+      "Bottle A's export stores M6's source as their words from a real exchange.",
+      'In Bottle B, every question and reading talks to me as "you", and nothing calls me "they" or by a name, M6\'s buttons included, before and after parking.',
+      "Opening Bottle A changes neither the cellar order nor any card's date.",
+      'Both exports hold the same bottles, answers, states and dates.'
+    ],
+
+    async play(app, rec) {
+      const page = app.page;
+      const blank = () => ({ screens: [], readings: {} });
+      rec.screens = { A: blank(), B: blank(), old_pace_label_seen: [] };
+
+      await app.open();
+      // This scenario is for this branch's app. A server left on the port would serve another copy.
+      const isThisBranch = await page.evaluate(() => typeof CellarClock === 'object' && typeof Cellar === 'object');
+      if (!isThisBranch) throw new Error('The page on port 8080 is not this branch\'s app. Close Start Corked and run again.');
+
+      await reviewPlayBottleA(app, rec);
+      await reviewPlayBottleB(app, rec);
+
+      // The cellar, then Bottle A opened and left.
+      app.spark = REVIEW_BOTTLES.A.spark;
+      rec.screens.cellar_before = await reviewLookAtCellar(app);
+      await app.card().click();
+      await page.waitForFunction(() => !document.querySelector('#screen-cellar.active'), undefined, { timeout: STEP_TIMEOUT });
+      rec.screens.opened_on = await page.evaluate(() => document.querySelector('.screen.active')?.id);
+      if (rec.screens.opened_on === 'screen-label') await app.labelBackToCellar();
+      else await page.locator('.sb-back').first().click();
+      await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+      rec.screens.cellar_after = await reviewLookAtCellar(app);
+
+      // Export, import in a fresh profile, export again.
+      const first = join(app.outDir, `run-${rec.run}-cellar.json`);
+      const second = join(app.outDir, `run-${rec.run}-cellar-reimported.json`);
+      await app.exportCellar(first);
+      rec.exported = true;
+
+      const fresh = await app.browser.newContext({ acceptDownloads: true, viewport: { width: 1400, height: 900 } });
+      try {
+        const freshPage = await fresh.newPage();
+        freshPage.on('pageerror', err => rec.page_errors.push(`fresh profile: ${err && err.message || err}`));
+        freshPage.on('dialog', dialog => dialog.accept());
+        await freshPage.goto(APP_URL, { waitUntil: 'domcontentloaded' });
+        await freshPage.locator('#screen-landing.active').waitFor({ timeout: STEP_TIMEOUT });
+        rec.screens.import_button_on_empty_landing = await freshPage.getByRole('button', { name: 'Import cellar' }).isVisible();
+        await Promise.all([
+          freshPage.waitForEvent('load', { timeout: STEP_TIMEOUT }),
+          freshPage.locator('#cellar-import-file').setInputFiles(first)
+        ]);
+        await freshPage.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+        const [download] = await Promise.all([
+          freshPage.waitForEvent('download', { timeout: STEP_TIMEOUT }),
+          freshPage.getByRole('button', { name: 'Export cellar' }).click()
+        ]);
+        await download.saveAs(second);
+        app.step('imported in a fresh profile and exported again', { note: second });
+      } finally {
+        await fresh.close();
+      }
+      rec.cellars = {
+        first: JSON.parse(await readFile(first, 'utf8')),
+        second: JSON.parse(await readFile(second, 'utf8'))
+      };
+    },
+
+    report(rec) {
+      const s = rec.screens;
+      const notReached = 'Not reached.';
+      const first = rec.cellars?.first;
+      const second = rec.cellars?.second;
+      const out = [];
+
+      // 1. The pace label
+      out.push(s.A?.rhythm_picker ? [
+        `Picker choices: ${s.A.rhythm_picker.choices.join(' | ')}.`,
+        `Summary: "${s.A.rhythm_picker.summary}".`,
+        `Sidebar: "${s.A.screens.map(x => x.copy['sb-rhythm']).filter(Boolean)[0] || ''}".`,
+        `Label foot: "${s.A.label_foot || 'not reached'}".`,
+        `"Any other day" in the page: ${s.old_pace_label_seen.length ? s.old_pace_label_seen.join('; ') : 'never, at any snapshot'}.`
+      ].join(' ') : notReached);
+
+      // 2. Through the chain
+      const chain = key => {
+        const b = s[key];
+        if (!b) return `${key}: not reached.`;
+        const mechs = Object.keys(REVIEW_BOTTLES[key].answers).filter(m => !(m === 'M4' && b.m4_skipped));
+        const rows = mechs.map(m => {
+          const r = b.readings[m];
+          if (!r) return `${m} not reached`;
+          return `${m} question ${r.question ? 'shown' : 'NOT shown'}, reading ${r.reading ? 'shown' : 'NOT shown'}${r.followUp ? ', follow-up left unanswered' : ''}`;
+        });
+        return `${key}: ${rows.join('; ')}${b.m4_skipped ? '; M4 skipped' : ''}; label ${b.label_foot ? 'reached' : 'NOT reached'}.`;
+      };
+      out.push(`${chain('A')} ${chain('B')} Broke off: ${rec.broke_off || 'no'}. Page errors: ${rec.page_errors.length ? rec.page_errors.join('; ') : 'none'}.`);
+
+      // 3. The record
+      if (!first) out.push(notReached);
+      else {
+        out.push(['A', 'B'].map(key => {
+          const bottle = reviewBottleFromExport(first, key);
+          if (!bottle) return `${key}: not in the export.`;
+          const given = REVIEW_BOTTLES[key].answers;
+          const entries = (bottle.s.log || []).filter(x => x.type === 'answer');
+          const order = entries.map(x => `${x.mech} ${x.kind}`).join(', ');
+          const wrongText = entries.filter(x => x.mech !== 'M1' && x.answer !== given[x.mech]).map(x => x.mech);
+          const typed = reviewTyped(key);
+          const missing = reviewRecordLines(bottle).filter(l => !typed.some(t => t.includes(l.text)));
+          return `${key}: log order ${order}. Entries whose text differs from what was typed: ${wrongText.join(', ') || 'none'}. Lines on the record not found character for character in what was typed: ${missing.length ? missing.map(l => `${l.where}: "${l.text}"`).join('; ') : 'none'}.`;
+        }).join(' '));
+      }
+
+      // 4. The parked question
+      const p = s.A?.parked;
+      out.push(p ? `Before parking: "${p.asked_before_parking}". When it came back: "${p.asked_when_back}". Same text: ${p.asked_before_parking === p.asked_when_back ? 'yes' : 'no'}. Card while parked: "${p.card}".` : notReached);
+
+      // 5. The blocked submit
+      const r = s.A?.reopen;
+      if (!r) out.push(notReached);
+      else if (!r.amber) out.push(`The Limit is ${r.limit_state}, not amber. This run couldn't test it.`);
+      else {
+        const bottle = reviewBottleFromExport(first, 'A');
+        const retries = (bottle?.s.log || []).filter(x => x.type === 'answer' && x.mech === 'M7' && x.kind === 'reopen');
+        out.push([
+          `Question shown: "${r.question_shown}".`,
+          `After the block: "${r.question_after_block}", error line "${r.error_on_screen}".`,
+          `Log entries for M7 right after the block: ${r.log_entries_after_block}.`,
+          `Reopen entries in the export: ${retries.length}, question: "${retries[0]?.question ?? ''}".`,
+          `Same as shown: ${retries[0]?.question === r.question_shown ? 'yes' : 'no'}.`,
+          `Answer sent both times: "${r.answer}".`
+        ].join(' '));
+      }
+
+      // 6. M6's source
+      const a = reviewBottleFromExport(first, 'A');
+      const b = reviewBottleFromExport(first, 'B');
+      out.push(a ? `Bottle A stores m6_words_source "${a.s.m6_words_source}". Bottle B stores "${b?.s.m6_words_source}".` : notReached);
+
+      // 7. Bottle B's voice. Hits are places to read, not a verdict: M3 and M4 talk about other people.
+      if (!s.B?.screens?.length) out.push(notReached);
+      else {
+        const hits = [];
+        const third = /\b(they|them|their|theirs|he|she|him|her|hers|the builder|the founder|the person)\b/i;
+        for (const snap of s.B.screens) {
+          for (const [id, text] of Object.entries(snap.copy)) {
+            for (const sentence of text.split(/(?<=[.?!])\s+/)) {
+              if (third.test(sentence) || /\bme\b/.test(sentence)) hits.push(`[${snap.when}, ${id}] ${sentence}`);
+            }
+          }
+        }
+        const buttons = when => s.B.screens.find(x => x.when === when)?.copy;
+        const before = buttons('M6 question, before parking');
+        const parked = buttons('M6 parked card');
+        out.push([
+          `M6 buttons before parking: "${before?.['m6-ws-real'] || ''}" | "${before?.['m6-ws-recon'] || ''}".`,
+          `Parked card: "${parked?.['dormant-panel-body'] || ''}".`,
+          `Sentences holding a third-person word or "me", to read: ${hits.length ? [...new Set(hits)].join(' || ') : 'none'}.`
+        ].join(' '));
+      }
+
+      // 8. Opening Bottle A
+      if (!s.cellar_before || !s.cellar_after) out.push(notReached);
+      else {
+        const order = c => c.cards.map(x => x.line).join(' > ');
+        const dates = c => c.cards.map(x => x.date).join(', ');
+        const stamps = c => JSON.stringify(c.stored);
+        out.push(`Order before: ${order(s.cellar_before)}. After: ${order(s.cellar_after)}. Same: ${order(s.cellar_before) === order(s.cellar_after) ? 'yes' : 'no'}. Card dates before: ${dates(s.cellar_before)}. After: ${dates(s.cellar_after)}. Stored updated_at same: ${stamps(s.cellar_before) === stamps(s.cellar_after) ? 'yes' : 'no'}. Opened on: ${s.opened_on}.`);
+      }
+
+      // 9. The two exports
+      if (!first || !second) out.push(notReached);
+      else {
+        const keys = c => Object.keys(c.keys || {}).sort();
+        const differ = [...new Set([...keys(first), ...keys(second)])].filter(k => first.keys[k] !== second.keys[k]);
+        const count = c => JSON.parse(c.keys?.[CELLAR_KEY] || '[]').length;
+        out.push(`Bottles: ${count(first)} and ${count(second)}. Stored keys that differ between the exports: ${differ.join(', ') || 'none'}. Import button on the empty landing: ${s.import_button_on_empty_landing ? 'yes' : 'no, the file was set on the hidden import field'}.`);
+      }
+      return out;
+    }
+  },
+
+
   finding1: {
     title: "Finding 1: only a moment that happened to the grape settles the Vintage",
     expected: [
@@ -419,6 +934,8 @@ async function playOnce(browser, scenarioName, scenario, run, outDir) {
   const page = await context.newPage();
   page.on('pageerror', err => rec.page_errors.push(String(err && err.message || err)));
   const app = driver(page, rec);
+  app.outDir = outDir;
+  app.browser = browser;
   try {
     await scenario.play(app, rec);
   } catch (err) {
@@ -426,7 +943,7 @@ async function playOnce(browser, scenarioName, scenario, run, outDir) {
     app.step('broke off', { note: rec.broke_off });
   }
   try {
-    await app.exportCellar(join(outDir, `run-${run}-cellar.json`));
+    if (!rec.exported) await app.exportCellar(join(outDir, `run-${run}-cellar.json`));
   } catch (err) {
     rec.export_error = String(err && err.message || err);
     app.step('export failed', { note: rec.export_error });
@@ -435,6 +952,7 @@ async function playOnce(browser, scenarioName, scenario, run, outDir) {
   rec.finished_at = new Date().toISOString();
   const happened = scenario.report(rec);
   rec.expected = scenario.expected.map((expected, i) => ({ n: i + 1, expected, happened: happened[i] }));
+  delete rec.cellars;   // already saved as their own files
   await writeFile(join(outDir, `run-${run}-observed.json`), JSON.stringify(rec, null, 2) + '\n');
   return rec;
 }
