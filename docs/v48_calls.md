@@ -18,3 +18,7 @@
 
 ## 5 Nov
 - Corked only takes ideas that fix a problem someone has, the builder's own included. One question right after the spark decides it. Ideas made for their own sake (games, creative work) are turned away for now; their own tests come later.
+- The look: paper ground, ink text, one wine-red accent for the one next move. The builder's words in Newsreader, Corked's questions and buttons in Inter, Corked's spoken lines and small labels in IBM Plex Mono.
+- The Winemaster figure goes. Corked's new lines type out instead.
+- After an answer, the screen shows what fits the situation: something settled, a thin answer with its follow-up, an errand, or a failed send. The one-line observation stays in every situation.
+- The bottle stays full and its layers go clear as elements settle. No fill level.
