@@ -191,7 +191,8 @@ body {
 }
 .wm-intake-content.m0-has-result #m0-result { order:1; }
 .wm-intake-content.m0-has-result .spark-source-row { order:2; margin-top:18px; padding-top:18px; border-top:1px solid var(--border); }
-.wm-intake-content.m0-has-result #f-inp { order:3; }
+.spark-field-wrap { position:relative; }
+.wm-intake-content.m0-has-result .spark-field-wrap { order:3; }
 .wm-intake-content.m0-has-result #m0-config { order:6; }
 .wm-section.m0-hidden { display:none; }
 .wm-intake-content.m0-revealing #m0-result {
@@ -1244,51 +1245,6 @@ body {
 }
 .brief-copy-btn:hover { color:var(--cream-dim); }
 .brief-copy-btn.copied { color:var(--gold); }
-/* ── PHASE 1 INTRO (one-time, three scenes) ── */
-#screen-phase1-intro {
-  flex-direction:column; align-items:center; justify-content:center;
-  padding:2.5rem 1.5rem;
-}
-.p1i-wrap { width:100%; max-width:540px; text-align:center; }
-.p1i-eyebrow {
-  font-size:.68rem; color:var(--muted); text-transform:uppercase;
-  letter-spacing:.22em; margin-bottom:1.1rem;
-}
-.p1i-head {
-  font-family:'Playfair Display',serif; font-weight:600;
-  font-size:1.6rem; color:var(--cream); margin-bottom:.6rem;
-}
-.p1i-sub { color:var(--cream-dim); font-size:.9rem; margin-bottom:2.8rem; }
-.p1i-stage {
-  min-height:110px; display:flex; flex-direction:column;
-  align-items:center; gap:1.3rem; margin-bottom:2rem;
-}
-.p1i-bottle-wrap { margin-bottom:.2rem; }
-.p1i-bl { transition:opacity .55s ease; }
-#p1i-murk { transition:opacity .65s ease; }
-.p1i-dots { display:flex; gap:.9rem; }
-.p1i-dot {
-  width:15px; height:15px; border-radius:50%; background:var(--border-hi);
-  transition:background-color .45s ease, box-shadow .45s ease, transform .3s ease;
-}
-.p1i-dot.turbid   { background:var(--turbid-col); }
-.p1i-dot.clearing { background:var(--clearing-col); box-shadow:0 0 10px rgba(201,160,64,.35); }
-.p1i-dot.settled  { background:var(--settled-col); box-shadow:0 0 10px rgba(93,168,118,.4); }
-.p1i-dot.lit      { transform:scale(1.3); }
-.p1i-line {
-  font-family:'Playfair Display',serif; font-style:italic;
-  font-size:1.05rem; color:var(--cream); line-height:1.55;
-  max-width:420px; min-height:2.6em;
-  opacity:0; transform:translateY(6px);
-  transition:opacity .7s ease, transform .7s ease;
-}
-.p1i-line.show { opacity:1; transform:translateY(0); }
-.p1i-progress { display:flex; gap:.4rem; justify-content:center; margin-bottom:2.4rem; }
-.p1i-seg { width:26px; height:2px; background:var(--border); border-radius:1px; transition:background .3s; }
-.p1i-seg.done { background:var(--gold); }
-.p1i-skip {
-  display:block; margin:1rem auto 0; font-size:.78rem;
-}
 #screen-dormant {
   flex-direction:column; align-items:center; justify-content:center;
   padding:2.5rem 1.5rem;
@@ -1567,59 +1523,6 @@ body {
 <!-- INTAKE -->
 <div id="screen-intake" class="screen">
   <div class="intake-wrap"><div id="intake-body"></div></div>
-</div>
-
-<!-- PHASE 1 INTRO (one-time, three scenes) -->
-<div id="screen-phase1-intro" class="screen">
-  <div class="p1i-wrap">
-    <div class="p1i-eyebrow">Before the cellar</div>
-    <div class="p1i-head">Six elements decide what a bottle becomes.</div>
-    <div class="p1i-sub">Three ways one has gone before.</div>
-
-    <div class="p1i-stage">
-      <div class="p1i-bottle-wrap">
-        <svg width="72" height="152" viewBox="0 0 72 152">
-          <defs>
-            <clipPath id="p1i-bcl">
-              <path d="M30 2 L30 22 Q18 32 14 52 L10 70 L10 140 Q10 150 20 150 L52 150 Q62 150 62 140 L62 70 L58 52 Q54 32 42 22 L42 2 Z"/>
-            </clipPath>
-          </defs>
-          <g clip-path="url(#p1i-bcl)">
-            <rect x="0" y="0" width="72" height="152" fill="#140810" opacity="0.5"/>
-            <rect class="p1i-bl" id="p1i-bl-5" x="0" y="109" width="72" height="43" fill="#3D1520" opacity="0"/>
-            <rect class="p1i-bl" id="p1i-bl-4" x="0" y="91"  width="72" height="18" fill="#4A1B28" opacity="0"/>
-            <rect class="p1i-bl" id="p1i-bl-3" x="0" y="73"  width="72" height="18" fill="#5C2232" opacity="0"/>
-            <rect class="p1i-bl" id="p1i-bl-2" x="0" y="55"  width="72" height="18" fill="#6E283C" opacity="0"/>
-            <rect class="p1i-bl" id="p1i-bl-1" x="0" y="37"  width="72" height="18" fill="#7A2E44" opacity="0"/>
-            <rect class="p1i-bl" id="p1i-bl-0" x="0" y="22"  width="72" height="15" fill="#8A344E" opacity="0"/>
-            <rect id="p1i-murk" x="0" y="0" width="72" height="152" fill="#080406" opacity="0.75"/>
-          </g>
-          <path d="M30 2 L30 22 Q18 32 14 52 L10 70 L10 140 Q10 150 20 150 L52 150 Q62 150 62 140 L62 70 L58 52 Q54 32 42 22 L42 2 Z"
-                fill="none" stroke="#2A1F18" stroke-width="1.5"/>
-          <line x1="30" y1="23" x2="42" y2="23" stroke="#2A1F18" stroke-width="0.75"/>
-          <rect x="28" y="-2" width="16" height="8" rx="1.5" fill="#7A5E38"/>
-        </svg>
-      </div>
-      <div class="p1i-dots" id="p1i-dots">
-        <div class="p1i-dot" id="p1i-dot-0"></div>
-        <div class="p1i-dot" id="p1i-dot-1"></div>
-        <div class="p1i-dot" id="p1i-dot-2"></div>
-        <div class="p1i-dot" id="p1i-dot-3"></div>
-        <div class="p1i-dot" id="p1i-dot-4"></div>
-        <div class="p1i-dot" id="p1i-dot-5"></div>
-      </div>
-      <div class="p1i-line" id="p1i-line"></div>
-    </div>
-
-    <div class="p1i-progress" id="p1i-progress">
-      <div class="p1i-seg" id="p1i-seg-0"></div>
-      <div class="p1i-seg" id="p1i-seg-1"></div>
-      <div class="p1i-seg" id="p1i-seg-2"></div>
-    </div>
-
-    <button class="btn" id="p1i-continue" onclick="p1IntroAdvance()">Next</button>
-    <button class="btn-ghost p1i-skip" onclick="p1IntroSkip()">Skip</button>
-  </div>
 </div>
 
 <!-- PHASE 1 -->
@@ -2474,6 +2377,11 @@ const INTAKE = [
 let intakeStep = 0;
 let intakeSel  = {};
 
+const M0_SEAL = `<svg class="m0-seal" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="12.5" stroke="currentColor" stroke-width=".75"/>
+            <circle cx="14" cy="14" r="8.5" stroke="currentColor" stroke-width=".5"/>
+          </svg>`;
+
 function showIntake() {
   intakeStep = 0; intakeSel = {};
   maturityNode = 'q1'; maturityHistory = []; maturityLeafIdx = null;
@@ -2502,7 +2410,7 @@ function renderIntake() {
           <div class="wm-intake-content" id="wm-content">`;
   }
 
-  const displayQ = (step.type === 'person' && S.maturity === 2) ? 'You are the grape.'
+  const displayQ = (step.type === 'person' && S.maturity === 2) ? "You're the person with this problem."
     : (step.type === 'person' && S.maturity === 3) ? 'This spark needs one real person.'
     : (step.id === 'maturity') ? MATURITY_TREE[maturityNode].q
     : step.q;
@@ -2527,7 +2435,7 @@ function renderIntake() {
               <span>Edit spark</span>
             </button>
           </div>`;
-    h += `<textarea class="field" id="f-inp" rows="3" placeholder="">${v}</textarea>`;
+    h += `<div class="spark-field-wrap"><textarea class="field" id="f-inp" rows="3" placeholder="">${v}</textarea></div>`;
     if (intakeStep === 0) {
       h += `
       <div id="m0-config" style="display:none;margin-top:14px">
@@ -2540,11 +2448,15 @@ function renderIntake() {
       </div>
       <div id="m0-result" style="display:none;margin-top:16px">
         <div class="m0-stamp state-blocked">
-          <svg class="m0-seal" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="14" cy="14" r="12.5" stroke="currentColor" stroke-width=".75"/>
-            <circle cx="14" cy="14" r="8.5" stroke="currentColor" stroke-width=".5"/>
-          </svg>
+          ${M0_SEAL}
           <div class="m0-stamp-line" id="m0-entry-line"></div>
+        </div>
+      </div>
+      <div id="spark-gate" style="display:none;margin-top:2rem">
+        <div class="step-q">Is this about a problem someone has, or something you want to make for its own sake?</div>
+        <div class="rhythm-choices" style="grid-template-columns:repeat(2, minmax(0, 1fr));margin-top:1.5rem">
+          <button type="button" class="rhythm-choice" onclick="sparkGateProblem()">A problem someone has</button>
+          <button type="button" class="rhythm-choice" onclick="sparkGateOwnSake()">Something to make for its own sake</button>
         </div>
       </div>
       `;
@@ -2721,7 +2633,6 @@ async function intakeNext() {
   }
 
   if (intakeStep < INTAKE.length - 1) { intakeStep++; renderIntake(); }
-  else if (!localStorage.getItem('corked_seen_phase1_intro')) showPhase1Intro();
   else startPhase1();
 }
 
@@ -2760,83 +2671,6 @@ function intakeBack() {
     return;
   }
   if (intakeStep > 0) { intakeStep--; renderIntake(); }
-}
-
-// ── PHASE 1 INTRO (one-time, three scenes) ──
-const P1_INTRO_SCENES = [
-  {
-    states:['settled','settled','settled','settled','settled','turbid'],
-    line:'Five elements agreed. The sixth still wants a conversation that hasn’t happened yet.'
-  },
-  {
-    states:['settled','settled','clearing','clearing','turbid','turbid'],
-    line:'Some bottles need more time than one sitting gives them. This one waits.'
-  },
-  {
-    states:['settled','settled','settled','settled','clearing','clearing'],
-    line:'You came in for wine. The cellar is making champagne.'
-  }
-];
-let p1IntroIdx = 0;
-let p1IntroTimers = [];
-
-function showPhase1Intro() {
-  p1IntroIdx = 0;
-  showScreen('phase1-intro');
-  playP1IntroScene(0);
-}
-
-function playP1IntroScene(idx) {
-  p1IntroTimers.forEach(clearTimeout);
-  p1IntroTimers = [];
-  const scene = P1_INTRO_SCENES[idx];
-  const dots = scene.states.map((_,i) => document.getElementById(`p1i-dot-${i}`));
-  const bands = scene.states.map((_,i) => document.getElementById(`p1i-bl-${5-i}`));
-  const murk = document.getElementById('p1i-murk');
-  dots.forEach(d => { if (d) d.className = 'p1i-dot'; });
-  bands.forEach(b => { if (b) b.style.opacity = '0'; });
-  if (murk) murk.style.opacity = '0.75';
-  const line = document.getElementById('p1i-line');
-  line.classList.remove('show');
-  line.textContent = scene.line;
-
-  let clarity = 0;
-  scene.states.forEach((state, i) => {
-    p1IntroTimers.push(setTimeout(() => {
-      if (dots[i]) {
-        dots[i].className = `p1i-dot ${state} lit`;
-        setTimeout(() => dots[i].classList.remove('lit'), 380);
-      }
-      if (bands[i]) bands[i].style.opacity = state === 'settled' ? '1' : state === 'clearing' ? '0.45' : '0';
-      clarity += state === 'settled' ? 1 : state === 'clearing' ? 0.5 : 0;
-      if (murk) murk.style.opacity = String(Math.max(0.1, 0.75 - (clarity / scene.states.length) * 0.67));
-      if (i === scene.states.length - 1) {
-        setTimeout(() => line.classList.add('show'), 400);
-      }
-    }, i * 420));
-  });
-
-  document.querySelectorAll('.p1i-seg').forEach((s,i) => s.classList.toggle('done', i <= idx));
-  const btn = document.getElementById('p1i-continue');
-  if (btn) btn.textContent = idx < P1_INTRO_SCENES.length - 1 ? 'Next' : 'Enter the cellar';
-}
-
-function p1IntroAdvance() {
-  if (p1IntroIdx < P1_INTRO_SCENES.length - 1) {
-    p1IntroIdx++;
-    playP1IntroScene(p1IntroIdx);
-  } else {
-    finishP1Intro();
-  }
-}
-
-function p1IntroSkip() { finishP1Intro(); }
-
-function finishP1Intro() {
-  p1IntroTimers.forEach(clearTimeout);
-  p1IntroTimers = [];
-  localStorage.setItem('corked_seen_phase1_intro', '1');
-  startPhase1();
 }
 
 // ── PHASE 1 ──
@@ -4999,19 +4833,13 @@ function cyclePlaceholder() {
   }
   let idx = 0;
 
-  // Wrap field so overlay can be positioned against it
-  const wrap = document.createElement('div');
-  wrap.style.cssText = 'position:relative';
-  field.parentNode.insertBefore(wrap, field);
-  wrap.appendChild(field);
-
   const overlay = document.createElement('div');
   overlay.className = 'ph-overlay';
   const span = document.createElement('span');
   span.className = 'ph-text';
   span.textContent = phrases[0];
   overlay.appendChild(span);
-  wrap.appendChild(overlay);
+  field.parentNode.appendChild(overlay);
 
   function swapPhrase() {
     // Slide out to the right
@@ -5036,8 +4864,6 @@ function cyclePlaceholder() {
   field.addEventListener('focus', () => {
     clearInterval(phInterval);
     overlay.remove();
-    wrap.parentNode.insertBefore(field, wrap);
-    wrap.remove();
   }, { once: true });
 }
 
@@ -5731,6 +5557,10 @@ async function v6BottleSpark() {
     return;
   }
 
+  // The gate comes before M0 and before the worker URL, which only M0 needs. A spark that has its
+  // answer isn't asked again; a changed spark is.
+  if (intakeSel.gate_spark !== spark) return showSparkGate();
+
   const workerUrl = v6GetWorkerUrl();
   if (!workerUrl) {
     const cfg = document.getElementById('m0-config');
@@ -5752,6 +5582,34 @@ async function v6BottleSpark() {
   } finally {
     if (btn) btn.disabled = false;
   }
+}
+
+function showSparkGate() {
+  const status = document.getElementById('v6-bottle-status');
+  if (status) status.textContent = '';
+  document.getElementById('v6-bottom-bar').style.display = 'none';
+  document.getElementById('spark-gate').style.display = 'block';
+}
+
+function sparkGateProblem() {
+  intakeSel.gate_spark = document.getElementById('f-inp').value.trim();
+  document.getElementById('spark-gate').style.display = 'none';
+  document.getElementById('v6-bottom-bar').style.display = '';
+  v6BottleSpark();
+}
+
+// Made for its own sake: no M0 call. The cellar only gets a bottle at its first save, and this
+// one never has one.
+function sparkGateOwnSake() {
+  activeBottleId = null;
+  document.getElementById('intake-body').innerHTML = `
+    <div class="m0-stamp state-blocked" id="spark-turned-away">
+      ${M0_SEAL}
+      <div class="m0-stamp-line">The cellar only takes ideas that fix a problem someone has. Something you make for its own sake needs a different test, and the cellar doesn't have one yet.</div>
+    </div>
+    <div class="row">
+      <button class="btn" onclick="showCellar()">Back to the cellar</button>
+    </div>`;
 }
 
 // M0 decides two things: is it software, and is there anything to bottle. A spark that bottles
