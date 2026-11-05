@@ -1,0 +1,846 @@
+{
+  "scenario": "architecture-review",
+  "title": "Architecture review",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-05T14:42:16.440Z",
+  "finished_at": "2026-11-05T15:05:01.617Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-05T14:42:16.612Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-05T14:42:59.988Z",
+      "step": "bottled the spark",
+      "note": "screen asks \"Have you spoken to a real person this spark comes from?\""
+    },
+    {
+      "at": "2026-11-05T14:43:00.008Z",
+      "step": "picked",
+      "note": "Yes."
+    },
+    {
+      "at": "2026-11-05T14:43:00.040Z",
+      "step": "picked",
+      "note": "Yes, I can name them and I know the moment."
+    },
+    {
+      "at": "2026-11-05T14:43:02.934Z",
+      "step": "entered the grape",
+      "note": "Lotte, \"my cousin, she shoots weddings\""
+    },
+    {
+      "at": "2026-11-05T14:43:02.983Z",
+      "step": "skipped the Phase 1 intro"
+    },
+    {
+      "at": "2026-11-05T14:43:04.027Z",
+      "step": "set the rhythm",
+      "note": "Every other day, Evening"
+    },
+    {
+      "at": "2026-11-05T14:43:06.601Z",
+      "step": "M2 opened",
+      "note": "friction stage"
+    },
+    {
+      "at": "2026-11-05T14:43:11.707Z",
+      "step": "answered",
+      "note": "Element 2 of 7  ·  The Friction Test"
+    },
+    {
+      "at": "2026-11-05T14:43:11.747Z",
+      "step": "back in the cellar, waiting out the hold",
+      "note": "question due 2026-11-05T14:45:11.527Z"
+    },
+    {
+      "at": "2026-11-05T14:45:12.534Z",
+      "step": "the hold is over",
+      "note": "card reads \"Question ready\""
+    },
+    {
+      "at": "2026-11-05T14:45:12.555Z",
+      "step": "opened the bottle",
+      "note": "Element 2 of 7  ·  The Friction Test"
+    },
+    {
+      "at": "2026-11-05T14:45:12.590Z",
+      "step": "next question open",
+      "note": "Element 3 of 7  ·  Third-Party Workarounds"
+    },
+    {
+      "at": "2026-11-05T14:45:16.251Z",
+      "step": "answered",
+      "note": "Element 3 of 7  ·  Third-Party Workarounds"
+    },
+    {
+      "at": "2026-11-05T14:45:16.286Z",
+      "step": "back in the cellar, waiting out the hold",
+      "note": "question due 2026-11-05T14:47:16.000Z"
+    },
+    {
+      "at": "2026-11-05T14:47:17.170Z",
+      "step": "the hold is over",
+      "note": "card reads \"Question ready\""
+    },
+    {
+      "at": "2026-11-05T14:47:17.183Z",
+      "step": "opened the bottle",
+      "note": "Element 3 of 7  ·  Third-Party Workarounds"
+    },
+    {
+      "at": "2026-11-05T14:47:17.217Z",
+      "step": "next question open",
+      "note": "Element 5 of 7  ·  The Existing Fix"
+    },
+    {
+      "at": "2026-11-05T14:47:19.090Z",
+      "step": "parked, waiting for it to come back",
+      "note": "card reads \"Parked · find what they use now\", due 2026-11-05T14:49:19.052Z"
+    },
+    {
+      "at": "2026-11-05T14:49:20.229Z",
+      "step": "the parked question came back"
+    },
+    {
+      "at": "2026-11-05T14:49:23.860Z",
+      "step": "answered the parked question",
+      "note": "Element 5 of 7  ·  The Existing Fix"
+    },
+    {
+      "at": "2026-11-05T14:49:23.894Z",
+      "step": "back in the cellar, waiting out the hold",
+      "note": "question due 2026-11-05T14:51:23.725Z"
+    },
+    {
+      "at": "2026-11-05T14:51:24.885Z",
+      "step": "the hold is over",
+      "note": "card reads \"Question ready\""
+    },
+    {
+      "at": "2026-11-05T14:51:24.907Z",
+      "step": "opened the bottle",
+      "note": "Element 5 of 7  ·  The Existing Fix"
+    },
+    {
+      "at": "2026-11-05T14:51:24.941Z",
+      "step": "next question open",
+      "note": "Element 6 of 7  ·  Their Words, Not Yours"
+    },
+    {
+      "at": "2026-11-05T14:51:30.949Z",
+      "step": "answered",
+      "note": "Element 6 of 7  ·  Their Words, Not Yours"
+    },
+    {
+      "at": "2026-11-05T14:51:30.986Z",
+      "step": "back in the cellar, waiting out the hold",
+      "note": "question due 2026-11-05T14:53:30.806Z"
+    },
+    {
+      "at": "2026-11-05T14:53:32.007Z",
+      "step": "the hold is over",
+      "note": "card reads \"Question ready\""
+    },
+    {
+      "at": "2026-11-05T14:53:32.035Z",
+      "step": "opened the bottle",
+      "note": "Element 6 of 7  ·  Their Words, Not Yours"
+    },
+    {
+      "at": "2026-11-05T14:53:32.067Z",
+      "step": "next question open",
+      "note": "Element 7 of 7  ·  The Non-Case"
+    },
+    {
+      "at": "2026-11-05T14:53:36.533Z",
+      "step": "answered",
+      "note": "Element 7 of 7  ·  The Non-Case"
+    },
+    {
+      "at": "2026-11-05T14:53:36.565Z",
+      "step": "left the follow-up unanswered"
+    },
+    {
+      "at": "2026-11-05T14:53:37.582Z",
+      "step": "the hold is over",
+      "note": "card reads \"Still aging · 1 element remain\""
+    },
+    {
+      "at": "2026-11-05T14:53:37.604Z",
+      "step": "opened the bottle",
+      "note": "Element 7 of 7  ·  The Non-Case"
+    },
+    {
+      "at": "2026-11-05T14:53:37.657Z",
+      "step": "label screen open"
+    },
+    {
+      "at": "2026-11-05T14:53:39.395Z",
+      "step": "blocked the reopen submit",
+      "note": "Worker error · Could not reach the worker. Check your connection and Worker URL."
+    },
+    {
+      "at": "2026-11-05T14:53:46.496Z",
+      "step": "the retry went through"
+    },
+    {
+      "at": "2026-11-05T14:54:26.226Z",
+      "step": "bottled the spark",
+      "note": "screen asks \"Have you spoken to a real person this spark comes from?\""
+    },
+    {
+      "at": "2026-11-05T14:54:26.245Z",
+      "step": "picked",
+      "note": "No."
+    },
+    {
+      "at": "2026-11-05T14:54:26.277Z",
+      "step": "picked",
+      "note": "Yes. This comes from my own experience."
+    },
+    {
+      "at": "2026-11-05T14:54:26.350Z",
+      "step": "entered the grape",
+      "note": "me, \"me\""
+    },
+    {
+      "at": "2026-11-05T14:54:27.385Z",
+      "step": "set the rhythm",
+      "note": "Weekly, Morning"
+    },
+    {
+      "at": "2026-11-05T14:54:30.480Z",
+      "step": "M2 opened",
+      "note": "friction stage"
+    },
+    {
+      "at": "2026-11-05T14:54:35.929Z",
+      "step": "answered",
+      "note": "Element 2 of 7  ·  The Friction Test"
+    },
+    {
+      "at": "2026-11-05T14:54:35.966Z",
+      "step": "back in the cellar, waiting out the hold",
+      "note": "question due 2026-11-05T14:56:35.810Z"
+    },
+    {
+      "at": "2026-11-05T14:56:36.894Z",
+      "step": "the hold is over",
+      "note": "card reads \"Question ready\""
+    },
+    {
+      "at": "2026-11-05T14:56:36.913Z",
+      "step": "opened the bottle",
+      "note": "Element 2 of 7  ·  The Friction Test"
+    },
+    {
+      "at": "2026-11-05T14:56:36.951Z",
+      "step": "next question open",
+      "note": "Element 3 of 7  ·  Third-Party Workarounds"
+    },
+    {
+      "at": "2026-11-05T14:56:40.093Z",
+      "step": "answered",
+      "note": "Element 3 of 7  ·  Third-Party Workarounds"
+    },
+    {
+      "at": "2026-11-05T14:56:40.127Z",
+      "step": "back in the cellar, waiting out the hold",
+      "note": "question due 2026-11-05T14:58:40.054Z"
+    },
+    {
+      "at": "2026-11-05T14:58:41.271Z",
+      "step": "the hold is over",
+      "note": "card reads \"Question ready\""
+    },
+    {
+      "at": "2026-11-05T14:58:41.293Z",
+      "step": "opened the bottle",
+      "note": "Element 3 of 7  ·  Third-Party Workarounds"
+    },
+    {
+      "at": "2026-11-05T14:58:41.335Z",
+      "step": "next question open",
+      "note": "Element 5 of 7  ·  The Existing Fix"
+    },
+    {
+      "at": "2026-11-05T14:58:46.063Z",
+      "step": "answered",
+      "note": "Element 5 of 7  ·  The Existing Fix"
+    },
+    {
+      "at": "2026-11-05T14:58:46.088Z",
+      "step": "left the follow-up unanswered"
+    },
+    {
+      "at": "2026-11-05T15:00:47.159Z",
+      "step": "the hold is over",
+      "note": "card reads \"Question ready\""
+    },
+    {
+      "at": "2026-11-05T15:00:47.186Z",
+      "step": "opened the bottle",
+      "note": "Element 5 of 7  ·  The Existing Fix"
+    },
+    {
+      "at": "2026-11-05T15:00:47.224Z",
+      "step": "next question open",
+      "note": "Element 6 of 7  ·  Their Words, Not Yours"
+    },
+    {
+      "at": "2026-11-05T15:00:47.277Z",
+      "step": "parked, waiting for it to come back",
+      "note": "card reads \"Parked · in the moment\", due 2026-11-05T15:02:47.265Z"
+    },
+    {
+      "at": "2026-11-05T15:02:48.413Z",
+      "step": "the parked question came back"
+    },
+    {
+      "at": "2026-11-05T15:02:53.412Z",
+      "step": "answered the parked question",
+      "note": "Element 6 of 7  ·  Their Words, Not Yours"
+    },
+    {
+      "at": "2026-11-05T15:02:53.448Z",
+      "step": "left the follow-up unanswered"
+    },
+    {
+      "at": "2026-11-05T15:04:54.497Z",
+      "step": "the hold is over",
+      "note": "card reads \"Question ready\""
+    },
+    {
+      "at": "2026-11-05T15:04:54.527Z",
+      "step": "opened the bottle",
+      "note": "Element 6 of 7  ·  Their Words, Not Yours"
+    },
+    {
+      "at": "2026-11-05T15:04:54.562Z",
+      "step": "next question open",
+      "note": "Element 7 of 7  ·  The Non-Case"
+    },
+    {
+      "at": "2026-11-05T15:04:59.742Z",
+      "step": "answered",
+      "note": "Element 7 of 7  ·  The Non-Case"
+    },
+    {
+      "at": "2026-11-05T15:04:59.774Z",
+      "step": "left the follow-up unanswered"
+    },
+    {
+      "at": "2026-11-05T15:05:00.788Z",
+      "step": "the hold is over",
+      "note": "card reads \"Still aging · 2 elements remain\""
+    },
+    {
+      "at": "2026-11-05T15:05:00.808Z",
+      "step": "opened the bottle",
+      "note": "Element 7 of 7  ·  The Non-Case"
+    },
+    {
+      "at": "2026-11-05T15:05:00.848Z",
+      "step": "label screen open"
+    },
+    {
+      "at": "2026-11-05T15:05:01.203Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\.claude\\worktrees\\architecture-review\\runs\\2026-11-05-architecture-review\\run-1-cellar.json"
+    },
+    {
+      "at": "2026-11-05T15:05:01.606Z",
+      "step": "imported in a fresh profile and exported again",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\.claude\\worktrees\\architecture-review\\runs\\2026-11-05-architecture-review\\run-1-cellar-reimported.json"
+    }
+  ],
+  "screens": {
+    "A": {
+      "screens": [
+        {
+          "when": "M2 question",
+          "copy": {
+            "m-label": "Element 2 of 7 · The Friction Test",
+            "m-q": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date: what did she do when the cancellation came in?",
+            "wm-brief": "Haven't spoken to Lotte about this yet? Go have that conversation. Come back and write what they actually said.",
+            "sb-rhythm": "Next question: every other day in the evening",
+            "p1-btn": "Continue →",
+            "rw-park-btn": "Come back to this",
+            "rw-flight-btn": "Asked, waiting on a reply"
+          }
+        },
+        {
+          "when": "M2 reading",
+          "copy": {
+            "m-label": "Element 2 of 7 · The Friction Test",
+            "m-q": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date: what did she do when the cancellation came in?",
+            "obs-box": "Vintage is anchored to a single named instance in March. Tell names specific observable actions: two unanswered emails and a decision to drop pursuit of the fee.",
+            "change-block": "What changed The Tell settled. Observable action: She emailed them twice asking for the fee, got no reply, and let it go Vintage settled. Specific instance: Last March a couple cancelled two days before their wedding",
+            "pace-line": "Next question in 2 minutes",
+            "sb-rhythm": "Next question: every other day in the evening",
+            "p1-btn": "Back to the cellar",
+            "rw-park-btn": "Come back to this",
+            "rw-flight-btn": "Asked, waiting on a reply"
+          }
+        },
+        {
+          "when": "M3 question",
+          "copy": {
+            "m-label": "Element 3 of 7 · Third-Party Workarounds",
+            "m-q": "Set Lotte aside. Who else hits this? Name one person and tell me what they have actually done about it.",
+            "wm-brief": "Haven't found someone yet? Go find them. Come back with their name and what they've actually done about it.",
+            "sb-rhythm": "Next question: every other day in the evening",
+            "p1-btn": "Continue →",
+            "rw-park-btn": "Come back to this",
+            "rw-flight-btn": "Asked, waiting on a reply"
+          }
+        },
+        {
+          "when": "M3 reading",
+          "copy": {
+            "m-label": "Element 3 of 7 · Third-Party Workarounds",
+            "m-q": "Set Lotte aside. Who else hits this? Name one person and tell me what they have actually done about it.",
+            "obs-box": "The answer names one identifiable person distinct from the grape and the founder, with a concrete behavioural response to the same problem.",
+            "change-block": "What changed The Echo settled. Third-party confirmation: Marco, another wedding photographer in Utrecht, started charging a non-refundable booking fee upfront after a couple cancelled on him in 2024",
+            "pace-line": "Next question in 2 minutes",
+            "sb-rhythm": "Next question: every other day in the evening",
+            "p1-btn": "Back to the cellar",
+            "rw-park-btn": "Come back to this",
+            "rw-flight-btn": "Asked, waiting on a reply"
+          }
+        },
+        {
+          "when": "M5 question, before parking",
+          "copy": {
+            "m-label": "Element 5 of 7 · The Existing Fix",
+            "m-q": "What do people use for this problem now, and exactly where does it fall short?",
+            "wm-brief": "Haven't found what people use for this now? Go find out. Come back with what it is and exactly where it falls short.",
+            "sb-rhythm": "Next question: every other day in the evening",
+            "p1-btn": "Continue →",
+            "rw-park-btn": "Come back to this",
+            "rw-flight-btn": "Asked, waiting on a reply"
+          }
+        },
+        {
+          "when": "M5 parked card",
+          "copy": {
+            "sb-rhythm": "Next question: every other day in the evening",
+            "dormant-panel-body": "Dormant · find what they use now Ask LotteWhat are you using for last-minute cancellations now? When did it last leave you short on the deposit?Copy question What do people use for this problem now, and exactly where does it fall short? Answer now →"
+          }
+        },
+        {
+          "when": "M5 reading",
+          "copy": {
+            "m-label": "Element 5 of 7 · The Existing Fix",
+            "m-q": "What do people use for this problem now, and exactly where does it fall short?",
+            "obs-box": "The answer names an existing solution: a contract template with a cancellation clause. The precise failure point is that the clause goes unused due to fear of reputational consequence, not a deficiency in the clause itself.",
+            "change-block": "What changed The Gap settled. Existing fix and failure point: she has never used it because she's afraid of a bad review",
+            "pace-line": "Next question in 2 minutes",
+            "sb-rhythm": "Next question: every other day in the evening",
+            "p1-btn": "Back to the cellar",
+            "rw-park-btn": "Come back to this",
+            "rw-flight-btn": "Asked, waiting on a reply"
+          }
+        },
+        {
+          "when": "M6 question",
+          "copy": {
+            "m-label": "Element 6 of 7 · Their Words, Not Yours",
+            "m-q": "How would Lotte describe this in their own words?",
+            "m6-interstitial": "Your grape is Lotte. M6 will ask for their exact words. A conversation before then makes that question real rather than reconstructed. Got it",
+            "wm-brief": "Haven't talked to Lotte in these terms yet? Go have that conversation. Come back with their exact words.",
+            "m6-ws-real": "Their words, from a real exchange",
+            "m6-ws-recon": "Reconstructed, we have not talked in these terms",
+            "sb-rhythm": "Next question: every other day in the evening",
+            "p1-btn": "Continue →",
+            "rw-park-btn": "Come back to this",
+            "rw-flight-btn": "Asked, waiting on a reply"
+          }
+        },
+        {
+          "when": "M6 reading",
+          "copy": {
+            "m-label": "Element 6 of 7 · Their Words, Not Yours",
+            "m-q": "How would Lotte describe this in their own words?",
+            "m6-interstitial": "Your grape is Lotte. M6 will ask for their exact words. A conversation before then makes that question real rather than reconstructed. Got it",
+            "m6-ws-real": "Their words, from a real exchange",
+            "m6-ws-recon": "Reconstructed, we have not talked in these terms",
+            "obs-box": "Words carries a direct quote attributed to Lotte from a flagged real exchange, meeting the settled bar. The quoted language states a felt constraint but describes no filmable action, placing Tell at clearing.",
+            "pace-line": "Next question in 2 minutes",
+            "sb-rhythm": "Next question: every other day in the evening",
+            "p1-btn": "Back to the cellar",
+            "rw-park-btn": "Come back to this",
+            "rw-flight-btn": "Asked, waiting on a reply"
+          }
+        },
+        {
+          "when": "M7 question",
+          "copy": {
+            "m-label": "Element 7 of 7 · The Non-Case",
+            "m-q": "Who looks like they should have this problem but doesn't? Why not?",
+            "wm-brief": "Haven't found your non-case yet? Go find them. Come back with who they are and why they don't have this.",
+            "sb-rhythm": "Next question: every other day in the evening",
+            "p1-btn": "Continue →",
+            "rw-park-btn": "Come back to this",
+            "rw-flight-btn": "Asked, waiting on a reply"
+          }
+        },
+        {
+          "when": "M7 reading",
+          "copy": {
+            "m-label": "Element 7 of 7 · The Non-Case",
+            "m-q": "Who looks like they should have this problem but doesn't? Why not?",
+            "obs-box": "The answer names no bounded exclusion, only a vague probability gesture toward an unnamed subset. No specific person, role, or situation is identified, and no reason for immunity is given.",
+            "swirl-q": "Is there a specific photographer Lotte knows personally who books weddings without deposits, and if so, what arrangement makes that possible for them right now?",
+            "sb-rhythm": "Next question: every other day in the evening"
+          }
+        }
+      ],
+      "readings": {
+        "M2": {
+          "question": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date: what did she do when the cancellation came in?",
+          "reading": "Vintage is anchored to a single named instance in March. Tell names specific observable actions: two unanswered emails and a decision to drop pursuit of the fee.",
+          "followUp": null
+        },
+        "M3": {
+          "question": "Set Lotte aside. Who else hits this? Name one person and tell me what they have actually done about it.",
+          "reading": "The answer names one identifiable person distinct from the grape and the founder, with a concrete behavioural response to the same problem.",
+          "followUp": null
+        },
+        "M5": {
+          "question": "What do people use for this problem now, and exactly where does it fall short?",
+          "reading": "The answer names an existing solution: a contract template with a cancellation clause. The precise failure point is that the clause goes unused due to fear of reputational consequence, not a deficiency in the clause itself.",
+          "followUp": null
+        },
+        "M6": {
+          "question": "How would Lotte describe this in their own words?",
+          "reading": "Words carries a direct quote attributed to Lotte from a flagged real exchange, meeting the settled bar. The quoted language states a felt constraint but describes no filmable action, placing Tell at clearing.",
+          "followUp": null
+        },
+        "M7": {
+          "question": "Who looks like they should have this problem but doesn't? Why not?",
+          "reading": "The answer names no bounded exclusion, only a vague probability gesture toward an unnamed subset. No specific person, role, or situation is identified, and no reason for immunity is given.",
+          "followUp": "Is there a specific photographer Lotte knows personally who books weddings without deposits, and if so, what arrangement makes that possible for them right now?"
+        }
+      },
+      "rhythm_picker": {
+        "choices": [
+          "Daily",
+          "Every other day",
+          "Weekly",
+          "Monthly",
+          "Morning",
+          "Midday",
+          "Evening",
+          "Late"
+        ],
+        "summary": "Every other day, in the evening. Corked will bring the next question back every other day in the evening."
+      },
+      "m2_stage": "friction",
+      "problem_shown": "lose their deposit when couples cancel two days before the shoot",
+      "m4_skipped": true,
+      "parked": {
+        "mech": "M5",
+        "asked_before_parking": "What do people use for this problem now, and exactly where does it fall short?",
+        "asked_when_back": "What do people use for this problem now, and exactly where does it fall short?",
+        "card": "Parked · find what they use now"
+      },
+      "label_foot": "5 of 6 elements settled\n          Pace · Every other day",
+      "reopen": {
+        "limit_state": "turbid",
+        "amber": true,
+        "question_shown": "What is the exact deposit amount Lotte loses when a couple cancels two days before the shoot?",
+        "buttons_shown": false,
+        "answer": "Probably some photographers don't have this.",
+        "blocked_calls": 1,
+        "error_on_screen": "Worker error · Could not reach the worker. Check your connection and Worker URL.",
+        "question_after_block": "What is the exact deposit amount Lotte loses when a couple cancels two days before the shoot?",
+        "log_entries_after_block": 1
+      }
+    },
+    "B": {
+      "screens": [
+        {
+          "when": "M2 question",
+          "copy": {
+            "m-label": "Element 2 of 7 · The Friction Test",
+            "m-q": "Walk me through the last specific plant that died because you forgot to water it: what did you notice, and what did you actually do at that point?",
+            "sb-rhythm": "Next question: weekly in the morning",
+            "p1-btn": "Continue →",
+            "rw-park-btn": "Come back to this"
+          }
+        },
+        {
+          "when": "M2 reading",
+          "copy": {
+            "m-label": "Element 2 of 7 · The Friction Test",
+            "m-q": "Walk me through the last specific plant that died because you forgot to water it: what did you notice, and what did you actually do at that point?",
+            "obs-box": "The answer names a specific observable omission: no watering action taken in the interval after the prior Sunday. The moment is anchored to a single instance: last Sunday, basil dead on the windowsill.",
+            "change-block": "What changed The Tell settled. Observable action: watered it the Sunday before and didn't think about it again Vintage settled. Specific instance: Last Sunday I found my basil dead on the windowsill",
+            "pace-line": "Next question in 2 minutes",
+            "sb-rhythm": "Next question: weekly in the morning",
+            "p1-btn": "Back to the cellar",
+            "rw-park-btn": "Come back to this"
+          }
+        },
+        {
+          "when": "M3 question",
+          "copy": {
+            "m-label": "Element 3 of 7 · Third-Party Workarounds",
+            "m-q": "Set your own experience aside. Who else hits this? Name one person and tell me what they have actually done about it.",
+            "wm-brief": "Haven't found someone yet? Go find them. Come back with their name and what they've actually done about it.",
+            "sb-rhythm": "Next question: weekly in the morning",
+            "p1-btn": "Continue →",
+            "rw-park-btn": "Come back to this",
+            "rw-flight-btn": "Asked, waiting on a reply"
+          }
+        },
+        {
+          "when": "M3 reading",
+          "copy": {
+            "m-label": "Element 3 of 7 · Third-Party Workarounds",
+            "m-q": "Set your own experience aside. Who else hits this? Name one person and tell me what they have actually done about it.",
+            "obs-box": "One identifiable person, Fatima, distinct from the grape and the founder, is named with a concrete workaround behaviour: a fridge note scheduling watering by day.",
+            "change-block": "What changed The Echo settled. Third-party confirmation: My neighbour Fatima keeps a note on her fridge with each plant's watering day.",
+            "pace-line": "Next question in 2 minutes",
+            "sb-rhythm": "Next question: weekly in the morning",
+            "p1-btn": "Back to the cellar",
+            "rw-park-btn": "Come back to this",
+            "rw-flight-btn": "Asked, waiting on a reply"
+          }
+        },
+        {
+          "when": "M5 question",
+          "copy": {
+            "m-label": "Element 5 of 7 · The Existing Fix",
+            "m-q": "What do you use for this problem now, and exactly where does it fall short?",
+            "wm-brief": "Haven't found what people use for this now? Go find out. Come back with what it is and exactly where it falls short.",
+            "sb-rhythm": "Next question: weekly in the morning",
+            "p1-btn": "Continue →",
+            "rw-park-btn": "Come back to this"
+          }
+        },
+        {
+          "when": "M5 reading",
+          "copy": {
+            "m-label": "Element 5 of 7 · The Existing Fix",
+            "m-q": "What do you use for this problem now, and exactly where does it fall short?",
+            "obs-box": "The answer names an existing solution: a weekly phone reminder. The failure point given is that the reminder was disabled after firing at an inconvenient moment, leaving no precise statement of what the solution structurally fails to do when active.",
+            "change-block": "What changed The Gap is clearing. Partial fix: set a weekly phone reminder, then turned it off because it went off while I was away",
+            "swirl-q": "Is the reminder still off, or has something else taken its place in the gap it left?",
+            "sb-rhythm": "Next question: weekly in the morning"
+          }
+        },
+        {
+          "when": "M6 question, before parking",
+          "copy": {
+            "m-label": "Element 6 of 7 · Their Words, Not Yours",
+            "m-q": "What have you actually said or written about this, before Corked asked?",
+            "m6-ws-real": "My words, from something I said or wrote",
+            "m6-ws-recon": "Reconstructed, I have not said it in these terms",
+            "sb-rhythm": "Next question: weekly in the morning",
+            "p1-btn": "Continue →",
+            "rw-park-btn": "Come back to this"
+          }
+        },
+        {
+          "when": "M6 parked card",
+          "copy": {
+            "sb-rhythm": "Next question: weekly in the morning",
+            "dormant-panel-body": "Dormant · in the moment You · in the momentNext time it happens, write down what you did right then. What have you actually said or written about this, before Corked asked? My words, from something I said or wrote Reconstructed, I have not said it in these terms Answer now →"
+          }
+        },
+        {
+          "when": "M6 reading",
+          "copy": {
+            "m-label": "Element 6 of 7 · Their Words, Not Yours",
+            "m-q": "What have you actually said or written about this, before Corked asked?",
+            "m6-ws-real": "My words, from something I said or wrote",
+            "m6-ws-recon": "Reconstructed, I have not said it in these terms",
+            "obs-box": "The answer offers language attributed to the grape but words_source is reconstructed, capping Words at clearing. The words carry a stated condition of forgetting but no filmable action, holding Tell at clearing.",
+            "swirl-q": "Is this the language the grape reached for in a specific moment, or the shape the problem has taken in retrospect?",
+            "sb-rhythm": "Next question: weekly in the morning"
+          }
+        },
+        {
+          "when": "M7 question",
+          "copy": {
+            "m-label": "Element 7 of 7 · The Non-Case",
+            "m-q": "Who looks like they should have this problem but doesn't? Why not?",
+            "wm-brief": "Haven't found your non-case yet? Go find them. Come back with who they are and why they don't have this.",
+            "sb-rhythm": "Next question: weekly in the morning",
+            "p1-btn": "Continue →",
+            "rw-park-btn": "Come back to this",
+            "rw-flight-btn": "Asked, waiting on a reply"
+          }
+        },
+        {
+          "when": "M7 reading",
+          "copy": {
+            "m-label": "Element 7 of 7 · The Non-Case",
+            "m-q": "Who looks like they should have this problem but doesn't? Why not?",
+            "obs-box": "The answer names a bounded individual and supplies a reason for her immunity. The reason, daily garden presence, is a behavior, not a structural circumstance that explains why forgetting cannot occur for her.",
+            "change-block": "What changed The Limit is clearing. Partial exclusion: My sister doesn't have this, because she's out in her garden every day.",
+            "swirl-q": "Is the sister's daily garden habit a fixed condition of her life or a description of someone who simply pays closer attention, and would a bad week away from the garden restore the same forgetting?",
+            "sb-rhythm": "Next question: weekly in the morning"
+          }
+        }
+      ],
+      "readings": {
+        "M2": {
+          "question": "Walk me through the last specific plant that died because you forgot to water it: what did you notice, and what did you actually do at that point?",
+          "reading": "The answer names a specific observable omission: no watering action taken in the interval after the prior Sunday. The moment is anchored to a single instance: last Sunday, basil dead on the windowsill.",
+          "followUp": null
+        },
+        "M3": {
+          "question": "Set your own experience aside. Who else hits this? Name one person and tell me what they have actually done about it.",
+          "reading": "One identifiable person, Fatima, distinct from the grape and the founder, is named with a concrete workaround behaviour: a fridge note scheduling watering by day.",
+          "followUp": null
+        },
+        "M5": {
+          "question": "What do you use for this problem now, and exactly where does it fall short?",
+          "reading": "The answer names an existing solution: a weekly phone reminder. The failure point given is that the reminder was disabled after firing at an inconvenient moment, leaving no precise statement of what the solution structurally fails to do when active.",
+          "followUp": "Is the reminder still off, or has something else taken its place in the gap it left?"
+        },
+        "M6": {
+          "question": "What have you actually said or written about this, before Corked asked?",
+          "reading": "The answer offers language attributed to the grape but words_source is reconstructed, capping Words at clearing. The words carry a stated condition of forgetting but no filmable action, holding Tell at clearing.",
+          "followUp": "Is this the language the grape reached for in a specific moment, or the shape the problem has taken in retrospect?"
+        },
+        "M7": {
+          "question": "Who looks like they should have this problem but doesn't? Why not?",
+          "reading": "The answer names a bounded individual and supplies a reason for her immunity. The reason, daily garden presence, is a behavior, not a structural circumstance that explains why forgetting cannot occur for her.",
+          "followUp": "Is the sister's daily garden habit a fixed condition of her life or a description of someone who simply pays closer attention, and would a bad week away from the garden restore the same forgetting?"
+        }
+      },
+      "rhythm_picker": {
+        "choices": [
+          "Daily",
+          "Every other day",
+          "Weekly",
+          "Monthly",
+          "Morning",
+          "Midday",
+          "Evening",
+          "Late"
+        ],
+        "summary": "Weekly, in the morning. Corked will bring the next question back weekly in the morning."
+      },
+      "m2_stage": "friction",
+      "problem_shown": "I keep forgetting until they die",
+      "m4_skipped": true,
+      "parked": {
+        "mech": "M6",
+        "asked_before_parking": "What have you actually said or written about this, before Corked asked?",
+        "asked_when_back": "What have you actually said or written about this, before Corked asked?",
+        "card": "Parked · in the moment"
+      },
+      "label_foot": "4 of 6 elements settled\n          Pace · Weekly"
+    },
+    "old_pace_label_seen": [],
+    "cellar_before": {
+      "cards": [
+        {
+          "line": "An app that tells me which of my plants need water, because I keep forgetting until they die.",
+          "status": "Still aging · 2 elements remain",
+          "date": "today"
+        },
+        {
+          "line": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+          "status": "Still aging · 1 element remain",
+          "date": "today"
+        }
+      ],
+      "stored": [
+        {
+          "idea": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+          "updated_at": "2026-11-05T14:53:46.117Z"
+        },
+        {
+          "idea": "An app that tells me which of my plants need water, because I keep forgetting until they die.",
+          "updated_at": "2026-11-05T15:05:00.843Z"
+        }
+      ]
+    },
+    "opened_on": "screen-label",
+    "cellar_after": {
+      "cards": [
+        {
+          "line": "An app that tells me which of my plants need water, because I keep forgetting until they die.",
+          "status": "Still aging · 2 elements remain",
+          "date": "today"
+        },
+        {
+          "line": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+          "status": "Still aging · 1 element remain",
+          "date": "today"
+        }
+      ],
+      "stored": [
+        {
+          "idea": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.",
+          "updated_at": "2026-11-05T14:53:46.117Z"
+        },
+        {
+          "idea": "An app that tells me which of my plants need water, because I keep forgetting until they die.",
+          "updated_at": "2026-11-05T15:05:00.843Z"
+        }
+      ]
+    },
+    "import_button_on_empty_landing": false
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "\"Every other day\" shows wherever pace appears. \"Any other day\" appears nowhere.",
+      "happened": "Picker choices: Daily | Every other day | Weekly | Monthly | Morning | Midday | Evening | Late. Summary: \"Every other day, in the evening. Corked will bring the next question back every other day in the evening.\". Sidebar: \"Next question: every other day in the evening\". Label foot: \"5 of 6 elements settled\n          Pace · Every other day\". \"Any other day\" in the page: never, at any snapshot."
+    },
+    {
+      "n": 2,
+      "expected": "In both bottles, every mechanism shows its question, takes the answer and shows a reading through to the end of the chain, with no error on screen. M4 may be skipped.",
+      "happened": "A: M2 question shown, reading shown; M3 question shown, reading shown; M5 question shown, reading shown; M6 question shown, reading shown; M7 question shown, reading shown, follow-up left unanswered; M4 skipped; label reached. B: M2 question shown, reading shown; M3 question shown, reading shown; M5 question shown, reading shown, follow-up left unanswered; M6 question shown, reading shown, follow-up left unanswered; M7 question shown, reading shown, follow-up left unanswered; M4 skipped; label reached. Broke off: no. Page errors: none."
+    },
+    {
+      "n": 3,
+      "expected": "In the export, each answer is recorded once, in the order given, and every line on the record appears character for character in something I typed.",
+      "happened": "A: log order M1 first_answer, M2 first_answer, M3 first_answer, M5 first_answer, M6 first_answer, M7 first_answer, M7 reopen. Entries whose text differs from what was typed: none. Lines on the record not found character for character in what was typed: none. B: log order M1 first_answer, M2 first_answer, M3 first_answer, M5 first_answer, M6 first_answer, M7 first_answer. Entries whose text differs from what was typed: none. Lines on the record not found character for character in what was typed: label grape: \"You\"; log M1 grape: \"You\"."
+    },
+    {
+      "n": 4,
+      "expected": "Bottle A's M5 comes back with the question it was parked on.",
+      "happened": "Before parking: \"What do people use for this problem now, and exactly where does it fall short?\". When it came back: \"What do people use for this problem now, and exactly where does it fall short?\". Same text: yes. Card while parked: \"Parked · find what they use now\"."
+    },
+    {
+      "n": 5,
+      "expected": "After the blocked submit, the reopen question stays on screen, and the retry's history log entry has that question word for word as shown. If the Limit isn't amber, report that this run couldn't test it.",
+      "happened": "Question shown: \"What is the exact deposit amount Lotte loses when a couple cancels two days before the shoot?\". After the block: \"What is the exact deposit amount Lotte loses when a couple cancels two days before the shoot?\", error line \"Worker error · Could not reach the worker. Check your connection and Worker URL.\". Log entries for M7 right after the block: 1. Reopen entries in the export: 1, question: \"What is the exact deposit amount Lotte loses when a couple cancels two days before the shoot?\". Same as shown: yes. Answer sent both times: \"Probably some photographers don't have this.\"."
+    },
+    {
+      "n": 6,
+      "expected": "Bottle A's export stores M6's source as their words from a real exchange.",
+      "happened": "Bottle A stores m6_words_source \"real\". Bottle B stores \"reconstructed\"."
+    },
+    {
+      "n": 7,
+      "expected": "In Bottle B, every question and reading talks to me as \"you\", and nothing calls me \"they\" or by a name, M6's buttons included, before and after parking.",
+      "happened": "M6 buttons before parking: \"My words, from something I said or wrote\" | \"Reconstructed, I have not said it in these terms\". Parked card: \"Dormant · in the moment You · in the momentNext time it happens, write down what you did right then. What have you actually said or written about this, before Corked asked? My words, from something I said or wrote Reconstructed, I have not said it in these terms Answer now →\". Sentences holding a third-person word or \"me\", to read: [M2 question, m-q] Walk me through the last specific plant that died because you forgot to water it: what did you notice, and what did you actually do at that point? || [M2 reading, m-q] Walk me through the last specific plant that died because you forgot to water it: what did you notice, and what did you actually do at that point? || [M3 question, m-q] Name one person and tell me what they have actually done about it. || [M3 question, wm-brief] Go find them. || [M3 question, wm-brief] Come back with their name and what they've actually done about it. || [M3 reading, m-q] Name one person and tell me what they have actually done about it. || [M3 reading, obs-box] One identifiable person, Fatima, distinct from the grape and the founder, is named with a concrete workaround behaviour: a fridge note scheduling watering by day. || [M3 reading, change-block] Third-party confirmation: My neighbour Fatima keeps a note on her fridge with each plant's watering day. || [M6 question, before parking, m-label] Element 6 of 7 · Their Words, Not Yours || [M6 reading, m-label] Element 6 of 7 · Their Words, Not Yours || [M7 question, m-q] Who looks like they should have this problem but doesn't? || [M7 question, wm-brief] Go find them. || [M7 question, wm-brief] Come back with who they are and why they don't have this. || [M7 reading, m-q] Who looks like they should have this problem but doesn't? || [M7 reading, obs-box] The answer names a bounded individual and supplies a reason for her immunity. || [M7 reading, obs-box] The reason, daily garden presence, is a behavior, not a structural circumstance that explains why forgetting cannot occur for her. || [M7 reading, change-block] Partial exclusion: My sister doesn't have this, because she's out in her garden every day. || [M7 reading, swirl-q] Is the sister's daily garden habit a fixed condition of her life or a description of someone who simply pays closer attention, and would a bad week away from the garden restore the same forgetting?."
+    },
+    {
+      "n": 8,
+      "expected": "Opening Bottle A changes neither the cellar order nor any card's date.",
+      "happened": "Order before: An app that tells me which of my plants need water, because I keep forgetting until they die. > An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.. After: An app that tells me which of my plants need water, because I keep forgetting until they die. > An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.. Same: yes. Card dates before: today, today. After: today, today. Stored updated_at same: yes. Opened on: screen-label."
+    },
+    {
+      "n": 9,
+      "expected": "Both exports hold the same bottles, answers, states and dates.",
+      "happened": "Bottles: 2 and 2. Stored keys that differ between the exports: none. Import button on the empty landing: no, the file was set on the hidden import field."
+    }
+  ],
+  "exported": true
+}
