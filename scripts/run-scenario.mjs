@@ -110,7 +110,8 @@ function driver(page, rec) {
         const status = document.getElementById('v6-bottle-status')?.textContent || '';
         return !!opts || (refused && refused.style.display === 'block') || status.startsWith('Error');
       });
-      const status = await text('#v6-bottle-status').catch(() => '');
+      // Intake has moved on when the spark bottled, and this line has gone with it.
+      const status = ((await page.locator('#v6-bottle-status').first().textContent({ timeout: 1000 }).catch(() => '')) || '').trim();
       if (status.startsWith('Error')) throw new Error(`Bottling failed: ${status}`);
       if (await visible('#m0-result')) throw new Error(`Spark refused: ${await text('#m0-entry-line')}`);
       const question = await text('#intake-body .step-q');

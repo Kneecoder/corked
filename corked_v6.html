@@ -2854,7 +2854,7 @@ async function answerMechanism({ mechId, asked, typed, kind, read = typed, words
   saveState();
   // A problem drawing the screen from here is never a failed send: the answer is on record.
   try {
-    await showReading(mechId, data, read, allowSwirl);
+    await showReading(mechId, data, read, allowSwirl, kind);
   } catch (err) {
     console.warn('[answerMechanism] reading not drawn', err);
   }
@@ -3527,12 +3527,13 @@ function mechErrandFallback(mechId, context) {
 }
 
 // What a stored reading shows, for the question on screen. A reopen from the label, or of another
-// element from the sidebar, shows its reading where it was asked.
-async function showReading(mechId, data, txt, allowSwirl = true) {
+// element from the sidebar, shows its reading where it was asked. An answer sent from the question
+// always draws there, even if the review panel is in front when its reply lands.
+async function showReading(mechId, data, txt, allowSwirl = true, kind = 'first_answer') {
   const mech = Mechanisms.get(mechId);
   const pendingKey = pendingBriefKey(mechId);
   const state = mech.errandBar ? data[mech.errandBar]?.state : data.state;
-  if (M[mi]?.id !== mechId || currentPhasePanel() !== 'question') {
+  if (M[mi]?.id !== mechId || (kind === 'reopen' && currentPhasePanel() !== 'question')) {
     if (state === 'settled') S[pendingKey] = null;
     return;
   }
