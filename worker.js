@@ -1,3 +1,10 @@
+import { anthropicAdapter } from './model-adapters.js';
+import './shared/provenance.js';
+import './shared/mechanisms.js';
+
+const { anchorSpan, verifyAnchor, quotedSpan, unsupportedWords } = globalThis.CorkedProvenance;
+const Mechanisms = globalThis.CorkedMechanisms;
+
 const M0_DOCTRINE = `You are the Winemaster — the voice of Corked, an idea-aging system.
 
 Your job in M0 is Spark Bottling.
@@ -1278,30 +1285,10 @@ function extractJsonCandidates(rawText) {
   return candidates;
 }
 
+// The model sits behind an adapter: Anthropic in production. See model-adapters.js.
 async function callClaude(env, system, content, maxTokens = 700) {
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': env.ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify({
-      model: env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
-      max_tokens: maxTokens,
-      system,
-      messages: [{ role: 'user', content }]
-    })
-  });
-
-  if (!response.ok) {
-    const detail = await response.text();
-    console.error('ANTHROPIC_ERROR:', response.status, detail);
-    throw new Response(JSON.stringify({ error: 'Claude API error', detail }), { status: 502 });
-  }
-
-  const claude = await response.json();
-  const rawText = claude.content?.[0]?.text?.trim() || '';
+  const model = env.modelAdapter || anthropicAdapter;
+  const rawText = String(await model({ env, system, content, maxTokens })).trim();
 
   // A self-correction can leave two JSON blocks in one response; the last one is
   // the corrected answer, so try candidates from last to first and take the first parse.
@@ -1652,12 +1639,8 @@ function validateM1(parsed, userAnswer) {
     throw new Error('Invalid grape state');
   }
 
-  if (parsed.observation?.anchor_span) {
-    const normalized = (s) => String(s || '').replace(/\s+/g, ' ').trim();
-    if (!normalized(userAnswer).includes(normalized(parsed.observation.anchor_span))) {
-      parsed.observation.anchor_span = null;
-      parsed._anchor_verification_failed = true;
-    }
+  if (parsed.observation?.anchor_span && !verifyAnchor(parsed.observation, 'anchor_span', userAnswer)) {
+    parsed._anchor_verification_failed = true;
   }
 
   const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
@@ -1703,127 +1686,6 @@ function readProblem(body) {
 // A guess that uses a word the spark doesn't hold is downgraded to insufficient, and every
 // downgrade is logged.
 
-// Function words. They carry no content, so they never count against a guess.
-const PROBLEM_STOPWORDS = new Set([
-  'a', 'an', 'the', 'and', 'or', 'but', 'nor', 'of', 'to', 'in', 'on', 'at', 'for', 'with', 'about',
-  'from', 'into', 'onto', 'over', 'under', 'up', 'down', 'out', 'off', 'by', 'as', 'than', 'then',
-  'so', 'if', 'when', 'whenever', 'while', 'where', 'who', 'whom', 'whose', 'which', 'what', 'why',
-  'how', 'that', 'this', 'these', 'those', 'it', 'its', 'they', 'them', 'their', 'theirs', 'he',
-  'him', 'his', 'she', 'her', 'hers', 'we', 'us', 'our', 'you', 'your', 'i', 'me', 'my', 'is', 'are',
-  'was', 'were', 'be', 'been', 'being', 'am', 'do', 'does', 'did', 'doing', 'done', 'have', 'has',
-  'had', 'having', 'will', 'would', 'shall', 'should', 'may', 'might', 'must', 'can', 'could', 'not',
-  'no', 'only', 'just', 'very', 'also', 'each', 'every', 'any', 'some', 'all', 'both', 'either',
-  'neither', 'own', 'same', 'other', 'such', 'there', 'here', 'before', 'after', 'until', 'because',
-  'since', 'through', 'during', 'within', 'without', 'again', 'even', 'yet', 's', 't'
-]);
-
-// The small framing words a guess may add to say what goes wrong ("has trouble", "loses",
-// "can't", "hard"). Every other word in a guess must already be in the spark.
-const PROBLEM_FRAMING_WORDS = new Set([
-  'trouble', 'hard', 'harder', 'difficult', 'cannot', 'unable', 'stuck', 'way', 'still', 'too',
-  'often', 'always', 'never', 'enough',
-  'struggle', 'struggles', 'struggled', 'struggling',
-  'lose', 'loses', 'losing', 'lost',
-  'keep', 'keeps', 'keeping', 'kept',
-  'forget', 'forgets', 'forgetting', 'forgot', 'forgotten',
-  'miss', 'misses', 'missing', 'missed',
-  'fail', 'fails', 'failing', 'failed',
-  'find', 'finds', 'finding', 'found',
-  'get', 'gets', 'getting', 'got'
-]);
-
-function problemTokens(text) {
-  return String(text || '')
-    .toLowerCase()
-    .replace(/[‘’ʼ]/g, "'")
-    .replace(/\bcan't\b/g, 'can not')
-    .replace(/\bwon't\b/g, 'will not')
-    .replace(/n't\b/g, ' not')
-    .replace(/'(s|re|ve|ll|d|m)\b/g, '')
-    .split(/[^a-z0-9]+/)
-    .filter(Boolean);
-}
-
-function stemWord(w) {
-  if (w.length > 4 && w.endsWith('ies')) return w.slice(0, -3) + 'y';
-  if (w.length > 4 && /(ches|shes|sses|xes|zes)$/.test(w)) return w.slice(0, -2);
-  if (w.length > 3 && w.endsWith('s') && !w.endsWith('ss') && !w.endsWith('us')) return w.slice(0, -1);
-  if (w.length > 5 && w.endsWith('ing')) return w.slice(0, -3);
-  if (w.length > 4 && w.endsWith('ed')) return w.slice(0, -2);
-  return w;
-}
-
-// Personal pronouns say who did it. A problem built from a scene may only use the ones the
-// scene itself used.
-const PROBLEM_PRONOUNS = new Set([
-  'i', 'me', 'my', 'you', 'your', 'he', 'him', 'his', 'she', 'her', 'hers', 'we', 'us', 'our',
-  'they', 'them', 'their', 'theirs', 'it', 'its'
-]);
-
-// The content words of `text` that `source` doesn't contain. A word counts as present when it,
-// or its plural/tense-folded stem, matches a source word (tokensMatch also lets a stem of four
-// letters or more match a longer form of itself: "cancel" and "cancels"). A guess from the spark
-// may add the framing words, and pronouns are grammar there. A problem built from a scene uses the
-// scene's words only: no framing words, and only the pronouns the scene used.
-function unsupportedProblemWords(text, source, { scene = false } = {}) {
-  const sourceStems = [...new Set(problemTokens(source).map(stemWord))];
-  const missing = [];
-  for (const word of problemTokens(text)) {
-    const pronoun = PROBLEM_PRONOUNS.has(word);
-    if (pronoun && !scene) continue;
-    if (!pronoun && PROBLEM_STOPWORDS.has(word)) continue;
-    if (!scene && PROBLEM_FRAMING_WORDS.has(word)) continue;
-    const stem = stemWord(word);
-    if (!scene && PROBLEM_FRAMING_WORDS.has(stem)) continue;
-    if (sourceStems.some(s => tokensMatch(stem, s))) continue;
-    if (!missing.includes(word)) missing.push(word);
-  }
-  return missing;
-}
-
-// The exact stretch of one of `sources` that `candidate` quotes, ignoring case, spacing and the
-// punctuation at its ends. Null unless the candidate's words appear there, in order, whole.
-function findVerbatimSpan(candidate, sources) {
-  const want = String(candidate || '')
-    .toLowerCase()
-    .replace(/[‘’ʼ]/g, "'")
-    .replace(/\s+/g, ' ')
-    .replace(/^[\s"'.,;:!?]+|[\s"'.,;:!?]+$/g, '');
-  if (problemTokens(want).length < 3) return null;
-
-  for (const source of sources) {
-    const src = String(source || '');
-    // A lowercased, single-spaced copy of the source that remembers where each character came from.
-    let norm = '';
-    const at = [];
-    let lastSpace = true;
-    for (let i = 0; i < src.length; i++) {
-      let ch = src[i];
-      if (/\s/.test(ch)) {
-        if (lastSpace) continue;
-        ch = ' ';
-        lastSpace = true;
-      } else {
-        const lower = ch.toLowerCase();
-        ch = lower.length === 1 ? lower : ch;
-        if (/[‘’ʼ]/.test(ch)) ch = "'";
-        lastSpace = false;
-      }
-      norm += ch;
-      at.push(i);
-    }
-    let idx = norm.indexOf(want);
-    while (idx !== -1) {
-      const before = norm[idx - 1];
-      const after = norm[idx + want.length];
-      const wholeWords = !(before && /[a-z0-9]/.test(before)) && !(after && /[a-z0-9]/.test(after));
-      if (wholeWords) return src.slice(at[idx], at[idx + want.length - 1] + 1);
-      idx = norm.indexOf(want, idx + 1);
-    }
-  }
-  return null;
-}
-
 // Dashes in a problem sentence become commas, as in every other visible string. Nothing else
 // changes: the sentence is checked word by word afterwards.
 function replaceDashes(text) {
@@ -1852,7 +1714,7 @@ function decideM2Outcome(parsed, { rawSpark, userLine, sparkParse }) {
   // Stated: the model's span, or M0's suspected_problem, counts only when the spark holds it
   // word for word. The spark's own words are used as they appear there.
   for (const candidate of [parsed.stated_span, sp.suspected_problem]) {
-    const span = findVerbatimSpan(candidate, spark);
+    const span = quotedSpan(candidate, spark);
     if (span) return { outcome: 'stated', text: span, modelOutcome, downgrades, unsupported: [] };
   }
 
@@ -1873,7 +1735,7 @@ function decideM2Outcome(parsed, { rawSpark, userLine, sparkParse }) {
     return { outcome: 'insufficient', text: null, modelOutcome, downgrades, unsupported: [] };
   }
 
-  const unsupported = unsupportedProblemWords(guess, vocabulary);
+  const unsupported = unsupportedWords(guess, vocabulary);
   if (unsupported.length) {
     downgrades.push({ from: 'guessed', to: 'insufficient', reason: 'words_not_in_spark', words: unsupported, text: guess });
     return { outcome: 'insufficient', text: null, modelOutcome, downgrades, unsupported };
@@ -1962,9 +1824,9 @@ function problemFromAnswer(parsed, answer, present) {
   const fragments = [];
   if (present) {
     for (const f of offered.slice(0, SCENE_FRAGMENT_LIMIT)) {
-      const fragment = norm(f);
-      if (!fragment) continue;
-      if (normAnswer.includes(fragment)) {
+      if (!norm(f)) continue;
+      const fragment = norm(anchorSpan(f, answer));
+      if (fragment) {
         if (!fragments.includes(fragment)) fragments.push(fragment);
       } else {
         downgrades.push({ from: 'fragment', to: 'dropped', reason: 'fragment_not_verbatim_in_answer', fragment: String(f) });
@@ -1976,7 +1838,7 @@ function problemFromAnswer(parsed, answer, present) {
 
   if (fragments.length) {
     let text = typeof parsed.problem === 'string' ? replaceDashes(parsed.problem) : '';
-    const unsupported = text ? unsupportedProblemWords(text, fragments.join(' '), { scene: true }) : [];
+    const unsupported = text ? unsupportedWords(text, fragments.join(' '), { scene: true }) : [];
     if (!text || unsupported.length) {
       // The sentence reached outside the checked fragments. The fragments are the builder's own
       // words, so they stand as the problem instead, in the order the answer has them.
@@ -2062,8 +1924,10 @@ function validateM2Scene(parsed, sceneAnswer, maturityClass, grapeName) {
   };
 }
 
+const GRADE_STATES = ['settled', 'clearing', 'turbid'];
+
 function validateM2Friction(parsed, userAnswer, gapInPlay) {
-  const allowedStates = ['settled', 'clearing', 'turbid'];
+  const allowedStates = GRADE_STATES;
   const visiblePaths = ['observation.surface_text'];
 
   if (!parsed || typeof parsed !== 'object') throw new Error('Invalid JSON object');
@@ -2074,30 +1938,21 @@ function validateM2Friction(parsed, userAnswer, gapInPlay) {
   }
 
   // A bar without a valid state is a failed grade, never a default Turbid.
-  if (!allowedStates.includes(parsed.tell?.state)) throw new Error('Invalid M2 grade: tell state');
-  if (!allowedStates.includes(parsed.vintage?.state)) throw new Error('Invalid M2 grade: vintage state');
-  if (gapInPlay) {
-    if (!allowedStates.includes(parsed.gap?.state)) throw new Error('Invalid M2 grade: gap state');
-  } else {
-    delete parsed.gap;
+  const bars = Mechanisms.bars('M2', { gapInPlay });
+  for (const bar of bars) {
+    if (!allowedStates.includes(parsed[bar]?.state)) throw new Error(`Invalid M2 grade: ${bar} state`);
   }
+  if (!gapInPlay) delete parsed.gap;
 
   // Floor enforcement: overall state can never rank above the worst active bar.
-  const active = [parsed.tell.state, parsed.vintage.state];
-  if (gapInPlay) active.push(parsed.gap.state);
+  const active = bars.map(bar => parsed[bar].state);
   parsed.state = active.includes('turbid') ? 'turbid' : active.includes('clearing') ? 'clearing' : 'settled';
 
-  // Verify all anchor spans are verbatim substrings of the answer.
-  const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
-  const normAnswer = norm(userAnswer);
-  const verifySpan = (obj, key) => {
-    if (obj?.[key] && !normAnswer.includes(norm(obj[key]))) { obj[key] = null; return false; }
-    return !!obj?.[key];
-  };
-  const tellAnchorOk    = verifySpan(parsed.tell, 'anchor_span');
-  const vintageAnchorOk = verifySpan(parsed.vintage, 'anchor_span');
-  const gapAnchorOk     = gapInPlay ? verifySpan(parsed.gap, 'anchor_span') : null;
-  const obsAnchorOk     = verifySpan(parsed.observation, 'anchor_span');
+  // Every anchor span has to be the builder's own words.
+  const tellAnchorOk    = verifyAnchor(parsed.tell, 'anchor_span', userAnswer);
+  const vintageAnchorOk = verifyAnchor(parsed.vintage, 'anchor_span', userAnswer);
+  const gapAnchorOk     = gapInPlay ? verifyAnchor(parsed.gap, 'anchor_span', userAnswer) : null;
+  const obsAnchorOk     = verifyAnchor(parsed.observation, 'anchor_span', userAnswer);
 
   const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
   cleanVisibleFields(parsed, visiblePaths);
@@ -2234,7 +2089,9 @@ function fieldTokenize(text) {
     .filter(w => w.length > 2 && !FIELD_STOPWORDS.has(w));
 }
 
-function tokensMatch(a, b) {
+// /field's own matcher, for grounding a question in the spark. Never-invent has its own rule in
+// shared/provenance.js, so tuning this one can't loosen that one.
+function fieldWordsMatch(a, b) {
   if (a === b) return true;
   return a.length >= 4 && b.length >= 4 && (a.startsWith(b) || b.startsWith(a));
 }
@@ -2242,7 +2099,7 @@ function tokensMatch(a, b) {
 function fieldQuestionGrounded(question, userLine, confirmedProblem) {
   const qTokens = fieldTokenize(question);
   const sourceTokens = fieldTokenize(`${userLine} ${confirmedProblem}`);
-  return sourceTokens.some(t => qTokens.some(q => tokensMatch(t, q)));
+  return sourceTokens.some(t => qTokens.some(q => fieldWordsMatch(t, q)));
 }
 
 async function handleField(request, env, corsHeaders) {
@@ -2379,199 +2236,77 @@ async function handleResolve(request, env, corsHeaders) {
   return jsonResponse({ question }, 200, corsHeaders);
 }
 
-async function handleEvidenceMechanism(request, env, corsHeaders, cfg) {
-  if (!cfg.bars.includes(cfg.primaryBar)) {
-    throw new Error(`Config error: primaryBar '${cfg.primaryBar}' not in bars for ${cfg.mechanism}`);
+// ── THE EVIDENCE GRADER ──
+// One grader for M3 to M7: length caps, the model call, the grade check, anchors, style cleaning
+// and the reply. What each one grades comes from the mechanism table. A mechanism's prompt and
+// message are in EVIDENCE_GRADERS, and only M4 and M6 vary anything else:
+//   readExtras(body): the request fields it adds, as extras, plus any caps for them.
+//   afterGrade(parsed, bottle): runs once every bar has a real state, before anchors are checked.
+const EVIDENCE_GRADERS = {
+  M3: { doctrine: M3_DOCTRINE, buildMessage: buildM3UserMessage },
+  M5: { doctrine: M5_DOCTRINE, buildMessage: buildM5UserMessage },
+  M7: { doctrine: M7_DOCTRINE, buildMessage: buildM7UserMessage },
+
+  M4: {
+    doctrine: M4_DOCTRINE,
+    buildMessage: buildM4UserMessage,
+    readExtras(body) {
+      const priorEchoContext = String(body.prior_echo_context || '').trim();
+      return { args: [priorEchoContext], caps: [{ value: priorEchoContext, max: FIELD_LENGTH_CAP, name: 'prior_echo_context' }] };
+    },
+    afterGrade(parsed) {
+      if (parsed.contrast) {
+        parsed.contrast.is_different_kind = String(parsed.contrast.is_different_kind);
+        parsed.contrast.same_or_different = String(parsed.contrast.same_or_different);
+      }
+      const allowedTri = ['true', 'false', 'unclear'];
+      const allowedSameDiff = ['same', 'different', 'unclear'];
+      if (!parsed.contrast || !allowedTri.includes(parsed.contrast?.is_different_kind) || !allowedSameDiff.includes(parsed.contrast?.same_or_different)) {
+        parsed.contrast = { is_different_kind: 'unclear', same_or_different: 'unclear', anchor_span: null };
+      }
+    }
+  },
+
+  M6: {
+    doctrine: M6_DOCTRINE,
+    buildMessage: buildM6UserMessage,
+    readExtras(body) {
+      const wordsSource = body.words_source === 'real' ? 'real' : 'reconstructed';
+      return { args: [wordsSource], caps: [], wordsSource };
+    },
+    afterGrade(parsed, bottle, extras) {
+      const { wordsSource } = extras;
+      // Hard rule: reconstructed caps words and tell at clearing, no exceptions.
+      if (wordsSource === 'reconstructed' && parsed.words.state === 'settled') parsed.words.state = 'clearing';
+      if (wordsSource === 'reconstructed' && parsed.tell.state === 'settled') parsed.tell.state = 'clearing';
+
+      if (bottle.selfMode) {
+        delete parsed.echo;
+      } else if (parsed.echo.state === 'clearing' || (wordsSource !== 'real' && parsed.echo.state !== 'turbid')) {
+        // Echo is binary on this bar. A real "clearing" folds down to turbid, as before.
+        parsed.echo = { state: 'turbid', anchor_span: null };
+      }
+    }
   }
+};
+
+async function handleEvidence(mechId, request, env, corsHeaders) {
+  const grader = EVIDENCE_GRADERS[mechId];
+  const { primaryBar } = Mechanisms.get(mechId);
   const body = await request.json();
   const confirmedProblem = readProblem(body)?.text || '';
   const grapeName        = String(body.grape_name || '').trim();
   const grapeRel         = String(body.grape_relationship || '').trim();
   const maturityClass    = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
   const userAnswer       = String(body.user_answer || '').trim();
-
-  const capViolation = checkLengthCaps(corsHeaders, [
-    { value: confirmedProblem, max: PROBLEM_LENGTH_CAP, name: 'confirmed_problem' },
-    { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
-    { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
-    { value: userAnswer, max: ANSWER_LENGTH_CAP, name: 'user_answer' }
-  ]);
-  if (capViolation) return capViolation;
-
-  if (!confirmedProblem || !userAnswer) {
-    return jsonResponse({ error: 'Missing confirmed_problem or user_answer' }, 400, corsHeaders);
-  }
-
-  const parsed = await callClaude(
-    env,
-    cfg.doctrine,
-    cfg.buildMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer),
-    700
-  );
-
-  const allowedStates = ['settled', 'clearing', 'turbid'];
-  if (!parsed || typeof parsed !== 'object' || parsed.mechanism !== cfg.mechanism) {
-    throw new Error(`Invalid ${cfg.mechanism} response`);
-  }
-  // A bar without a valid state is a failed grade, never a default Turbid.
-  for (const bar of cfg.bars) {
-    if (!allowedStates.includes(parsed[bar]?.state)) throw new Error(`Invalid ${cfg.mechanism} grade: ${bar} state`);
-  }
-
-  const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
-  const normAnswer = norm(userAnswer);
-  const verifySpan = (obj, key) => {
-    if (obj?.[key] && !normAnswer.includes(norm(obj[key]))) { obj[key] = null; return false; }
-    return !!obj?.[key];
-  };
-  for (const bar of cfg.bars) verifySpan(parsed[bar], 'anchor_span');
-  verifySpan(parsed.observation, 'anchor_span');
-
-  const visiblePaths = ['observation.surface_text'];
-  const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
-  cleanVisibleFields(parsed, visiblePaths);
-  parsed.server_checks = { schema_valid: true, visible_style_violations_cleaned: styleViolations };
-  parsed.state = parsed[cfg.primaryBar].state;
-  parsed.server_checks.overall_state_is_primary = true;
-
-  normalizeSubstitutionFlag(parsed);
-  parsed.server_checks.swirl_included = normalizeSwirl(parsed);
-
-  return jsonResponse(parsed, 200, corsHeaders);
-}
-
-async function handleM3(request, env, corsHeaders) {
-  return handleEvidenceMechanism(request, env, corsHeaders, {
-    mechanism:    'M3',
-    doctrine:     M3_DOCTRINE,
-    buildMessage: buildM3UserMessage,
-    bars:         ['echo'],
-    primaryBar:   'echo'
-  });
-}
-
-async function handleM5(request, env, corsHeaders) {
-  return handleEvidenceMechanism(request, env, corsHeaders, {
-    mechanism:    'M5',
-    doctrine:     M5_DOCTRINE,
-    buildMessage: buildM5UserMessage,
-    bars:         ['gap'],
-    primaryBar:   'gap'
-  });
-}
-
-async function handleM7(request, env, corsHeaders) {
-  return handleEvidenceMechanism(request, env, corsHeaders, {
-    mechanism:    'M7',
-    doctrine:     M7_DOCTRINE,
-    buildMessage: buildM7UserMessage,
-    bars:         ['limit'],
-    primaryBar:   'limit'
-  });
-}
-
-async function handleM6(request, env, corsHeaders) {
-  const body = await request.json();
-  const confirmedProblem = readProblem(body)?.text || '';
-  const grapeName        = String(body.grape_name         || '').trim();
-  const grapeRel         = String(body.grape_relationship  || '').trim();
-  const maturityClass    = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
-  const userAnswer       = String(body.user_answer        || '').trim();
-  const wordsSource      = body.words_source === 'real' ? 'real' : 'reconstructed';
-
-  const capViolation = checkLengthCaps(corsHeaders, [
-    { value: confirmedProblem, max: PROBLEM_LENGTH_CAP, name: 'confirmed_problem' },
-    { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
-    { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
-    { value: userAnswer, max: ANSWER_LENGTH_CAP, name: 'user_answer' }
-  ]);
-  if (capViolation) return capViolation;
-
-  if (!confirmedProblem || !userAnswer) {
-    return jsonResponse({ error: 'Missing confirmed_problem or user_answer' }, 400, corsHeaders);
-  }
-
-  const parsed = await callClaude(
-    env,
-    M6_DOCTRINE,
-    buildM6UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer, wordsSource),
-    700
-  );
-
-  const allowedStates = ['settled', 'clearing', 'turbid'];
-  if (!parsed || typeof parsed !== 'object' || parsed.mechanism !== 'M6') {
-    throw new Error('Invalid M6 response');
-  }
-
-  const selfMode = maturityClass === 2;
-
-  // A bar without a valid state is a failed grade, never a default Turbid.
-  for (const bar of ['words', 'tell']) {
-    if (!allowedStates.includes(parsed[bar]?.state)) throw new Error(`Invalid M6 grade: ${bar} state`);
-  }
-
-  // Hard rule: reconstructed caps words at clearing, no exceptions.
-  if (wordsSource === 'reconstructed' && parsed.words.state === 'settled') {
-    parsed.words.state = 'clearing';
-  }
-
-  // Hard rule: reconstructed caps tell at clearing, no exceptions.
-  if (wordsSource === 'reconstructed' && parsed.tell.state === 'settled') {
-    parsed.tell.state = 'clearing';
-  }
-
-  if (selfMode) {
-    delete parsed.echo;
-  } else {
-    // Echo is binary on this bar. A real "clearing" folds down to turbid, as before;
-    // a missing or unknown state is a failed grade.
-    if (!allowedStates.includes(parsed.echo?.state)) throw new Error('Invalid M6 grade: echo state');
-    if (parsed.echo.state === 'clearing') {
-      parsed.echo = { state: 'turbid', anchor_span: null };
-    }
-    if (wordsSource !== 'real' && parsed.echo.state !== 'turbid') {
-      parsed.echo = { state: 'turbid', anchor_span: null };
-    }
-  }
-
-  const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
-  const normAnswer = norm(userAnswer);
-  const verifySpan = (obj, key) => {
-    if (obj?.[key] && !normAnswer.includes(norm(obj[key]))) { obj[key] = null; return false; }
-    return !!obj?.[key];
-  };
-  for (const bar of ['words', 'tell']) verifySpan(parsed[bar], 'anchor_span');
-  if (parsed.echo) verifySpan(parsed.echo, 'anchor_span');
-  verifySpan(parsed.observation, 'anchor_span');
-
-  const visiblePaths = ['observation.surface_text'];
-  const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
-  cleanVisibleFields(parsed, visiblePaths);
-  parsed.server_checks = { schema_valid: true, visible_style_violations_cleaned: styleViolations };
-  parsed.state = parsed.words.state;
-  parsed.server_checks.overall_state_is_primary = true;
-
-  normalizeSubstitutionFlag(parsed);
-  parsed.server_checks.swirl_included = normalizeSwirl(parsed);
-
-  return jsonResponse(parsed, 200, corsHeaders);
-}
-
-async function handleM4(request, env, corsHeaders) {
-  const body = await request.json();
-  const confirmedProblem  = readProblem(body)?.text || '';
-  const grapeName         = String(body.grape_name         || '').trim();
-  const grapeRel          = String(body.grape_relationship || '').trim();
-  const maturityClass     = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
-  const userAnswer        = String(body.user_answer        || '').trim();
-  const priorEchoContext  = String(body.prior_echo_context || '').trim();
+  const extras           = grader.readExtras ? grader.readExtras(body) : { args: [], caps: [] };
 
   const capViolation = checkLengthCaps(corsHeaders, [
     { value: confirmedProblem, max: PROBLEM_LENGTH_CAP, name: 'confirmed_problem' },
     { value: grapeName, max: FIELD_LENGTH_CAP, name: 'grape_name' },
     { value: grapeRel, max: FIELD_LENGTH_CAP, name: 'grape_relationship' },
     { value: userAnswer, max: ANSWER_LENGTH_CAP, name: 'user_answer' },
-    { value: priorEchoContext, max: FIELD_LENGTH_CAP, name: 'prior_echo_context' }
+    ...extras.caps
   ]);
   if (capViolation) return capViolation;
 
@@ -2581,42 +2316,29 @@ async function handleM4(request, env, corsHeaders) {
 
   const parsed = await callClaude(
     env,
-    M4_DOCTRINE,
-    buildM4UserMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer, priorEchoContext),
+    grader.doctrine,
+    grader.buildMessage(confirmedProblem, grapeName, grapeRel, maturityClass, userAnswer, ...extras.args),
     700
   );
 
-  const allowedStates = ['settled', 'clearing', 'turbid'];
-  if (!parsed || typeof parsed !== 'object' || parsed.mechanism !== 'M4') {
-    throw new Error('Invalid M4 response');
-  }
-  // A bar without a valid state is a failed grade, never a default Turbid.
-  if (!allowedStates.includes(parsed.echo?.state)) throw new Error('Invalid M4 grade: echo state');
-  if (parsed.contrast) {
-    parsed.contrast.is_different_kind = String(parsed.contrast.is_different_kind);
-    parsed.contrast.same_or_different = String(parsed.contrast.same_or_different);
-  }
-  const allowedTri = ['true', 'false', 'unclear'];
-  const allowedSameDiff = ['same', 'different', 'unclear'];
-  if (!parsed.contrast || !allowedTri.includes(parsed.contrast?.is_different_kind) || !allowedSameDiff.includes(parsed.contrast?.same_or_different)) {
-    parsed.contrast = { is_different_kind: 'unclear', same_or_different: 'unclear', anchor_span: null };
+  if (!parsed || typeof parsed !== 'object' || parsed.mechanism !== mechId) {
+    throw new Error(`Invalid ${mechId} response`);
   }
 
-  const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
-  const normAnswer = norm(userAnswer);
-  const verifySpan = (obj, key) => {
-    if (obj?.[key] && !normAnswer.includes(norm(obj[key]))) { obj[key] = null; return false; }
-    return !!obj?.[key];
-  };
-  verifySpan(parsed.echo, 'anchor_span');
-  verifySpan(parsed.contrast, 'anchor_span');
-  verifySpan(parsed.observation, 'anchor_span');
+  const bottle = { selfMode: maturityClass === 2 };
+  // A bar without a valid state is a failed grade, never a default Turbid.
+  for (const bar of Mechanisms.bars(mechId, bottle)) {
+    if (!GRADE_STATES.includes(parsed[bar]?.state)) throw new Error(`Invalid ${mechId} grade: ${bar} state`);
+  }
+  if (grader.afterGrade) grader.afterGrade(parsed, bottle, extras);
+
+  for (const path of Mechanisms.anchors(mechId, bottle)) verifyAnchor(parsed[path], 'anchor_span', userAnswer);
 
   const visiblePaths = ['observation.surface_text'];
   const styleViolations = findVisibleStyleViolations(parsed, visiblePaths);
   cleanVisibleFields(parsed, visiblePaths);
   parsed.server_checks = { schema_valid: true, visible_style_violations_cleaned: styleViolations };
-  parsed.state = parsed.echo.state;
+  parsed.state = parsed[primaryBar].state;
   parsed.server_checks.overall_state_is_primary = true;
 
   normalizeSubstitutionFlag(parsed);
@@ -2723,11 +2445,9 @@ export default {
       if (url.pathname === '/m0') return await handleM0(request, env, corsHeaders);
       if (url.pathname === '/m1') return await handleM1(request, env, corsHeaders);
       if (url.pathname === '/m2') return await handleM2(request, env, corsHeaders);
-      if (url.pathname === '/m3') return await handleM3(request, env, corsHeaders);
-      if (url.pathname === '/m4') return await handleM4(request, env, corsHeaders);
-      if (url.pathname === '/m5') return await handleM5(request, env, corsHeaders);
-      if (url.pathname === '/m6') return await handleM6(request, env, corsHeaders);
-      if (url.pathname === '/m7') return await handleM7(request, env, corsHeaders);
+      for (const mechId of Object.keys(EVIDENCE_GRADERS)) {
+        if (url.pathname === Mechanisms.get(mechId).route) return await handleEvidence(mechId, request, env, corsHeaders);
+      }
       if (url.pathname === '/field') return await handleField(request, env, corsHeaders);
       if (url.pathname === '/resolve') return await handleResolve(request, env, corsHeaders);
       return jsonResponse({ error: 'Unknown route.' }, 404, corsHeaders);
