@@ -95,7 +95,7 @@ footer { margin-top:3.5rem; font-size:.67rem; color:var(--muted); font-style:ita
       <li>Run <code>localStorage.setItem('corked_rhythm_test','1')</code> once in that tab's console, then reload.</li>
     </ol>
     <ol start="3">
-      <li>With test mode on, the pace-lengths in <code>shared/cellar-clock.js</code> are <code>{ daily: 15s, every-other-day: 30s, weekly: 60s, monthly: 120s }</code>. Every flow below assumes a <b>Weekly</b> pace choice at the rhythm step, so "the gate opens" means <b>60 seconds</b> after park.</li>
+      <li>With test mode on, the pace-lengths in <code>shared/cellar-clock.js</code> are <code>{ daily: 15s, every-other-day: 30s, weekly: 60s, monthly: 120s }</code>. Those lengths drive sag and stalls. A parked question comes back after <b>2 minutes</b> at every pace, so "the gate opens" means 2 minutes after park. Every flow below assumes a <b>Weekly</b> pace choice at the rhythm step.</li>
       <li>All flows start from the same base chain: a spark, the maturity tree, a grape, then the rhythm picker where you should pick <b>Weekly</b>. From there you'll reach the M2 question — that's where each flow branches.</li>
     </ol>
   </div>
@@ -137,7 +137,7 @@ const FLOWS = [
     watch: 'A single bottle should visibly pass through Active, Dormant, and In-flight, with the label wording changing each time and no state getting stuck.',
     steps: BASE + `<br><br>
     6. On the M2 question, click <b>Come back to this</b>. You return to the cellar. The card should read <i>Parked · a question to ask</i> (locked, just parked).<br>
-    7. Wait 60+ seconds. Reopen the bottle. The wording should now read <i>Waiting on you · a question to ask</i> and there should be an open field: "What did they say?"<br>
+    7. Wait 2+ minutes. Reopen the bottle. The wording should now read <i>Waiting on you · a question to ask</i> and there should be an open field: "What did they say?"<br>
     8. Answer it with anything concrete, e.g. <i>"Priya said she just avoids opening the client's email until the money shows up."</i> and continue. You should land back in Phase 1, active, moving toward M3.<br>
     9. Progress through M3 (any real answer) until you reach an M2–M7 mechanism showing the exits row again. Click <b>Asked, waiting on a reply</b> instead of answering. You return to the cellar; the card should read <i>In flight · ...</i>.<br>
     10. Reopen the bottle immediately (no wait needed — in-flight has no clock). The reply field should be open right away, no lock screen.<br>
@@ -161,9 +161,9 @@ const FLOWS = [
     steps: BASE + `<br><br>
     6. On the M2 question, click <b>Come back to this</b>.<br>
     7. In the cellar, confirm the card reads <i>Parked · a question to ask</i> and looks visually normal.<br>
-    8. Leave it alone for 90+ seconds — well past the point an Active bottle in the same state would start to sag.<br>
+    8. Leave it alone for 2+ minutes — well past the point an Active bottle in the same state would start to sag.<br>
     9. Refresh the cellar list. Confirm the card still carries no sag styling (no opacity drop, no droop, no desaturation) at any point, before or after the gate opens.<br>
-    10. Confirm the wording flips from <i>Parked · a question to ask</i> to <i>Waiting on you · a question to ask</i> once the 60s gate has passed — the wording changes, the visual weight does not.`,
+    10. Confirm the wording flips from <i>Parked · a question to ask</i> to <i>Waiting on you · a question to ask</i> once the 2-minute gate has passed — the wording changes, the visual weight does not.`,
     resultLabel: 'Did the parked bottle stay visually unsagged throughout, wording aside?'
   },
   {
@@ -179,22 +179,22 @@ const FLOWS = [
     resultLabel: 'Did the stalled line show exactly once, with only those two doors, and stay gone on the next visit?'
   },
   {
-    key: 'f6', title: 'Weekly pace at 60s: locked before, open after', concept: 'The rhythm gate itself',
-    watch: 'This is the literal spec case: park on a Weekly-paced bottle with the test constant at 60s, confirm the field is locked immediately and open only once 60s have passed.',
+    key: 'f6', title: 'Weekly pace in test mode: locked before, open after', concept: 'The rhythm gate itself',
+    watch: 'This is the literal spec case: park on a Weekly-paced bottle in test mode, confirm the field is locked immediately and open only once 2 minutes have passed.',
     steps: BASE + `<br><br>
     6. On the M2 question, click <b>Come back to this</b>.<br>
-    7. Reopen the bottle immediately (within a few seconds). Confirm you see the standing brief with a message like "This comes back to you in under a minute. Nothing to enter yet." — and no textarea, no submit button.<br>
-    8. Wait until at least 65 seconds have passed since step 6.<br>
+    7. Reopen the bottle immediately (within a few seconds). Confirm you see the standing brief with a message like "This comes back to you in 2 minutes. Nothing to enter yet." — and no textarea, no submit button.<br>
+    8. Wait until at least 2 minutes and 5 seconds have passed since step 6.<br>
     9. Reopen the bottle again. Confirm the standing brief is still shown, but now there's an open "What did they say?" field and a Continue button.`,
-    resultLabel: 'Was the field locked immediately after park and open once 60s had passed?'
+    resultLabel: 'Was the field locked immediately after park and open once 2 minutes had passed?'
   },
   {
     key: 'f7', title: 'FIND re-entry still resets maturity to 1', concept: 'Class 3 → class 1 on re-entry',
     watch: 'This is a regression check on existing behaviour: parking with no grape yet (class 3) must still demote maturity to 1 once a real person is entered, even with the rhythm gate now sitting in front of it.',
     steps: `1. Start a new spark: <i>"an app that reminds freelancers to chase overdue invoices"</i>.<br>
     2. Maturity tree: "No" (haven't talked to a real person) → "No" (not your own experience) — class 3, nobody yet. This auto-parks the bottle dormant with a FIND brief; you land in the cellar.<br>
-    3. Confirm the card reads something like <i>Parked · find the person</i> (locked — class 3 has no declared pace yet, so it should fall back to the weekly-length default, 60s in test mode).<br>
-    4. Wait 60+ seconds, then reopen. Confirm the field is now open: first name + "how do you know them?".<br>
+    3. Confirm the card reads something like <i>Parked · find the person</i> (locked — it comes back after 2 minutes in test mode).<br>
+    4. Wait 2+ minutes, then reopen. Confirm the field is now open: first name + "how do you know them?".<br>
     5. Enter <i>Priya</i> / <i>my friend who freelances as a graphic designer</i> and submit.<br>
     6. Progress through M2 and M3 with any real answers until you reach M6. Confirm the interstitial nudge banner appears ("Your grape is Priya. M6 will ask for their exact words...") — <b>this banner only renders for maturity class 0 or 1</b>. If the class-3 → 1 reset had silently failed, this banner would be missing.`,
     resultLabel: 'Did the class-3 bottle unlock, accept the grape, and show the M6 nudge (confirming maturity reset to 1)?'

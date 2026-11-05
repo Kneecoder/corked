@@ -89,28 +89,60 @@ test('the parked note reads minutes, hours, then cellar days', () => {
   assert.equal(clock.nextQuestionWording(at(10, 5, 9).toISOString(), MORNING), 'in 2 days, in the morning');
 });
 
-test('behind pace counts whole pace-lengths since the question opened', () => {
-  const opened = at(10, 3, 23).toISOString();   // Tue 23:00
-  assert.equal(clockAt(at(10, 4, 22, 59)).paceLengthsSince(DAILY, opened), 0);
-  assert.equal(clockAt(at(10, 4, 23)).paceLengthsSince(DAILY, opened), 1);
-  assert.equal(clockAt(at(10, 6, 23)).paceLengthsSince(DAILY, opened), 3);
-  assert.equal(clockAt(at(10, 6, 23)).paceLengthsSince(EVERY_OTHER, opened), 1);
-  assert.equal(clockAt(at(10, 10, 22)).paceLengthsSince(WEEKLY, opened), 0);
-  assert.equal(clockAt(at(10, 10, 23)).paceLengthsSince(WEEKLY, opened), 1);
+test('a bottle is never behind pace before its next return', () => {
+  const opened = at(10, 3, 18).toISOString();   // Tue 18:00, daily, evening
+  assert.equal(clockAt(at(10, 4, 5)).paceLengthsSince(DAILY, EVENING, opened), 0);
+  assert.equal(clockAt(at(10, 4, 17, 59)).paceLengthsSince(DAILY, EVENING, opened), 0);
+  assert.equal(clockAt(at(10, 4, 18)).paceLengthsSince(DAILY, EVENING, opened), 1);
+  assert.equal(clockAt(at(10, 5, 17, 59)).paceLengthsSince(DAILY, EVENING, opened), 1);
+  assert.equal(clockAt(at(10, 5, 18)).paceLengthsSince(DAILY, EVENING, opened), 2);
 });
 
-test('behind pace: no pace or no opening time counts for nothing', () => {
+test('the count falls on the same moment as the comeback, for every pace', () => {
+  for (const [pace, timing] of [[DAILY, MORNING], [EVERY_OTHER, EVENING], [WEEKLY, LATE], [MONTHLY, MIDDAY]]) {
+    const openedAt = at(10, 3, 14);
+    const due = new Date(clockAt(openedAt).nextReturnAt(pace, timing));
+    const opened = openedAt.toISOString();
+    assert.equal(clockAt(new Date(due.getTime() - 60000)).paceLengthsSince(pace, timing, opened), 0, `${pace} ${timing}`);
+    assert.equal(clockAt(due).paceLengthsSince(pace, timing, opened), 1, `${pace} ${timing}`);
+  }
+});
+
+test('the threshold scales with the pace', () => {
+  const opened = at(10, 3, 9).toISOString();
+  const later = at(10, 7, 10);   // four days on
+  assert.equal(clockAt(later).paceLengthsSince(DAILY, MORNING, opened), 4);
+  assert.equal(clockAt(later).paceLengthsSince(EVERY_OTHER, MORNING, opened), 2);
+  assert.equal(clockAt(later).paceLengthsSince(WEEKLY, MORNING, opened), 0);
+  assert.equal(clockAt(at(10, 10, 9)).paceLengthsSince(WEEKLY, MORNING, opened), 1);
+});
+
+test('the 05:00 day holds on both ends of the count', () => {
+  // Opened Wed 01:00, which counts as Tuesday. Daily, morning: it returns Wed 09:00, like a comeback.
+  const opened = at(10, 4, 1).toISOString();
+  assert.equal(clockAt(at(10, 4, 8, 59)).paceLengthsSince(DAILY, MORNING, opened), 0);
+  assert.equal(clockAt(at(10, 4, 9)).paceLengthsSince(DAILY, MORNING, opened), 1);
+  // Thu 02:00 still counts as Wednesday: the Wednesday late return has passed, the Thursday one hasn't.
+  const lateOpened = at(10, 3, 22).toISOString();
+  assert.equal(clockAt(at(10, 5, 2)).paceLengthsSince(DAILY, LATE, lateOpened), 1);
+  assert.equal(clockAt(at(10, 5, 21, 59)).paceLengthsSince(DAILY, LATE, lateOpened), 1);
+  assert.equal(clockAt(at(10, 5, 22)).paceLengthsSince(DAILY, LATE, lateOpened), 2);
+});
+
+test('behind pace: no pace or no opening time counts for nothing, and no part of the day counts as morning', () => {
   const clock = clockAt(at(10, 3, 23));
-  assert.equal(clock.paceLengthsSince(-1, at(10, 1, 9).toISOString()), 0);
-  assert.equal(clock.paceLengthsSince(DAILY, null), 0);
-  assert.equal(clock.paceLengthsSince(DAILY, 'not a date'), 0);
+  assert.equal(clock.paceLengthsSince(-1, MORNING, at(10, 1, 9).toISOString()), 0);
+  assert.equal(clock.paceLengthsSince(DAILY, MORNING, null), 0);
+  assert.equal(clock.paceLengthsSince(DAILY, MORNING, 'not a date'), 0);
+  assert.equal(clockAt(at(10, 4, 9)).paceLengthsSince(DAILY, -1, at(10, 3, 12).toISOString()), 1);
+  assert.equal(clockAt(at(10, 3, 12)).paceLengthsSince(DAILY, MORNING, at(10, 3, 14).toISOString()), 0);
 });
 
-test('rhythm-test mode collapses the pace-lengths', () => {
+test('rhythm-test mode keeps its short timers', () => {
   const date = at(10, 3, 12);
   const clock = clockAt(date, { testMode: true });
-  assert.equal(clock.paceLengthsSince(DAILY, new Date(date.getTime() - 45000).toISOString()), 3);
-  assert.equal(clock.paceLengthsSince(MONTHLY, new Date(date.getTime() - 119000).toISOString()), 0);
+  assert.equal(clock.paceLengthsSince(DAILY, MORNING, new Date(date.getTime() - 45000).toISOString()), 3);
+  assert.equal(clock.paceLengthsSince(MONTHLY, MORNING, new Date(date.getTime() - 119000).toISOString()), 0);
 });
 
 test('card dates count cellar days', () => {
@@ -126,8 +158,8 @@ test('card dates count cellar days', () => {
 
 test('one pace table: every label and cadence reads from it', () => {
   const clock = clockAt(at(10, 3, 12));
-  assert.deepEqual(clock.paces.map(p => p.label), ['Daily', 'Any other day', 'Weekly', 'Monthly']);
-  assert.equal(clock.paceLabel(EVERY_OTHER), 'Any other day');
+  assert.deepEqual(clock.paces.map(p => p.label), ['Daily', 'Every other day', 'Weekly', 'Monthly']);
+  assert.equal(clock.paceLabel(EVERY_OTHER), 'Every other day');
   assert.equal(clock.paceLabel(9), undefined);
   assert.equal(clock.rhythmShort(EVERY_OTHER, MORNING), 'every other day in the morning');
   assert.equal(clock.rhythmShort(DAILY, LATE), 'daily late');

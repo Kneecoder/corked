@@ -113,6 +113,18 @@ test('copy: self mode is in the second person and names nobody', () => {
   assert.equal(M.get('M6').copy.goFind({ selfMode: true, grapeName: 'Sam' }), '');
 });
 
+test('copy: M6\'s buttons speak to the builder in self mode, and about the grape otherwise', () => {
+  const { wordsSource } = M.get('M6').copy;
+  assert.deepEqual(wordsSource({ selfMode: true }), {
+    real: 'My words, from something I said or wrote',
+    reconstructed: 'Reconstructed, I have not said it in these terms'
+  });
+  assert.deepEqual(wordsSource({ selfMode: false }), {
+    real: 'Their words, from a real exchange',
+    reconstructed: 'Reconstructed, we have not talked in these terms'
+  });
+});
+
 test('copy: no dashes in anything a builder reads', () => {
   const dash = /[—–]/;
   for (const id of M.ORDER) {

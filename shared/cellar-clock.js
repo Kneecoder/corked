@@ -6,9 +6,8 @@
 // `import './shared/cellar-clock.js'`. Either way the module is globalThis.CorkedCellarClock.
 //
 // A cellar day starts at 05:00 local time: an answer or park before that counts as the previous
-// day (v48, 10 Oct). Comebacks and every wording use it. Whether a bottle is behind pace counts
-// whole pace-lengths since its question opened instead, because the rack reads pace-relative,
-// never calendar-absolute (v47, Input 4).
+// day (v48, 10 Oct). Comebacks, stalls and every wording use it, so a bottle can't disagree with
+// the day count on its card. The stall threshold still scales with the bottle's pace (v47, Input 4).
 (function (root) {
   const DAY_MS = 86400000;
   const DAY_STARTS_HOUR = 5;
@@ -18,7 +17,7 @@
   // Index = bottle.pace. testMs is the pace-length in rhythm-test mode.
   const PACES = [
     { label: 'Daily',         note: 'The cellar keeps it close.',                cadence: 'daily',           days: 1,  testMs: 15000 },
-    { label: 'Any other day', note: 'A steady rhythm without making it heavy.',  cadence: 'every other day', days: 2,  testMs: 30000 },
+    { label: 'Every other day', note: 'A steady rhythm without making it heavy.', cadence: 'every other day', days: 2,  testMs: 30000 },
     { label: 'Weekly',        note: 'A slow burn. The spark stays alive.',       cadence: 'weekly',          days: 7,  testMs: 60000 },
     { label: 'Monthly',       note: 'Back-burner. Still aging, not urgent.',     cadence: 'monthly',         days: 30, testMs: 120000 }
   ];
@@ -72,14 +71,27 @@
         return next.toISOString();
       },
 
-      // How many whole pace-lengths have passed since a question opened.
-      paceLengthsSince(pace, startIso) {
+      // How many of this pace's returns have come and gone since a question opened. Each one falls
+      // on the due cellar day at the start of the builder's part of the day, the same as
+      // nextReturnAt(), so a bottle is never behind pace before its next return. No part of the
+      // day counts as morning. Rhythm-test mode keeps its short timers.
+      paceLengthsSince(pace, timing, startIso) {
         const row = PACES[pace];
         if (!row || !startIso) return 0;
         const start = new Date(startIso).getTime();
         if (!start) return 0;
-        const length = testMode ? row.testMs : row.days * DAY_MS;
-        return Math.floor((now() - start) / length);
+        const current = now();
+        if (testMode) return Math.floor((current - start) / row.testMs);
+        const hour = (PARTS_OF_DAY[timing] || PARTS_OF_DAY[0]).hour;
+        const returnNumber = n => {
+          const at = new Date(cellarDay(start));
+          at.setDate(at.getDate() + n * row.days);
+          at.setHours(hour, 0, 0, 0);
+          return at.getTime();
+        };
+        let n = Math.floor(cellarDaysBetween(start, current) / row.days);
+        while (n > 0 && returnNumber(n) > current) n--;
+        return Math.max(0, n);
       },
 
       // "in 3 hours", for the note on a parked question.

@@ -152,6 +152,10 @@
           : `How would ${c.grapeName} describe this in their own words?`,
         // In self mode there is no one to go and talk to.
         goFind: c => c.selfMode ? '' : `Haven't talked to ${c.grapeName} in these terms yet? Go have that conversation. Come back with their exact words.`,
+        // Where the words came from, on the first answer, the parked card and a reopen.
+        wordsSource: c => c.selfMode
+          ? { real: 'My words, from something I said or wrote', reconstructed: 'Reconstructed, I have not said it in these terms' }
+          : { real: 'Their words, from a real exchange', reconstructed: 'Reconstructed, we have not talked in these terms' },
         rows: {
           tell: ['Filmable behaviour', 'Partial behaviour'],
           echo: ['Third-party echo', 'Partial echo']

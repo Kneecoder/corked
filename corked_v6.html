@@ -1354,8 +1354,8 @@ body {
     <div class="review-q" id="lr-question" style="font-style:normal;margin-bottom:1rem"></div>
     <div id="lr-ws-row" style="display:none;margin-bottom:.9rem">
       <div class="rhythm-choices" style="grid-template-columns:repeat(2, minmax(0, 1fr))">
-        <button type="button" class="rhythm-choice" id="lr-ws-real" onclick="pickReopenWordsSource('real')">Their words, from a real exchange</button>
-        <button type="button" class="rhythm-choice" id="lr-ws-recon" onclick="pickReopenWordsSource('reconstructed')">Reconstructed, we have not talked in these terms</button>
+        <button type="button" class="rhythm-choice" id="lr-ws-real" onclick="pickReopenWordsSource('real')"></button>
+        <button type="button" class="rhythm-choice" id="lr-ws-recon" onclick="pickReopenWordsSource('reconstructed')"></button>
       </div>
     </div>
     <textarea class="answer-box" id="lr-ans" placeholder="Write here. The more specific you are, the more this can work with." style="resize:vertical;height:140px;margin-bottom:1rem"></textarea>
@@ -1700,8 +1700,8 @@ body {
       <div id="wm-brief" style="display:none"></div>
       <div id="m6-words-source" style="display:none;margin-bottom:.9rem">
         <div class="rhythm-choices" style="grid-template-columns:repeat(2, minmax(0, 1fr))">
-          <button type="button" class="rhythm-choice" id="m6-ws-real" onclick="pickM6WordsSource('real')">Their words, from a real exchange</button>
-          <button type="button" class="rhythm-choice" id="m6-ws-recon" onclick="pickM6WordsSource('reconstructed')">Reconstructed, we have not talked in these terms</button>
+          <button type="button" class="rhythm-choice" id="m6-ws-real" onclick="pickM6WordsSource('real')"></button>
+          <button type="button" class="rhythm-choice" id="m6-ws-recon" onclick="pickM6WordsSource('reconstructed')"></button>
         </div>
       </div>
       <textarea class="answer-box" id="ans" placeholder="Write here. The more specific you are, the more Phase 1 can work with."></textarea>
@@ -1772,8 +1772,8 @@ body {
         <div class="review-q" id="rv-reopen-q" style="margin-bottom:1.1rem"></div>
         <div id="rv-ws-row" style="display:none;margin-bottom:.9rem">
           <div class="rhythm-choices" style="grid-template-columns:repeat(2, minmax(0, 1fr))">
-            <button type="button" class="rhythm-choice" id="rv-ws-real" onclick="pickReopenWordsSource('real')">Their words, from a real exchange</button>
-            <button type="button" class="rhythm-choice" id="rv-ws-recon" onclick="pickReopenWordsSource('reconstructed')">Reconstructed, we have not talked in these terms</button>
+            <button type="button" class="rhythm-choice" id="rv-ws-real" onclick="pickReopenWordsSource('real')"></button>
+            <button type="button" class="rhythm-choice" id="rv-ws-recon" onclick="pickReopenWordsSource('reconstructed')"></button>
           </div>
         </div>
         <textarea class="answer-box" id="rv-reopen-ans" placeholder="Write here. The more specific you are, the more this can work with." style="resize:vertical;height:140px;margin-bottom:1rem"></textarea>
@@ -2132,11 +2132,11 @@ function questionClockStart(bottle) {
   return s.questionOpensAt || bottle.updated_at || null;
 }
 
-// How many whole pace-lengths have elapsed since the bottle's question opened.
+// How many of the bottle's returns have passed since its question opened.
 function bottlePaceMultiples(bottle) {
   const s = bottle.s || {};
   if (typeof s.pace !== 'number' || s.pace < 0) return 0;
-  return CellarClock.paceLengthsSince(s.pace, questionClockStart(bottle));
+  return CellarClock.paceLengthsSince(s.pace, s.notifTiming, questionClockStart(bottle));
 }
 
 // Active + behind pace + unresolved amber -> visible sag, scaling with pace multiples.
@@ -3065,6 +3065,7 @@ function renderMech() {
         m6Interstitial.textContent = '';
       }
     }
+    labelWordsSourceButtons('m6');
     if (m6WordsSourceRow) m6WordsSourceRow.style.display = 'block';
     if (S.answers.M6 && S.m6_words_source) pickM6WordsSource(S.m6_words_source);
   }
@@ -3607,6 +3608,19 @@ async function answerReopen(mechId, { asked, typed, wordsSource }) {
   return answerMechanism({ mechId, asked, typed, kind: 'reopen', allowSwirl: false, wordsSource, finishes: false });
 }
 
+// M6's two buttons for where the words came from. Self mode has its own wording.
+function wordsSourceCopy() {
+  return Mechanisms.get('M6').copy.wordsSource({ selfMode: S.maturity === 2 });
+}
+
+function labelWordsSourceButtons(prefix) {
+  const copy = wordsSourceCopy();
+  const real = document.getElementById(`${prefix}-ws-real`);
+  const recon = document.getElementById(`${prefix}-ws-recon`);
+  if (real) real.textContent = copy.real;
+  if (recon) recon.textContent = copy.reconstructed;
+}
+
 // M6 asks where its words came from on a reopen too. The two reopen forms share this choice, and
 // only one is ever open.
 let _reopenWordsSource = null;
@@ -3619,22 +3633,18 @@ function pickReopenWordsSource(v) {
   }
 }
 
-// Self mode has no choice here: its buttons speak in the third person, so a self reopen reads as
-// reconstructed, as it always has.
-function reopenAsksWordsSource(mechId) {
-  return mechId === 'M6' && S.maturity !== 2;
-}
-
-function showReopenWordsSource(rowId, mechId) {
+// prefix: rv is the sidebar's reopen form, lr the label's.
+function showReopenWordsSource(prefix, mechId) {
   pickReopenWordsSource(null);
-  const row = document.getElementById(rowId);
-  if (row) row.style.display = reopenAsksWordsSource(mechId) ? 'block' : 'none';
+  labelWordsSourceButtons(prefix);
+  const row = document.getElementById(`${prefix}-ws-row`);
+  if (row) row.style.display = mechId === 'M6' ? 'block' : 'none';
 }
 
 // True when M6 is still waiting on that choice. Brings the choice into view.
-function reopenWaitsForWordsSource(rowId, mechId) {
-  if (!reopenAsksWordsSource(mechId) || _reopenWordsSource) return false;
-  document.getElementById(rowId)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+function reopenWaitsForWordsSource(prefix, mechId) {
+  if (mechId !== 'M6' || _reopenWordsSource) return false;
+  document.getElementById(`${prefix}-ws-row`)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
   return true;
 }
 
@@ -4516,7 +4526,7 @@ function openReopenForm(key, mechId, label, question, value = '') {
   const btn = document.getElementById('rv-reopen-btn');
   if (btn) { btn.disabled = false; btn.textContent = 'Submit →'; }
   showReopenError('rv-reopen-error', '');
-  showReopenWordsSource('rv-ws-row', mechId);
+  showReopenWordsSource('rv', mechId);
   document.getElementById('rv-reopen').style.display = 'block';
   _reopenKey = key;
   _reopenMechId = mechId;
@@ -4608,7 +4618,7 @@ async function submitReopen() {
   if (!txt || !_reopenKey || !_reopenMechId) return;
 
   const mechId = _reopenMechId;
-  if (reopenWaitsForWordsSource('rv-ws-row', mechId)) return;
+  if (reopenWaitsForWordsSource('rv', mechId)) return;
   const btn = document.getElementById('rv-reopen-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
   showReopenError('rv-reopen-error', '');
@@ -4729,7 +4739,7 @@ async function openLabelReopen(key) {
   if (parkBtn) parkBtn.style.display = (mechId === 'M1') ? 'none' : '';
   renderParkState();
   showReopenError('lr-error', '');
-  showReopenWordsSource('lr-ws-row', mechId);
+  showReopenWordsSource('lr', mechId);
 
   if (ambers.length === 1) {
     eyebrowEl.textContent = 'One thing left';
@@ -4773,7 +4783,7 @@ async function submitLabelReopen() {
   const mechId = _labelReopenMechId;
   if (!txt || !mechId) return;
 
-  if (reopenWaitsForWordsSource('lr-ws-row', mechId)) return;
+  if (reopenWaitsForWordsSource('lr', mechId)) return;
   const btn = document.getElementById('lr-submit-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
   showReopenError('lr-error', '');
@@ -5514,8 +5524,8 @@ async function openParkedReentry(id, record, mechId) {
   const grapeName = S.grape_name || 'the person you named';
   const wordsSourceRow = mechId === 'M6' ? `
       <div class="rhythm-choices" id="dr-ws-row" style="grid-template-columns:repeat(2, minmax(0, 1fr));margin-bottom:.9rem">
-        <button type="button" class="rhythm-choice" id="dr-ws-real" onclick="pickParkedWordsSource('real')">Their words, from a real exchange</button>
-        <button type="button" class="rhythm-choice" id="dr-ws-recon" onclick="pickParkedWordsSource('reconstructed')">Reconstructed, we have not talked in these terms</button>
+        <button type="button" class="rhythm-choice" id="dr-ws-real" onclick="pickParkedWordsSource('real')">${escHtml(wordsSourceCopy().real)}</button>
+        <button type="button" class="rhythm-choice" id="dr-ws-recon" onclick="pickParkedWordsSource('reconstructed')">${escHtml(wordsSourceCopy().reconstructed)}</button>
       </div>` : '';
 
   document.getElementById('sb-idea').textContent = getSparkDisplaySummary();
