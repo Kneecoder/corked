@@ -2241,12 +2241,13 @@ let _bottleClip = 0;
 function bottleSvg(elements, { width = 72, height = 190, stroke = 1.5, shine = true } = {}) {
   const els = elements || {};
   const clip = `bottle-clip-${++_bottleClip}`;
+  // One murky ground, and each layer runs a little under the next, so a bottle drawn small shows no seams.
   const layers = EL_KEYS.map((k, i) =>
-    `<rect data-el="${k}" x="0" y="${88 + i * 16}" width="72" height="${i === EL_KEYS.length - 1 ? 22 : 16}" fill="${BOTTLE_LAYER_COLOUR[els[k]] || BOTTLE_MURKY}"/>`
+    `<rect data-el="${k}" x="0" y="${88 + i * 16}" width="72" height="${i === EL_KEYS.length - 1 ? 22 : 16.8}" fill="${BOTTLE_LAYER_COLOUR[els[k]] || BOTTLE_MURKY}"/>`
   ).join('');
   return `<svg width="${width}" height="${height}" viewBox="0 0 72 190" fill="none" aria-hidden="true">`
     + `<defs><clipPath id="${clip}"><path d="${BOTTLE_SHAPE}"/></clipPath></defs>`
-    + `<g clip-path="url(#${clip})"><rect x="0" y="22" width="72" height="66" fill="${BOTTLE_MURKY}"/>${layers}</g>`
+    + `<g clip-path="url(#${clip})"><rect x="0" y="22" width="72" height="168" fill="${BOTTLE_MURKY}"/>${layers}</g>`
     + `<path class="bottle-line" d="${BOTTLE_SHAPE}" stroke="#1E1A15" stroke-width="${stroke}"/>`
     + `<rect x="29" y="2" width="14" height="12" rx="2" fill="#C9A55A"/>`
     + (shine ? `<path class="bottle-shine" d="M15 96v74" stroke="#FBF8F2" stroke-opacity="0.25" stroke-width="3" stroke-linecap="round"/>` : '')

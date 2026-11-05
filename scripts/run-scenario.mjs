@@ -668,7 +668,8 @@ const LOOK = {
     name: 'Lotte',
     rel: 'my cousin, she shoots weddings',
     M2: 'Last March a couple cancelled two days before their wedding. Lotte had already turned down another booking for that date. She emailed them twice asking for the fee, got no reply, and let it go.',
-    M3: "I don't know other wedding photographers well. I'd guess most of them just eat the loss."
+    M3: "I don't know other wedding photographers well. I'd guess most of them just eat the loss.",
+    M3_follow_up: "I haven't asked anyone else about it. I just assume others have it too."
   },
   B: {
     name: 'Sanne',
@@ -689,7 +690,7 @@ const SCENARIOS = {
       'No Winemaster circle or "THE WINEMASTER" anywhere. Question screens show the mechanism name, with no progress bar, "Element 2 of 7" or "Phase 1 element 2 of 7".',
       'After Bottle A\'s M2: if something settled, the screen shows the observation, "What changed" with excerpts that appear character for character in the answer, the next-question line and "Back to the cellar", and no park buttons. If nothing settled, report it as not tested.',
       'After the blocked M3 send: the answer is still in the field with the failure message and "Try again". After leaving and reopening the bottle, the answer is there again. After the retry, the history log holds that answer once.',
-      'After Bottle A\'s M3: if the Echo is turbid or clearing, the errand card shows, "Copy question" puts only the question on the clipboard, both park buttons show, and there is no "What changed". If the Echo settled, report it as not tested.',
+      'After Bottle A\'s M3, and its follow-up if one appears: if the Echo is turbid or clearing, the errand card shows, "Copy question" puts only the question on the clipboard, both park buttons show, and there is no "What changed". If the Echo settled, report it as not tested.',
       'After Bottle B\'s M2: if a follow-up appears, it leads the screen with its field and "Continue →". If none appears, report it as not tested.',
       'The label spells out the states, clearing and turbid rows are buttons that open the reopen, the bottle has no ticks, and the Grape row shows the name.',
       'At 390×500, the question and the top of the answer field are visible without scrolling.'
@@ -1030,10 +1031,35 @@ const SCENARIOS = {
       await goneCheck('Bottle A, M3 reading');
       await shoot('15-a-m3-after-answer');
 
+      // A follow-up, if one opened, gets an answer that still names nobody besides the grape.
+      if (a.after_retry.screen.follow_up) {
+        await fitAt390x500('Bottle A, M3 follow-up', 'swirl-q', 'swirl-ans', '15-a-m3-after-answer');
+        await page.locator('#swirl-ans').fill(A.M3_follow_up);
+        await page.locator('#swirl-btn').click();
+        await page.waitForFunction(() => {
+          const failed = document.getElementById('swirl-failed');
+          const panel = document.getElementById('swirl-panel');
+          const btn = document.getElementById('swirl-btn');
+          return failed.style.display === 'flex' || (panel.style.display === 'none' && !btn.disabled);
+        }, undefined, { timeout: STEP_TIMEOUT, polling: 100 });
+        app.step('answered the follow-up at M3');
+        await goneCheck('Bottle A, M3 after the follow-up');
+        await shoot('15b-a-m3-after-follow-up');
+      }
+      const afterM3 = await bottleOf(A.name);
+      a.after_m3 = {
+        screen: await screenNow(),
+        echo: afterM3.s.elements.echo,
+        stored_brief: afterM3.s.m3_pending_brief ?? null,
+        log_entries_for_the_first_answer: logCount(afterM3, 'M3', A.M3),
+        log_entries_for_m3: (afterM3.s.log || []).filter(e => e.type === 'answer' && e.mech === 'M3')
+          .map(e => ({ kind: e.kind, answer: e.answer, moved: e.moved }))
+      };
+
       // Copy question, when the errand card is up.
       if (await page.locator('#inline-errand .brief-copy-btn').count()) {
         await page.locator('#inline-errand .brief-copy-btn').click();
-        a.after_retry.copied = await page.evaluate(() => navigator.clipboard.readText()).catch(err => `could not read the clipboard: ${err.message}`);
+        a.after_m3.copied = await page.evaluate(() => navigator.clipboard.readText()).catch(err => `could not read the clipboard: ${err.message}`);
         app.step('copied the question');
       }
 
@@ -1252,20 +1278,23 @@ const SCENARIOS = {
           `Park links shown: ${shown.come_back_shown && shown.asked_waiting_shown ? 'both' : 'not both'}.`,
           `On the bottle after the block: log entries for this answer ${a.blocked.log_entries_for_this_answer}, answers.M3 ${say(a.blocked.answers_m3_on_bottle)}, elements changed ${JSON.stringify(a.blocked.elements_before) === JSON.stringify(a.blocked.elements_after) ? 'no' : 'yes'}, draft is the answer ${a.blocked.draft_on_bottle === LOOK.A.M3 ? 'yes' : 'no'}.`,
           back ? `After leaving and reopening: field shown ${back.answer_field_shown ? 'yes' : 'no'}, holds the answer ${back.answer_field_value === LOOK.A.M3 ? 'yes' : 'no'}, message ${say(back.failed_message)}, main button ${say(back.main_button)}, a line typing on arrival ${a.reopened.still_typing_on_arrival ? 'yes' : 'no'}.` : 'Reopen not reached.',
-          a.after_retry ? `After the retry: log entries holding this answer ${a.after_retry.log_entries_for_this_answer}. All M3 entries: ${JSON.stringify(a.after_retry.log_entries_for_m3.map(e => ({ kind: e.kind, moved: e.moved.map(m => `${m.element} ${m.from}→${m.to}`) })))}. Draft left: ${say(a.after_retry.draft_left)}.` : 'Retry not reached.'
-        ].join(' '));
+          a.after_retry ? `After the retry: log entries holding this answer ${a.after_retry.log_entries_for_this_answer}. Draft left: ${say(a.after_retry.draft_left)}.` : 'Retry not reached.',
+          a.after_m3 ? `At the end of M3: log entries holding this answer ${a.after_m3.log_entries_for_the_first_answer}. All M3 entries: ${JSON.stringify(a.after_m3.log_entries_for_m3.map(e => ({ kind: e.kind, answer: e.answer, moved: e.moved.map(m => `${m.element} ${m.from}→${m.to}`) })))}.` : ''
+        ].filter(Boolean).join(' '));
       }
 
       // 4
-      const r = a.after_retry;
+      const r = a.after_m3;
+      const asked = a.after_retry?.screen?.follow_up;
       if (!r) out.push(notReached);
-      else if (r.echo === 'settled') out.push(`The Echo settled at M3. Not tested. View: ${r.screen.view}.`);
+      else if (r.echo === 'settled') out.push(`The Echo settled at M3. Not tested. Follow-up at M3: ${asked ? say(asked.question) : 'none'}. View: ${r.screen.view}.`);
       else {
         const e = r.screen.errand;
         const q = e?.question ?? null;
         out.push([
+          `Follow-up at M3: ${asked ? `${say(asked.question)}, answered "${LOOK.A.M3_follow_up}"` : 'none'}.`,
           `Echo: ${r.echo}. View: ${r.screen.view}.`,
-          r.screen.follow_up ? `A follow-up opened instead of the errand: ${say(r.screen.follow_up.question)}.` : '',
+          r.screen.follow_up ? `A follow-up is still open: ${say(r.screen.follow_up.question)}.` : '',
           `Observation: ${say(r.screen.observation)}.`,
           e ? `Errand card shown. Tag: ${say(e.tag)}. Who: ${say(e.who)}. Question: ${say(q)}.` : 'No errand card shown.',
           `Clipboard after "Copy question": ${say(r.copied)}. Same as the question on the card: ${r.copied === q ? 'yes' : 'no'}. Holds the who line: ${r.copied && e?.who && r.copied.includes(e.who) ? 'yes' : 'no'}.`,
