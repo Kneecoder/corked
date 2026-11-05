@@ -55,8 +55,12 @@
         element: c => (c.gapInPlay && c.gapState !== 'settled') ? 'gap' : 'tell',
         // What a park keeps when the worker can't write a brief: M2's own question.
         savedText: c => c.m2Question || null,
-        fallback: c => (!c.problemOnRecord || c.selfErrand) ? c.openErrandText
-          : c.m2Question || `Ask ${c.grapeName}: walk me through the last time this happened. What did you actually do?`
+        // A fallback splits who to find from the question to ask, the same as a brief.
+        fallback: c => ({
+          setup: null,
+          question: (!c.problemOnRecord || c.selfErrand) ? c.openErrandText
+            : c.m2Question || `Walk me through the last time this happened. What did you actually do?`
+        })
       }
     },
 
@@ -81,7 +85,10 @@
         label: 'find another person',
         mode: 'echo',
         element: () => 'echo',
-        fallback: c => `Find someone who hits this problem and is not ${c.grapeRef}. Ask them: walk me through how you handle it. What did you actually do the last time it came up?`
+        fallback: c => ({
+          setup: `Find someone who hits this problem and is not ${c.grapeRef}.`,
+          question: `Walk me through how you handle it. What did you actually do the last time it came up?`
+        })
       }
     },
 
@@ -108,7 +115,10 @@
         label: 'find a different kind of person',
         mode: 'contrast',
         element: () => 'echo',
-        fallback: c => `Find a second person who hits this problem, someone other than ${c.grapeRef} and whoever you named before. Ask what they've actually done about it.`
+        fallback: c => ({
+          setup: `Find a second person who hits this problem, someone other than ${c.grapeRef} and whoever you named before.`,
+          question: `What have you actually done about it?`
+        })
       }
     },
 
@@ -133,7 +143,12 @@
         mode: 'ask',
         selfErrand: true,
         element: () => 'gap',
-        fallback: c => c.selfErrand ? c.selfErrandText : `Find out what people currently use for this problem and exactly where it falls short.`
+        fallback: c => c.selfErrand
+          ? { setup: null, question: c.selfErrandText }
+          : {
+            setup: `Find out what people currently use for this problem.`,
+            question: `What do you use for this now, and exactly where does it fall short?`
+          }
       }
     },
 
@@ -166,7 +181,12 @@
         mode: 'words',
         selfErrand: true,
         element: () => 'words',
-        fallback: c => c.selfErrand ? c.selfErrandText : `Talk to ${c.grapeName} and bring back their exact words about this problem.`
+        fallback: c => c.selfErrand
+          ? { setup: null, question: c.selfErrandText }
+          : {
+            setup: `Talk to ${c.grapeName} and bring back their exact words about this problem.`,
+            question: `What happened the last time this came up?`
+          }
       }
     },
 
@@ -188,7 +208,10 @@
         label: "find someone who doesn't have it",
         mode: 'limit',
         element: () => 'limit',
-        fallback: () => `Find someone who looks like they should have this problem but doesn't, and find out why not.`
+        fallback: () => ({
+          setup: `Find someone who looks like they should have this problem but doesn't.`,
+          question: `When did this last come up for you, and what did you do? If it never has, why not?`
+        })
       }
     }
   };

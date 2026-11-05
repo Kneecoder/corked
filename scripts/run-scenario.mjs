@@ -205,11 +205,11 @@ function driver(page, rec) {
       await waitFor(() => {
         const ans = document.getElementById('ans');
         const btn = document.getElementById('p1-btn');
-        const obs = document.getElementById('obs-box')?.textContent || '';
-        return obs.startsWith('Worker error') || (ans.hasAttribute('readonly') && !btn.disabled);
+        const failed = document.getElementById('send-failed');
+        return failed.style.display === 'flex' || (ans.hasAttribute('readonly') && !btn.disabled);
       });
+      if (await visible('#send-failed')) throw new Error(await text('#send-failed'));
       const reading = await text('#obs-box');
-      if (reading.startsWith('Worker error')) throw new Error(reading);
       const followUp = await visible('#swirl-panel') ? await text('#swirl-q') : null;
       app.step('answered', { note: `${await text('#m-label')}` });
       return { question, reading, followUp };
@@ -220,11 +220,11 @@ function driver(page, rec) {
       await page.locator('#swirl-btn').click();
       await waitFor(() => {
         const panel = document.getElementById('swirl-panel');
-        const obs = document.getElementById('obs-box')?.textContent || '';
-        return obs.startsWith('Worker error') || panel.style.display === 'none';
+        const failed = document.getElementById('swirl-failed');
+        return failed.style.display === 'flex' || panel.style.display === 'none';
       });
+      if (await visible('#swirl-failed')) throw new Error(`Follow-up: ${await text('#swirl-failed')}`);
       const reading = await text('#obs-box');
-      if (reading.startsWith('Worker error')) throw new Error(`Follow-up: ${reading}`);
       app.step('answered the follow-up');
       return { reading };
     },
@@ -238,7 +238,9 @@ function driver(page, rec) {
         return;
       }
       const due = (await app.bottle())?.s?.questionOpensAt;
-      await page.locator('#p1-btn').click();
+      // An errand draws no main button while the question is held: the way back is the sidebar.
+      if (await visible('#p1-btn')) await page.locator('#p1-btn').click();
+      else await page.locator('.sb-back').first().click();
       await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
       app.step('back in the cellar, waiting out the hold', { note: `question due ${due}` });
       await app.waitForHoldToEnd();
@@ -655,11 +657,606 @@ const FIRST_MINUTE = {
   gone: ['Before the cellar', 'The cellar is making champagne', 'You are the grape']
 };
 
+// ── THE LOOK AND STATES SCENARIO: ITS INPUTS ──
+
+const LOOK = {
+  spark: 'An app for wedding photographers who lose their deposit when couples cancel two days before the shoot.',
+  pace: 'Every other day',
+  timing: 'Evening',
+  A: {
+    name: 'Lotte',
+    rel: 'my cousin, she shoots weddings',
+    M2: 'Last March a couple cancelled two days before their wedding. Lotte had already turned down another booking for that date. She emailed them twice asking for the fee, got no reply, and let it go.',
+    M3: "I don't know other wedding photographers well. I'd guess most of them just eat the loss."
+  },
+  B: {
+    name: 'Sanne',
+    rel: 'my friend, she shoots weddings',
+    M2: 'It happens a few times a year. She gets annoyed and moves on.'
+  },
+  failed_line: "Not sent. Corked couldn't be reached, so nothing went on record. Your answer is still here."
+};
+
 // ── SCENARIOS ──
 // Each scenario plays its steps into rec.screens and rec.checkpoints, then reports, for every
 // expected result, what happened. A report states facts. It never says pass or fail.
 
 const SCENARIOS = {
+  'look-and-states': {
+    title: 'Look and states',
+    expected: [
+      'No Winemaster circle or "THE WINEMASTER" anywhere. Question screens show the mechanism name, with no progress bar, "Element 2 of 7" or "Phase 1 element 2 of 7".',
+      'After Bottle A\'s M2: if something settled, the screen shows the observation, "What changed" with excerpts that appear character for character in the answer, the next-question line and "Back to the cellar", and no park buttons. If nothing settled, report it as not tested.',
+      'After the blocked M3 send: the answer is still in the field with the failure message and "Try again". After leaving and reopening the bottle, the answer is there again. After the retry, the history log holds that answer once.',
+      'After Bottle A\'s M3: if the Echo is turbid or clearing, the errand card shows, "Copy question" puts only the question on the clipboard, both park buttons show, and there is no "What changed". If the Echo settled, report it as not tested.',
+      'After Bottle B\'s M2: if a follow-up appears, it leads the screen with its field and "Continue →". If none appears, report it as not tested.',
+      'The label spells out the states, clearing and turbid rows are buttons that open the reopen, the bottle has no ticks, and the Grape row shows the name.',
+      'At 390×500, the question and the top of the answer field are visible without scrolling.'
+    ],
+
+    async play(app, rec) {
+      const page = app.page;
+      const dir = app.outDir;
+      const s = rec.screens = { gone_checks: [], typing: {}, fit_390x500: {}, shots: [], A: {}, B: {}, extras: {} };
+      const desktop = { width: 1440, height: 900 };
+      await page.setViewportSize(desktop);
+      await page.context().grantPermissions(['clipboard-read', 'clipboard-write'], { origin: `http://localhost:${PORT}` });
+
+      // A server left on the port would serve another copy of the app.
+      const served = await fetch(APP_URL.split('?')[0], { cache: 'no-store' }).then(r => r.text());
+      if (served !== await readFile(join(REPO, 'corked_v6.html'), 'utf8')) {
+        throw new Error('The page on port 8080 is not this checkout\'s app. Close Start Corked and run again.');
+      }
+
+      // Each screen at each size, once its typed lines are done, the first-entry animation is over
+      // and the saved note has gone. A screen taller than the size also gets a full-page picture.
+      const shoot = async (name, sizes = ['1440x900', '390x844']) => {
+        await page.waitForFunction(() => !document.querySelector('.typed-rest') && !document.querySelector('.cellar-entering')
+          && !document.querySelector('.sb-save.show'), undefined, { timeout: 30000, polling: 100 });
+        await page.evaluate(() => document.fonts.ready.then(() => true));
+        const files = [];
+        for (const size of sizes) {
+          const [width, height] = size.split('x').map(Number);
+          await page.setViewportSize({ width, height });
+          await page.waitForTimeout(200);
+          const file = `${name}-${size}.png`;
+          await page.screenshot({ path: join(dir, file) });
+          files.push(file);
+          const tall = await page.evaluate(() => document.documentElement.scrollHeight > window.innerHeight + 1);
+          if (tall) {
+            const fullFile = `${name}-${size}-full.png`;
+            await page.screenshot({ path: join(dir, fullFile), fullPage: true });
+            files.push(fullFile);
+          }
+        }
+        await page.setViewportSize(desktop);
+        await page.waitForTimeout(100);
+        s.shots.push({ screen: name, files });
+        app.step('screenshot', { note: name });
+      };
+
+      // What the question panel shows right now. Only what is on screen counts.
+      const screenNow = () => page.evaluate(() => {
+        const on = id => { const el = document.getElementById(id); return !!el && el.offsetParent !== null; };
+        const read = id => (document.getElementById(id)?.textContent || '').trim().replace(/\s+/g, ' ');
+        const within = (root, sel) => (root?.querySelector(sel)?.textContent || '').trim().replace(/\s+/g, ' ');
+        const errand = document.getElementById('inline-errand');
+        return {
+          view: document.getElementById('question-panel')?.dataset.view || null,
+          mechanism_label: on('m-label') ? read('m-label') : null,
+          phone_mechanism_label: read('ph-mech'),
+          question: on('m-q') ? read('m-q') : null,
+          observation: on('obs-box') ? read('obs-box') : null,
+          what_changed_shown: on('change-block'),
+          what_changed: [...document.querySelectorAll('#change-block .change-row')].map(row => ({
+            tag: row.querySelector('.change-tag').textContent.trim(),
+            words: row.querySelector('.change-words').textContent
+          })),
+          next_question_line: on('pace-line') ? read('pace-line') : null,
+          main_button: on('p1-btn') ? read('p1-btn') : null,
+          come_back_shown: on('rw-park-btn'),
+          asked_waiting_shown: on('rw-flight-btn'),
+          answer_field_shown: on('ans'),
+          answer_field_value: document.getElementById('ans')?.value ?? null,
+          failed_message: on('send-failed') ? read('send-failed') : null,
+          follow_up: on('swirl-panel') ? {
+            question: read('swirl-q'),
+            field_shown: on('swirl-ans'),
+            continue_button: read('swirl-btn'),
+            back_link: on('swirl-back') ? read('swirl-back') : null
+          } : null,
+          errand: on('inline-errand') ? {
+            tag: within(errand, '.brief-addressing'),
+            who: within(errand, '.brief-setup'),
+            question: within(errand, '.brief-q-text'),
+            copy_button: !!errand.querySelector('.brief-copy-btn')
+          } : null,
+          fold: on('answer-fold') ? read('fold-title') : null
+        };
+      });
+
+      // Every part the brief says is gone. The whole page: hidden parts and the app's own script included.
+      const goneCheck = async when => {
+        const found = await page.evaluate(() => {
+          const body = document.body.innerText;
+          return {
+            winemaster_anywhere_in_page: /winemaster/i.test(document.documentElement.outerHTML),
+            circle_parts: document.querySelectorAll('.wm-circle, .wm-avatar, .wm-label, .m0-seal').length,
+            progress_bars_on_question_screen: document.querySelectorAll('.prog-bar, .prog-fill, #prog, #m-count').length,
+            element_count_on_screen: /element\s+\d+\s+of\s+\d+/i.test(body),
+            spark_and_person_box: document.querySelectorAll('#spark-reminder').length,
+            curved_line: document.querySelectorAll('#element-thread').length
+          };
+        });
+        s.gone_checks.push({ when, ...found });
+      };
+
+      const labelNow = () => page.evaluate(() => ({
+        rows: [...document.querySelectorAll('#el-list .el-row')].map(row => ({
+          id: row.id.replace('elr-', ''),
+          name: row.querySelector('.el-name').textContent.trim().replace(/\s+/g, ' '),
+          state_word: row.querySelector('.el-state').textContent.trim(),
+          marker: row.querySelector('.el-mark').className.replace('el-mark', '').trim(),
+          is_button: row.tagName === 'BUTTON',
+          chevron: !!row.querySelector('svg'),
+          raised: row.classList.contains('is-raised')
+        })),
+        bottle: {
+          line_elements: document.querySelectorAll('#bottle-wrap svg line').length,
+          layers: [...document.querySelectorAll('#bottle-wrap svg rect[data-el]')].map(r => `${r.dataset.el} ${r.getAttribute('fill')}`)
+        }
+      }));
+
+      // Whether the question and the top of its field are in view, with no scrolling, at this size.
+      const fitAt390x500 = async (when, questionId, fieldId, shot) => {
+        await page.setViewportSize({ width: 390, height: 500 });
+        await page.waitForTimeout(200);
+        s.fit_390x500[when] = await page.evaluate(({ questionId, fieldId }) => {
+          const q = document.getElementById(questionId).getBoundingClientRect();
+          const f = document.getElementById(fieldId).getBoundingClientRect();
+          return {
+            scroll_y: window.scrollY,
+            viewport_height: window.innerHeight,
+            question_top: Math.round(q.top),
+            question_bottom: Math.round(q.bottom),
+            field_top: Math.round(f.top),
+            field_bottom: Math.round(f.bottom)
+          };
+        }, { questionId, fieldId });
+        await page.setViewportSize(desktop);
+        await shoot(shot, ['390x500']);
+      };
+
+      // The label on a phone: "View label" opens it, and the unfinished elements have their buttons.
+      const phoneLabel = async name => {
+        await page.setViewportSize({ width: 390, height: 844 });
+        await page.waitForTimeout(200);
+        const buttons = await page.locator('#ph-btns button').allTextContents();
+        await page.locator('.ph-view').click();
+        await page.waitForTimeout(200);
+        await page.screenshot({ path: join(dir, `${name}-390x844.png`) });
+        s.shots.push({ screen: name, files: [`${name}-390x844.png`] });
+        await page.locator('#sb-close').click();
+        await page.setViewportSize(desktop);
+        return buttons;
+      };
+
+      // Each clearing and turbid row is clicked: what opens, then back.
+      const openRows = async (rows, shotFirst) => {
+        const out = {};
+        let shot = false;
+        for (const row of rows.filter(r => r.state_word === 'clearing' || r.state_word === 'turbid')) {
+          await page.locator(`#elr-${row.id}`).click();
+          out[row.id] = {
+            state: row.state_word,
+            was_button: row.is_button,
+            review_shown: await page.locator('#review-panel').isVisible(),
+            reopen_shown: await page.locator('#rv-reopen').isVisible(),
+            reopen_label: await app.text('#rv-reopen-mech'),
+            reopen_question: await app.text('#rv-reopen-q')
+          };
+          if (!shot && shotFirst) { await shoot(shotFirst); shot = true; }
+          await page.locator('.review-back').click();
+          await page.locator('#question-panel').waitFor({ state: 'visible', timeout: STEP_TIMEOUT });
+        }
+        return out;
+      };
+
+      const bottleOf = name => page.evaluate(({ key, name }) =>
+        JSON.parse(localStorage.getItem(key) || '[]').find(b => b.s?.grape_name === name) || null, { key: CELLAR_KEY, name });
+      const logCount = (bottle, mech, answer) => (bottle?.s?.log || [])
+        .filter(e => e.type === 'answer' && e.mech === mech && e.answer === answer).length;
+      const card = id => page.locator(`[data-bottle-id="${id}"]`);
+      const openCard = async id => {
+        await card(id).locator('.bottle-card-line').click();
+        await page.waitForFunction(() => !document.querySelector('#screen-cellar.active'), undefined, { timeout: STEP_TIMEOUT });
+      };
+      const backToCellar = async () => {
+        if (await app.visible('#swirl-panel')) await page.locator('#swirl-back').click();
+        else if (await app.visible('#p1-btn') && (await app.text('#p1-btn')) === 'Back to the cellar') await page.locator('#p1-btn').click();
+        else await page.locator('.sb-back').first().click();
+        await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+      };
+      const waitForAnswerToLand = () => page.waitForFunction(() => {
+        const failed = document.getElementById('send-failed');
+        const ans = document.getElementById('ans');
+        const btn = document.getElementById('p1-btn');
+        return failed.style.display === 'flex' || (ans.hasAttribute('readonly') && !btn.disabled);
+      }, undefined, { timeout: STEP_TIMEOUT, polling: 100 });
+
+      // The steps a person takes to the first question. Same intake for both bottles.
+      const intake = async (bottle, { fromCellar, shots }) => {
+        const typed = await app.typeSpark(LOOK.spark, { fromCellar });
+        if (typed.field_value !== LOOK.spark) throw new Error('The spark did not reach the field.');
+        if (shots) await shoot('02-spark');
+        await app.openGate();
+        if (shots) await shoot('03-gate');
+        await app.passGate();
+        if (shots) await shoot('04-maturity-first');
+        await app.pickOption('Yes.');
+        if (shots) await shoot('05-maturity-second');
+        await app.pickOption('Yes, I can name them and I know the moment.');
+        await app.intakeContinue();
+        if (shots) await shoot('06-person-step');
+        await app.enterGrape(bottle.name, bottle.rel);
+        await app.waitForPhase1();
+        if (shots) { await goneCheck('grape recap'); await shoot('07-grape-recap'); }
+        await page.locator('#p1-btn').click();
+        await page.locator('#rhythm-panel.is-visible').waitFor({ timeout: STEP_TIMEOUT });
+        await page.locator('#rhythm-panel .rhythm-choice', { hasText: new RegExp(`^${LOOK.pace}$`) }).click();
+        await page.locator('#rhythm-panel .rhythm-choice', { hasText: new RegExp(`^${LOOK.timing}$`) }).click();
+        if (shots) await shoot('08-rhythm-picker');
+        await page.locator('#p1-btn:not([disabled])').click();
+        app.step('set the rhythm', { note: `${LOOK.pace}, ${LOOK.timing}` });
+      };
+
+      await app.open();
+      await goneCheck('landing');
+      await page.waitForTimeout(1300);
+      await shoot('01-landing');
+
+      // ── BOTTLE A ──
+      const A = LOOK.A;
+      const a = s.A;
+      await intake(A, { fromCellar: false, shots: true });
+      await goneCheck('after intake');
+      const m2a = await app.waitForM2();
+      a.m2_stage = m2a.stage;
+      if (m2a.stage === 'scene') throw new Error('M2 asked for the scene. The scenario has no scene answer.');
+      a.m2_question_screen = await screenNow();
+      await goneCheck('Bottle A, M2 question');
+      await shoot('09-a-m2-question');
+      await fitAt390x500('Bottle A, M2 question', 'm-q', 'ans', '09-a-m2-question');
+
+      await page.locator('#ans').fill(A.M2);
+      await page.locator('#p1-btn').click();
+      await waitForAnswerToLand();
+      a.after_m2 = await screenNow();
+      a.after_m2_bottle = checkpoint(await bottleOf(A.name));
+      a.after_m2_label = await labelNow();
+      await goneCheck('Bottle A, M2 reading');
+      await shoot('10-a-m2-after-answer');
+
+      await backToCellar();
+      await shoot('11-cellar-one-bottle');
+      const idA = (await bottleOf(A.name)).id;
+      await page.waitForFunction(({ key, id }) => {
+        const b = JSON.parse(localStorage.getItem(key) || '[]').find(x => x.id === id);
+        return !b?.s?.questionOpensAt || new Date(b.s.questionOpensAt).getTime() <= Date.now();
+      }, { key: CELLAR_KEY, id: idA }, { timeout: HOLD_TIMEOUT, polling: 1000 });
+      await page.waitForTimeout(1000);
+      app.step('the hold is over');
+      await openCard(idA);
+      await page.locator('#screen-phase1.active').waitFor({ timeout: STEP_TIMEOUT });
+      a.m2_return_visit = {
+        still_typing_on_arrival: await page.evaluate(() => !!document.querySelector('.typed-rest')),
+        stalled_note: await app.visible('#stalled-panel')
+      };
+      if (a.m2_return_visit.stalled_note) await page.getByRole('button', { name: 'Open the question →' }).click();
+      a.m2_return_visit.screen = await screenNow();
+      await app.continueToNext('Third-Party Workarounds');
+
+      // M3, first with the worker call blocked once.
+      a.m3_question_screen = await screenNow();
+      await goneCheck('Bottle A, M3 question');
+      await shoot('12-a-m3-question');
+      await fitAt390x500('Bottle A, M3 question', 'm-q', 'ans', '12-a-m3-question');
+      const beforeBlock = await bottleOf(A.name);
+      let blocked = 0;
+      const blockOnce = route => {
+        if (route.request().method() === 'POST' && !blocked) { blocked++; return route.abort('failed'); }
+        return route.continue();
+      };
+      await page.route('**/m3', blockOnce);
+      await page.locator('#ans').fill(A.M3);
+      await page.locator('#p1-btn').click();
+      await waitForAnswerToLand();
+      const afterBlock = await bottleOf(A.name);
+      a.blocked = {
+        blocked_calls: blocked,
+        screen: await screenNow(),
+        log_entries_for_this_answer: logCount(afterBlock, 'M3', A.M3),
+        elements_before: beforeBlock.s.elements,
+        elements_after: afterBlock.s.elements,
+        answers_m3_on_bottle: afterBlock.s.answers?.M3 ?? null,
+        draft_on_bottle: afterBlock.s.drafts?.M3 ?? null,
+        label: await labelNow()
+      };
+      await shoot('13-a-m3-failed-send');
+      await page.unroute('**/m3', blockOnce);
+
+      // Back to the cellar, open Bottle A again, and send the same answer.
+      await page.locator('.sb-back').first().click();
+      await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+      await openCard(idA);
+      await page.locator('#screen-phase1.active').waitFor({ timeout: STEP_TIMEOUT });
+      const reopened = await bottleOf(A.name);
+      a.reopened = {
+        still_typing_on_arrival: await page.evaluate(() => !!document.querySelector('.typed-rest')),
+        stalled_note: await app.visible('#stalled-panel')
+      };
+      if (a.reopened.stalled_note) await page.getByRole('button', { name: 'Open the question →' }).click();
+      a.reopened.screen = await screenNow();
+      a.reopened.log_entries_for_this_answer = logCount(reopened, 'M3', A.M3);
+      await shoot('14-a-m3-reopened-with-draft');
+      await page.locator('#p1-btn').click();
+      await waitForAnswerToLand();
+      const afterRetry = await bottleOf(A.name);
+      a.after_retry = {
+        screen: await screenNow(),
+        log_entries_for_this_answer: logCount(afterRetry, 'M3', A.M3),
+        log_entries_for_m3: (afterRetry.s.log || []).filter(e => e.type === 'answer' && e.mech === 'M3')
+          .map(e => ({ kind: e.kind, answer: e.answer, moved: e.moved })),
+        echo: afterRetry.s.elements.echo,
+        stored_brief: afterRetry.s.m3_pending_brief ?? null,
+        draft_left: afterRetry.s.drafts?.M3 ?? null,
+        failed_flag_left: !!afterRetry.s.failedSends?.M3
+      };
+      await goneCheck('Bottle A, M3 reading');
+      await shoot('15-a-m3-after-answer');
+
+      // Copy question, when the errand card is up.
+      if (await page.locator('#inline-errand .brief-copy-btn').count()) {
+        await page.locator('#inline-errand .brief-copy-btn').click();
+        a.after_retry.copied = await page.evaluate(() => navigator.clipboard.readText()).catch(err => `could not read the clipboard: ${err.message}`);
+        app.step('copied the question');
+      }
+
+      a.label_after_m3 = await labelNow();
+      a.rows_opened = await openRows(a.label_after_m3.rows, '16-a-row-opens-reopen');
+      a.phone_buttons = await phoneLabel('17-a-label-phone');
+      a.after_rows_view = await screenNow();
+
+      // ── BOTTLE B ──
+      const B = LOOK.B;
+      const b = s.B;
+      await page.locator('.sb-back').first().click();
+      await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+      await intake(B, { fromCellar: true, shots: false });
+      const m2b = await app.waitForM2();
+      b.m2_stage = m2b.stage;
+      if (m2b.stage === 'scene') throw new Error('M2 asked for the scene. The scenario has no scene answer.');
+      b.m2_question_screen = await screenNow();
+      await goneCheck('Bottle B, M2 question');
+      await shoot('18-b-m2-question');
+      await fitAt390x500('Bottle B, M2 question', 'm-q', 'ans', '18-b-m2-question');
+
+      await page.locator('#ans').fill(B.M2);
+      await page.locator('#p1-btn').click();
+      await waitForAnswerToLand();
+
+      // How the new line types out, while it does.
+      const restOfLine = () => page.evaluate(() => {
+        const rest = document.querySelector('.typed-rest');
+        return rest ? { where: rest.closest('[id]')?.id || null, left: rest.textContent.length } : null;
+      });
+      const first = await restOfLine();
+      await page.waitForTimeout(500);
+      const second = await restOfLine();
+      s.typing.after_bottle_b_answer = {
+        line_still_typing: first,
+        half_a_second_later: second,
+        characters_per_second: first && second && first.where === second.where ? (first.left - second.left) * 2 : null
+      };
+      if (second) {
+        await page.mouse.click(600, 880);
+        await page.waitForTimeout(50);
+        s.typing.after_a_click = { still_typing: await page.evaluate(() => !!document.querySelector('.typed-rest')) };
+      }
+
+      b.after_m2 = await screenNow();
+      b.after_m2_bottle = checkpoint(await bottleOf(B.name));
+      b.follow_up_position = await page.evaluate(() => {
+        const top = id => { const el = document.getElementById(id); return el && el.offsetParent !== null ? Math.round(el.getBoundingClientRect().top) : null; };
+        return { observation: top('obs-box'), follow_up: top('swirl-panel'), what_changed: top('change-block'), errand: top('inline-errand'), fold: top('answer-fold') };
+      });
+      await goneCheck('Bottle B, M2 reading');
+      await shoot('19-b-m2-after-answer');
+      if (b.after_m2.follow_up) await fitAt390x500('Bottle B, follow-up', 'swirl-q', 'swirl-ans', '19-b-m2-after-answer');
+
+      b.label = await labelNow();
+      b.rows_opened = await openRows(b.label.rows, '20-b-row-opens-reopen');
+      b.phone_buttons = await phoneLabel('21-b-label-phone');
+      b.after_rows_view = await screenNow();
+
+      // The export the scenario asks for.
+      const firstExport = join(dir, `run-${rec.run}-cellar.json`);
+      await app.exportCellar(firstExport);
+      rec.exported = true;
+      rec.cellars = { first: JSON.parse(await readFile(firstExport, 'utf8')) };
+      await shoot('22-cellar-two-bottles');
+
+      // ── SCREENS THE PACK DOESN'T DRAW, AFTER THE EXPORT ──
+      // Reached by clicks, on the bottles the run made. What they do here isn't in the export above.
+      const x = s.extras;
+      const idB = (await bottleOf(B.name)).id;
+
+      await openCard(idA);
+      await page.locator('#screen-phase1.active').waitFor({ timeout: STEP_TIMEOUT });
+      if (await app.visible('#stalled-panel')) await page.getByRole('button', { name: 'Open the question →' }).click();
+      if (await app.visible('#rw-park-btn')) {
+        await page.locator('#rw-park-btn').click();
+        await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+        x.parked_card = (await card(idA).locator('.bottle-card-status').textContent()).trim();
+        await shoot('23-cellar-parked');
+        await openCard(idA);
+        await page.locator('#dormant-panel').waitFor({ state: 'visible', timeout: STEP_TIMEOUT });
+        x.dormant_panel = (await page.locator('#dormant-panel-body').innerText()).trim();
+        await shoot('24-dormant-parked');
+        await page.locator('.sb-back').first().click();
+        await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+      } else {
+        x.parked_card = 'Bottle A shows no "Come back to this", so this wasn\'t reached.';
+      }
+
+      // A bottle behind pace with a turbid element shows the stalled note.
+      const bottleB = await bottleOf(B.name);
+      if (Object.values(bottleB.s.elements).includes('turbid') && bottleB.s.questionOpensAt) {
+        await page.waitForFunction(at => Date.now() >= at, new Date(bottleB.s.questionOpensAt).getTime() + 32000,
+          { timeout: HOLD_TIMEOUT + 60000, polling: 1000 });
+        await openCard(idB);
+        await page.locator('#screen-phase1.active').waitFor({ timeout: STEP_TIMEOUT });
+        x.stalled_shown = await app.visible('#stalled-panel');
+        if (x.stalled_shown) {
+          x.stalled_panel = (await page.locator('#stalled-panel-body').innerText()).trim();
+          await shoot('25-stalled');
+        }
+        await page.locator('.sb-back').first().click();
+        await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+      } else {
+        x.stalled_shown = 'Bottle B has no turbid element, so the stalled note wasn\'t reached.';
+      }
+
+      // "Archive this spark" on the card. An archived bottle opens on the label screen.
+      await card(idB).locator('.bottle-card-archive').click();
+      await page.waitForTimeout(200);
+      x.archived_card = (await card(idB).locator('.bottle-card-status').textContent()).trim();
+      x.archive_button_left_on_that_card = await card(idB).locator('.bottle-card-archive').count();
+      x.archive_button_in_sidebar = await page.locator('#sb-archive-btn').count();
+      await shoot('26-cellar-archived');
+      await openCard(idB);
+      await page.locator('#screen-label.active').waitFor({ timeout: STEP_TIMEOUT });
+      await shoot('27-label-screen');
+      x.label_screen = await page.evaluate(() => [...document.querySelectorAll('#vc .vc-field')].map(f => ({
+        name: f.querySelector('.vc-field-name').textContent.trim().replace(/\s+/g, ' '),
+        state_word: f.querySelector('.el-state').textContent.trim(),
+        is_button: f.tagName === 'BUTTON'
+      })));
+      await app.labelBackToCellar();
+      await app.exportCellar(join(dir, `run-${rec.run}-cellar-after-extras.json`));
+      app.step('done');
+    },
+
+    report(rec) {
+      const s = rec.screens || {};
+      const a = s.A || {};
+      const b = s.B || {};
+      const out = [];
+      const notReached = 'Not reached.';
+      const say = v => v === null || v === undefined ? 'none' : `"${v}"`;
+
+      // 1
+      const checks = s.gone_checks || [];
+      const hits = checks.flatMap(c => Object.entries(c).filter(([k, v]) => k !== 'when' && v).map(([k, v]) => `${c.when}: ${k} = ${v}`));
+      const labels = [
+        ['Bottle A M2', a.m2_question_screen], ['Bottle A M3', a.m3_question_screen], ['Bottle B M2', b.m2_question_screen]
+      ].filter(([, screen]) => screen).map(([where, screen]) => `${where}: label "${screen.mechanism_label}", phone top bar "${screen.phone_mechanism_label}"`);
+      out.push(`Checked the whole page at ${checks.length} points (${checks.map(c => c.when).join(', ')}). Found: ${hits.length ? hits.join('; ') : 'nothing'}. ${labels.join('. ')}.`);
+
+      // 2
+      const m2Moves = (a.after_m2_bottle?.log || []).filter(e => e.type === 'answer' && e.mech === 'M2').flatMap(e => e.moved || []);
+      if (!a.after_m2) out.push(notReached);
+      else if (!m2Moves.some(m => m.to === 'settled')) {
+        out.push(`Nothing settled at Bottle A's M2 (moves: ${m2Moves.map(m => `${m.element} ${m.from}→${m.to}`).join(', ') || 'none'}). Not tested. Screen view: ${a.after_m2.view}.`);
+      } else {
+        const typed = LOOK.A.M2;
+        const rows = a.after_m2.what_changed.map(r => `${r.tag}: "${r.words}" (character for character in the answer: ${typed.includes(r.words) ? 'yes' : 'no'})`);
+        out.push([
+          `Moves: ${m2Moves.map(m => `${m.element} ${m.from}→${m.to}`).join(', ')}. View: ${a.after_m2.view}.`,
+          `Observation: ${say(a.after_m2.observation)}.`,
+          `"What changed" shown: ${a.after_m2.what_changed_shown ? 'yes' : 'no'}. Rows: ${rows.join('; ') || 'none'}.`,
+          `Next-question line: ${say(a.after_m2.next_question_line)}. Main button: ${say(a.after_m2.main_button)}.`,
+          `"Come back to this" shown: ${a.after_m2.come_back_shown ? 'yes' : 'no'}. "Asked, waiting on a reply" shown: ${a.after_m2.asked_waiting_shown ? 'yes' : 'no'}.`,
+          a.after_m2.follow_up ? `A follow-up also opened: ${say(a.after_m2.follow_up.question)}.` : 'No follow-up.'
+        ].join(' '));
+      }
+
+      // 3
+      if (!a.blocked) out.push(notReached);
+      else {
+        const shown = a.blocked.screen;
+        const back = a.reopened?.screen;
+        out.push([
+          `Calls blocked: ${a.blocked.blocked_calls}. Field shown: ${shown.answer_field_shown ? 'yes' : 'no'}. Field holds the answer: ${shown.answer_field_value === LOOK.A.M3 ? 'yes' : 'no'}.`,
+          `Message: ${say(shown.failed_message)}. Same as the brief's line: ${shown.failed_message === LOOK.failed_line ? 'yes' : 'no'}. Main button: ${say(shown.main_button)}.`,
+          `Park links shown: ${shown.come_back_shown && shown.asked_waiting_shown ? 'both' : 'not both'}.`,
+          `On the bottle after the block: log entries for this answer ${a.blocked.log_entries_for_this_answer}, answers.M3 ${say(a.blocked.answers_m3_on_bottle)}, elements changed ${JSON.stringify(a.blocked.elements_before) === JSON.stringify(a.blocked.elements_after) ? 'no' : 'yes'}, draft is the answer ${a.blocked.draft_on_bottle === LOOK.A.M3 ? 'yes' : 'no'}.`,
+          back ? `After leaving and reopening: field shown ${back.answer_field_shown ? 'yes' : 'no'}, holds the answer ${back.answer_field_value === LOOK.A.M3 ? 'yes' : 'no'}, message ${say(back.failed_message)}, main button ${say(back.main_button)}, a line typing on arrival ${a.reopened.still_typing_on_arrival ? 'yes' : 'no'}.` : 'Reopen not reached.',
+          a.after_retry ? `After the retry: log entries holding this answer ${a.after_retry.log_entries_for_this_answer}. All M3 entries: ${JSON.stringify(a.after_retry.log_entries_for_m3.map(e => ({ kind: e.kind, moved: e.moved.map(m => `${m.element} ${m.from}→${m.to}`) })))}. Draft left: ${say(a.after_retry.draft_left)}.` : 'Retry not reached.'
+        ].join(' '));
+      }
+
+      // 4
+      const r = a.after_retry;
+      if (!r) out.push(notReached);
+      else if (r.echo === 'settled') out.push(`The Echo settled at M3. Not tested. View: ${r.screen.view}.`);
+      else {
+        const e = r.screen.errand;
+        const q = e?.question ?? null;
+        out.push([
+          `Echo: ${r.echo}. View: ${r.screen.view}.`,
+          r.screen.follow_up ? `A follow-up opened instead of the errand: ${say(r.screen.follow_up.question)}.` : '',
+          `Observation: ${say(r.screen.observation)}.`,
+          e ? `Errand card shown. Tag: ${say(e.tag)}. Who: ${say(e.who)}. Question: ${say(q)}.` : 'No errand card shown.',
+          `Clipboard after "Copy question": ${say(r.copied)}. Same as the question on the card: ${r.copied === q ? 'yes' : 'no'}. Holds the who line: ${r.copied && e?.who && r.copied.includes(e.who) ? 'yes' : 'no'}.`,
+          `"Come back to this" shown: ${r.screen.come_back_shown ? 'yes' : 'no'}. "Asked, waiting on a reply" shown: ${r.screen.asked_waiting_shown ? 'yes' : 'no'}.`,
+          `"What changed" shown: ${r.screen.what_changed_shown ? 'yes' : 'no'}.`,
+          `The stored brief: ${JSON.stringify(r.stored_brief)}.`
+        ].filter(Boolean).join(' '));
+      }
+
+      // 5
+      if (!b.after_m2) out.push(notReached);
+      else if (!b.after_m2.follow_up) {
+        const moves = (b.after_m2_bottle?.log || []).filter(e => e.type === 'answer' && e.mech === 'M2').flatMap(e => e.moved || []);
+        out.push(`No follow-up appeared. Not tested. View: ${b.after_m2.view}. Moves: ${moves.map(m => `${m.element} ${m.from}→${m.to}`).join(', ') || 'none'}.`);
+      } else {
+        const f = b.after_m2.follow_up;
+        const p = b.follow_up_position;
+        out.push([
+          `View: ${b.after_m2.view}. Observation: ${say(b.after_m2.observation)}.`,
+          `Follow-up: ${say(f.question)}. Field shown: ${f.field_shown ? 'yes' : 'no'}. Button: ${say(f.continue_button)}. Quiet link: ${say(f.back_link)}.`,
+          `Top of each part on the page, in pixels: observation ${p.observation}, follow-up ${p.follow_up}, What changed ${p.what_changed ?? 'not shown'}, errand ${p.errand ?? 'not shown'}, fold ${p.fold ?? 'not shown'}.`,
+          `Park buttons shown: ${b.after_m2.come_back_shown || b.after_m2.asked_waiting_shown ? 'yes' : 'no'}. Fold title: ${say(b.after_m2.fold)}.`
+        ].join(' '));
+      }
+
+      // 6
+      const labelLine = (name, label, opened) => !label ? `${name}: not reached.` : [
+        `${name} rows: ${label.rows.map(x => `${x.name} [${x.state_word}, ${x.marker}${x.is_button ? ', button' : ''}${x.chevron ? ', chevron' : ''}${x.raised ? ', raised' : ''}]`).join('; ')}.`,
+        `Rows clicked: ${Object.entries(opened || {}).map(([k, v]) => `${k} (${v.state}): reopen shown ${v.reopen_shown ? 'yes' : 'no'}, "${v.reopen_label}", question "${v.reopen_question}"`).join('; ') || 'no clearing or turbid row'}.`,
+        `Bottle: ${label.bottle.line_elements} line elements. Layers: ${label.bottle.layers.join(', ')}.`
+      ].join(' ');
+      out.push([
+        labelLine('Bottle A after M3', a.label_after_m3, a.rows_opened),
+        labelLine('Bottle B after M2', b.label, b.rows_opened),
+        `Phone buttons: Bottle A ${JSON.stringify(a.phone_buttons || [])}, Bottle B ${JSON.stringify(b.phone_buttons || [])}.`,
+        a.after_m2_label ? `On Bottle A's M2 reading, rows raised: ${a.after_m2_label.rows.filter(x => x.raised).map(x => x.name).join(', ') || 'none'}.` : '',
+        s.extras?.label_screen ? `Label screen: ${s.extras.label_screen.map(x => `${x.name} [${x.state_word}${x.is_button ? ', button' : ''}]`).join('; ')}.` : ''
+      ].filter(Boolean).join(' '));
+
+      // 7
+      const fits = Object.entries(s.fit_390x500 || {});
+      out.push(fits.length ? fits.map(([when, f]) =>
+        `${when}: scrolled ${f.scroll_y}px; question ${f.question_top} to ${f.question_bottom}; field top ${f.field_top}; screen ends at ${f.viewport_height}. Question all in view: ${f.question_top >= 0 && f.question_bottom <= f.viewport_height ? 'yes' : 'no'}. Top of the field in view: ${f.field_top < f.viewport_height ? `yes, ${f.viewport_height - f.field_top}px of it` : 'no'}.`
+      ).join(' ') : notReached);
+
+      if (rec.broke_off) out[out.length - 1] += ` Broke off: ${rec.broke_off}`;
+      out[out.length - 1] += ` Page errors: ${rec.page_errors.length ? rec.page_errors.join('; ') : 'none'}.`;
+      return out;
+    }
+  },
+
   'first-minute': {
     title: 'First minute',
     expected: [

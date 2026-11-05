@@ -80,7 +80,19 @@ test('every errand has what a park needs', () => {
     assert.equal(typeof errand.label, 'string', id);
     assert.equal(typeof errand.mode, 'string', id);
     assert.equal(typeof errand.element({}), 'string', id);
-    assert.equal(typeof errand.fallback({ grapeName: 'Sam', grapeRef: 'Sam', problemOnRecord: true }), 'string', id);
+    const fallback = errand.fallback({ grapeName: 'Sam', grapeRef: 'Sam', problemOnRecord: true, selfErrandText: 'note' });
+    assert.equal(typeof fallback.question, 'string', id);
+    assert.ok(fallback.setup === null || typeof fallback.setup === 'string', id);
+  }
+});
+
+test('a fallback brief splits who to find from the question to ask', () => {
+  for (const id of ['M3', 'M4', 'M5', 'M6', 'M7']) {
+    const { setup, question } = M.get(id).errand.fallback({ grapeName: 'Sam', grapeRef: 'Sam', problemOnRecord: true });
+    assert.equal(typeof setup, 'string', id);
+    assert.ok(setup.length > 0, id);
+    assert.doesNotMatch(question, /^(Find|Talk to|Ask)\b/, id);
+    assert.equal(question.includes(setup), false, id);
   }
 });
 
@@ -97,10 +109,10 @@ test('M2\'s errand asks about the Gap while it is in play and not settled', () =
 
 test('M2\'s fallback: no problem on record gives the open errand', () => {
   const { fallback } = M.get('M2').errand;
-  assert.equal(fallback({ problemOnRecord: false, openErrandText: 'open', m2Question: 'q' }), 'open');
-  assert.equal(fallback({ problemOnRecord: true, selfErrand: true, openErrandText: 'open', m2Question: 'q' }), 'open');
-  assert.equal(fallback({ problemOnRecord: true, openErrandText: 'open', m2Question: 'q' }), 'q');
-  assert.match(fallback({ problemOnRecord: true, openErrandText: 'open', grapeName: 'Sam' }), /^Ask Sam: /);
+  assert.equal(fallback({ problemOnRecord: false, openErrandText: 'open', m2Question: 'q' }).question, 'open');
+  assert.equal(fallback({ problemOnRecord: true, selfErrand: true, openErrandText: 'open', m2Question: 'q' }).question, 'open');
+  assert.equal(fallback({ problemOnRecord: true, openErrandText: 'open', m2Question: 'q' }).question, 'q');
+  assert.match(fallback({ problemOnRecord: true, openErrandText: 'open', grapeName: 'Sam' }).question, /^Walk me through /);
 });
 
 test('copy: self mode is in the second person and names nobody', () => {
@@ -134,7 +146,10 @@ test('copy: no dashes in anything a builder reads', () => {
       assert.equal(dash.test(copy.question({ selfMode, grapeName: 'Sam', grape: 'Sam' })), false, `${id} question`);
       if (copy.goFind) assert.equal(dash.test(copy.goFind({ selfMode, grapeName: 'Sam' })), false, `${id} goFind`);
     }
-    if (errand) assert.equal(dash.test(errand.fallback({ grapeName: 'Sam', grapeRef: 'Sam', problemOnRecord: true })), false, `${id} fallback`);
+    if (errand) {
+      const { setup, question } = errand.fallback({ grapeName: 'Sam', grapeRef: 'Sam', problemOnRecord: true, selfErrandText: 'note' });
+      assert.equal(dash.test(`${setup || ''} ${question}`), false, `${id} fallback`);
+    }
   }
   assert.equal(dash.test(M.SELF_ERRAND_TEXT), false);
 });
