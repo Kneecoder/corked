@@ -73,7 +73,7 @@ function driver(page, rec) {
     // cycling placeholder first, because a field that hasn't got one isn't the field a person meets.
     async typeSpark(spark, { fromCellar = false } = {}) {
       if (fromCellar) await page.getByRole('button', { name: 'Add Spark' }).click();
-      else await page.locator('#bottle-cta-svg').click();
+      else await page.locator('#bottle-cta').click();
       await page.locator('#screen-intake.active .ph-overlay').waitFor({ state: 'attached', timeout: STEP_TIMEOUT });
       const field = page.locator('#f-inp');
       await field.click();
@@ -911,9 +911,23 @@ const SCENARIOS = {
       };
 
       await app.open();
+      // The opening lines: typed on the first visit, the button there from the start, nothing moving under them.
+      const landingNow = () => page.evaluate(() => {
+        const button = document.getElementById('bottle-cta');
+        return {
+          typing: !!document.querySelector('#screen-landing .typed-rest'),
+          button_shown: button.offsetParent !== null,
+          button_top: Math.round(button.getBoundingClientRect().top)
+        };
+      });
+      s.typing.landing_on_first_open = await landingNow();
       await goneCheck('landing');
-      await page.waitForTimeout(1300);
       await shoot('01-landing');
+      s.typing.landing_when_typed = await landingNow();
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await page.locator('#screen-landing.active').waitFor({ timeout: STEP_TIMEOUT });
+      s.typing.landing_after_a_reload = await landingNow();
+      app.step('reloaded the landing');
 
       // ── BOTTLE A ──
       const A = LOOK.A;
@@ -1084,12 +1098,43 @@ const SCENARIOS = {
       await app.exportCellar(firstExport);
       rec.exported = true;
       rec.cellars = { first: JSON.parse(await readFile(firstExport, 'utf8')) };
+
+      // What each cellar card shows, the way the page draws it.
+      const cardsNow = () => page.evaluate(() => ({
+        archived_heading: document.getElementById('cellar-archived').offsetParent !== null
+          ? document.querySelector('.cellar-archived-title').textContent.trim() : null,
+        export_line_is_last: document.querySelector('.cellar-page').lastElementChild.classList.contains('cellar-export-row'),
+        cards: [...document.querySelectorAll('.bottle-card')].map(card => {
+          const css = getComputedStyle(card);
+          const status = card.querySelector('.bottle-card-status');
+          return {
+            group: card.closest('#cellar-archived') ? 'archived' : 'rack',
+            status: status.textContent.trim(),
+            status_colour: getComputedStyle(status).color,
+            date: card.querySelector('.bottle-card-date').textContent.trim(),
+            border: css.borderTopColor,
+            shadow: css.boxShadow,
+            background: css.backgroundColor,
+            opacity: css.opacity,
+            spark_colour: getComputedStyle(card.querySelector('.bottle-card-line')).color,
+            bottle_transform: getComputedStyle(card.querySelector('.bottle-card-bottle svg')).transform,
+            archive_links: card.querySelectorAll('.bottle-card-archive').length,
+            dots: card.querySelectorAll('.bottle-card-dot').length
+          };
+        })
+      }));
+      s.extras.cellar_two_bottles = await cardsNow();
       await shoot('22-cellar-two-bottles');
 
       // ── SCREENS THE PACK DOESN'T DRAW, AFTER THE EXPORT ──
       // Reached by clicks, on the bottles the run made. What they do here isn't in the export above.
       const x = s.extras;
       const idB = (await bottleOf(B.name)).id;
+      x.confirms = [];
+      page.on('dialog', dialog => {
+        x.confirms.push(dialog.message());
+        dialog.accept();
+      });
 
       await openCard(idA);
       await page.locator('#screen-phase1.active').waitFor({ timeout: STEP_TIMEOUT });
@@ -1098,6 +1143,7 @@ const SCENARIOS = {
         await page.locator('#rw-park-btn').click();
         await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
         x.parked_card = (await card(idA).locator('.bottle-card-status').textContent()).trim();
+        x.cellar_parked = await cardsNow();
         await shoot('23-cellar-parked');
         await openCard(idA);
         await page.locator('#dormant-panel').waitFor({ state: 'visible', timeout: STEP_TIMEOUT });
@@ -1123,20 +1169,24 @@ const SCENARIOS = {
         }
         await page.locator('.sb-back').first().click();
         await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+        // Back in the cellar the card is redrawn: a question ready, and the bottle leaning if it's behind pace.
+        x.cellar_question_ready = await cardsNow();
+        await shoot('26-cellar-question-ready');
       } else {
         x.stalled_shown = 'Bottle B has no turbid element, so the stalled note wasn\'t reached.';
       }
 
-      // "Archive this spark" on the card. An archived bottle opens on the label screen.
+      // "Archive" on the card asks once. An archived bottle sits in its own group and opens on the label screen.
       await card(idB).locator('.bottle-card-archive').click();
       await page.waitForTimeout(200);
       x.archived_card = (await card(idB).locator('.bottle-card-status').textContent()).trim();
       x.archive_button_left_on_that_card = await card(idB).locator('.bottle-card-archive').count();
       x.archive_button_in_sidebar = await page.locator('#sb-archive-btn').count();
-      await shoot('26-cellar-archived');
+      x.cellar_archived = await cardsNow();
+      await shoot('27-cellar-archived');
       await openCard(idB);
       await page.locator('#screen-label.active').waitFor({ timeout: STEP_TIMEOUT });
-      await shoot('27-label-screen');
+      await shoot('28-label-screen');
       x.label_screen = await page.evaluate(() => [...document.querySelectorAll('#vc .vc-field')].map(f => ({
         name: f.querySelector('.vc-field-name').textContent.trim().replace(/\s+/g, ' '),
         state_word: f.querySelector('.el-state').textContent.trim(),
@@ -1144,6 +1194,15 @@ const SCENARIOS = {
       })));
       await app.labelBackToCellar();
       await app.exportCellar(join(dir, `run-${rec.run}-cellar-after-extras.json`));
+
+      // The × stays as it works now. With both bottles gone, the empty cellar.
+      for (const id of [idA, idB]) {
+        await card(id).hover();
+        await card(id).locator('.bottle-card-del').click();
+        await card(id).waitFor({ state: 'detached', timeout: STEP_TIMEOUT });
+      }
+      x.empty_cellar = (await page.locator('#cellar-list').innerText()).trim();
+      await shoot('29-cellar-empty');
       app.step('done');
     },
 

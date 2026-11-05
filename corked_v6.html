@@ -32,11 +32,6 @@
   --mono: 'IBM Plex Mono', ui-monospace, monospace;
 }
 
-/* ── ANIMATIONS ── */
-@keyframes landing-fade {
-  from { opacity:0; transform:translateY(12px); }
-  to   { opacity:1; transform:translateY(0); }
-}
 
 body {
   background:var(--paper); color:var(--ink);
@@ -66,7 +61,7 @@ button, input, textarea { font-family:inherit; color:inherit; }
   font-family:var(--sans); font-size:16px; font-weight:500; cursor:pointer;
 }
 .btn:disabled { opacity:.6; cursor:default; }
-.btn-second, .btn-sm {
+.btn-second {
   display:inline-block; background:var(--paper-raised); color:var(--ink);
   border:1px solid var(--ink); border-radius:2px; padding:0 20px; min-height:52px;
   font-family:var(--sans); font-size:16px; font-weight:500; cursor:pointer;
@@ -79,60 +74,25 @@ button, input, textarea { font-family:inherit; color:inherit; }
 .btn-ghost:disabled { opacity:.6; cursor:default; }
 
 /* ── LANDING ── */
-#screen-landing {
-  flex-direction:column; align-items:center; justify-content:center;
-  text-align:center; padding:64px 24px 80px; position:relative; overflow:hidden;
-}
-#landing-copy-container { display:grid; width:100%; max-width:520px; margin-bottom:40px; }
-.landing-section { grid-area:1/1; opacity:0; pointer-events:none; text-align:center; padding:0 8px; }
-.landing-section.ls-active { opacity:1; pointer-events:auto; }
-.ls-transitions-active .landing-section { transition:opacity 800ms ease; }
-.ls-logo { font-size:40px; line-height:1.15; font-weight:600; letter-spacing:-.025em; margin-bottom:20px; }
-.ls-header { font-size:28px; line-height:1.3; font-weight:600; letter-spacing:-.02em; margin-bottom:20px; }
-.ls-rule { width:40px; height:1px; background:var(--rule); margin:0 auto 20px; }
-.ls-body { font-size:16px; line-height:1.55; color:var(--ink-2); }
-.ls-body p { margin-bottom:12px; }
-.ls-body p:last-child { margin-bottom:0; }
-#nav-dots { display:flex; gap:8px; justify-content:center; }
-.dot { width:9px; height:9px; border:1px solid var(--ink); cursor:pointer; flex-shrink:0; background:transparent; }
-.dot.dot-active { background:var(--ink); }
-
-@keyframes spark-outer-flicker {
-  0%   { opacity:.55; transform:translate(0px,0px)    scale(1);    }
-  20%  { opacity:.9;  transform:translate(-1.5px,.5px) scale(1.12); }
-  45%  { opacity:.65; transform:translate(.5px,-.8px)  scale(.93);  }
-  70%  { opacity:1;   transform:translate(-.8px,.3px)  scale(1.07); }
-  85%  { opacity:.7;  transform:translate(.3px,-.5px)  scale(.98);  }
-  100% { opacity:.55; transform:translate(0px,0px)    scale(1);    }
-}
-@keyframes spark-core-flicker {
-  0%   { opacity:.75; transform:translate(0,0)        scale(1);   }
-  28%  { opacity:1;   transform:translate(-1px,-1px)  scale(1.2); }
-  55%  { opacity:.6;  transform:translate(.8px,.6px)  scale(.88); }
-  80%  { opacity:.95; transform:translate(-.5px,.3px) scale(1.1); }
-  100% { opacity:.75; transform:translate(0,0)        scale(1);   }
-}
-
-/* Sideways bottle CTA */
-.bottle-cta-wrap {
-  display:flex; flex-direction:column; align-items:center; gap:20px; cursor:pointer;
-  animation:landing-fade .9s ease both; animation-delay:.3s;
-}
-.bottle-cta-svg { display:block; overflow:visible; }
-#spark-group { opacity:0; transition:opacity .2s ease; }
-.bottle-cta-wrap:hover #spark-group { opacity:1; }
-#spark-outer, #spark-core { transform-box:fill-box; transform-origin:center; }
-.bottle-cta-wrap:hover #spark-outer { animation:spark-outer-flicker 1.3s ease-in-out infinite; }
-.bottle-cta-wrap:hover #spark-core { animation:spark-core-flicker 1.7s ease-in-out infinite; }
-#cta-cork { opacity:0; transform:translateX(-60px); }
-#bloom-ring { opacity:0; }
-#bloom-core-el { opacity:0; }
-#cta-fill-glow { opacity:0; }
-.bottle-cta-label {
-  display:flex; align-items:center; justify-content:center;
-  background:var(--wine); color:var(--paper-raised); border-radius:2px; padding:0 28px; min-height:52px;
-  font-size:16px; font-weight:500;
-}
+#screen-landing { flex-direction:column; align-items:stretch; }
+.ld-first { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:72px 64px; }
+.ld-first-inner { width:100%; max-width:1040px; display:grid; grid-template-columns:minmax(0, 1fr) 280px; gap:64px; align-items:center; }
+.ld-text { display:flex; flex-direction:column; gap:40px; max-width:620px; }
+.ld-head { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; }
+.ld-mark { display:flex; flex-direction:column; gap:22px; }
+.ld-wordmark { font-family:var(--serif); font-size:88px; line-height:1; font-weight:400; letter-spacing:-.015em; }
+.ld-rule { width:64px; height:3px; background:var(--wine); }
+.ld-lines { display:flex; flex-direction:column; gap:22px; font-family:var(--mono); font-size:18px; line-height:1.7; }
+.ls-line { white-space:pre-line; text-wrap:pretty; }
+.ld-cork { align-self:flex-start; min-height:56px; padding:0 36px; font-size:17px; }
+.ld-bottle { display:flex; justify-content:center; }
+.ld-bottle svg, .ld-bottle-phone svg { display:block; }
+.ld-bottle-phone { display:none; }
+.ld-more { border-top:1px solid var(--rule); padding:72px 64px 96px; display:flex; justify-content:center; }
+.ld-more-inner { width:100%; max-width:1040px; display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:64px; }
+.ld-block { display:flex; flex-direction:column; gap:16px; }
+.ld-block h2 { font-size:26px; line-height:1.25; font-weight:600; letter-spacing:-.015em; }
+.ld-block p { font-size:17px; line-height:1.6; color:var(--ink-2); text-wrap:pretty; }
 
 /* ── INTAKE ── */
 #screen-intake { flex-direction:column; align-items:center; justify-content:flex-start; padding:96px 24px 80px; }
@@ -503,38 +463,49 @@ button, input, textarea { font-family:inherit; color:inherit; }
 .label-note { font-size:15px; color:var(--ink-2); max-width:440px; line-height:1.55; }
 
 /* ── CELLAR ── */
-#screen-cellar { flex-direction:column; align-items:stretch; }
-.cellar-header {
-  display:flex; align-items:center; justify-content:space-between; gap:16px;
-  padding:36px 64px 28px; background:var(--sidebar); border-bottom:1px solid var(--rule); flex-shrink:0;
+#screen-cellar { flex-direction:column; align-items:center; padding:56px 64px 64px; }
+.cellar-page { width:100%; max-width:1040px; display:flex; flex-direction:column; gap:28px; }
+.cellar-header { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; padding-bottom:22px; border-bottom:1px solid var(--rule); }
+.cellar-title { display:flex; flex-direction:column; gap:6px; }
+.cellar-wordmark { font-family:var(--serif); font-size:48px; line-height:1; font-weight:400; letter-spacing:-.01em; }
+.cellar-add { display:flex; align-items:center; gap:8px; min-height:48px; padding:0 20px; font-size:15px; }
+.cellar-list, .cellar-archived-list { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:20px; align-items:stretch; }
+.cellar-archived-list { align-items:start; }
+.cellar-archived { display:flex; flex-direction:column; gap:14px; padding-top:18px; border-top:1px solid var(--rule); }
+.cellar-archived-title { font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); }
+.cellar-empty { grid-column:1 / -1; text-align:center; padding:64px 24px; font-family:var(--mono); font-size:15px; line-height:1.6; color:var(--ink-2); }
+
+/* A hairline card, except where a question is ready: only those get the ink border and hard shadow. */
+.bottle-card {
+  position:relative; display:grid; grid-template-columns:40px minmax(0, 1fr); gap:20px; padding:20px 18px 6px 20px;
+  background:var(--paper-raised); border:1px solid var(--rule); border-radius:2px; cursor:pointer;
 }
-.cellar-wordmark { font-size:28px; line-height:1.2; font-weight:600; letter-spacing:-.02em; }
-.cellar-subtitle { margin-top:6px; }
-.cellar-export-row { display:flex; align-items:center; gap:4px 24px; flex-wrap:wrap; padding:6px 64px; border-bottom:1px solid var(--rule); font-size:14px; color:var(--ink-2); }
-.cellar-body { flex:1; padding:40px 64px 80px; display:flex; flex-direction:column; align-items:center; }
-.cellar-list { width:100%; max-width:620px; display:flex; flex-direction:column; gap:24px; }
-.cellar-empty { text-align:center; padding:64px 24px; color:var(--ink-2); font-size:16px; line-height:1.55; }
-.bottle-card { position:relative; cursor:pointer; background:var(--paper-raised); border:1px solid var(--ink); box-shadow:4px 4px 0 var(--ink); padding:20px 24px 8px; }
-.bottle-card-top { display:flex; align-items:flex-start; gap:14px; padding-right:20px; }
-.bottle-card-top svg { flex:none; }
-.bottle-card-line { font-family:var(--serif); font-size:21px; line-height:1.35; overflow-wrap:anywhere; }
-.bottle-card-lower { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin-top:14px; padding-top:12px; border-top:1px solid var(--rule); }
-.bottle-card-dots { display:flex; align-items:center; gap:6px; }
-.bottle-card-meta { display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; }
-.bottle-card-status { font-family:var(--mono); font-size:12px; color:var(--ink-2); }
-.bottle-card-date { font-family:var(--mono); font-size:11px; color:var(--ink-3); white-space:nowrap; }
-.bottle-card-archive { display:block; }
+.bottle-card.is-ready { border-color:var(--ink); box-shadow:4px 4px 0 var(--ink); }
+.bottle-card.is-archived { background:var(--paper); }
+.bottle-card-bottle { padding-top:2px; }
+.bottle-card-bottle svg { display:block; }
+.bottle-card-body { display:flex; flex-direction:column; gap:8px; min-width:0; height:100%; }
+.bottle-card-status { font-family:var(--mono); font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-2); padding-right:16px; }
+.bottle-card.is-ready .bottle-card-status { color:var(--wine); }
+.bottle-card.is-archived .bottle-card-status { color:var(--ink-3); }
+.bottle-card-line { font-family:var(--serif); font-size:21px; line-height:1.4; color:var(--ink); overflow-wrap:anywhere; }
+.bottle-card.is-archived .bottle-card-line { color:var(--ink-2); }
+.bottle-card-foot { margin-top:auto; display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:44px; }
+.bottle-card-date { font-family:var(--mono); font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3); white-space:nowrap; }
+.bottle-card-archive { padding:0 4px; text-underline-offset:3px; }
 .bottle-card-del {
   position:absolute; top:10px; right:12px; z-index:2; background:none; border:0; color:var(--ink-3);
   font-size:16px; cursor:pointer; padding:2px 6px; opacity:0; line-height:1;
 }
 .bottle-card:hover .bottle-card-del { opacity:1; }
 .bottle-card-del:hover { color:var(--wine); }
-.bottle-card--dormant { opacity:.88; }
-.bottle-card--in-flight .bottle-card-status { color:var(--wine); }
-.bottle-card--sag-1 { opacity:.92; transform:translateY(2px); }
-.bottle-card--sag-2 { opacity:.82; transform:translateY(4px); }
-.bottle-card--sag-3 { opacity:.72; transform:translateY(7px); }
+/* Behind pace: the card's bottle leans. Nothing else about the card changes. */
+.bottle-card--sag-1 .bottle-card-bottle svg { transform:rotate(5deg); transform-origin:50% 100%; }
+.bottle-card--sag-2 .bottle-card-bottle svg { transform:rotate(10deg); transform-origin:50% 100%; }
+.bottle-card--sag-3 .bottle-card-bottle svg { transform:rotate(16deg); transform-origin:50% 100%; }
+.cellar-export-row { display:flex; flex-wrap:wrap; align-items:center; gap:4px 20px; padding-top:10px; border-top:1px solid var(--rule); font-size:14px; color:var(--ink-2); }
+.cellar-export-row .btn-ghost { text-underline-offset:3px; }
+.cellar-export-text { margin-right:4px; }
 
 /* ── OVERLAYS ── */
 #errand-warn-overlay, #label-reopen-overlay {
@@ -705,26 +676,45 @@ button, input, textarea { font-family:inherit; color:inherit; }
   .vc-name { font-size:18px; }
   .vc-field-val { font-size:17px; }
 
-  .cellar-header { padding:20px 24px 16px; }
-  .cellar-export-row { padding:4px 24px; }
-  .cellar-body { padding:24px 24px 48px; }
-  .bottle-card { box-shadow:3px 3px 0 var(--ink); padding:16px 16px 6px; }
-  .bottle-card-line { font-size:18px; }
+  #screen-cellar { padding:28px 20px 32px; }
+  .cellar-page { gap:20px; }
+  .cellar-header { padding-bottom:16px; }
+  .cellar-title { gap:4px; }
+  .cellar-wordmark { font-size:36px; }
+  .cellar-subtitle { font-size:11px; }
+  .cellar-add { min-height:44px; padding:0 14px; }
+  .cellar-list, .cellar-archived-list { grid-template-columns:minmax(0, 1fr); gap:12px; }
+  .bottle-card { grid-template-columns:28px minmax(0, 1fr); gap:14px; padding:16px 14px 4px 16px; }
+  .bottle-card.is-ready { box-shadow:3px 3px 0 var(--ink); }
+  .bottle-card-bottle svg { width:28px; height:74px; }
+  .bottle-card-bottle .bottle-line { stroke-width:2.5; }
+  .bottle-card-bottle .bottle-shine { display:none; }
+  .bottle-card-body { gap:6px; }
+  .bottle-card-status, .bottle-card-date { font-size:11px; }
+  .bottle-card-line { font-size:17px; }
+
+  .ld-first { display:block; min-height:0; padding:56px 24px 30px; }
+  .ld-first-inner { display:block; }
+  .ld-text { gap:30px; max-width:none; }
+  .ld-mark { gap:16px; }
+  .ld-wordmark { font-size:60px; letter-spacing:-.01em; }
+  .ld-rule { width:44px; }
+  .ld-bottle { display:none; }
+  .ld-bottle-phone { display:block; flex:none; }
+  .ld-bottle-phone svg { width:40px; height:106px; }
+  .ld-bottle-phone .bottle-line { stroke-width:2.5; }
+  .ld-bottle-phone .bottle-shine { display:none; }
+  .ld-lines { gap:18px; font-size:15px; line-height:1.65; }
+  .ld-cork { align-self:stretch; width:100%; }
+  .ld-more { display:block; border-top:0; padding:0 24px 40px; }
+  .ld-more-inner { display:flex; flex-direction:column; gap:30px; }
+  .ld-block { gap:12px; padding-top:24px; border-top:1px solid var(--rule); }
+  .ld-block h2 { font-size:21px; line-height:1.3; letter-spacing:-.01em; }
+  .ld-block p { font-size:16px; }
 }
 /* A short phone screen stands in for an open keyboard on a browser that shrinks the page. */
 @media(max-width:700px) and (max-height:600px){
   .ph-head { display:none; }
-}
-@media(max-width:767px){
-  #screen-landing { overflow-y:auto; justify-content:flex-start; padding-top:48px; }
-  #landing-copy-container { display:contents; }
-  #ls-1 { order:1; }
-  #new-row { order:2; }
-  #ls-2 { order:3; }
-  #ls-3 { order:4; }
-  .landing-section { opacity:1 !important; pointer-events:auto !important; grid-area:unset; margin-bottom:32px; width:100%; max-width:480px; }
-  #nav-dots { display:none; }
-  #new-row { margin-bottom:32px; }
 }
 </style>
 </head>
@@ -766,154 +756,71 @@ button, input, textarea { font-family:inherit; color:inherit; }
 
 <!-- LANDING -->
 <div id="screen-landing" class="screen active">
-
-  <div id="landing-copy-container" style="animation:landing-fade .9s ease both">
-
-    <!-- Section 1: Hero -->
-    <div class="landing-section ls-active" id="ls-1">
-      <div class="ls-logo">Corked</div>
-      <div class="ls-rule"></div>
-      <div class="ls-body">
-        <p>You had an idea.<br>
-        A week later, it is in your notes app,<br>
-        between two others you never did anything with either.</p>
-        <p>A spark left in a notes app does not age.<br>
-        It rots.</p>
-        <p>You cork an idea.<br>
-        It ages.<br>
-        You find out if there is something real behind it.</p>
+  <section class="ld-first">
+    <div class="ld-first-inner">
+      <div class="ld-text">
+        <div class="ld-head">
+          <div class="ld-mark">
+            <h1 class="ld-wordmark">Corked</h1>
+            <div class="ld-rule"></div>
+          </div>
+          <div class="ld-bottle-phone" id="ld-bottle-phone"></div>
+        </div>
+        <div class="ld-lines">
+          <p class="ls-line">You had an idea.
+A week later, it is in your notes app,
+between two others you never did anything with either.</p>
+          <p class="ls-line">A spark left in a notes app does not age.
+It rots.</p>
+          <p class="ls-line">You cork an idea.
+It ages.
+You find out if there is something real behind it.</p>
+        </div>
+        <button type="button" class="btn ld-cork" id="bottle-cta" onclick="createAndOpenBottle()">Cork an idea</button>
       </div>
+      <div class="ld-bottle" id="ld-bottle"></div>
     </div>
-
-    <!-- Section 2: What it does -->
-    <div class="landing-section" id="ls-2">
-      <div class="ls-header">The cellar knows what to ask.</div>
-      <div class="ls-rule"></div>
-      <div class="ls-body">
-        <p>Corked does not give you a blank page.<br>
-        It asks one question at a time, shaped around the idea you corked.</p>
-        <p>If your answer is vague, the next question narrows.<br>
-        If the idea starts changing, the cellar follows the change.<br>
-        If the idea has nothing underneath it, that becomes visible too.</p>
-        <p>You do not have to plan the process.<br>
-        You just answer the next question.</p>
+  </section>
+  <section class="ld-more">
+    <div class="ld-more-inner">
+      <div class="ld-block">
+        <h2>The cellar knows what to ask.</h2>
+        <p>Corked does not give you a blank page. It asks one question at a time, shaped around the idea you corked.</p>
+        <p>If your answer is vague, the next question narrows. If the idea starts changing, the cellar follows the change. If the idea has nothing underneath it, that becomes visible too.</p>
+        <p>You do not have to plan the process. You just answer the next question.</p>
       </div>
-    </div>
-
-    <!-- Section 3: The record -->
-    <div class="landing-section" id="ls-3">
-      <div class="ls-header">The cellar becomes a record.</div>
-      <div class="ls-rule"></div>
-      <div class="ls-body">
-        <p>Every corked idea leaves a trace:<br>
-        what it was when it arrived,<br>
-        what the questions revealed,<br>
-        what changed,<br>
-        and whether anything survived.</p>
-        <p>Some become real.<br>
-        Some are archived.<br>
-        Some keep aging.</p>
+      <div class="ld-block">
+        <h2>The cellar becomes a record.</h2>
+        <p>Every corked idea leaves a trace:<br>what it was when it arrived,<br>what the questions revealed,<br>what changed,<br>and whether anything survived.</p>
+        <p>Some become real.<br>Some are archived.<br>Some keep aging.</p>
         <p>Together, they show the shape of your thinking better than a notes app ever could.</p>
       </div>
     </div>
-
-  </div>
-
-  <div id="new-row" style="animation:landing-fade .9s ease both;animation-delay:.3s">
-    <div class="bottle-cta-wrap" id="bottle-cta" onclick="triggerCork()" role="button" tabindex="0" aria-label="Cork an idea">
-      <!--
-        Wine bottle on its side: neck points LEFT, base points RIGHT.
-        Dimensions: 260w × 72h viewBox.
-        Neck tip at x≈8, body ends at x≈248.
-        Proper silhouette: tapered neck → curved shoulder → wide body → flat base.
-      -->
-      <svg class="bottle-cta-svg" id="bottle-cta-svg"
-           width="280" height="78" viewBox="0 0 260 72"
-           xmlns="http://www.w3.org/2000/svg" overflow="visible">
-        <defs>
-          <!-- Clip to bottle interior -->
-          <clipPath id="bottle-clip">
-            <path d="M 2,30 L 46,30 C 56,30 68,10 78,10 L 240,10 Q 257,10 257,36 Q 257,62 240,62 L 78,62 C 68,62 56,42 46,42 L 2,42 Z"/>
-          </clipPath>
-
-          <!-- Bloom gradient -->
-          <radialGradient id="bloom-grad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stop-color="#FBF8F2" stop-opacity="1"/>
-            <stop offset="40%"  stop-color="#B24A61" stop-opacity="0.5"/>
-            <stop offset="100%" stop-color="#7A2232" stop-opacity="0"/>
-          </radialGradient>
-
-          <!-- Bloom core: warm light filling the bottle from within -->
-          <radialGradient id="bloom-core-grad" cx="60%" cy="50%" r="45%">
-            <stop offset="0%"   stop-color="#FBF8F2" stop-opacity="1"/>
-            <stop offset="35%"  stop-color="#B24A61" stop-opacity="0.7"/>
-            <stop offset="100%" stop-color="#7A2232" stop-opacity="0"/>
-          </radialGradient>
-        </defs>
-
-        <!-- ── BOTTLE INTERIOR ── -->
-        <g clip-path="url(#bottle-clip)">
-          <rect x="0" y="0" width="260" height="72" fill="#2E1218"/>
-          <!-- Fill glow on click -->
-          <rect id="cta-fill-glow" x="0" y="0" width="260" height="72" fill="#6E2A3A" opacity="0"/>
-        </g>
-
-        <!-- ── BOTTLE OUTLINE ── -->
-        <path vector-effect="non-scaling-stroke"
-          d="M 2,30 L 46,30 C 56,30 68,10 78,10 L 240,10 Q 257,10 257,36 Q 257,62 240,62 L 78,62 C 68,62 56,42 46,42 L 2,42 Z"
-          fill="none" stroke="#1E1A15" stroke-width="1.5"/>
-
-        <!-- ── BLOOM (fires on click, centred in body) ── -->
-        <g clip-path="url(#bottle-clip)">
-          <rect id="bloom-ring"    x="0" y="0" width="260" height="72" fill="url(#bloom-grad)"      opacity="0"/>
-          <rect id="bloom-core-el" x="0" y="0" width="260" height="72" fill="url(#bloom-core-grad)" opacity="0"/>
-        </g>
-
-        <!-- ── CORK (slides in from left on click) ── -->
-        <g id="cta-cork" style="opacity:0;transform:translateX(-60px)">
-          <rect x="0" y="31" width="22" height="10" rx="1.5" fill="#C9A55A"/>
-        </g>
-
-        <!-- ── SPARK EMBER (flickers outside neck opening on hover) ── -->
-        <g id="spark-group">
-          <!-- spark-mover is translated via SVG attribute in JS — no CSS transform conflict -->
-          <g id="spark-mover" transform="translate(0,0)">
-            <circle id="spark-outer" cx="-28" cy="36" r="5"   fill="#B24A61"/>
-            <circle id="spark-core"  cx="-28" cy="36" r="2.2" fill="#FBF8F2"/>
-          </g>
-        </g>
-      </svg>
-
-      <div id="nav-dots" onclick="event.stopPropagation()">
-        <span class="dot dot-active" data-idx="0"></span>
-        <span class="dot" data-idx="1"></span>
-        <span class="dot" data-idx="2"></span>
-      </div>
-
-      <div class="bottle-cta-label">Cork an idea</div>
-    </div>
-  </div>
-
+  </section>
 </div>
 
 <!-- CELLAR -->
 <div id="screen-cellar" class="screen">
-  <div class="cellar-header">
-    <div>
-      <div class="cellar-wordmark">Corked</div>
-      <div class="cellar-subtitle" id="cellar-count"></div>
+  <div class="cellar-page">
+    <div class="cellar-header">
+      <div class="cellar-title">
+        <div class="cellar-wordmark">Corked</div>
+        <div class="cellar-subtitle" id="cellar-count"></div>
+      </div>
+      <button class="btn-second cellar-add" onclick="createAndOpenBottle()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 1.5v11M1.5 7h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Add spark</button>
     </div>
-    <button class="btn-sm" onclick="createAndOpenBottle()">Add Spark</button>
-  </div>
-  <div class="cellar-export-row">
-    <span>The cellar lives in this browser. Export to keep it safe.</span>
-    <button class="btn-ghost" onclick="cellarExport()">Export cellar</button>
-    <button class="btn-ghost" onclick="document.getElementById('cellar-import-file').click()">Import cellar</button>
-    <input type="file" id="cellar-import-file" accept="application/json" style="display:none" onchange="cellarImport(event)">
-    <span id="cellar-export-status"></span>
-  </div>
-  <div class="cellar-body">
     <div class="cellar-list" id="cellar-list"></div>
+    <div class="cellar-archived" id="cellar-archived" style="display:none">
+      <div class="cellar-archived-title">Archived</div>
+      <div class="cellar-archived-list" id="cellar-archived-list"></div>
+    </div>
+    <div class="cellar-export-row">
+      <span class="cellar-export-text">The cellar lives in this browser. Export to keep it safe.</span>
+      <button class="btn-ghost" onclick="cellarExport()">Export cellar</button>
+      <button class="btn-ghost" onclick="document.getElementById('cellar-import-file').click()">Import cellar</button>
+      <input type="file" id="cellar-import-file" accept="application/json" style="display:none" onchange="cellarImport(event)">
+      <span id="cellar-export-status"></span>
+    </div>
   </div>
 </div>
 
@@ -1215,8 +1122,9 @@ function clearDoorstep() { localStorage.removeItem(DOORSTEP_KEY); }
 
 // ── TYPED LINES ──
 // Corked's new lines type out once, about 60 characters a second: the observation, a follow-up, a
-// question the first time it's shown, and the prompts when adding a spark. A click, a tap or any key
-// shows every line at once, and reduced motion shows it straight away. The builder's own words never
+// question the first time it's shown, the prompts when adding a spark, and the landing's opening
+// lines on the first visit. A click, a tap or any key shows every line at once, and reduced motion
+// shows it straight away. The builder's own words never
 // come through here. A typed line holds its whole text from the start, the part still to come
 // hidden, so nothing moves while it types.
 const TYPE_CHARS_PER_SECOND = 60;
@@ -1244,20 +1152,26 @@ function writeTypedMemory(memory) {
   try { localStorage.setItem(TYPED_LINES_KEY, JSON.stringify(memory)); } catch (e) {}
 }
 
+// The landing's lines belong to the browser, not to a bottle.
+function lineOwner(key) {
+  return key.startsWith('landing:') ? 'landing' : activeBottleId;
+}
+
 function lineSeen(key) {
   if (key.startsWith('intake:')) return _intakeLines.has(key);
-  const rec = typedMemory()[activeBottleId];
+  const rec = typedMemory()[lineOwner(key)];
   return !!rec && (rec.lines || []).includes(key);
 }
 
 function rememberLine(key) {
   if (key.startsWith('intake:')) { _intakeLines.add(key); return; }
-  if (!activeBottleId) return;
+  const owner = lineOwner(key);
+  if (!owner) return;
   const memory = typedMemory();
-  const rec = memory[activeBottleId] || { upTo: -1, lines: [] };
+  const rec = memory[owner] || { upTo: -1, lines: [] };
   rec.lines = rec.lines || [];
   if (!rec.lines.includes(key)) rec.lines.push(key);
-  memory[activeBottleId] = rec;
+  memory[owner] = rec;
   writeTypedMemory(memory);
 }
 
@@ -1276,9 +1190,12 @@ function forgetTypedLines(id) {
 function seedTypedMemory() {
   if (localStorage.getItem(TYPED_LINES_KEY) !== null) return;
   const memory = {};
-  Cellar.all().forEach(b => {
+  const bottles = Cellar.all();
+  bottles.forEach(b => {
     memory[b.id] = { upTo: typeof b.mechIndex === 'number' ? b.mechIndex : 0, lines: [] };
   });
+  // Bottles mean the landing has been seen.
+  if (bottles.length) memory.landing = { upTo: 0, lines: [] };
   writeTypedMemory(memory);
 }
 
@@ -1618,11 +1535,20 @@ function archiveBottleAction(id) {
   showCellar();
 }
 
-// "Archive this spark", on the bottle's card in the cellar.
+// "Archive" on the bottle's card in the cellar. It asks once: archiving can't be undone.
 function archiveBottleFromCard(id, event) {
   event.stopPropagation();
+  if (!confirm('Archive this spark? This cannot be undone.')) return;
   Cellar.archive(id);
   renderCellar();
+}
+
+function openBottleByKey(id, event) {
+  if (event.target !== event.currentTarget) return;
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    openBottle(id);
+  }
 }
 
 // Informational only — a parked question is never blocked from answering. This just tells
@@ -2312,18 +2238,18 @@ const BOTTLE_LAYER_COLOUR = { settled: '#B24A61', clearing: '#6E2A3A' };
 const BOTTLE_MURKY = '#2E1218';
 let _bottleClip = 0;
 
-function bottleSvg(elements, { small = false } = {}) {
+function bottleSvg(elements, { width = 72, height = 190, stroke = 1.5, shine = true } = {}) {
   const els = elements || {};
   const clip = `bottle-clip-${++_bottleClip}`;
   const layers = EL_KEYS.map((k, i) =>
     `<rect data-el="${k}" x="0" y="${88 + i * 16}" width="72" height="${i === EL_KEYS.length - 1 ? 22 : 16}" fill="${BOTTLE_LAYER_COLOUR[els[k]] || BOTTLE_MURKY}"/>`
   ).join('');
-  return `<svg ${small ? 'width="16" height="42"' : 'width="72" height="190"'} viewBox="0 0 72 190" fill="none" aria-hidden="true">`
+  return `<svg width="${width}" height="${height}" viewBox="0 0 72 190" fill="none" aria-hidden="true">`
     + `<defs><clipPath id="${clip}"><path d="${BOTTLE_SHAPE}"/></clipPath></defs>`
     + `<g clip-path="url(#${clip})"><rect x="0" y="22" width="72" height="66" fill="${BOTTLE_MURKY}"/>${layers}</g>`
-    + `<path d="${BOTTLE_SHAPE}" stroke="#1E1A15" stroke-width="${small ? 4 : 1.5}"/>`
+    + `<path class="bottle-line" d="${BOTTLE_SHAPE}" stroke="#1E1A15" stroke-width="${stroke}"/>`
     + `<rect x="29" y="2" width="14" height="12" rx="2" fill="#C9A55A"/>`
-    + (small ? '' : `<path d="M15 96v74" stroke="#FBF8F2" stroke-opacity="0.25" stroke-width="3" stroke-linecap="round"/>`)
+    + (shine ? `<path class="bottle-shine" d="M15 96v74" stroke="#FBF8F2" stroke-opacity="0.25" stroke-width="3" stroke-linecap="round"/>` : '')
     + `</svg>`;
 }
 
@@ -2331,7 +2257,7 @@ function updateBottle() {
   const large = document.getElementById('bottle-wrap');
   if (large) large.innerHTML = bottleSvg(S.elements);
   const small = document.getElementById('ph-bottle');
-  if (small) small.innerHTML = bottleSvg(S.elements, { small: true });
+  if (small) small.innerHTML = bottleSvg(S.elements, { width: 16, height: 42, stroke: 4, shine: false });
 }
 
 // The sidebar and the phone header, for the open bottle.
@@ -4288,154 +4214,6 @@ function showScreen(name) {
   window.scrollTo(0,0);
 }
 
-// ── BOTTLE CTA ANIMATION ──
-let corkFired    = false;
-let hoverOrbitId = null;
-
-function triggerCork() {
-  if (corkFired) return;
-  corkFired = true;
-  // Stop hover orbit before enter animation takes over
-  cancelAnimationFrame(hoverOrbitId);
-  hoverOrbitId = null;
-
-  const cork       = document.getElementById('cta-cork');
-  const bloomRing  = document.getElementById('bloom-ring');
-  const bloomCore  = document.getElementById('bloom-core-el');
-  const fillGlow   = document.getElementById('cta-fill-glow');
-  const sparkGroup = document.getElementById('spark-group');
-  const sparkMover = document.getElementById('spark-mover');
-  const sparkOuter = document.getElementById('spark-outer');
-  const sparkCore  = document.getElementById('spark-core');
-  const wrap       = document.getElementById('bottle-cta');
-  const svg        = document.getElementById('bottle-cta-svg');
-
-  wrap.style.pointerEvents = 'none';
-
-  // Stop CSS hover flicker — keep group visible
-  sparkOuter.style.animation  = 'none';
-  sparkCore.style.animation   = 'none';
-  sparkGroup.style.transition = 'none';
-  sparkGroup.style.opacity    = '1';
-  void sparkOuter.offsetWidth;
-
-  // Spark travels from cx=-15 (hover orbit centre) to body centre = 170 SVG units
-  const TRAVEL_PX  = 183;
-  const TRAVEL_MS  = 1800; // slow, deliberate fairy float
-  let sparkStart   = null;
-  let corkReleased = false;
-  let fillStarted  = false;
-
-  // easeInOutSine: gentle entry into neck, smooth arc through body, soft landing
-  function easeInOutSine(t) { return -(Math.cos(Math.PI * t) - 1) / 2; }
-
-  function stepSpark(ts) {
-    if (!sparkStart) sparkStart = ts;
-    const raw = Math.min((ts - sparkStart) / TRAVEL_MS, 1);
-    const e   = easeInOutSine(raw);
-
-    // Spark travels axially through the neck, only gaining drift freedom past the shoulder
-    let yOff;
-    if (raw < 0.38) {
-      // Locked to neck centerline — no drift while inside the narrow passage
-      yOff = 0;
-    } else {
-      const yEnv = Math.sin((raw - 0.38) / 0.62 * Math.PI);
-      yOff = Math.sin(raw * Math.PI * 3.5) * yEnv * 5;
-    }
-    sparkMover.setAttribute('transform', `translate(${e * TRAVEL_PX}, ${yOff})`);
-
-    // Spark crosses shoulder (~38%): bottle begins to fill with warm preservation glow
-    if (raw >= 0.38 && !fillStarted) {
-      fillStarted = true;
-      fillGlow.animate([
-        { opacity: 0 },
-        { opacity: 0.22, offset: 0.45 },
-        { opacity: 0.14 }               // stays — the idea is preserved inside
-      ], { duration: 1600, easing: 'ease-in-out', fill: 'forwards' });
-    }
-
-    // Spark dims sharply as cork approaches — brief near-dark beat before bloom answers
-    if (raw > 0.72 && raw <= 0.88) {
-      const t = (raw - 0.72) / 0.16;
-      sparkGroup.style.opacity = String(1 - t * 0.95);
-    } else if (raw > 0.88) {
-      sparkGroup.style.opacity = '0.05';
-    }
-
-    // Cork fires once spark is past centre
-    if (raw >= 0.65 && !corkReleased) {
-      corkReleased = true;
-
-      // Cork seats with overshoot → spring-back → settle (thud physics)
-      // Cork rect is at x=0; bottle mouth is at x=2; settle at translateX(0) = flush/barely proud
-      cork.animate([
-        { transform: 'translateX(-60px)', opacity: 0,   offset: 0    },
-        { transform: 'translateX(-60px)', opacity: 1,   offset: 0.05 },  // fade in quickly
-        { transform: 'translateX(3px)',   opacity: 1,   offset: 0.78 },  // overshoot: 3px past flush
-        { transform: 'translateX(-1px)',  opacity: 1,   offset: 0.91 },  // spring back: briefly proud
-        { transform: 'translateX(0px)',   opacity: 1,   offset: 1.0  }   // settle: flush with mouth
-      ], { duration: 880, easing: 'linear', fill: 'forwards' });
-
-      // Bottle micro-shake when cork thuds in
-      setTimeout(() => {
-        svg.animate([
-          { transform: 'translateX(0px)' },
-          { transform: 'translateX(2px)',  offset: 0.28 },
-          { transform: 'translateX(-1px)', offset: 0.62 },
-          { transform: 'translateX(0px)' }
-        ], { duration: 210, easing: 'ease-out' });
-
-        // Warm pulse as glow "breathes" on impact — idea settling in
-        fillGlow.animate([
-          { opacity: 0.14 },
-          { opacity: 0.30, offset: 0.18 },
-          { opacity: 0.16 }
-        ], { duration: 520, easing: 'ease-out', fill: 'forwards' });
-      }, 880);
-
-      // Bloom — spark flares back at full brightness before dissolving into the bottle
-      setTimeout(() => {
-        sparkGroup.style.opacity = '1';
-        setTimeout(() => { sparkGroup.style.opacity = '0'; }, 90);
-
-        bloomRing.animate([
-          { opacity: 0 },
-          { opacity: 0.7, offset: 0.3 },
-          { opacity: 0 }
-        ], { duration: 1100, easing: 'ease-out', fill: 'forwards' });
-
-        bloomCore.animate([
-          { opacity: 0 },
-          { opacity: 0.95, offset: 0.22 },
-          { opacity: 0.15 }
-        ], { duration: 900, easing: 'ease-out', fill: 'forwards' });
-      }, 1300);
-
-      // Transition to intake
-      setTimeout(() => {
-        createAndOpenBottle();
-        // Reset for returning users
-        corkFired = false;
-        cork.getAnimations().forEach(a => a.cancel());
-        fillGlow.getAnimations().forEach(a => a.cancel());
-        cork.style.opacity     = '0';
-        cork.style.transform   = 'translateX(-60px)';
-        fillGlow.style.opacity = '0';
-        sparkMover.setAttribute('transform', 'translate(0,0)');
-        sparkOuter.style.animation  = '';
-        sparkCore.style.animation   = '';
-        sparkGroup.style.transition = '';
-        sparkGroup.style.opacity    = '';
-      }, 2600);
-    }
-
-    if (raw < 1) requestAnimationFrame(stepSpark);
-  }
-
-  requestAnimationFrame(stepSpark);
-}
-
 // ── PLACEHOLDER CYCLE ──
 let phInterval = null;
 
@@ -4507,80 +4285,17 @@ function cyclePlaceholder() {
   }, { once: true });
 }
 
-// ── LANDING SECTION FADER ──
-let lsIndex = 0;
-let lsTimer = null;
-let lsInTransit = false;
-let lsPausedUntil = 0;
-let lsMouseOnPage = false;
+// ── LANDING ──
+// The same bottle as in the app, as a picture. The opening lines type out once, on the first visit.
+const LANDING_BOTTLE = { grape: 'settled', tell: 'settled', vintage: 'clearing' };
 
-function lsGoTo(next) {
-  if (lsInTransit) return;
-  const sections = document.querySelectorAll('.landing-section');
-  const dots     = document.querySelectorAll('.dot');
-  if (!sections.length) return;
-
-  const nextIdx = ((next % sections.length) + sections.length) % sections.length;
-  if (nextIdx === lsIndex && !lsInTransit) {
-    lsMaybeSchedule(); return;
-  }
-
-  lsInTransit = true;
-  clearTimeout(lsTimer);
-  sections[lsIndex].classList.remove('ls-active');
-
-  setTimeout(() => {
-    lsIndex = nextIdx;
-    sections[lsIndex].classList.add('ls-active');
-    dots.forEach((d, i) => d.classList.toggle('dot-active', i === lsIndex));
-    lsInTransit = false;
-    lsMaybeSchedule();
-  }, 1200); // 800ms fade-out + 400ms gap; fade-in handled by CSS
-}
-
-function lsMaybeSchedule() {
-  clearTimeout(lsTimer);
-  if (lsMouseOnPage) return;
-  const now = Date.now();
-  if (now < lsPausedUntil) {
-    lsTimer = setTimeout(lsMaybeSchedule, lsPausedUntil - now);
-    return;
-  }
-  lsTimer = setTimeout(() => {
-    lsGoTo((lsIndex + 1) % document.querySelectorAll('.landing-section').length);
-  }, 9000);
-}
-
-function lsInit() {
-  const newRow = document.getElementById('new-row');
-  if (!newRow || newRow.style.display === 'none') return;
-  if (window.matchMedia('(max-width:767px)').matches) return;
-
-  // Enable CSS transitions after initial render so section 1 appears instantly
-  setTimeout(() => {
-    const c = document.getElementById('landing-copy-container');
-    if (c) c.classList.add('ls-transitions-active');
-    lsMaybeSchedule();
-  }, 200);
-
-  document.querySelectorAll('.dot').forEach((d, i) => {
-    d.addEventListener('click', e => {
-      e.stopPropagation();
-      lsPausedUntil = Date.now() + 30000;
-      lsGoTo(i);
-    });
-  });
-
-  document.addEventListener('mousemove', () => {
-    if (!lsMouseOnPage) {
-      lsMouseOnPage = true;
-      clearTimeout(lsTimer);
-    }
-  });
-
-  document.addEventListener('mouseleave', () => {
-    lsMouseOnPage = false;
-    lsMaybeSchedule();
+function showLanding() {
+  document.getElementById('ld-bottle').innerHTML = bottleSvg(LANDING_BOTTLE, { width: 150, height: 396, stroke: 1.3 });
+  document.getElementById('ld-bottle-phone').innerHTML = bottleSvg(LANDING_BOTTLE, { width: 150, height: 396, stroke: 1.3 });
+  const plain = (typedMemory().landing?.upTo ?? -1) >= 0;
+  document.querySelectorAll('.ls-line').forEach((line, i) => {
+    const text = line.textContent;
+    showLine(line, text, lineKey('landing', i, text), { plain });
   });
 }
 
@@ -4602,38 +4317,40 @@ function renderCellar() {
   const list = document.getElementById('cellar-list');
   if (!list) return;
 
-  if (!bottles.length) {
-    list.innerHTML = '<div class="cellar-empty">The cellar is empty.<br>Cork an idea to begin.</div>';
-    return;
-  }
+  // The rack, then the archived bottles in their own group under it.
+  const rack = bottles.filter(b => b.status !== 'rested');
+  const archived = bottles.filter(b => b.status === 'rested');
+  list.innerHTML = bottles.length
+    ? rack.map(b => bottleCardHTML(b)).join('')
+    : '<div class="cellar-empty">The cellar is empty. Cork an idea to begin.</div>';
+  document.getElementById('cellar-archived-list').innerHTML = archived.map(b => bottleCardHTML(b)).join('');
+  document.getElementById('cellar-archived').style.display = archived.length ? '' : 'none';
+  scheduleRackRefresh(rack);
+}
 
-  list.innerHTML = bottles.map(b => {
-    const line = escHtml(getBottleDisplayLine(b));
-    const elements = b.s.elements || {};
-    const dots = EL_KEYS.map(k => `<span class="el-mark ${elements[k] || 'inert'}"></span>`).join('');
-    const waiting = escHtml(getCellarWaiting(b));
-    const date = CellarClock.cardDate(b.updated_at);
-    const isDormant  = b.status === 'dormant';
-    const isInFlight = b.status === 'in_flight';
-    const sagLevel = getSagLevel(b);
-    const archive = b.status === 'rested' ? '' : `<button type="button" class="btn-ghost bottle-card-archive" onclick="archiveBottleFromCard('${b.id}',event)">Archive this spark</button>`;
-    return `<div class="bottle-card${isDormant ? ' bottle-card--dormant' : ''}${isInFlight ? ' bottle-card--in-flight' : ''}${sagLevel > 0 ? ' bottle-card--sag-' + sagLevel : ''}" data-bottle-id="${b.id}" onclick="openBottle('${b.id}')">
-              <div class="bottle-card-top">
-                ${bottleSvg(elements, { small: true })}
-                <div class="bottle-card-line">${line}</div>
+function bottleCardHTML(b) {
+  const line = escHtml(getBottleDisplayLine(b));
+  const waiting = getCellarWaiting(b);
+  const date = CellarClock.cardDate(b.updated_at);
+  const isArchived = b.status === 'rested';
+  const sagLevel = getSagLevel(b);
+  const classes = ['bottle-card'];
+  if (waiting === 'Question ready') classes.push('is-ready');
+  if (isArchived) classes.push('is-archived');
+  if (sagLevel > 0) classes.push(`bottle-card--sag-${sagLevel}`);
+  const archive = isArchived ? '' : `<button type="button" class="btn-ghost bottle-card-archive" onclick="archiveBottleFromCard('${b.id}',event)">Archive</button>`;
+  return `<div class="${classes.join(' ')}" role="button" tabindex="0" data-bottle-id="${b.id}" onclick="openBottle('${b.id}')" onkeydown="openBottleByKey('${b.id}',event)">
+            <div class="bottle-card-bottle">${bottleSvg(b.s.elements, { width: 40, height: 106, stroke: 2 })}</div>
+            <div class="bottle-card-body">
+              <div class="bottle-card-status">${escHtml(waiting)}</div>
+              <div class="bottle-card-line">${line}</div>
+              <div class="bottle-card-foot">
+                <span class="bottle-card-date">${date}</span>
+                ${archive}
               </div>
-              <div class="bottle-card-lower">
-                <div class="bottle-card-dots">${dots}</div>
-                <div class="bottle-card-meta">
-                  <span class="bottle-card-status">${waiting}</span>
-                  <span class="bottle-card-date">${date}</span>
-                </div>
-              </div>
-              ${archive}
-              <button class="bottle-card-del" onclick="deleteBottle('${b.id}',event)" title="Remove spark">×</button>
-            </div>`;
-  }).join('');
-  scheduleRackRefresh(bottles);
+            </div>
+            <button class="bottle-card-del" onclick="deleteBottle('${b.id}',event)" title="Remove spark">×</button>
+          </div>`;
 }
 
 // The rack redraws itself when the next held question opens, while the cellar is showing.
@@ -4705,7 +4422,7 @@ function getCellarWaiting(bottle) {
 
   const remaining = EL_KEYS.filter(k => els[k] !== 'settled').length;
   if (remaining === 0) return 'All elements settled';
-  return `Still aging · ${remaining} element${remaining === 1 ? '' : 's'} remain`;
+  return 'Still aging';
 }
 
 function createAndOpenBottle() {
@@ -5266,34 +4983,8 @@ function v6Rewrite() {
     showCellar();
   } else {
     showScreen('landing');
+    showLanding();
   }
-
-  // Hover orbit: spark drifts in a slow Lissajous figure around the bottle opening.
-  // Two sin waves at different frequencies so the path never repeats quickly.
-  const cta   = document.getElementById('bottle-cta');
-  const mover = document.getElementById('spark-mover');
-  if (cta && mover) {
-    cta.addEventListener('mouseenter', () => {
-      if (corkFired) return;
-      let t0 = null;
-      const step = ts => {
-        if (!t0) t0 = ts;
-        const t = (ts - t0) / 4500;               // 4.5 s per x-cycle
-        const x = Math.sin(t * Math.PI * 2) * 7;  // ±7 px side-to-side
-        const y = Math.sin(t * Math.PI * 2 * 1.6 + 0.8) * 5; // ±5 px up-down, offset phase
-        mover.setAttribute('transform', `translate(${x}, ${y})`);
-        hoverOrbitId = requestAnimationFrame(step);
-      };
-      hoverOrbitId = requestAnimationFrame(step);
-    });
-    cta.addEventListener('mouseleave', () => {
-      cancelAnimationFrame(hoverOrbitId);
-      hoverOrbitId = null;
-      mover.setAttribute('transform', 'translate(0, 0)');
-    });
-  }
-
-  lsInit();
 })();
 </script>
 </body>
