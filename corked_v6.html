@@ -4,9 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <title>Corked</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+/* The fonts live in fonts/, with their licences. Only the weights the app uses. Latin and Latin
+   Extended: any other script falls back to the system font in the stacks below. */
+@font-face { font-family:'Inter'; font-style:normal; font-weight:400; font-display:swap; src:url('fonts/inter-latin-400-normal.woff2') format('woff2'); unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family:'Inter'; font-style:normal; font-weight:400; font-display:swap; src:url('fonts/inter-latin-ext-400-normal.woff2') format('woff2'); unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family:'Inter'; font-style:normal; font-weight:500; font-display:swap; src:url('fonts/inter-latin-500-normal.woff2') format('woff2'); unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family:'Inter'; font-style:normal; font-weight:500; font-display:swap; src:url('fonts/inter-latin-ext-500-normal.woff2') format('woff2'); unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family:'Inter'; font-style:normal; font-weight:600; font-display:swap; src:url('fonts/inter-latin-600-normal.woff2') format('woff2'); unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family:'Inter'; font-style:normal; font-weight:600; font-display:swap; src:url('fonts/inter-latin-ext-600-normal.woff2') format('woff2'); unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family:'Newsreader'; font-style:normal; font-weight:400; font-display:swap; src:url('fonts/newsreader-latin-opsz-400-normal.woff2') format('woff2'); unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family:'Newsreader'; font-style:normal; font-weight:400; font-display:swap; src:url('fonts/newsreader-latin-ext-opsz-400-normal.woff2') format('woff2'); unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family:'IBM Plex Mono'; font-style:normal; font-weight:400; font-display:swap; src:url('fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2'); unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family:'IBM Plex Mono'; font-style:normal; font-weight:400; font-display:swap; src:url('fonts/ibm-plex-mono-latin-ext-400-normal.woff2') format('woff2'); unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+
 * { margin:0; padding:0; box-sizing:border-box; }
 *:focus { outline:none; }
 *:focus-visible { outline:2px solid var(--wine); outline-offset:2px; }
@@ -50,9 +61,16 @@ button, input, textarea { font-family:inherit; color:inherit; }
 
 /* ── SMALL LABELS ── */
 .mech-eyebrow, .field-label, .grape-input-label, .dormant-field-label, .label-eyebrow, .sb-label-title,
-.rhythm-kicker, .ew-eyebrow, .m2-problem-label, .review-mech-id, .cellar-subtitle {
+.rhythm-kicker, .ew-eyebrow, .m2-problem-label, .review-mech-id, .cellar-subtitle, .ai-tag {
   font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3);
 }
+
+/* Written by AI. The style draws the letters, so they never join the line's text: copying a question,
+   or reading a line back, gets the line alone. */
+.ai-tag { display:inline-block; margin-left:8px; font-size:11px; font-weight:400; line-height:1; white-space:nowrap; }
+.ai-tag::before { content:'AI'; }
+.ai-caution { margin-top:6px; font-size:14px; line-height:1.55; color:var(--ink-2); }
+.ai-line { margin-top:16px; font-size:14px; line-height:1.55; color:var(--ink-2); }
 
 /* ── BUTTONS ── */
 .btn {
@@ -293,6 +311,10 @@ button, input, textarea { font-family:inherit; color:inherit; }
 #question-panel[data-view="followup"] #m-q,
 #question-panel[data-view="errand"] #m-q,
 #question-panel[data-view="reading"] #m-q,
+#question-panel[data-view="settled"] #m-q + .ai-caution,
+#question-panel[data-view="followup"] #m-q + .ai-caution,
+#question-panel[data-view="errand"] #m-q + .ai-caution,
+#question-panel[data-view="reading"] #m-q + .ai-caution,
 #question-panel[data-view="settled"] #ans-wrap,
 #question-panel[data-view="followup"] #ans-wrap,
 #question-panel[data-view="errand"] #ans-wrap,
@@ -324,6 +346,7 @@ button, input, textarea { font-family:inherit; color:inherit; }
 #question-panel[data-view="grape"] #m-hint { order:2; }
 #question-panel[data-view="grape"] #m1-record { order:3; }
 #question-panel[data-view="grape"] #obs-box { order:4; }
+#question-panel[data-view="grape"] #obs-box + .ai-caution { order:5; }
 
 /* Failed-send message */
 .send-failed {
@@ -506,6 +529,12 @@ button, input, textarea { font-family:inherit; color:inherit; }
 .cellar-export-row { display:flex; flex-wrap:wrap; align-items:center; gap:4px 20px; padding-top:10px; border-top:1px solid var(--rule); font-size:14px; color:var(--ink-2); }
 .cellar-export-row .btn-ghost { text-underline-offset:3px; }
 .cellar-export-text { margin-right:4px; }
+.cellar-backup-line { margin-bottom:-18px; font-size:14px; color:var(--ink-2); }
+.cellar-who { margin-top:-16px; font-size:14px; color:var(--ink-2); }
+.cellar-who summary { display:inline-block; list-style:none; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+.cellar-who summary::-webkit-details-marker { display:none; }
+.cellar-who summary:hover { color:var(--ink); }
+.cellar-who .ai-line { max-width:620px; margin-top:10px; }
 
 /* ── OVERLAYS ── */
 #errand-warn-overlay, #label-reopen-overlay {
@@ -764,7 +793,7 @@ button, input, textarea { font-family:inherit; color:inherit; }
             <h1 class="ld-wordmark">Corked</h1>
             <div class="ld-rule"></div>
           </div>
-          <div class="ld-bottle-phone" id="ld-bottle-phone"></div>
+          <div class="ld-bottle-phone" id="ld-bottle-phone" aria-hidden="true"></div>
         </div>
         <div class="ld-lines">
           <p class="ls-line">You had an idea.
@@ -778,7 +807,7 @@ You find out if there is something real behind it.</p>
         </div>
         <button type="button" class="btn ld-cork" id="bottle-cta" onclick="createAndOpenBottle()">Cork an idea</button>
       </div>
-      <div class="ld-bottle" id="ld-bottle"></div>
+      <div class="ld-bottle" id="ld-bottle" aria-hidden="true"></div>
     </div>
   </section>
   <section class="ld-more">
@@ -814,6 +843,7 @@ You find out if there is something real behind it.</p>
       <div class="cellar-archived-title">Archived</div>
       <div class="cellar-archived-list" id="cellar-archived-list"></div>
     </div>
+    <div class="cellar-backup-line" id="cellar-backup-line" style="display:none"></div>
     <div class="cellar-export-row">
       <span class="cellar-export-text">The cellar lives in this browser. Export to keep it safe.</span>
       <button class="btn-ghost" onclick="cellarExport()">Export cellar</button>
@@ -821,6 +851,10 @@ You find out if there is something real behind it.</p>
       <input type="file" id="cellar-import-file" accept="application/json" style="display:none" onchange="cellarImport(event)">
       <span id="cellar-export-status"></span>
     </div>
+    <details class="cellar-who" id="cellar-who">
+      <summary>Who writes the questions</summary>
+      <p class="ai-line" id="cellar-who-text"></p>
+    </details>
   </div>
 </div>
 
@@ -874,7 +908,7 @@ You find out if there is something real behind it.</p>
         <div id="m2-problem" style="display:none">
           <div class="m2-problem-label" id="m2-problem-label"></div>
           <div class="m2-problem-text" id="m2-problem-text"></div>
-          <textarea class="field" id="m2-problem-inp" maxlength="500" rows="2" oninput="autosizeProblemField(this)"></textarea>
+          <textarea class="field" id="m2-problem-inp" maxlength="500" rows="2" oninput="autosizeProblemField(this); problemFieldEdited(this)"></textarea>
         </div>
         <div class="q-head">
           <div class="obs" id="obs-box"></div>
@@ -1112,13 +1146,132 @@ function bottleVisit() {
 }
 
 function saveState() {
-  if (activeBottleId) Cellar.save(activeBottleId, S, mi);
+  if (activeBottleId) {
+    Cellar.save(activeBottleId, S, mi);
+    keepCellarAfterFirstBottle();
+  }
   const ind = document.getElementById('sb-save');
   if (ind) { ind.classList.add('show'); clearTimeout(saveTimer); saveTimer = setTimeout(()=>ind.classList.remove('show'), 2000); }
 }
 
 function loadDoorstep() { return localStorage.getItem(DOORSTEP_KEY) || null; }
 function clearDoorstep() { localStorage.removeItem(DOORSTEP_KEY); }
+
+// ── WHAT THE AI WROTE ──
+// A worker reply's ai_fields names the fields whose text came from the model. Those fields carry the
+// marks and the AI tag wherever they show, and nothing else does. Text the builder has since edited
+// is the builder's.
+const AI_LINE = "An AI model writes some of Corked's questions and the line after an answer; the rest are fixed. Not a person. What you type goes through Corked's server to Anthropic's Claude. Anthropic doesn't train on it and deletes it within 30 days, or keeps it up to two years if its safety systems flag it. Your cellar is saved in this browser only.";
+const AI_CAUTION = 'The AI can misread an answer. Check anything you act on.';
+const AI_TAG_HTML = '<span class="ai-tag" role="img" aria-label="Written by AI"></span>';
+
+const AI_LINE_SEEN_KEY = 'corked_ai_line_seen';
+const AI_CAUTION_SEEN_KEY = 'corked_ai_caution_seen';
+const PERSIST_ASKED_KEY = 'corked_persist_asked';
+const LAST_EXPORT_KEY = 'corked_last_export_at';
+// What this browser has shown or asked. Each is once per browser, so an export doesn't carry them.
+const BROWSER_ONLY_KEYS = [AI_LINE_SEEN_KEY, AI_CAUTION_SEEN_KEY, PERSIST_ASKED_KEY];
+
+// The mark for one field of a reply, or null when the model didn't write it.
+function aiMark(reply, field) {
+  return reply?.model && Array.isArray(reply.ai_fields) && reply.ai_fields.includes(field) ? { model: reply.model } : null;
+}
+
+// What a history log entry keeps of the reply it came from.
+function replyVersions(reply) {
+  return reply?.prompt_version
+    ? { prompt_version: reply.prompt_version, model: reply.model, ai_fields: reply.ai_fields }
+    : {};
+}
+
+function escAttr(text) {
+  return escHtml(String(text)).replace(/"/g, '&quot;');
+}
+
+function aiAttrs(mark) {
+  return mark ? ` data-ai-generated="true" data-ai-model="${escAttr(mark.model)}"` : '';
+}
+
+function aiTagHtml(mark) {
+  return mark ? AI_TAG_HTML : '';
+}
+
+function clearAiMark(el) {
+  if (!el) return;
+  el.removeAttribute('data-ai-generated');
+  el.removeAttribute('data-ai-model');
+  el.querySelectorAll(':scope > .ai-tag').forEach(tag => tag.remove());
+  if (el.nextElementSibling?.classList.contains('ai-caution')) el.nextElementSibling.remove();
+}
+
+// tagHost: where the tag goes, for a field that can't hold one.
+function markAi(el, mark, tagHost = el) {
+  if (!el || !mark) return;
+  el.setAttribute('data-ai-generated', 'true');
+  el.setAttribute('data-ai-model', mark.model);
+  tagHost.insertAdjacentHTML('beforeend', AI_TAG_HTML);
+}
+
+// For a line that doesn't type out.
+function setAiText(el, text, mark) {
+  if (!el) return;
+  clearAiMark(el);
+  el.textContent = text || '';
+  if (text) markAi(el, mark);
+}
+
+// The first AI-written line this browser ever shows gets the caution under it, once. Whichever
+// screen that turns out to be, so this watches the page until one is on screen.
+function watchForFirstAiLine() {
+  if (localStorage.getItem(AI_CAUTION_SEEN_KEY)) return;
+  let waiting = false;
+  const look = () => {
+    waiting = false;
+    const first = [...document.querySelectorAll('[data-ai-generated]')].find(el => el.getClientRects().length);
+    if (!first) return;
+    localStorage.setItem(AI_CAUTION_SEEN_KEY, '1');
+    observer.disconnect();
+    const note = document.createElement('div');
+    note.className = 'ai-caution';
+    note.textContent = AI_CAUTION;
+    first.after(note);
+  };
+  const observer = new MutationObserver(() => {
+    if (waiting) return;
+    waiting = true;
+    requestAnimationFrame(look);
+  });
+  observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['style', 'class', 'data-view', 'data-ai-generated'] });
+}
+
+// ── KEEPING THE CELLAR ──
+function askBrowserToKeepCellar() {
+  if (!navigator.storage?.persist) return;
+  navigator.storage.persist().catch(() => {});
+}
+
+function keepCellarAfterFirstBottle() {
+  if (localStorage.getItem(PERSIST_ASKED_KEY) || !Cellar.all().length) return;
+  localStorage.setItem(PERSIST_ASKED_KEY, '1');
+  askBrowserToKeepCellar();
+}
+
+const BACKUP_DUE_MS = 7 * 24 * 60 * 60 * 1000;
+
+function backupLine() {
+  const now = Date.now();
+  const last = localStorage.getItem(LAST_EXPORT_KEY);
+  if (last) return now - new Date(last).getTime() > BACKUP_DUE_MS ? `Last backup: ${CellarClock.cardDate(last)}. Export the cellar.` : '';
+  return Cellar.all().some(b => now - new Date(b.created_at).getTime() > BACKUP_DUE_MS) ? 'No backup yet. Export the cellar.' : '';
+}
+
+function renderBackupLine() {
+  const el = document.getElementById('cellar-backup-line');
+  if (!el) return;
+  const line = backupLine();
+  el.textContent = line;
+  el.style.display = line ? 'block' : 'none';
+}
 
 // ── TYPED LINES ──
 // Corked's new lines type out once, about 60 characters a second: the observation, a follow-up, a
@@ -1205,13 +1358,16 @@ function reducedMotion() {
 
 // Puts a line in an element. With a key, it types out if this bottle hasn't shown it yet. Lines
 // queue, so a second line waits for the first. No key, or plain, and it just appears.
-function showLine(el, text, key, { plain = false } = {}) {
+// ai: the line's AI mark, when the model wrote it.
+function showLine(el, text, key, { plain = false, ai = null } = {}) {
   if (!el) return;
   _typeQueue = _typeQueue.filter(run => run.el !== el);
+  clearAiMark(el);
   const line = text || '';
   if (!line || !key || plain || reducedMotion() || lineSeen(key)) {
     if (line && key) rememberLine(key);
     el.textContent = line;
+    if (line) markAi(el, ai);
     return;
   }
   rememberLine(key);
@@ -1221,8 +1377,19 @@ function showLine(el, text, key, { plain = false } = {}) {
   rest.textContent = line;
   el.textContent = '';
   el.append(shown, rest);
+  markAi(el, ai);
   _typeQueue.push({ el, text: line, shown, rest, startedAt: null });
   if (!_typeTimer) _typeTimer = setInterval(stepTyping, 16);
+}
+
+// The whole line, in place. Its AI tag stays where it is.
+function finishLine(run) {
+  if (run.shown.parentNode === run.el) {
+    run.rest.remove();
+    run.shown.replaceWith(run.text);
+  } else {
+    run.el.textContent = run.text;
+  }
 }
 
 function stepTyping() {
@@ -1232,14 +1399,14 @@ function stepTyping() {
   if (now < _typeNotBefore) return;
   // A line nobody can see doesn't hold up the next one.
   if (!run.el.isConnected || run.el.offsetParent === null) {
-    run.el.textContent = run.text;
+    finishLine(run);
     _typeQueue.shift();
     return;
   }
   if (run.startedAt === null) run.startedAt = now;
   const count = Math.floor((now - run.startedAt) * TYPE_CHARS_PER_SECOND / 1000);
   if (count >= run.text.length) {
-    run.el.textContent = run.text;
+    finishLine(run);
     _typeQueue.shift();
     return;
   }
@@ -1248,7 +1415,7 @@ function stepTyping() {
 }
 
 function finishAllLines() {
-  _typeQueue.forEach(run => { run.el.textContent = run.text; });
+  _typeQueue.forEach(finishLine);
   _typeQueue = [];
   _typeNotBefore = 0;
 }
@@ -1262,6 +1429,7 @@ const SEND_FAILED_HTML = `<svg width="20" height="20" viewBox="0 0 20 20" fill="
 
 function showSendFailedIn(el) {
   if (!el) return;
+  clearAiMark(el);
   el.classList.add('send-failed');
   el.innerHTML = SEND_FAILED_HTML;
   el.style.display = 'flex';
@@ -1269,6 +1437,7 @@ function showSendFailedIn(el) {
 
 function showMessageIn(el, text) {
   if (!el) return;
+  clearAiMark(el);
   el.classList.remove('send-failed');
   el.textContent = text || '';
   el.style.display = text ? 'block' : 'none';
@@ -1335,7 +1504,7 @@ async function fetchFieldBrief({ mode, missing, element }) {
     problem:            problemForWorker(),
     element:            element || null
   });
-  return { ...data.brief, created_at: new Date().toISOString() };
+  return { ...data.brief, created_at: new Date().toISOString(), ...replyVersions(data) };
 }
 
 // ── CELLAR PERSISTENCE ──
@@ -1347,12 +1516,14 @@ function cellarStorageKeys() {
   const keys = [];
   for (let i = 0; i < localStorage.length; i++) {
     const k = localStorage.key(i);
-    if (k && /^corked[-_]/i.test(k)) keys.push(k);
+    if (k && /^corked[-_]/i.test(k) && !BROWSER_ONLY_KEYS.includes(k)) keys.push(k);
   }
   return keys;
 }
 
 function cellarExport() {
+  // Written first, so the file carries the time it was made.
+  localStorage.setItem(LAST_EXPORT_KEY, new Date().toISOString());
   const data = { exported_at: new Date().toISOString(), version: 1, keys: {} };
   cellarStorageKeys().forEach(k => { data.keys[k] = localStorage.getItem(k); });
 
@@ -1368,6 +1539,8 @@ function cellarExport() {
 
   const status = document.getElementById('cellar-export-status');
   if (status) { status.textContent = 'Exported.'; setTimeout(() => { status.textContent = ''; }, 2500); }
+  renderBackupLine();
+  askBrowserToKeepCellar();
 }
 
 function cellarImport(event) {
@@ -1392,7 +1565,7 @@ function cellarImport(event) {
     if (!confirm('Import will overwrite your current cellar in this browser. Continue?')) return;
 
     Object.entries(data.keys).forEach(([k, v]) => {
-      if (/^corked[-_]/i.test(k) && typeof v === 'string') localStorage.setItem(k, v);
+      if (/^corked[-_]/i.test(k) && !BROWSER_ONLY_KEYS.includes(k) && typeof v === 'string') localStorage.setItem(k, v);
     });
     location.reload();
   };
@@ -1456,6 +1629,7 @@ function finishPark(park, brief, status) {
     s: park.s, mechIndex: park.mechIdx, status, brief, parkMech: park.mechId,
     nextQuestionAt: status === 'dormant' ? CellarClock.nextReturnAt(park.s.pace, park.s.notifTiming) : null
   });
+  keepCellarAfterFirstBottle();
   if (stillOpen) showCellar();
 }
 
@@ -1746,6 +1920,9 @@ function buildMechs() {
   // Self mode keeps no note on the Grape: the builder named themselves and nothing was graded.
   const grapeObservation = selfMode && !S.m1?.observation?.surface_text ? ''
     : sanitizeBeforeMomentCopy(S.m1?.observation?.surface_text || 'The Grape has been answered during intake.');
+  // The model's line gets the mark. A line the app put in its place doesn't.
+  const grapeObservationMark = grapeObservation && grapeObservation === String(S.m1?.observation?.surface_text || '').trim()
+    ? aiMark(S.m1, 'observation.surface_text') : null;
   const grapeHint = grapeState === 'settled'
     ? (selfMode
       ? `The elements ahead test whether this idea holds when you are actually in front of it.`
@@ -1767,7 +1944,8 @@ function buildMechs() {
       els: Mechanisms.elements(id, bottle),
       activeEl: mech.activeElement,
       // obs reads what the worker wrote, not computed locally.
-      obs: () => S[id.toLowerCase()]?.observation?.surface_text || null
+      obs: () => S[id.toLowerCase()]?.observation?.surface_text || null,
+      obsMark: () => aiMark(S[id.toLowerCase()], 'observation.surface_text')
     };
     if (!mech.prefilled) return m;
     return {
@@ -1776,7 +1954,8 @@ function buildMechs() {
       prefilled: true,
       // The builder's own words, kept apart from Corked's reading of them.
       record: `${grapeName} · ${grapeRelation}`,
-      obs: () => grapeObservation
+      obs: () => grapeObservation,
+      obsMark: () => grapeObservationMark
     };
   });
 }
@@ -1890,6 +2069,11 @@ function renderIntake() {
           </div>`;
     h += `<div class="spark-field-wrap"><textarea class="field" id="f-inp" rows="3" placeholder="">${v}</textarea></div>`;
     if (intakeStep === 0) {
+      // Once per browser. After that it lives behind the link at the bottom of the cellar.
+      if (!localStorage.getItem(AI_LINE_SEEN_KEY)) {
+        localStorage.setItem(AI_LINE_SEEN_KEY, '1');
+        h += `<p class="ai-line" id="spark-ai-line">${AI_LINE}</p>`;
+      }
       h += `
       <div id="m0-config" style="display:none;margin-top:24px">
         <label class="field-label visible" for="v6-worker-url">Worker endpoint</label>
@@ -1944,7 +2128,8 @@ function renderIntake() {
       if (grapeErr === SEND_FAILED_TEXT) {
         h += `<div class="send-failed" role="alert" style="display:flex;margin-top:24px">${SEND_FAILED_HTML}</div>`;
       } else if (grapeErr) {
-        h += `<div class="dormant-error" style="display:block;margin-top:24px">${escHtml(grapeErr)}</div>`;
+        const errMark = intakeSel['grape_error_mark'] || null;
+        h += `<div class="dormant-error" style="display:block;margin-top:24px"${aiAttrs(errMark)}>${escHtml(grapeErr)}${aiTagHtml(errMark)}</div>`;
       }
     }
   } else {
@@ -2071,6 +2256,7 @@ async function intakeNext() {
     if (outcome.refused) {
       intakeSel['grape_error'] = outcome.note
         || 'A more specific person is needed. Name them and state your connection to them.';
+      intakeSel['grape_error_mark'] = outcome.note ? outcome.noteMark : null;
       if (btn) { btn.disabled = false; btn.textContent = 'Continue →'; }
       renderIntake();
       return;
@@ -2238,14 +2424,42 @@ const BOTTLE_LAYER_COLOUR = { settled: '#B24A61', clearing: '#6E2A3A' };
 const BOTTLE_MURKY = '#2E1218';
 let _bottleClip = 0;
 
-function bottleSvg(elements, { width = 72, height = 190, stroke = 1.5, shine = true } = {}) {
+// A bottle's name in words: the start of the spark, what is on record, what is still open. No counts.
+const BOTTLE_PLAIN_NAMES = {
+  grape: 'the person',
+  tell: 'what they did',
+  vintage: 'the moment',
+  gap: 'where the current fix fails',
+  echo: 'someone else',
+  limit: "who doesn't have it"
+};
+// Self mode is in the second person.
+const BOTTLE_PLAIN_NAMES_SELF = { grape: 'you', tell: 'what you did' };
+
+function bottleName(s) {
+  const els = s?.elements || {};
+  const plain = k => (s?.maturity === 2 && BOTTLE_PLAIN_NAMES_SELF[k]) || BOTTLE_PLAIN_NAMES[k];
+  const list = keys => keys.map(plain).join(', ');
+  const settled = EL_KEYS.filter(k => els[k] === 'settled');
+  const open = EL_KEYS.filter(k => els[k] !== 'settled');
+  const spark = String(s?.idea || '').replace(/\s+/g, ' ').trim().slice(0, 60);
+  return [
+    spark && (/[.!?]$/.test(spark) ? spark : `${spark}.`),
+    settled.length ? `On record: ${list(settled)}.` : '',
+    open.length ? `Still open: ${list(open)}.` : ''
+  ].filter(Boolean).join(' ');
+}
+
+// name: the accessible name, for a drawing that stands for a real bottle. Without one it's decoration.
+function bottleSvg(elements, { width = 72, height = 190, stroke = 1.5, shine = true, name = null } = {}) {
   const els = elements || {};
   const clip = `bottle-clip-${++_bottleClip}`;
   // One murky ground, and each layer runs a little under the next, so a bottle drawn small shows no seams.
   const layers = EL_KEYS.map((k, i) =>
     `<rect data-el="${k}" x="0" y="${88 + i * 16}" width="72" height="${i === EL_KEYS.length - 1 ? 22 : 16.8}" fill="${BOTTLE_LAYER_COLOUR[els[k]] || BOTTLE_MURKY}"/>`
   ).join('');
-  return `<svg width="${width}" height="${height}" viewBox="0 0 72 190" fill="none" aria-hidden="true">`
+  const speaks = name ? `role="img" aria-label="${escAttr(name)}"` : 'aria-hidden="true"';
+  return `<svg width="${width}" height="${height}" viewBox="0 0 72 190" fill="none" ${speaks}>`
     + `<defs><clipPath id="${clip}"><path d="${BOTTLE_SHAPE}"/></clipPath></defs>`
     + `<g clip-path="url(#${clip})"><rect x="0" y="22" width="72" height="168" fill="${BOTTLE_MURKY}"/>${layers}</g>`
     + `<path class="bottle-line" d="${BOTTLE_SHAPE}" stroke="#1E1A15" stroke-width="${stroke}"/>`
@@ -2256,9 +2470,10 @@ function bottleSvg(elements, { width = 72, height = 190, stroke = 1.5, shine = t
 
 function updateBottle() {
   const large = document.getElementById('bottle-wrap');
-  if (large) large.innerHTML = bottleSvg(S.elements);
+  const name = bottleName(S);
+  if (large) large.innerHTML = bottleSvg(S.elements, { name });
   const small = document.getElementById('ph-bottle');
-  if (small) small.innerHTML = bottleSvg(S.elements, { width: 16, height: 42, stroke: 4, shine: false });
+  if (small) small.innerHTML = bottleSvg(S.elements, { width: 16, height: 42, stroke: 4, shine: false, name });
 }
 
 // The sidebar and the phone header, for the open bottle.
@@ -2298,7 +2513,13 @@ function showAnswerField(on) {
 // A question types out the first time it's shown. An answered one, or one from before typed lines, doesn't.
 function showQuestionLine(m, text) {
   showLine(document.getElementById('m-q'), text, text ? lineKey('q', m.id, text) : null,
-    { plain: !!S.answers[m.id] || shownBeforeTyping(M.indexOf(m)) });
+    { plain: !!S.answers[m.id] || shownBeforeTyping(M.indexOf(m)), ai: questionMark(m.id, text) });
+}
+
+// M2's question is the only question the model writes for a mechanism. The table's never carry the mark.
+function questionMark(mechId, text) {
+  const asked = S.m2_problem;
+  return mechId === 'M2' && asked?.question_ai && asked.question === text ? asked.question_ai : null;
 }
 
 function renderMech() {
@@ -2361,7 +2582,7 @@ function renderMech() {
   obsShown = !!m.prefilled; grapeStepShown = false; curAssess = {};
   if (m.prefilled) {
     showQuestionLine(m, m.q);
-    showPhaseObservation(m.obs(), { where: m.id, plain: shownBeforeTyping(mi) });
+    showPhaseObservation(m.obs(), { where: m.id, plain: shownBeforeTyping(mi), ai: m.obsMark() });
   }
 
   // M2: the problem block. Phase A runs once per bottle; reopening reuses what it stored.
@@ -2443,10 +2664,10 @@ function setPhaseBusy(isBusy, label) {
 }
 
 // The one-line observation. where: the mechanism it reads, so it types out the first time.
-function showPhaseObservation(text, { where = null, plain = false } = {}) {
+function showPhaseObservation(text, { where = null, plain = false, ai = null } = {}) {
   const ob = document.getElementById('obs-box');
   const line = sanitizeVisibleCopy(text || '');
-  showLine(ob, line, where && line ? lineKey('obs', where, line) : null, { plain });
+  showLine(ob, line, where && line ? lineKey('obs', where, line) : null, { plain, ai });
   ob.style.display = line ? 'block' : 'none';
 }
 
@@ -2473,13 +2694,20 @@ function renderBriefHTML(brief, mode, grapeName) {
     tag = 'Talk to ' + grape + ' · unprimed';
   }
 
+  // What the model wrote here, by the reply's own list. A fallback that repeats M2's question is M2's.
+  const targetMark = aiMark(brief, 'brief.target');
+  const tagMark = ['find', 'contrast', 'limit'].includes(mode) && target ? targetMark : null;
+  const whoMark = !who ? null : who === brief.setup ? aiMark(brief, 'brief.setup') : (mode === 'echo' ? targetMark : null);
+  const questionFromBrief = isLegacy ? null : aiMark(brief, 'brief.question');
+  const questionShownMark = questionFromBrief || questionMark('M2', question);
+
   // The self errand is a note to the builder, not a question to hand anyone.
   const isSelf = mode === 'self';
   const cid = 'bc-' + Math.random().toString(36).slice(2, 8);
   return `<div class="errand-card">`
-    + (tag ? `<div class="brief-addressing">${escHtml(tag)}</div>` : '')
-    + (who ? `<div class="brief-setup">${escHtml(who)}</div>` : '')
-    + `<div class="brief-quote"><div class="brief-q-text${isSelf ? ' is-note' : ''}" id="${cid}-t">${escHtml(question)}</div></div>`
+    + (tag ? `<div class="brief-addressing"${aiAttrs(tagMark)}>${escHtml(tag)}${aiTagHtml(tagMark)}</div>` : '')
+    + (who ? `<div class="brief-setup"${aiAttrs(whoMark)}>${escHtml(who)}${aiTagHtml(whoMark)}</div>` : '')
+    + `<div class="brief-quote"><div class="brief-q-text${isSelf ? ' is-note' : ''}" id="${cid}-t"${aiAttrs(questionShownMark)}>${escHtml(question)}${aiTagHtml(questionShownMark)}</div></div>`
     + (isSelf ? '' : `<div><button type="button" class="brief-copy-btn" id="${cid}-b" onclick="copyBriefQ('${cid}')">Copy question</button></div>`)
     + `</div>`;
 }
@@ -2587,7 +2815,8 @@ function setAnswerFold(view, mechId) {
   const m = M.find(x => x.id === mechId);
   const first = (S.log || []).filter(e => e.type === 'answer' && e.mech === mechId && e.kind !== 'follow_up').pop();
   document.getElementById('fold-title').textContent = FOLD_TITLES[view] || '';
-  document.getElementById('fold-q').textContent = first?.question || (m ? mechQuestion(m) : '');
+  const foldQuestion = first?.question || (m ? mechQuestion(m) : '');
+  setAiText(document.getElementById('fold-q'), foldQuestion, questionMark(mechId, foldQuestion));
   document.getElementById('fold-a').textContent = _pendingSwirl ? (_pendingSwirl.originalAnswer || '') : (S.answers[mechId] || '');
 }
 
@@ -2743,7 +2972,7 @@ function logAnswer({ mech, kind, question, answer, moves, ...extra }) {
 function writeM1Logged(name, rel, data, log) {
   openRecordCapture();
   writeM1FromIntake(name, rel, data);
-  logAnswer({ mech: 'M1', ...log, answer: rel, moves: closeRecordCapture() });
+  logAnswer({ mech: 'M1', ...log, answer: rel, moves: closeRecordCapture(), ...replyVersions(data) });
 }
 
 function shortOnScreen(text, max = 150) {
@@ -2849,7 +3078,7 @@ async function answerMechanism({ mechId, asked, typed, kind, read = typed, words
   for (const key of mechElements(mechId, data)) applyAnchoredResult(key, data[key], read, mechId);
   const moves = closeRecordCapture();
   logAnswer({ mech: mechId, kind, question: asked, answer: typed, moves,
-    ...(typed !== read ? { read_as: read } : {}) });
+    ...(typed !== read ? { read_as: read } : {}), ...replyVersions(data) });
   markReading(mechId);
   // The grade is kept from here on, even if the person leaves while the errand's brief is loading.
   saveState();
@@ -2879,7 +3108,7 @@ async function answerScene({ asked, typed, kind, read = typed }) {
   if (!stillHere()) return null;
   clearFailedSend('M2');
   logAnswer({ mech: 'M2', part: 'scene', kind, question: asked, answer: typed,
-    ...(typed !== read ? { read_as: read } : {}) });
+    ...(typed !== read ? { read_as: read } : {}), ...replyVersions(data) });
   saveState();
   return data;
 }
@@ -2914,8 +3143,8 @@ async function answerGrape({ name, rel, asked, kind, fields, refuseTurbid = fals
   }
   if (!stillHere()) return null;
   if (refuseTurbid && normalizeGrapeState(data.grape?.state || 'turbid') === 'turbid') {
-    logAnswer({ mech: 'M1', ...log, answer: rel });
-    return { refused: true, note: data.observation?.surface_text || '' };
+    logAnswer({ mech: 'M1', ...log, answer: rel, ...replyVersions(data) });
+    return { refused: true, note: data.observation?.surface_text || '', noteMark: aiMark(data, 'observation.surface_text') };
   }
   return record(data);
 }
@@ -3017,7 +3246,7 @@ function markSwirlShown(mechId) {
 // answer flow (allowSwirl left true) — reopen and resolve regrades pass allowSwirl=false.
 function maybeShowSwirl(mechId, data, originalAnswer) {
   if (!data?.swirl?.question || data.state === 'settled' || swirlAlreadyShown(mechId)) return false;
-  openSwirlPanel(data.swirl.question, { mechId, originalAnswer });
+  openSwirlPanel(data.swirl.question, { mechId, originalAnswer, ai: aiMark(data, 'swirl.question') });
   return true;
 }
 
@@ -3030,7 +3259,7 @@ function openSwirlPanel(question, pending, { plain = false } = {}) {
 
   const panel = document.getElementById('swirl-panel');
   const ansEl = document.getElementById('swirl-ans');
-  showLine(document.getElementById('swirl-q'), question, lineKey('swirl', pending.mechId, question), { plain });
+  showLine(document.getElementById('swirl-q'), question, lineKey('swirl', pending.mechId, question), { plain, ai: pending.ai || null });
   if (ansEl) ansEl.value = '';
   hideSwirlFailed();
   if (panel) panel.style.display = 'flex';
@@ -3062,7 +3291,7 @@ function hideSwirl() {
 function restorePendingFollowUp(m) {
   const p = S.pendingFollowUp;
   if (!p || p.mechId !== m.id) return;
-  openSwirlPanel(p.question, { mechId: p.mechId, originalAnswer: p.originalAnswer, scene: !!p.scene }, { plain: true });
+  openSwirlPanel(p.question, { mechId: p.mechId, originalAnswer: p.originalAnswer, scene: !!p.scene, ai: p.ai || null }, { plain: true });
   const ansEl = document.getElementById('swirl-ans');
   if (ansEl) ansEl.value = p.typed || '';
   if (p.failed) {
@@ -3087,14 +3316,14 @@ async function submitSwirl() {
   const swirlAnswer = (ansEl?.value || '').trim();
   if (!swirlAnswer) return;
 
-  const { mechId, originalAnswer, question: asked, scene } = _pendingSwirl;
+  const { mechId, originalAnswer, question: asked, scene, ai } = _pendingSwirl;
   const combined = `${originalAnswer} ${swirlAnswer}`.trim();
   const btn = document.getElementById('swirl-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Reading…'; }
   hideSwirlFailed();
   setQLifecycle('evaluating');
   // Its draft, until the reply lands.
-  S.pendingFollowUp = { mechId, question: asked, originalAnswer, typed: swirlAnswer, scene: !!scene, failed: false };
+  S.pendingFollowUp = { mechId, question: asked, originalAnswer, typed: swirlAnswer, scene: !!scene, failed: false, ai: ai || null };
   saveState();
 
   if (scene) {
@@ -3245,6 +3474,8 @@ function renderM2ProblemBlock(stage) {
   if (!block || !labelEl || !textEl || !inp) return;
   block.classList.toggle('is-friction', stage === 'friction');
   const p = S.problem;
+  clearAiMark(inp);
+  clearAiMark(textEl);
   // A problem in the spark's own words needs no line above its question: the sidebar holds the
   // spark. A problem Corked built or guessed always shows where it came from.
   if (stage === 'loading' || (stage === 'friction' && p?.source === 'user_stated')) { block.style.display = 'none'; return; }
@@ -3255,6 +3486,8 @@ function renderM2ProblemBlock(stage) {
   if (stage === 'confirm') {
     textEl.style.display = 'none';
     inp.value = p.text;
+    // A field can't hold the tag, so it sits on the line above.
+    markAi(inp, problemMark(), labelEl);
     inp.style.display = '';
     block.style.display = 'block';
     autosizeProblemField(inp);
@@ -3262,11 +3495,26 @@ function renderM2ProblemBlock(stage) {
     requestAnimationFrame(() => autosizeProblemField(inp));
   } else {
     inp.style.display = 'none';
-    textEl.textContent = stage === 'scene' ? 'No problem on record yet.' : p.text;
+    setAiText(textEl, stage === 'scene' ? 'No problem on record yet.' : p.text, stage === 'scene' ? null : problemMark());
     textEl.classList.toggle('is-empty', stage === 'scene');
     textEl.style.display = '';
   }
   block.style.display = 'block';
+}
+
+// The problem's mark, while its text is still what the model wrote. An edit makes it the builder's.
+function problemMark() {
+  const p = S.problem;
+  return p?.ai && p.ai.text === p.text ? { model: p.ai.model } : null;
+}
+
+// The tag goes as soon as the wording in the field stops being the model's, and comes back if it
+// returns to it.
+function problemFieldEdited(inp) {
+  const labelEl = document.getElementById('m2-problem-label');
+  clearAiMark(inp);
+  labelEl.querySelector('.ai-tag')?.remove();
+  if (inp.value.replace(/\s+/g, ' ').trim() === S.problem?.text) markAi(inp, problemMark(), labelEl);
 }
 
 // The problem field grows with its text, so a long problem can be read in full before
@@ -3348,7 +3596,8 @@ async function triggerM2PhaseA() {
   } catch (err) {
     if (!stillHere()) return;
     // Phase A failed: say so under the buttons, and Continue tries again.
-    showM2Error('Could not recover a clear line from this spark. ' + err.message);
+    console.warn('[triggerM2PhaseA] send failed', err);
+    showM2Error(SEND_FAILED_TEXT);
     setPhaseBusy(false, 'Try again →');
     return;
   }
@@ -3356,13 +3605,19 @@ async function triggerM2PhaseA() {
   applyM2PhaseAResult(data);
 }
 
+// Keeps the model's wording with the problem, so the mark can tell when the builder has changed it.
+function problemOrigin(data, text) {
+  const mark = aiMark(data, 'problem.text');
+  return mark ? { ai: { model: mark.model, text } } : {};
+}
+
 function applyM2PhaseAResult(data) {
   const p = data.problem;
-  S.m2_problem = { outcome: data.outcome, question: data.question || null, gap_in_play: !!data.gap_in_play };
+  S.m2_problem = { outcome: data.outcome, question: data.question || null, gap_in_play: !!data.gap_in_play, question_ai: aiMark(data, 'question') };
   S.problem = p && typeof p.text === 'string' && p.text.trim()
-    ? { text: p.text.trim(), source: p.source, status: p.status, ...(p.anchors ? { anchors: p.anchors } : {}) }
+    ? { text: p.text.trim(), source: p.source, status: p.status, ...(p.anchors ? { anchors: p.anchors } : {}), ...problemOrigin(data, p.text.trim()) }
     : null;
-  if (S.problem) appendLog({ type: 'problem_recorded', text: S.problem.text, source: S.problem.source, status: S.problem.status });
+  if (S.problem) appendLog({ type: 'problem_recorded', text: S.problem.text, source: S.problem.source, status: S.problem.status, ...replyVersions(data) });
   renderM2Stage();
   setQLifecycle(m2AwaitingConfirm ? 'needs_clarification' : 'active');
   saveState();
@@ -3427,9 +3682,9 @@ async function submitM2Scene(txt) {
 function applyM2SceneResult(data, txt, allowSwirl) {
   setQuestionView('question');
   if (data.scene_present && data.problem?.text) {
-    S.problem = { text: data.problem.text, source: 'scene_derived', status: 'proposed', anchors: data.problem.anchors || [] };
-    appendLog({ type: 'problem_recorded', text: S.problem.text, source: S.problem.source, status: S.problem.status });
-    S.m2_problem = { ...(S.m2_problem || {}), question: data.question || null, gap_in_play: !!data.gap_in_play, scene_answer: txt };
+    S.problem = { text: data.problem.text, source: 'scene_derived', status: 'proposed', anchors: data.problem.anchors || [], ...problemOrigin(data, data.problem.text) };
+    appendLog({ type: 'problem_recorded', text: S.problem.text, source: S.problem.source, status: S.problem.status, ...replyVersions(data) });
+    S.m2_problem = { ...(S.m2_problem || {}), question: data.question || null, gap_in_play: !!data.gap_in_play, scene_answer: txt, question_ai: aiMark(data, 'question') };
     S.m2_pending_brief = null;
     hideInlineErrand();
     renderM2Stage();
@@ -3438,7 +3693,10 @@ function applyM2SceneResult(data, txt, allowSwirl) {
     return;
   }
   if (allowSwirl) {
-    openSwirlPanel(data.swirl?.question || m2SceneQuestion(), { mechId: 'M2', originalAnswer: txt, scene: true });
+    openSwirlPanel(data.swirl?.question || m2SceneQuestion(), {
+      mechId: 'M2', originalAnswer: txt, scene: true,
+      ai: data.swirl?.question ? aiMark(data, 'swirl.question') : null
+    });
     return;
   }
   showM2NoProblemErrand();
@@ -3539,7 +3797,7 @@ async function showReading(mechId, data, txt, allowSwirl = true, kind = 'first_a
     return;
   }
 
-  showPhaseObservation(data.observation?.surface_text || '', { where: mechId });
+  showPhaseObservation(data.observation?.surface_text || '', { where: mechId, ai: aiMark(data, 'observation.surface_text') });
   const rows = changedRowsFor(mechId);
   const settledNow = rows.some(row => row.to === 'settled');
   if (settledNow) showWhatChanged(rows);
@@ -3610,7 +3868,8 @@ async function parkItAction(status = 'dormant') {
     await Promise.race([runPark(dispatch, status === 'in_flight' ? 'rw-flight-btn' : 'rw-park-btn'), timeout]);
     // Success routes on to showCellar() inside finishPark(); runPark() puts the labels back.
   } catch (err) {
-    if (errEl) { errEl.textContent = (err && err.message) || 'Could not save. Try again.'; errEl.style.display = 'block'; }
+    console.warn('[parkItAction] park failed', err);
+    if (errEl) { errEl.textContent = SEND_FAILED_TEXT; errEl.style.display = 'block'; }
   }
 }
 
@@ -3871,7 +4130,7 @@ function restoreAnsweredMechUI(m) {
 
   let obsText = null;
   try { obsText = m.obs(S.answers[m.id]); } catch(e) {}
-  if (obsText) showPhaseObservation(obsText, { where: m.id, plain: shownBeforeTyping(mi) });
+  if (obsText) showPhaseObservation(obsText, { where: m.id, plain: shownBeforeTyping(mi), ai: m.obsMark() });
   obsShown = true;
 
   const { errandBar } = Mechanisms.get(m.id);
@@ -3897,7 +4156,7 @@ let _reopenAsked = '';
 function openReopenForm(key, mechId, label, question, value = '') {
   const draft = S.reopenDrafts?.[mechId];
   document.getElementById('rv-reopen-mech').textContent = label;
-  document.getElementById('rv-reopen-q').textContent = question;
+  setAiText(document.getElementById('rv-reopen-q'), question, questionMark(mechId, question));
   document.getElementById('rv-reopen-ans').value = draft || value;
   const btn = document.getElementById('rv-reopen-btn');
   if (btn) { btn.disabled = false; btn.textContent = draft ? 'Try again' : 'Submit →'; }
@@ -3926,6 +4185,7 @@ function reviewEl(key) {
     document.getElementById('rv-name').textContent = meta.name;
     document.getElementById('rv-desc').textContent = meta.desc;
     const observation = S.m1?.observation?.surface_text || '';
+    const observationMark = aiMark(S.m1, 'observation.surface_text');
     const grapeState = S.elements.grape;
     const stateNote = grapeState === 'clearing'
       ? 'Grape is clearing. The person is named but not yet anchored to a specific moment. The mechanisms ahead will develop this.'
@@ -3935,7 +4195,7 @@ function reviewEl(key) {
          <div class="review-mech-id">M1 · Grape</div>
          <div class="review-q">Name the person this spark comes from.</div>
          <div class="review-a">${escHtml(S.answers.M1)}</div>
-         ${observation ? `<div class="review-a is-corked">${escHtml(observation)}</div>` : ''}
+         ${observation ? `<div class="review-a is-corked"${aiAttrs(observationMark)}>${escHtml(observation)}${aiTagHtml(observationMark)}</div>` : ''}
          ${stateNote ? `<div class="review-note">${escHtml(stateNote)}</div>` : ''}
        </div>`;
 
@@ -3963,9 +4223,10 @@ function reviewEl(key) {
 
   document.getElementById('rv-blocks').innerHTML = relMechs.map(m => {
     const shownQ = (m.id === 'M2' && S.m2_problem?.question) ? S.m2_problem.question : m.q;
+    const shownMark = questionMark(m.id, shownQ);
     return `<div class="review-block">
        <div class="review-mech-id">${m.id} · ${m.name}</div>
-       <div class="review-q">${escHtml(shownQ)}</div>
+       <div class="review-q"${aiAttrs(shownMark)}>${escHtml(shownQ)}${aiTagHtml(shownMark)}</div>
        <div class="review-a">${escHtml(S.answers[m.id])}</div>
      </div>`;
   }).join('');
@@ -3998,7 +4259,7 @@ function exitReview() {
 function showReopenReading(lineEl, mechId, changedId) {
   const source = mechId === 'M1' ? S.m1 : S[mechId.toLowerCase()];
   const line = sanitizeVisibleCopy(source?.observation?.surface_text || '');
-  showLine(lineEl, line, line ? lineKey('obs', mechId, line) : null);
+  showLine(lineEl, line, line ? lineKey('obs', mechId, line) : null, { ai: aiMark(source, 'observation.surface_text') });
   lineEl.style.display = line ? 'block' : 'none';
   if (!changedId) return;
   const rows = changedRowsFor(mechId);
@@ -4139,7 +4400,7 @@ async function openLabelReopen(key) {
 
   if (ambers.length === 1) {
     eyebrowEl.textContent = 'One thing left';
-    qEl.textContent = 'Reading the cellar…';
+    setAiText(qEl, 'Reading the cellar…', null);
     overlay.classList.add('show');
     const stillHere = bottleVisit();
     try {
@@ -4154,16 +4415,16 @@ async function openLabelReopen(key) {
       });
       // A late reply: this form was closed or the bottle was left, so it isn't this form's question.
       if (!stillHere() || _labelReopenKey !== key) return;
-      qEl.textContent = data.question;
+      setAiText(qEl, data.question, aiMark(data, 'question'));
       _labelAsked = data.question;
     } catch (e) {
       if (!stillHere() || _labelReopenKey !== key) return;
       eyebrowEl.textContent = mechId + ' · answer again';
-      qEl.textContent = _labelAsked;
+      setAiText(qEl, _labelAsked, questionMark(mechId, _labelAsked));
     }
   } else {
     eyebrowEl.textContent = mechId + ' · answer again';
-    qEl.textContent = _labelAsked;
+    setAiText(qEl, _labelAsked, questionMark(mechId, _labelAsked));
     overlay.classList.add('show');
   }
 }
@@ -4327,6 +4588,7 @@ function renderCellar() {
     : '<div class="cellar-empty">The cellar is empty. Cork an idea to begin.</div>';
   document.getElementById('cellar-archived-list').innerHTML = archived.map(b => bottleCardHTML(b)).join('');
   document.getElementById('cellar-archived').style.display = archived.length ? '' : 'none';
+  renderBackupLine();
   scheduleRackRefresh(rack);
 }
 
@@ -4342,7 +4604,7 @@ function bottleCardHTML(b) {
   if (sagLevel > 0) classes.push(`bottle-card--sag-${sagLevel}`);
   const archive = isArchived ? '' : `<button type="button" class="btn-ghost bottle-card-archive" onclick="archiveBottleFromCard('${b.id}',event)">Archive</button>`;
   return `<div class="${classes.join(' ')}" role="button" tabindex="0" data-bottle-id="${b.id}" onclick="openBottle('${b.id}')" onkeydown="openBottleByKey('${b.id}',event)">
-            <div class="bottle-card-bottle">${bottleSvg(b.s.elements, { width: 40, height: 106, stroke: 2 })}</div>
+            <div class="bottle-card-bottle">${bottleSvg(b.s.elements, { width: 40, height: 106, stroke: 2, name: bottleName(b.s) })}</div>
             <div class="bottle-card-body">
               <div class="bottle-card-status">${escHtml(waiting)}</div>
               <div class="bottle-card-line">${line}</div>
@@ -4600,6 +4862,7 @@ async function submitDormantFind(id) {
     setQLifecycle('parked');
     Cellar.save(id, S, mi);
     showMessageIn(errEl, outcome.note || 'A more specific person is needed.');
+    if (outcome.note) markAi(errEl, outcome.noteMark);
     if (btn) { btn.disabled = false; btn.textContent = 'Enter the person →'; }
     return;
   }
@@ -4635,6 +4898,7 @@ async function openParkedReentry(id, record, mechId) {
   const addressing = finalBrief.kind || errand.mode;
   const m = M.find(x => x.id === mechId);
   const question = m ? mechQuestion(m) : '';
+  const shownQuestionMark = questionMark(mechId, question);
   const draft = S.drafts?.[mechId] || '';
   const isInFlight = (S.parkKind || record.status) === 'in_flight';
   const eyebrow = isInFlight ? 'In flight · asked, waiting on reply' : `Dormant · ${parkErrandLabel(mechId, S.maturity)}`;
@@ -4652,7 +4916,7 @@ async function openParkedReentry(id, record, mechId) {
     <div class="mech-eyebrow">${escHtml(eyebrow)}</div>
     ${wasLocked ? `<div class="dormant-locked">This would normally come back ${escHtml(CellarClock.lockedWording(record.nextQuestionAt))}. Answer now instead, any time.</div>` : ''}
     ${renderBriefHTML(shownBrief, addressing, grapeName)}
-    <div class="mech-q">${escHtml(question)}</div>
+    <div class="mech-q"${aiAttrs(shownQuestionMark)}>${escHtml(question)}${aiTagHtml(shownQuestionMark)}</div>
     ${wordsSourceRow}
     <div>
       ${draft ? `<label class="dormant-field-label" for="dr-answer">Not read yet</label>` : ''}
@@ -4876,7 +5140,8 @@ async function v6BottleSpark() {
     if (status) status.textContent = '';
     v6RenderM0(data);
   } catch (err) {
-    if (status) status.textContent = 'Error: ' + err.message;
+    console.warn('[v6BottleSpark] send failed', err);
+    if (status) status.textContent = SEND_FAILED_TEXT;
   } finally {
     if (btn) btn.disabled = false;
   }
@@ -4979,6 +5244,8 @@ function v6Rewrite() {
   migrateSelfGrape();
   healPhantomParkedBottles();
   seedTypedMemory();
+  document.getElementById('cellar-who-text').textContent = AI_LINE;
+  watchForFirstAiLine();
   document.addEventListener('pointerdown', finishAllLines, true);
   document.addEventListener('keydown', finishAllLines, true);
   if (Cellar.all().length > 0) {

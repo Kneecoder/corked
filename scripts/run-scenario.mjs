@@ -108,11 +108,11 @@ function driver(page, rec) {
         const opts = document.querySelector('#intake-body .options');
         const refused = document.getElementById('m0-result');
         const status = document.getElementById('v6-bottle-status')?.textContent || '';
-        return !!opts || (refused && refused.style.display === 'block') || status.startsWith('Error');
+        return !!opts || (refused && refused.style.display === 'block') || status === SEND_FAILED_TEXT;
       });
       // Intake has moved on when the spark bottled, and this line has gone with it.
       const status = ((await page.locator('#v6-bottle-status').first().textContent({ timeout: 1000 }).catch(() => '')) || '').trim();
-      if (status.startsWith('Error')) throw new Error(`Bottling failed: ${status}`);
+      if (status && status === await page.evaluate(() => SEND_FAILED_TEXT)) throw new Error(`Bottling failed: ${status}`);
       if (await visible('#m0-result')) throw new Error(`Spark refused: ${await text('#m0-entry-line')}`);
       const question = await text('#intake-body .step-q');
       app.step('bottled the spark', { note: `screen asks "${question}"` });
@@ -815,15 +815,17 @@ const SCENARIOS = {
             listed_field: shown.get(textOf(el))?.field ?? null
           }));
 
-          // The deepest visible element showing a listed text, whether marked or not.
+          const notAi = ['#sb-idea', '#ph-spark', '.bottle-card-line', '#f-inp', '#ans', '#swirl-ans', '#dr-answer', '#rv-reopen-ans',
+            '#lr-ans', '#fold-a', '.review-a:not(.is-corked)', '#m1-record', '.change-words', '.el-name', '.vc-field-val', '#m-label'];
+
+          // The deepest visible element showing a listed text, whether marked or not. The builder's own
+          // fields are left to the check below: a line the model repeats word for word stays theirs.
           const untagged = [...document.querySelectorAll('body *')]
-            .filter(el => !el.matches('script, style') && isVisible(el) && shown.has(textOf(el)))
+            .filter(el => !el.matches('script, style') && !el.matches(notAi.join(', ')) && isVisible(el) && shown.has(textOf(el)))
             .filter(el => ![...el.children].some(c => textOf(c) === textOf(el)))
             .filter(el => !el.hasAttribute('data-ai-generated'))
             .map(el => ({ where: name(el), text: textOf(el), listed_field: shown.get(textOf(el)).field }));
 
-          const notAi = ['#sb-idea', '#ph-spark', '.bottle-card-line', '#f-inp', '#ans', '#swirl-ans', '#dr-answer', '#rv-reopen-ans',
-            '#lr-ans', '#fold-a', '.review-a:not(.is-corked)', '#m1-record', '.change-words', '.el-name', '.vc-field-val', '#m-label'];
           const wrongly_marked = notAi.flatMap(sel => [...document.querySelectorAll(sel)]
             .filter(el => el.hasAttribute('data-ai-generated') || el.querySelector('[data-ai-generated], .ai-tag')).map(() => sel));
 
@@ -843,6 +845,11 @@ const SCENARIOS = {
         s.sweeps.push({ when, ...seen });
         if (seen.caution.length) s.caution.seen.push({ when, ...seen.caution[0] });
         app.step(`swept: ${when}`, { note: `${seen.tagged.length} marked, ${seen.untagged.length} unmarked, ${seen.wrongly_marked.length} wrongly marked` });
+      };
+
+      const shoot = async name => {
+        await page.waitForFunction(() => !document.querySelector('.typed-rest') && !document.querySelector('.cellar-entering'), undefined, { timeout: 30000, polling: 100 });
+        await page.screenshot({ path: join(app.outDir, `run-${rec.run}-${name}.png`) });
       };
 
       const aiLine = async () => ({
@@ -874,6 +881,7 @@ const SCENARIOS = {
       }));
       await toSparkStep();
       s.ai_line.first_time = await aiLine();
+      await shoot('spark-screen-first-time');
       app.step('the spark screen, first time', { note: `AI line visible: ${s.ai_line.first_time.visible}` });
       await page.reload({ waitUntil: 'domcontentloaded' });
       await page.locator('#screen-landing.active').waitFor({ timeout: STEP_TIMEOUT });
@@ -899,9 +907,11 @@ const SCENARIOS = {
       s.persist.after_first_bottle = await persistNow();
       s.bottle_names.a_at_grape = await bottleNames();
       await sweep('A: M1 reading');
+      await shoot('m1-reading');
       await app.setRhythm(TRUST.pace, TRUST.timing);
       await app.waitForM2({ onWording: () => sweep('A: M2 wording waiting for the builder') });
       await sweep('A: M2 question');
+      await shoot('m2-question');
       const m2 = await app.answer(A.M2);
       await sweep('A: M2 reading');
       if (await page.locator('#answer-fold').isVisible()) {
@@ -921,6 +931,7 @@ const SCENARIOS = {
       await briefLanded();
       if (await page.locator('#inline-errand .errand-card').isVisible()) {
         await sweep('A: M2 errand');
+        await shoot('m2-errand');
         await page.locator('#inline-errand .brief-copy-btn').click();
         await page.waitForTimeout(150);
         s.copy_question = {
@@ -977,6 +988,7 @@ const SCENARIOS = {
         return openLabelReopen('tell');
       });
       await sweep('A: the resolving question, opened directly');
+      await shoot('resolving-question');
       await page.evaluate(() => {
         closeLabelReopen();
         S.elements = window.__elements;
@@ -986,6 +998,7 @@ const SCENARIOS = {
       await page.locator('.sb-back').first().click();
       await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
       await page.locator('#cellar-who summary').click();
+      await shoot('cellar-link-open');
       s.ai_line.cellar_link = {
         link_text: (await page.locator('#cellar-who summary').textContent()).trim(),
         visible: await page.locator('#cellar-who-text').isVisible(),
@@ -1023,6 +1036,7 @@ const SCENARIOS = {
         }, undefined, { timeout: STEP_TIMEOUT, polling: 250 });
         if ((await app.text('#p1-btn')) === "That's the problem") {
           await sweep('B: the problem built from the scene, waiting for the builder');
+          await shoot('problem-from-scene');
           await page.locator('#p1-btn').click();
           await page.waitForFunction(() => document.getElementById('p1-btn')?.textContent.trim() !== "That's the problem", undefined, { timeout: STEP_TIMEOUT });
           await sweep('B: M2 friction question after the scene');
@@ -1082,6 +1096,7 @@ const SCENARIOS = {
         renderCellar();
       });
       s.backup_line.last_export_8_days_old = await backupLine();
+      await shoot('cellar-backup-line');
       await page.evaluate(() => {
         localStorage.removeItem('corked_last_export_at');
         Cellar.replaceAll(Cellar.all().map(b => ({ ...b, created_at: new Date(Date.now() - 8 * 86400000).toISOString() })));

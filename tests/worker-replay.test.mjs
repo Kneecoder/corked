@@ -248,7 +248,11 @@ test('an API failure comes back as a 502 with the detail', async () => {
   try {
     const res = await worker.fetch(request('/m3', { problem: PROBLEM, user_answer: 'An answer.' }), { ...ENV, ANTHROPIC_API_KEY: 'k' });
     assert.equal(res.status, 502);
-    assert.deepEqual(await res.json(), { error: 'Claude API error', detail: 'overloaded' });
+    const { prompt_version, model, ai_fields, ...rest } = await res.json();
+    assert.deepEqual(rest, { error: 'Claude API error', detail: 'overloaded' });
+    assert.deepEqual(ai_fields, []);
+    assert.equal(model, ENV.ANTHROPIC_MODEL);
+    assert.match(prompt_version, /^\d{4}-\d{2}-\d{2}$/);
   } finally {
     globalThis.fetch = real;
     console.error = error;
@@ -327,4 +331,189 @@ test('no downgrade and no field warning prints the builder\'s words', async () =
   }
   assert.ok(!output.includes(CANARY), `the canary is in the worker's console output:\n${output}`);
   assert.ok(!output.includes('zqinvented'), `the model's words are in the worker's console output:\n${output}`);
+});
+
+test('the log line keeps the code\'s labels and counts the rest, whatever a caller passes', async () => {
+  const capture = captureConsole();
+  try {
+    await replay('/m2', { user_line: CANARY_SPARK, raw_spark: CANARY_SPARK }, [
+      reply({ mechanism: 'M2', phase: 'problem', outcome: 'guessed', problem: `${CANARY} zqinvented clients ignore invoices`, question: 'q' })
+    ]);
+  } finally {
+    capture.restore();
+  }
+  const line = JSON.parse(capture.lines[0]);
+  assert.deepEqual(Object.keys(line).sort(), ['char_count', 'event', 'from', 'phase', 'reason', 'to', 'word_count']);
+  assert.equal(line.reason, 'words_not_in_spark');
+  assert.ok(line.word_count > 0);
+  assert.ok(line.char_count > 0);
+});
+
+// ── WHO WROTE WHAT ──
+const fieldsOf = body => [...body.ai_fields].sort();
+
+test('every JSON reply carries the prompts\' version, the model and ai_fields, errors included', async () => {
+  const replies = [
+    await replay('/m3', { problem: PROBLEM, user_answer: 'An answer.' }, [reply({ mechanism: 'M3', echo: { state: 'turbid', anchor_span: null } })]),
+    await replay('/m3', { user_answer: 'An answer.' }, []),
+    await replay('/nowhere', {}, []),
+    await replay('/m5', { problem: PROBLEM, user_answer: 'An answer.' }, [reply({ mechanism: 'M3' })])
+  ];
+  const res = await worker.fetch(new Request('https://worker.test/m3', { method: 'GET' }), ENV);
+  replies.push({ status: res.status, body: await res.json() });
+  for (const { body } of replies) {
+    assert.match(body.prompt_version, /^\d{4}-\d{2}-\d{2}$/);
+    assert.equal(body.model, 'replay');
+    assert.ok(Array.isArray(body.ai_fields));
+  }
+});
+
+test('a reply the model could not shape lists its raw text', async () => {
+  const { status, body } = await replay('/m3', { problem: PROBLEM, user_answer: 'An answer.' }, ['not json at all']);
+  assert.equal(status, 502);
+  assert.deepEqual(body.ai_fields, ['raw']);
+});
+
+test('M1 lists its reading, and an anchor stays off the list', async () => {
+  const { body } = await replay('/m1', { spark_summary: 'x', person_name: 'Sam', relationship: 'my sister' }, [
+    reply({ mechanism: 'M1', grape: { state: 'settled', named_person: 'Sam' }, observation: { surface_text: 'Sam — on record.', anchor_span: 'Sam' }, next_question: { should_advance: true, framing: null } })
+  ]);
+  assert.deepEqual(fieldsOf(body), ['grape.named_person', 'observation.surface_text']);
+});
+
+test('the graders list the reading and the follow-up, never an anchor', async () => {
+  const { body } = await replay('/m3', { problem: PROBLEM, user_answer: 'Sam calls the client on day two.' }, [
+    reply({ mechanism: 'M3', echo: { state: 'turbid', anchor_span: 'Sam calls the client' }, observation: { surface_text: 'A reading.', anchor_span: 'Sam calls' }, swirl: { kind: 'reality', question: 'What happened?' } })
+  ]);
+  assert.deepEqual(fieldsOf(body), ['observation.surface_text', 'swirl.question']);
+
+  const noText = await replay('/m3', { problem: PROBLEM, user_answer: 'Sam calls.' }, [reply({ mechanism: 'M3', echo: { state: 'settled', anchor_span: 'Sam calls' } })]);
+  assert.deepEqual(noText.body.ai_fields, []);
+});
+
+test('M2 friction lists the reading and the follow-up', async () => {
+  const { body } = await replay('/m2', { user_line: 'x', problem: PROBLEM, gap_in_play: false, user_answer: 'Last Friday Sam called the client.' }, [
+    reply({ mechanism: 'M2', phase: 'friction', state: 'turbid', tell: { state: 'turbid', anchor_span: null }, vintage: { state: 'turbid', anchor_span: null }, observation: { surface_text: 'A reading.', anchor_span: null }, swirl: { kind: 'reality', question: 'What happened?' } })
+  ]);
+  assert.deepEqual(fieldsOf(body), ['observation.surface_text', 'swirl.question']);
+});
+
+test('Phase A: the spark\'s own words are not the model\'s, a guess is, and a replaced question is not', async () => {
+  const spark = 'An app for freelancers whose clients pay invoices late';
+  const base = { user_line: spark, raw_spark: spark };
+
+  const stated = await replay('/m2', base, [reply({ mechanism: 'M2', phase: 'problem', outcome: 'stated', stated_span: 'clients pay invoices late', question: 'When did it last happen?' })]);
+  assert.equal(stated.body.outcome, 'stated');
+  assert.deepEqual(fieldsOf(stated.body), ['question']);
+
+  const guessed = await replay('/m2', base, [reply({ mechanism: 'M2', phase: 'problem', outcome: 'guessed', problem: 'Freelancers pay late clients', question: 'When did it last happen?' })]);
+  assert.equal(guessed.body.outcome, 'guessed');
+  assert.deepEqual(fieldsOf(guessed.body), ['problem.text', 'question', 'recovered_problem']);
+
+  const repaired = await replay('/m2', { ...base, grape_name: 'Sam', maturity_class: 1 }, [reply({ mechanism: 'M2', phase: 'problem', outcome: 'stated', stated_span: 'clients pay invoices late', question: 'Think of the last time it happened.' })]);
+  assert.equal(repaired.body.server_checks.m2_question_repaired, true);
+  assert.deepEqual(repaired.body.ai_fields, []);
+
+  const nothing = await replay('/m2', base, [reply({ mechanism: 'M2', phase: 'problem', outcome: 'insufficient', question: 'Dropped anyway?' })]);
+  assert.equal(nothing.body.question, null);
+  assert.deepEqual(nothing.body.ai_fields, []);
+});
+
+test('scene and self answer: the model\'s sentence is listed, the builder\'s fragments are not', async () => {
+  const answer = 'Last Friday I called the client twice about the late invoice';
+  const scene = fields => replay('/m2', { phase: 'scene', user_line: 'x', scene_answer: answer }, [reply({ mechanism: 'M2', phase: 'scene', question: 'What did you do next?', ...fields })]);
+
+  const sentence = await scene({ scene_present: true, anchor_spans: ['called the client twice', 'the late invoice'], problem: 'called the client twice, the late invoice' });
+  assert.equal(sentence.body.problem.text, 'called the client twice, the late invoice');
+  assert.deepEqual(fieldsOf(sentence.body), ['problem.text', 'question']);
+
+  const fragments = await scene({ scene_present: true, anchor_spans: ['called the client twice', 'the late invoice'], problem: 'an invented sentence entirely' });
+  assert.equal(fragments.body.problem.text, 'called the client twice … the late invoice');
+  assert.deepEqual(fieldsOf(fragments.body), ['question']);
+
+  const noScene = await scene({ scene_present: false, swirl: { kind: 'scene', question: 'Which day?' } });
+  assert.deepEqual(fieldsOf(noScene.body), ['swirl.question']);
+
+  const self = await replay('/m2', { user_line: 'x', raw_spark: 'x', maturity_class: 2, self_answer: answer }, [
+    reply({ mechanism: 'M2', phase: 'problem', outcome: 'insufficient' }),
+    reply({ mechanism: 'M2', phase: 'self_answer', problem_present: true, anchor_spans: ['called the client twice'], problem: 'an invented sentence entirely', question: 'What did you do next?' })
+  ]);
+  assert.equal(self.body.outcome, 'self_answer');
+  assert.deepEqual(fieldsOf(self.body), ['question']);
+});
+
+test('/field: the fixed question has no AI fields, a brief lists what it holds', async () => {
+  const fixed = await replay('/field', { mode: 'ask', user_line: 'Invoices', spark_parse: { domain: 'invoices' } }, []);
+  assert.match(fixed.body.brief.question, /most annoying part of invoices/);
+  assert.deepEqual(fixed.body.ai_fields, []);
+
+  const brief = await replay('/field', { mode: 'find', user_line: 'Invoices paid late', missing: 'grape' }, [
+    reply({ brief: { kind: 'find', setup: 'Find a freelancer.', question: 'When were invoices last paid late?', target: 'a freelancer' } })
+  ]);
+  assert.deepEqual(fieldsOf(brief.body), ['brief.question', 'brief.setup', 'brief.target']);
+
+  const bare = await replay('/field', { mode: 'ask', user_line: 'Invoices paid late', problem: PROBLEM }, [
+    reply({ brief: { kind: 'ask', setup: null, question: 'When were invoices last paid late?', target: null } })
+  ]);
+  assert.deepEqual(fieldsOf(bare.body), ['brief.question']);
+});
+
+test('/resolve lists its question', async () => {
+  const { body } = await replay('/resolve', { element: 'tell', source_mechanism: 'M2', prior_answer: 'An answer.' }, [reply({ question: 'What did she do?' })]);
+  assert.deepEqual(body.ai_fields, ['question']);
+});
+
+const m0Reply = extra => reply({
+  mechanism: 'M0',
+  user_line_candidate: 'A way for freelancers — to get paid',
+  spark_parse: { implied_person: 'freelancers', suspected_problem: 'late pay', domain: 'invoices', solution_form: null, solution_is_software: 'software' },
+  digestibility: { state: 'cellar_ready', missing: [], reason: 'Cellar-ready.' },
+  followup: { needed: false, question: null },
+  m1_setup: null,
+  ...extra
+});
+
+test('/m0: what the model wrote is listed, cleaned or not', async () => {
+  const { body } = await replay('/m0', { raw_spark: 'A way for freelancers to get paid' }, [m0Reply()]);
+  assert.equal(body.user_line_candidate, 'A way for freelancers, to get paid');
+  assert.deepEqual(fieldsOf(body), ['digestibility.reason', 'spark_parse.domain', 'spark_parse.implied_person', 'spark_parse.suspected_problem', 'user_line_candidate']);
+});
+
+test('/m0: a fixed reason or follow-up the worker put in is not listed, a trimmed follow-up is', async () => {
+  const cloudy = { state: 'bottleable_cloudy', missing: ['problem'], reason: "The model's reason." };
+
+  // A person and a problem: the guard writes the reason and clears the follow-up.
+  const guarded = await replay('/m0', { raw_spark: 'A way for freelancers to get paid' }, [m0Reply({ digestibility: cloudy, followup: { needed: true, question: 'Who is it for?' } })]);
+  assert.equal(guarded.body.digestibility.reason, 'Cellar-ready. The role and the stated problem are visible.');
+  assert.ok(!guarded.body.ai_fields.includes('digestibility.reason'));
+  assert.ok(!guarded.body.ai_fields.includes('followup.question'));
+
+  const noPerson = { implied_person: null, suspected_problem: null, domain: 'invoices', solution_is_software: 'software' };
+
+  // The model wrote no follow-up: the fixed one goes in.
+  const fallback = await replay('/m0', { raw_spark: 'Something with invoices here' }, [m0Reply({ spark_parse: noPerson, digestibility: cloudy, followup: { needed: true, question: null } })]);
+  assert.match(fallback.body.followup.question, /Use only the words already in the Spark/);
+  assert.ok(!fallback.body.ai_fields.includes('followup.question'));
+  assert.ok(fallback.body.ai_fields.includes('digestibility.missing'));
+
+  // A banned follow-up: the worker's template replaces it.
+  const banned = await replay('/m0', { raw_spark: 'Something with invoices here' }, [m0Reply({ spark_parse: noPerson, digestibility: cloudy, followup: { needed: true, question: 'What made you think of this?' } })]);
+  assert.match(banned.body.followup.question, /What is going wrong for the person or group/);
+  assert.ok(!banned.body.ai_fields.includes('followup.question'));
+
+  // Only the "around ..." ending goes: the rest is still the model's.
+  const trimmed = await replay('/m0', { raw_spark: 'Something with invoices here' }, [m0Reply({ spark_parse: noPerson, digestibility: cloudy, followup: { needed: true, question: 'What problem are they having around invoices?' } })]);
+  assert.equal(trimmed.body.followup.question, 'What problem are they having?');
+  assert.ok(trimmed.body.ai_fields.includes('followup.question'));
+});
+
+test('/m0: the scope gate lists the model\'s line and parse, and a line that is the spark itself is not listed', async () => {
+  const parse = { implied_person: null, suspected_problem: null, domain: 'bread', solution_is_software: 'non_software' };
+  const gated = await replay('/m0', { raw_spark: 'A bakery on my street' }, [m0Reply({ spark_parse: parse })]);
+  assert.equal(gated.body.scope.in_scope, false);
+  assert.deepEqual(fieldsOf(gated.body), ['spark_parse.domain', 'user_line_candidate']);
+
+  const noLine = await replay('/m0', { raw_spark: 'A bakery on my street' }, [reply({ mechanism: 'M0', spark_parse: parse })]);
+  assert.equal(noLine.body.user_line_candidate, 'A bakery on my street');
+  assert.deepEqual(fieldsOf(noLine.body), ['spark_parse.domain']);
 });

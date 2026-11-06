@@ -2,6 +2,10 @@ import { anthropicAdapter } from './model-adapters.js';
 import './shared/provenance.js';
 import './shared/mechanisms.js';
 
+// The prompts' version, as a date. Move it whenever a prompt or a message builder changes. Every
+// JSON reply carries it, and the app stores it with each history log entry.
+const PROMPT_VERSION = '2026-11-06';
+
 const { anchorSpan, verifyAnchor, quotedSpan, unsupportedWords } = globalThis.CorkedProvenance;
 const Mechanisms = globalThis.CorkedMechanisms;
 
@@ -1301,8 +1305,65 @@ async function callClaude(env, system, content, maxTokens = 700) {
   try {
     return JSON.parse(rawText);
   } catch {
-    throw new Response(JSON.stringify({ error: 'Parse error', raw: rawText }), { status: 502 });
+    throw new Response(JSON.stringify({ error: 'Parse error', raw: rawText, ai_fields: ['raw'] }), { status: 502 });
   }
+}
+
+// ── WHO WROTE WHAT ──
+// A reply's ai_fields names the fields whose text came from the model's reply, cleaned or trimmed
+// included. The app tags exactly those. Three things stay off the list: an anchor span, which is
+// the builder's own text by the time it leaves here; a fixed line the worker put in place of the
+// model's; and server_checks, which is the worker's notes and is never shown.
+function readPath(obj, path) {
+  return path.split('.').reduce((cur, key) => cur?.[key], obj);
+}
+
+// The paths that hold text. For replies that carry the model's own fields straight through.
+function textFields(reply, paths) {
+  return paths.filter(path => {
+    const value = readPath(reply, path);
+    return typeof value === 'string' && value.trim() !== '';
+  });
+}
+
+const GRADE_TEXT_FIELDS = ['observation.surface_text', 'swirl.question'];
+
+const M0_TEXT_FIELDS = [
+  'user_line_candidate',
+  'digestibility.reason',
+  'followup.question',
+  'm1_setup.question',
+  'm1_setup.hint',
+  'm1_setup.person_label',
+  'm1_setup.person_placeholder',
+  'm1_setup.when_label',
+  'm1_setup.when_placeholder',
+  'm1_setup.trying_label',
+  'm1_setup.trying_placeholder',
+  'm1_setup.happened_label',
+  'm1_setup.happened_placeholder',
+  'spark_parse.solution_form',
+  'spark_parse.implied_person',
+  'spark_parse.suspected_problem',
+  'spark_parse.triggering_situation',
+  'spark_parse.promised_change',
+  'spark_parse.domain'
+];
+
+// M0 is compared after the fact, so reading who wrote what changes nothing in M0 itself. `said` is
+// the model's reply as it arrived. A field is the model's when its text is the model's text cleaned.
+// A follow-up may also have lost its "around ..." ending. Anything else was put there by the worker.
+function m0AiFields(said, reply) {
+  const fields = M0_TEXT_FIELDS.filter(path => {
+    const spoken = readPath(said, path);
+    const shown = readPath(reply, path);
+    if (typeof spoken !== 'string' || typeof shown !== 'string' || !shown.trim()) return false;
+    if (cleanVisibleText(spoken) === cleanVisibleText(shown)) return true;
+    return path === 'followup.question'
+      && cleanVisibleText(spoken.replace(/\s+around\s+[^?]+(\?)/i, '$1')) === cleanVisibleText(shown);
+  });
+  if (Array.isArray(said?.digestibility?.missing) && reply.digestibility?.missing?.length) fields.push('digestibility.missing');
+  return fields;
 }
 
 const M0_BANNED_USER_LINE_TERMS = [
@@ -1651,6 +1712,7 @@ function validateM1(parsed, userAnswer) {
     anchor_verified: !!parsed.observation?.anchor_span,
     visible_style_violations_cleaned: styleViolations
   };
+  parsed.ai_fields = textFields(parsed, ['observation.surface_text', 'next_question.framing', 'grape.named_person']);
 
   return parsed;
 }
@@ -1697,8 +1759,26 @@ function replaceDashes(text) {
     .trim();
 }
 
+// Logs what happened, never what was said. Only the code's own labels get through, whatever a caller
+// passes in. Everything else is counted: how many words, how many characters.
+const DOWNGRADE_LABELS = ['phase', 'from', 'to', 'reason'];
+
 function logM2Downgrade(detail) {
-  console.warn(JSON.stringify({ event: 'm2_downgrade', ...detail }));
+  const line = { event: 'm2_downgrade' };
+  let word_count = 0;
+  let char_count = 0;
+  for (const [key, value] of Object.entries(detail)) {
+    if (DOWNGRADE_LABELS.includes(key)) {
+      line[key] = /^[a-z0-9_]{1,64}$/.test(String(value)) ? value : 'unreadable';
+      continue;
+    }
+    for (const piece of Array.isArray(value) ? value : [value]) {
+      if (typeof piece !== 'string') continue;
+      word_count += piece.split(/\s+/).filter(Boolean).length;
+      char_count += piece.length;
+    }
+  }
+  console.warn(JSON.stringify({ ...line, word_count, char_count }));
 }
 
 // Decides the Phase A outcome from the model's reply and the spark itself. The builder's words
@@ -1794,6 +1874,11 @@ function validateM2Problem(parsed, maturityClass, grapeName, sources, selfInput 
     // Kept for the bench runners, which still read the old fields.
     recovered_problem: problem ? problem.text : null,
     needs_confirmation: decision.outcome === 'guessed',
+    // A stated problem is the spark's own words. A guess is the model's sentence.
+    ai_fields: [
+      ...(decision.outcome === 'guessed' ? ['problem.text', 'recovered_problem'] : []),
+      ...(question && !repaired ? ['question'] : [])
+    ],
     server_checks: {
       schema_valid: true,
       model_outcome: decision.modelOutcome,
@@ -1817,6 +1902,8 @@ function problemFromAnswer(parsed, answer, present) {
   const normAnswer = norm(answer);
   const downgrades = [];
   let problem = null;
+  // True when the problem is the model's sentence. Fragments standing in for it are the builder's words.
+  let sentenceIsModels = false;
 
   // A reply with a single anchor_span counts as one fragment.
   const offered = Array.isArray(parsed.anchor_spans) ? parsed.anchor_spans
@@ -1839,6 +1926,7 @@ function problemFromAnswer(parsed, answer, present) {
   if (fragments.length) {
     let text = typeof parsed.problem === 'string' ? replaceDashes(parsed.problem) : '';
     const unsupported = text ? unsupportedWords(text, fragments.join(' '), { scene: true }) : [];
+    sentenceIsModels = !!text && !unsupported.length;
     if (!text || unsupported.length) {
       // The sentence reached outside the checked fragments. The fragments are the builder's own
       // words, so they stand as the problem instead, in the order the answer has them.
@@ -1851,7 +1939,7 @@ function problemFromAnswer(parsed, answer, present) {
       problem = { text, source: 'scene_derived', status: 'proposed', anchors: fragments };
     }
   }
-  return { problem, fragments, downgrades };
+  return { problem, fragments, downgrades, sentenceIsModels };
 }
 
 // Self mode: the answer to "What makes this spark yours?", read the scene way. No swirl: with no
@@ -1861,7 +1949,7 @@ function m2ProblemFromSelfAnswer({ parsed, answer }, grapeName) {
     if (parsed) logM2Downgrade({ phase: 'self_answer', from: 'self_answer', to: 'skipped', reason: 'invalid_reply' });
     return null;
   }
-  const { problem, fragments, downgrades } = problemFromAnswer(parsed, answer, parsed.problem_present === true);
+  const { problem, fragments, downgrades, sentenceIsModels } = problemFromAnswer(parsed, answer, parsed.problem_present === true);
   for (const d of downgrades) logM2Downgrade({ phase: 'self_answer', ...d });
   if (!problem) return null;
   const { question, repaired } = m2FrictionQuestion(parsed, 2, grapeName, problem.text);
@@ -1875,6 +1963,10 @@ function m2ProblemFromSelfAnswer({ parsed, answer }, grapeName) {
     question,
     recovered_problem: problem.text,
     needs_confirmation: true,
+    ai_fields: [
+      ...(sentenceIsModels ? ['problem.text', 'recovered_problem'] : []),
+      ...(question && !repaired ? ['question'] : [])
+    ],
     server_checks: {
       schema_valid: true,
       outcome: 'self_answer',
@@ -1890,7 +1982,7 @@ function validateM2Scene(parsed, sceneAnswer, maturityClass, grapeName) {
   if (parsed.mechanism !== 'M2') throw new Error('Invalid mechanism');
   if (parsed.phase !== 'scene') throw new Error('Expected phase: scene');
 
-  const { problem, fragments, downgrades } = problemFromAnswer(parsed, sceneAnswer, parsed.scene_present === true);
+  const { problem, fragments, downgrades, sentenceIsModels } = problemFromAnswer(parsed, sceneAnswer, parsed.scene_present === true);
   for (const d of downgrades) logM2Downgrade({ phase: 'scene', ...d });
 
   const { question, repaired } = problem
@@ -1913,6 +2005,11 @@ function validateM2Scene(parsed, sceneAnswer, maturityClass, grapeName) {
     gap_in_play: !!problem && parsed.gap_in_play === true,
     question,
     swirl,
+    ai_fields: [
+      ...(problem && sentenceIsModels ? ['problem.text'] : []),
+      ...(question && !repaired ? ['question'] : []),
+      ...(swirl ? ['swirl.question'] : [])
+    ],
     server_checks: {
       schema_valid: true,
       model_scene_present: parsed.scene_present === true,
@@ -1970,6 +2067,7 @@ function validateM2Friction(parsed, userAnswer, gapInPlay) {
     overall_state_is_floor: true,
     swirl_included: swirlIncluded
   };
+  parsed.ai_fields = textFields(parsed, GRADE_TEXT_FIELDS);
 
   return parsed;
 }
@@ -2134,7 +2232,7 @@ async function handleField(request, env, corsHeaders) {
     // No problem on record: the [problem] templates can't be used, so the errand is the open
     // domain question. With no domain either, it is the open question about the week.
     const domain = String(sparkParse?.domain || '').trim();
-    if (!domain) console.warn(JSON.stringify({ event: 'field_no_problem_no_domain', user_line: userLine }));
+    if (!domain) console.warn(JSON.stringify({ event: 'field_no_problem_no_domain' }));
     const question = domain
       ? `What's the most annoying part of ${domain} for you right now?`
       : `What's been the most annoying part of your week?`;
@@ -2158,7 +2256,7 @@ async function handleField(request, env, corsHeaders) {
     parsed = await callClaude(env, FIELD_DOCTRINE, content, 400);
 
     if (parsed.error) {
-      if (attempt >= maxAttempts) return jsonResponse({ error: parsed.error }, 422, corsHeaders);
+      if (attempt >= maxAttempts) return jsonResponse({ error: parsed.error, ai_fields: ['error'] }, 422, corsHeaders);
       content += `\n\nThe previous attempt failed: ${parsed.error}. Write a question grounded in the spark's own nouns.`;
       continue;
     }
@@ -2190,7 +2288,12 @@ async function handleField(request, env, corsHeaders) {
   const kind = ['ask', 'echo', 'find', 'contrast', 'words', 'limit'].includes(parsed.brief.kind) ? parsed.brief.kind : 'find';
 
   return jsonResponse({
-    brief: { kind, setup, question, target: parsed.brief.target || null }
+    brief: { kind, setup, question, target: parsed.brief.target || null },
+    ai_fields: [
+      ...(setup ? ['brief.setup'] : []),
+      'brief.question',
+      ...(parsed.brief.target ? ['brief.target'] : [])
+    ]
   }, 200, corsHeaders);
 }
 
@@ -2233,7 +2336,7 @@ async function handleResolve(request, env, corsHeaders) {
   let question = cleanVisibleText(parsed.question);
   if (question.length > 200) question = question.slice(0, 197) + '...';
 
-  return jsonResponse({ question }, 200, corsHeaders);
+  return jsonResponse({ question, ai_fields: ['question'] }, 200, corsHeaders);
 }
 
 // ── THE EVIDENCE GRADER ──
@@ -2343,6 +2446,7 @@ async function handleEvidence(mechId, request, env, corsHeaders) {
 
   normalizeSubstitutionFlag(parsed);
   parsed.server_checks.swirl_included = normalizeSwirl(parsed);
+  parsed.ai_fields = textFields(parsed, GRADE_TEXT_FIELDS);
 
   return jsonResponse(parsed, 200, corsHeaders);
 }
@@ -2367,11 +2471,12 @@ async function handleM0(request, env, corsHeaders) {
   }
 
   const parsed = await callClaude(env, M0_DOCTRINE, buildM0UserMessage(rawSpark, followupQuestion, followupAnswer), 1600);
+  const said = structuredClone(parsed);
 
   // Scope gate — deterministic check before digestibility processing.
   // Only explicit non_software is rejected; unstated and vague sparks age normally.
   if (parsed?.spark_parse?.solution_is_software === 'non_software') {
-    return jsonResponse({
+    const gated = {
       schema_version: parsed.schema_version || 'm0.v1',
       mechanism: 'M0',
       raw_spark: rawSpark,
@@ -2385,10 +2490,12 @@ async function handleM0(request, env, corsHeaders) {
         reason: 'This spark describes something that belongs in a different cellar. Corked ages software products built by solo builders. A non-software idea is not less valid, it ages somewhere else.'
       },
       server_checks: { schema_valid: true, scope_gated: true }
-    }, 200, corsHeaders);
+    };
+    return jsonResponse({ ...gated, ai_fields: m0AiFields(said, gated) }, 200, corsHeaders);
   }
 
-  return jsonResponse(validateM0(parsed, rawSpark, followupAnswer, priorDigestibility), 200, corsHeaders);
+  const validated = validateM0(parsed, rawSpark, followupAnswer, priorDigestibility);
+  return jsonResponse({ ...validated, ai_fields: m0AiFields(said, validated) }, 200, corsHeaders);
 }
 
 async function handleM1(request, env, corsHeaders) {
@@ -2418,6 +2525,47 @@ async function handleM1(request, env, corsHeaders) {
   return jsonResponse(validateM1(parsed, combinedInput), 200, corsHeaders);
 }
 
+// Every JSON reply leaves through here, errors included, carrying the prompts' version, the model and
+// ai_fields. A reply with no ai_fields of its own has nothing from the model in it.
+async function withVersions(response, env) {
+  const body = await response.json();
+  return new Response(JSON.stringify({
+    ...body,
+    ai_fields: Array.isArray(body.ai_fields) ? body.ai_fields : [],
+    prompt_version: PROMPT_VERSION,
+    model: env.ANTHROPIC_MODEL || null
+  }), { status: response.status, headers: response.headers });
+}
+
+async function route(request, env, corsHeaders) {
+  const url = new URL(request.url);
+
+  if (request.method !== 'POST') {
+    return jsonResponse({ error: 'Method not allowed' }, 405, corsHeaders);
+  }
+
+  try {
+    if (url.pathname === '/m0') return await handleM0(request, env, corsHeaders);
+    if (url.pathname === '/m1') return await handleM1(request, env, corsHeaders);
+    if (url.pathname === '/m2') return await handleM2(request, env, corsHeaders);
+    for (const mechId of Object.keys(EVIDENCE_GRADERS)) {
+      if (url.pathname === Mechanisms.get(mechId).route) return await handleEvidence(mechId, request, env, corsHeaders);
+    }
+    if (url.pathname === '/field') return await handleField(request, env, corsHeaders);
+    if (url.pathname === '/resolve') return await handleResolve(request, env, corsHeaders);
+    return jsonResponse({ error: 'Unknown route.' }, 404, corsHeaders);
+  } catch (err) {
+    if (err instanceof Response) {
+      const text = await err.text();
+      return new Response(text, {
+        status: err.status,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    return jsonResponse({ error: err.message }, 500, corsHeaders);
+  }
+}
+
 export default {
   async fetch(request, env) {
     const allowedOrigins = (env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim()).filter(Boolean);
@@ -2435,31 +2583,6 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
-    const url = new URL(request.url);
-
-    if (request.method !== 'POST') {
-      return jsonResponse({ error: 'Method not allowed' }, 405, corsHeaders);
-    }
-
-    try {
-      if (url.pathname === '/m0') return await handleM0(request, env, corsHeaders);
-      if (url.pathname === '/m1') return await handleM1(request, env, corsHeaders);
-      if (url.pathname === '/m2') return await handleM2(request, env, corsHeaders);
-      for (const mechId of Object.keys(EVIDENCE_GRADERS)) {
-        if (url.pathname === Mechanisms.get(mechId).route) return await handleEvidence(mechId, request, env, corsHeaders);
-      }
-      if (url.pathname === '/field') return await handleField(request, env, corsHeaders);
-      if (url.pathname === '/resolve') return await handleResolve(request, env, corsHeaders);
-      return jsonResponse({ error: 'Unknown route.' }, 404, corsHeaders);
-    } catch (err) {
-      if (err instanceof Response) {
-        const text = await err.text();
-        return new Response(text, {
-          status: err.status,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
-      }
-      return jsonResponse({ error: err.message }, 500, corsHeaders);
-    }
+    return withVersions(await route(request, env, corsHeaders), env);
   }
 };
