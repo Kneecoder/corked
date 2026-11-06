@@ -172,7 +172,8 @@ function driver(page, rec) {
 
     // M2 opens on Phase A. Returns the stage it settled on: friction, or scene. A wording that
     // waits for the builder is taken with "That's the problem", as a person reading it would.
-    async waitForM2() {
+    // onWording: runs while that wording is on screen, before it is taken.
+    async waitForM2({ onWording } = {}) {
       await waitFor(() => {
         const btn = document.getElementById('p1-btn');
         const err = document.getElementById('park-error');
@@ -187,6 +188,7 @@ function driver(page, rec) {
       }) : '';
       if ((await text('#p1-btn')) === "That's the problem") {
         app.step('M2 shows a wording for the problem', { note: problemShown });
+        if (onWording) await onWording(problemShown);
         await page.locator('#p1-btn').click();
         await waitFor(() => document.getElementById('p1-btn')?.textContent.trim() !== "That's the problem");
         app.step('took the wording');
@@ -679,11 +681,513 @@ const LOOK = {
   failed_line: "Not sent. Corked couldn't be reached, so nothing went on record. Your answer is still here."
 };
 
+// ── THE TRUST BASICS SCENARIO: ITS INPUTS ──
+
+const TRUST = {
+  canary: 'zq-canary-0611',
+  ai_line: "An AI model writes some of Corked's questions and the line after an answer; the rest are fixed. Not a person. What you type goes through Corked's server to Anthropic's Claude. Anthropic doesn't train on it and deletes it within 30 days, or keeps it up to two years if its safety systems flag it. Your cellar is saved in this browser only.",
+  caution: 'The AI can misread an answer. Check anything you act on.',
+  failed_line: "Not sent. Corked couldn't be reached, so nothing went on record. Your answer is still here.",
+  dead_worker: 'http://127.0.0.1:59999',
+  pace: 'Every other day',
+  timing: 'Evening',
+  // A spark that states its problem: the model writes the question, the reading, the follow-up and the errand.
+  A: {
+    spark: 'An app for wedding photographers who lose their deposit when couples cancel two days before the shoot. zq-canary-0611',
+    name: 'Lotte',
+    rel: 'my cousin, she shoots weddings',
+    M2: 'It happens a few times a year. She gets annoyed and moves on. zq-canary-0611',
+    follow_up: 'I have not seen it myself, she only told me about it. zq-canary-0611',
+    parked: 'I asked her again. She said it happens and she moves on. zq-canary-0611',
+    M3: "I don't know other wedding photographers well. I'd guess most of them just eat the loss. zq-canary-0611",
+    M3_follow_up: "I haven't asked anyone else about it. I just assume others have it too. zq-canary-0611"
+  },
+  // A spark that states none: M2 asks the scene question, which is the app's own copy.
+  B: {
+    spark: 'A better scheduling app for gym owners. zq-canary-0611',
+    name: 'Marco',
+    rel: 'owns the boxing gym where I train',
+    scene: 'Last Tuesday Marco double booked the boxing ring because two trainers wrote their classes on different paper sheets, and he had to send six people home. zq-canary-0611'
+  },
+  // Self mode: the bottle's name is in the second person.
+  C: {
+    spark: 'A way to stop losing my receipts before tax season. zq-canary-0611',
+    name: 'Jamie',
+    rel: 'I lost a whole folder of receipts last March and paid more tax for it. zq-canary-0611'
+  }
+};
+
 // ── SCENARIOS ──
 // Each scenario plays its steps into rec.screens and rec.checkpoints, then reports, for every
 // expected result, what happened. A report states facts. It never says pass or fail.
 
 const SCENARIOS = {
+  'trust-basics': {
+    title: 'Trust basics',
+    expected: [
+      'On an empty cellar the spark screen shows the AI line. After a reload it doesn\'t. The cellar link opens the same text.',
+      'During the whole run, no request goes to fonts.googleapis.com or fonts.gstatic.com.',
+      'After the first bottle is saved, navigator.storage.persist was called. Record what navigator.storage.persisted() returns.',
+      'Every element that shows a field the worker listed in ai_fields has data-ai-generated="true", data-ai-model and a visible AI tag. No other element has them: not the spark, the builder\'s answers, the mechanism table\'s questions or M2\'s scene question.',
+      'The exported cellar\'s log entries from worker replies carry prompt_version, model and ai_fields.',
+      'With the worker URL set to an address that doesn\'t answer, bottling a spark shows the failed-send message, never "Could not reach the worker", and the harness reports it as a failed bottling.',
+      'The bottle drawings in the sidebar, the phone header and on cellar cards have an accessible name that starts with the spark\'s first words and holds no count (nothing like "3 of 6"). The two landing bottles are aria-hidden.'
+    ],
+
+    async play(app, rec) {
+      const page = app.page;
+      const s = rec.screens = {
+        ai_line: {}, fonts: { blocked_requests: [], font_files: [], faces: [] }, persist: {}, sweeps: [],
+        replies: [], copy_question: null, failed_bottling: {}, bottle_names: {}, landing_bottles: {},
+        caution: { seen: [] }, backup_line: {}, reached: {}
+      };
+
+      // A server left on the port would serve another copy of the app.
+      const served = await fetch(APP_URL.split('?')[0], { cache: 'no-store' }).then(r => r.text());
+      if (served !== await readFile(join(REPO, 'corked_v6.html'), 'utf8')) {
+        throw new Error('The page on port 8080 is not this checkout\'s app. Close Start Corked and run again.');
+      }
+      await page.context().grantPermissions(['clipboard-read', 'clipboard-write'], { origin: `http://localhost:${PORT}` });
+
+      const watchFonts = p => p.on('request', r => {
+        const url = r.url();
+        if (/fonts\.(googleapis|gstatic)\.com/.test(url)) s.fonts.blocked_requests.push(url);
+        if (url.startsWith('http') && new URL(url).pathname.startsWith('/fonts/')) s.fonts.font_files.push(new URL(url).pathname);
+      });
+      watchFonts(page);
+
+      // Every text the worker listed in ai_fields, read off the wire.
+      const listed = [];
+      page.on('response', async r => {
+        if (!r.url().startsWith(WORKER_URL) || r.request().method() !== 'POST') return;
+        const body = await r.json().catch(() => null);
+        if (!body) return;
+        const route = new URL(r.url()).pathname;
+        s.replies.push({ route, status: r.status(), prompt_version: body.prompt_version ?? null, model: body.model ?? null, ai_fields: body.ai_fields ?? null });
+        for (const field of body.ai_fields || []) {
+          const value = field.split('.').reduce((o, k) => o?.[k], body);
+          if (typeof value === 'string' && value.trim()) listed.push({ route, field, text: value, model: body.model });
+        }
+      });
+
+      // Counts calls to navigator.storage.persist across reloads, outside the keys an export carries.
+      await page.addInitScript(() => {
+        const store = navigator.storage;
+        if (!store || !store.persist) return;
+        const real = store.persist.bind(store);
+        store.persist = () => {
+          localStorage.setItem('run_persist_calls', String(Number(localStorage.getItem('run_persist_calls') || 0) + 1));
+          return real();
+        };
+      });
+      const persistNow = () => page.evaluate(async () => ({
+        calls: Number(localStorage.getItem('run_persist_calls') || 0),
+        persisted: navigator.storage?.persisted ? await navigator.storage.persisted() : null
+      }));
+
+      // One look at everything on screen: what carries the AI marks, what shows a listed text, and
+      // whether the builder's words or a fixed question carry them.
+      const sweep = async when => {
+        await page.waitForTimeout(400);   // a reply's fields are read off the wire a moment after it lands
+        await page.waitForFunction(() => !document.querySelector('.typed-rest'), undefined, { timeout: 30000, polling: 100 });
+        const seen = await page.evaluate(({ listed }) => {
+          const norm = t => String(t || '').replace(/\s+/g, ' ').trim();
+          const shown = new Map();
+          for (const l of listed) {
+            for (const t of [l.text, sanitizeVisibleCopy(l.text)]) {
+              shown.set(norm(t), l);
+              shown.set(`Looking for: ${norm(t)}`, l);
+            }
+          }
+          const isVisible = el => el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
+          const textOf = el => norm(el.matches('textarea, input') ? el.value : el.textContent);
+          const name = el => el.id ? `#${el.id}` : `.${[...el.classList].join('.')}`;
+          const tagOf = el => el.matches('textarea') ? document.querySelector('#m2-problem-label .ai-tag') : el.querySelector(':scope > .ai-tag');
+          const tagReads = tag => !!tag && isVisible(tag) && tag.getAttribute('aria-label') === 'Written by AI'
+            && getComputedStyle(tag, '::before').content.includes('AI');
+
+          const tagged = [...document.querySelectorAll('[data-ai-generated]')].filter(isVisible).map(el => ({
+            where: name(el),
+            text: textOf(el),
+            generated: el.getAttribute('data-ai-generated'),
+            model: el.getAttribute('data-ai-model'),
+            tag_visible: tagReads(tagOf(el)),
+            listed_field: shown.get(textOf(el))?.field ?? null
+          }));
+
+          // The deepest visible element showing a listed text, whether marked or not.
+          const untagged = [...document.querySelectorAll('body *')]
+            .filter(el => !el.matches('script, style') && isVisible(el) && shown.has(textOf(el)))
+            .filter(el => ![...el.children].some(c => textOf(c) === textOf(el)))
+            .filter(el => !el.hasAttribute('data-ai-generated'))
+            .map(el => ({ where: name(el), text: textOf(el), listed_field: shown.get(textOf(el)).field }));
+
+          const notAi = ['#sb-idea', '#ph-spark', '.bottle-card-line', '#f-inp', '#ans', '#swirl-ans', '#dr-answer', '#rv-reopen-ans',
+            '#lr-ans', '#fold-a', '.review-a:not(.is-corked)', '#m1-record', '.change-words', '.el-name', '.vc-field-val', '#m-label'];
+          const wrongly_marked = notAi.flatMap(sel => [...document.querySelectorAll(sel)]
+            .filter(el => el.hasAttribute('data-ai-generated') || el.querySelector('[data-ai-generated], .ai-tag')).map(() => sel));
+
+          const mech = typeof M !== 'undefined' ? M[mi] : null;
+          const mq = document.getElementById('m-q');
+          return {
+            tagged, untagged, wrongly_marked,
+            question: mq && isVisible(mq) && document.getElementById('screen-phase1').classList.contains('active') ? {
+              mech: mech?.id ?? null,
+              m2_stage: mech?.id === 'M2' ? m2Stage() : null,
+              text: textOf(mq),
+              marked: mq.hasAttribute('data-ai-generated')
+            } : null,
+            caution: [...document.querySelectorAll('.ai-caution')].filter(isVisible).map(el => ({ text: textOf(el), under: el.previousElementSibling ? name(el.previousElementSibling) : null }))
+          };
+        }, { listed });
+        s.sweeps.push({ when, ...seen });
+        if (seen.caution.length) s.caution.seen.push({ when, ...seen.caution[0] });
+        app.step(`swept: ${when}`, { note: `${seen.tagged.length} marked, ${seen.untagged.length} unmarked, ${seen.wrongly_marked.length} wrongly marked` });
+      };
+
+      const aiLine = async () => ({
+        visible: await page.locator('#spark-ai-line').isVisible().catch(() => false),
+        text: await page.locator('#spark-ai-line').first().textContent({ timeout: 500 }).catch(() => null),
+        comes_after_the_field: await page.evaluate(() => {
+          const line = document.getElementById('spark-ai-line');
+          const field = document.getElementById('f-inp');
+          return !!line && !!field && !!(field.compareDocumentPosition(line) & Node.DOCUMENT_POSITION_FOLLOWING);
+        })
+      });
+      const toSparkStep = async () => {
+        await page.locator('#bottle-cta').click();
+        await page.locator('#screen-intake.active .ph-overlay').waitFor({ state: 'attached', timeout: STEP_TIMEOUT });
+      };
+      const bottleNames = () => page.evaluate(() => {
+        const read = sel => {
+          const svg = document.querySelector(sel);
+          return svg ? { role: svg.getAttribute('role'), name: svg.getAttribute('aria-label'), aria_hidden: svg.getAttribute('aria-hidden') } : null;
+        };
+        return { sidebar: read('#bottle-wrap svg'), phone_header: read('#ph-bottle svg') };
+      });
+
+      // Expected 1, the first half.
+      await app.open();
+      s.landing_bottles = await page.evaluate(() => ({
+        ld_bottle: document.getElementById('ld-bottle')?.getAttribute('aria-hidden') ?? null,
+        ld_bottle_phone: document.getElementById('ld-bottle-phone')?.getAttribute('aria-hidden') ?? null
+      }));
+      await toSparkStep();
+      s.ai_line.first_time = await aiLine();
+      app.step('the spark screen, first time', { note: `AI line visible: ${s.ai_line.first_time.visible}` });
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await page.locator('#screen-landing.active').waitFor({ timeout: STEP_TIMEOUT });
+      await toSparkStep();
+      s.ai_line.after_reload = await aiLine();
+      app.step('the spark screen, after a reload', { note: `AI line visible: ${s.ai_line.after_reload.visible}` });
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await page.locator('#screen-landing.active').waitFor({ timeout: STEP_TIMEOUT });
+
+      // Bottle A: a spark that states its problem.
+      const A = TRUST.A;
+      app.spark = A.spark;
+      const typedA = await app.typeSpark(A.spark);
+      if (typedA.field_value !== A.spark) throw new Error('The spark did not reach the field.');
+      await app.openGate();
+      await app.passGate();
+      s.persist.before_first_bottle = await persistNow();
+      await app.pickOption('Yes.');
+      await app.pickOption('Yes, I can name them and I know the moment.');
+      await app.intakeContinue();
+      await app.enterGrape(A.name, A.rel);
+      await app.waitForPhase1();
+      s.persist.after_first_bottle = await persistNow();
+      s.bottle_names.a_at_grape = await bottleNames();
+      await sweep('A: M1 reading');
+      await app.setRhythm(TRUST.pace, TRUST.timing);
+      await app.waitForM2({ onWording: () => sweep('A: M2 wording waiting for the builder') });
+      await sweep('A: M2 question');
+      const m2 = await app.answer(A.M2);
+      await sweep('A: M2 reading');
+      if (await page.locator('#answer-fold').isVisible()) {
+        await page.locator('#answer-fold summary').click();
+        await sweep('A: M2 reading, the answer fold open');
+        await page.locator('#answer-fold summary').click();
+      }
+      if (m2.followUp) {
+        await sweep('A: M2 follow-up');
+        await app.answerFollowUp(A.follow_up);
+        await sweep('A: after the M2 follow-up');
+      }
+      const briefLanded = () => page.waitForFunction(() => {
+        const card = document.querySelector('#inline-errand .errand-card');
+        return !card || !card.textContent.includes('Finding your brief');
+      }, undefined, { timeout: STEP_TIMEOUT, polling: 250 });
+      await briefLanded();
+      if (await page.locator('#inline-errand .errand-card').isVisible()) {
+        await sweep('A: M2 errand');
+        await page.locator('#inline-errand .brief-copy-btn').click();
+        await page.waitForTimeout(150);
+        s.copy_question = {
+          on_screen: await page.evaluate(() => document.querySelector('#inline-errand .brief-q-text')?.textContent.trim()),
+          on_the_clipboard: await page.evaluate(() => navigator.clipboard.readText())
+        };
+      }
+      s.bottle_names.a_after_m2 = await bottleNames();
+      if (await page.locator('#elr-tell').count()) {
+        await app.openElement('tell');
+        if (await page.locator('#review-panel').isVisible()) {
+          await sweep('A: the Tell in the sidebar, with its reopen');
+          await page.locator('#review-panel .review-back').click();
+        }
+      }
+      if (await page.locator('#rw-park-btn').isVisible()) {
+        await app.parkAndComeBack();
+        await sweep('A: the parked question came back');
+        const parked = await app.answerParked(A.parked);
+        await sweep('A: the parked answer read');
+        if (parked.followUp) await app.leaveFollowUpUnanswered();
+      }
+      await app.waitOutHold();
+      if (await page.locator('#swirl-panel').isVisible()) await app.leaveFollowUpUnanswered();
+      if (await page.evaluate(() => M[mi]?.id) === 'M2') {
+        await page.locator('#p1-btn').click();
+        await page.waitForFunction(() => M[mi]?.id !== 'M2'
+          || document.getElementById('errand-warn-overlay').classList.contains('show'), undefined, { timeout: STEP_TIMEOUT, polling: 250 });
+        if (await page.locator('#errand-warn-overlay').isVisible()) {
+          app.step('errand warning shown, continuing anyway');
+          await page.locator('#errand-warn-overlay .ew-go').click();
+          await page.waitForFunction(() => M[mi]?.id !== 'M2', undefined, { timeout: STEP_TIMEOUT, polling: 250 });
+        }
+      }
+      s.reached.a_after_m2 = await page.evaluate(() => M[mi]?.id);
+      if (s.reached.a_after_m2 === 'M3') {
+        await sweep('A: M3 question, from the mechanism table');
+        const m3 = await app.answer(A.M3);
+        await sweep('A: M3 reading');
+        if (m3.followUp) {
+          await sweep('A: M3 follow-up');
+          await app.answerFollowUp(A.M3_follow_up);
+          await sweep('A: after the M3 follow-up');
+        }
+        await briefLanded();
+        if (await page.locator('#inline-errand .errand-card').isVisible()) await sweep('A: M3 errand');
+      }
+
+      // /resolve only opens on the label screen with one element left, seven questions away, so this
+      // one is opened directly. The real route answers it, and nothing here is saved to the bottle.
+      await page.evaluate(() => {
+        window.__elements = { ...S.elements };
+        S.elements = { grape: 'settled', tell: 'turbid', vintage: 'settled', gap: 'settled', echo: 'settled', limit: 'settled' };
+        return openLabelReopen('tell');
+      });
+      await sweep('A: the resolving question, opened directly');
+      await page.evaluate(() => {
+        closeLabelReopen();
+        S.elements = window.__elements;
+      });
+
+      // Expected 1, the second half.
+      await page.locator('.sb-back').first().click();
+      await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+      await page.locator('#cellar-who summary').click();
+      s.ai_line.cellar_link = {
+        link_text: (await page.locator('#cellar-who summary').textContent()).trim(),
+        visible: await page.locator('#cellar-who-text').isVisible(),
+        text: (await page.locator('#cellar-who-text').textContent()).trim()
+      };
+      await page.locator('#cellar-who summary').click();
+      await sweep('the cellar with one bottle');
+
+      // Bottle B: a spark that states no problem.
+      const B = TRUST.B;
+      app.spark = B.spark;
+      const typedB = await app.typeSpark(B.spark, { fromCellar: true });
+      if (typedB.field_value !== B.spark) throw new Error('The spark did not reach the field.');
+      s.ai_line.second_spark = await aiLine();
+      await app.openGate();
+      await app.passGate();
+      await app.pickOption('Yes.');
+      await app.pickOption('I can name them, but I have only heard about it secondhand.');
+      await app.intakeContinue();
+      await app.enterGrape(B.name, B.rel);
+      await app.waitForPhase1();
+      await sweep('B: M1 reading');
+      await app.setRhythm(TRUST.pace, TRUST.timing);
+      const m2b = await app.waitForM2({ onWording: () => sweep('B: M2 wording waiting for the builder') });
+      await sweep(`B: M2 opened on the ${m2b.stage} stage`);
+      s.reached.b_m2_stage = m2b.stage;
+      if (m2b.stage === 'scene') {
+        await page.locator('#ans').fill(B.scene);
+        await page.locator('#p1-btn').click();
+        await page.waitForFunction(() => {
+          const btn = document.getElementById('p1-btn');
+          return (btn && !btn.disabled && btn.textContent.trim() === "That's the problem")
+            || document.getElementById('swirl-panel').style.display === 'flex'
+            || document.getElementById('send-failed').style.display === 'flex';
+        }, undefined, { timeout: STEP_TIMEOUT, polling: 250 });
+        if ((await app.text('#p1-btn')) === "That's the problem") {
+          await sweep('B: the problem built from the scene, waiting for the builder');
+          await page.locator('#p1-btn').click();
+          await page.waitForFunction(() => document.getElementById('p1-btn')?.textContent.trim() !== "That's the problem", undefined, { timeout: STEP_TIMEOUT });
+          await sweep('B: M2 friction question after the scene');
+        } else {
+          await sweep('B: the scene follow-up');
+        }
+      }
+      await page.locator('.sb-back').first().click();
+      await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+
+      // Bottle C: self mode.
+      const C = TRUST.C;
+      app.spark = C.spark;
+      const typedC = await app.typeSpark(C.spark, { fromCellar: true });
+      if (typedC.field_value !== C.spark) throw new Error('The spark did not reach the field.');
+      await app.openGate();
+      await app.passGate();
+      await app.pickOption('No.');
+      await app.pickOption('Yes. This comes from my own experience.');
+      await app.intakeContinue();
+      await app.enterGrape(C.name, C.rel);
+      await app.waitForPhase1();
+      s.bottle_names.c_self_mode = await bottleNames();
+      await app.setRhythm(TRUST.pace, TRUST.timing);
+      await app.waitForM2({ onWording: () => sweep('C: M2 wording waiting for the builder') });
+      await sweep('C: M2 question, self mode');
+      await page.locator('.sb-back').first().click();
+      await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+
+      s.bottle_names.cards = await page.evaluate(() => [...document.querySelectorAll('.bottle-card')].map(card => {
+        const svg = card.querySelector('.bottle-card-bottle svg');
+        return { role: svg?.getAttribute('role') ?? null, name: svg?.getAttribute('aria-label') ?? null, aria_hidden: svg?.getAttribute('aria-hidden') ?? null };
+      }));
+      await sweep('the cellar with three bottles');
+      s.fonts.faces = await page.evaluate(async () => {
+        await document.fonts.ready;
+        return [...document.fonts].map(f => ({ family: f.family, weight: f.weight, style: f.style, status: f.status }));
+      });
+
+      // Export, then what the cellar says about backups.
+      const before = await persistNow();
+      const path = join(app.outDir, `run-${rec.run}-cellar.json`);
+      await app.exportCellar(path);
+      rec.exported = true;
+      rec.cellars = { first: JSON.parse(await readFile(path, 'utf8')) };
+      await page.waitForTimeout(300);
+      s.persist.around_export = { before, after: await persistNow() };
+      const backupLine = () => page.evaluate(() => {
+        const el = document.getElementById('cellar-backup-line');
+        return el && el.getClientRects().length ? el.textContent.trim() : null;
+      });
+      s.backup_line.after_export = await backupLine();
+      s.backup_line.last_export_key = await page.evaluate(() => localStorage.getItem('corked_last_export_at'));
+      s.backup_line.key_in_the_export = 'corked_last_export_at' in (rec.cellars.first.keys || {});
+      await page.evaluate(() => {
+        localStorage.setItem('corked_last_export_at', new Date(Date.now() - 8 * 86400000).toISOString());
+        renderCellar();
+      });
+      s.backup_line.last_export_8_days_old = await backupLine();
+      await page.evaluate(() => {
+        localStorage.removeItem('corked_last_export_at');
+        Cellar.replaceAll(Cellar.all().map(b => ({ ...b, created_at: new Date(Date.now() - 8 * 86400000).toISOString() })));
+        renderCellar();
+      });
+      s.backup_line.never_exported_bottle_8_days_old = await backupLine();
+      await page.evaluate(() => {
+        Cellar.replaceAll(Cellar.all().map(b => ({ ...b, created_at: new Date().toISOString() })));
+        renderCellar();
+      });
+      s.backup_line.never_exported_new_bottles = await backupLine();
+
+      // Expected 6, in its own browser profile.
+      const fail = s.failed_bottling;
+      const context = await app.browser.newContext({ viewport: { width: 1400, height: 900 } });
+      const deadPage = await context.newPage();
+      watchFonts(deadPage);
+      await deadPage.addInitScript(url => localStorage.setItem('corked_worker_url', url), TRUST.dead_worker);
+      const dead = driver(deadPage, rec);
+      await dead.open();
+      const typedDead = await dead.typeSpark(A.spark);
+      if (typedDead.field_value !== A.spark) throw new Error('The spark did not reach the field.');
+      await dead.openGate();
+      try {
+        await dead.passGate();
+        fail.harness_reported = null;
+      } catch (err) {
+        fail.harness_reported = String(err && err.message || err);
+      }
+      fail.status_line = await dead.text('#v6-bottle-status').catch(() => null);
+      fail.says_could_not_reach = (await deadPage.locator('body').innerText()).includes('Could not reach the worker');
+      fail.spark_still_in_field = await deadPage.locator('#f-inp').inputValue().catch(() => null);
+      await context.close();
+    },
+
+    report(rec) {
+      const s = rec.screens || {};
+      const notReached = 'Not reached.';
+      const out = [];
+
+      const line = s.ai_line || {};
+      out.push(line.first_time ? [
+        `First time on the spark screen: AI line visible ${line.first_time.visible}, after the field ${line.first_time.comes_after_the_field}, text matches the brief ${line.first_time.text?.trim() === TRUST.ai_line}.`,
+        `After a reload: visible ${line.after_reload?.visible}.`,
+        `A second spark in the same browser: visible ${line.second_spark?.visible}.`,
+        line.cellar_link ? `Cellar link "${line.cellar_link.link_text}": opened ${line.cellar_link.visible}, same text ${line.cellar_link.text === TRUST.ai_line}.` : 'Cellar link not reached.'
+      ].join(' ') : notReached);
+
+      const fonts = s.fonts || {};
+      out.push(`Requests to fonts.googleapis.com or fonts.gstatic.com: ${(fonts.blocked_requests || []).length}. Font files fetched from fonts/: ${[...new Set(fonts.font_files || [])].join(', ') || 'none'}.`
+        + ` Faces at the end: ${(fonts.faces || []).map(f => `${f.family} ${f.weight} ${f.status}`).join(', ') || 'not read'}.`);
+
+      const p = s.persist || {};
+      out.push(p.after_first_bottle ? `persist calls before the first bottle: ${p.before_first_bottle?.calls}. After it: ${p.after_first_bottle.calls}. persisted() returned ${p.after_first_bottle.persisted}.`
+        + (p.around_export ? ` Around the export: ${p.around_export.before.calls} then ${p.around_export.after.calls} calls, persisted() ${p.around_export.after.persisted}.` : ' Export not reached.') : notReached);
+
+      const sweeps = s.sweeps || [];
+      const bad = [];
+      for (const sw of sweeps) {
+        for (const t of sw.tagged) {
+          if (t.generated !== 'true' || !t.model || !t.tag_visible || !t.listed_field) bad.push(`${sw.when}: ${t.where} marked wrong (generated ${t.generated}, model ${t.model}, tag visible ${t.tag_visible}, listed ${t.listed_field}), text "${t.text}"`);
+        }
+        for (const u of sw.untagged) bad.push(`${sw.when}: ${u.where} shows ${u.listed_field} with no mark, text "${u.text}"`);
+        for (const w of sw.wrongly_marked) bad.push(`${sw.when}: ${w} carries a mark`);
+        if (sw.question?.marked && sw.question.mech !== 'M2') bad.push(`${sw.when}: ${sw.question.mech}'s table question carries a mark`);
+        if (sw.question?.marked && sw.question.m2_stage === 'scene') bad.push(`${sw.when}: M2's scene question carries a mark`);
+      }
+      const places = [...new Set(sweeps.flatMap(sw => sw.tagged.map(t => `${t.where} (${t.listed_field})`)))];
+      const scene = sweeps.find(sw => sw.question?.m2_stage === 'scene');
+      const table = sweeps.find(sw => sw.question?.mech && !['M1', 'M2'].includes(sw.question.mech));
+      out.push(`${sweeps.length} screens swept. Marked: ${places.join(', ') || 'none'}. Problems: ${bad.length ? bad.join('; ') : 'none'}.`
+        + ` M2's scene question: ${scene ? `reached, marked ${scene.question.marked}` : 'not reached'}. A table question: ${table ? `${table.question.mech} reached, marked ${table.question.marked}` : 'not reached'}.`
+        + ` Copy question: ${s.copy_question ? `clipboard equals the question on screen ${s.copy_question.on_the_clipboard === s.copy_question.on_screen}` : 'not reached'}.`
+        + ` Caution line: ${(s.caution?.seen || []).map(c => `"${c.text}" under ${c.under} at "${c.when}"`).join('; ') || 'never seen'}.`);
+
+      const cellar = rec.cellars?.first?.keys?.[CELLAR_KEY] ? JSON.parse(rec.cellars.first.keys[CELLAR_KEY]) : null;
+      if (cellar) {
+        const fromWorker = cellar.flatMap(b => (b.s?.log || []).map(e => ({ selfGrape: b.s.maturity === 2 && e.mech === 'M1', e })))
+          .filter(({ selfGrape, e }) => !selfGrape && (e.type === 'answer' || e.type === 'problem_recorded'));
+        const missing = fromWorker.filter(({ e }) => !e.prompt_version || !e.model || !Array.isArray(e.ai_fields));
+        out.push(`Log entries from worker replies: ${fromWorker.length}. Carrying all three: ${fromWorker.length - missing.length}. Missing: ${missing.map(({ e }) => `${e.type} ${e.mech || ''}`.trim()).join(', ') || 'none'}.`);
+      } else {
+        out.push('No export to read.');
+      }
+
+      const f = s.failed_bottling || {};
+      out.push(f.status_line !== undefined ? `Status line: "${f.status_line}". Is the failed-send message: ${f.status_line === TRUST.failed_line}. "Could not reach the worker" on screen: ${f.says_could_not_reach}. Harness reported: ${f.harness_reported || 'nothing'}.` : notReached);
+
+      const names = s.bottle_names || {};
+      const countLike = /\b\d+\s*(of|\/)\s*\d+\b/i;
+      const checkName = (where, b, spark) => !b ? `${where}: not reached`
+        : `${where}: "${b.name}" (starts with the spark ${!!b.name && b.name.startsWith(spark.slice(0, 30))}, count ${countLike.test(b.name || '')}, aria-hidden ${b.aria_hidden})`;
+      out.push([
+        checkName('sidebar', names.a_after_m2?.sidebar, TRUST.A.spark),
+        checkName('phone header', names.a_after_m2?.phone_header, TRUST.A.spark),
+        ...(names.cards || []).map((c, i) => checkName(`card ${i + 1}`, c, TRUST[['A', 'B', 'C'].find(k => (c.name || '').startsWith(TRUST[k].spark.slice(0, 30))) || 'A'].spark)),
+        checkName('self mode sidebar', names.c_self_mode?.sidebar, TRUST.C.spark),
+        `landing bottles aria-hidden: ${s.landing_bottles?.ld_bottle}, ${s.landing_bottles?.ld_bottle_phone}`
+      ].join('; ') + '.');
+
+      if (rec.broke_off) out[out.length - 1] += ` Broke off: ${rec.broke_off}`;
+      out[out.length - 1] += ` Page errors: ${rec.page_errors.length ? rec.page_errors.join('; ') : 'none'}.`;
+      return out;
+    }
+  },
+
   'look-and-states': {
     title: 'Look and states',
     expected: [
@@ -1820,7 +2324,7 @@ async function serveRepoIfNeeded() {
   const up = await fetch(`http://localhost:${PORT}/corked_v6.html`, { method: 'HEAD' }).then(r => r.ok).catch(() => false);
   if (up) { console.log(`Using the server already on port ${PORT}.`); return null; }
   const types = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.json': 'application/json',
-    '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon' };
+    '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon', '.woff2': 'font/woff2' };
   const server = createServer(async (req, res) => {
     const path = normalize(join(REPO, decodeURIComponent(new URL(req.url, 'http://x').pathname)));
     if (!path.startsWith(REPO + sep)) { res.writeHead(403); res.end(); return; }

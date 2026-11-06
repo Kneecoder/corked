@@ -273,3 +273,58 @@ test('adapter options: thinking goes out, and only text blocks come back', async
     globalThis.fetch = real;
   }
 });
+
+// ── THE WORKER'S LOGS ──
+// The builder's words never reach the worker's logs. The replies below reach every downgrade.
+const CANARY = 'zq-canary-0611';
+const CANARY_SPARK = `${CANARY} invoices go unpaid for months`;
+
+function captureConsole() {
+  const lines = [];
+  const methods = ['log', 'warn', 'error', 'info', 'debug'];
+  const real = methods.map(m => console[m]);
+  methods.forEach(m => { console[m] = (...args) => lines.push(args.map(String).join(' ')); });
+  return { lines, restore: () => methods.forEach((m, i) => { console[m] = real[i]; }) };
+}
+
+test('no downgrade and no field warning prints the builder\'s words', async () => {
+  const capture = captureConsole();
+  try {
+    const phaseA = { user_line: CANARY_SPARK, raw_spark: CANARY_SPARK, spark_parse: { domain: null } };
+    // A stated span that isn't in the spark, which then fails the word check.
+    await replay('/m2', phaseA, [reply({ mechanism: 'M2', phase: 'problem', outcome: 'stated', stated_span: `${CANARY} invoices go unpaid forever`, problem: null, question: null })]);
+    // A guess with words the spark doesn't hold.
+    await replay('/m2', phaseA, [reply({ mechanism: 'M2', phase: 'problem', outcome: 'guessed', stated_span: null, problem: `${CANARY} zqinvented clients ignore invoices`, question: 'q' })]);
+
+    const answer = `${CANARY} last Friday I called the client twice about the late invoice`;
+    const fromAnswer = {
+      anchor_spans: [`${CANARY} last Friday I called the client`, `${CANARY} a fragment this answer does not hold`],
+      problem: `${CANARY} zqinvented words outside the fragments`,
+      gap_in_play: false,
+      question: 'q'
+    };
+    // Self answer: a fragment that isn't in the answer, and a sentence that reaches outside the fragments.
+    await replay('/m2', { ...phaseA, maturity_class: 2, self_answer: answer }, [
+      reply({ mechanism: 'M2', phase: 'problem', outcome: 'insufficient', stated_span: null, problem: null, question: null }),
+      reply({ mechanism: 'M2', phase: 'self_answer', problem_present: true, ...fromAnswer })
+    ]);
+    // Scene: the same two.
+    await replay('/m2', { phase: 'scene', user_line: CANARY_SPARK, scene_answer: answer }, [
+      reply({ mechanism: 'M2', phase: 'scene', scene_present: true, ...fromAnswer })
+    ]);
+    // /field with no problem and no domain, and /field through the model.
+    await replay('/field', { mode: 'ask', user_line: CANARY_SPARK, spark_parse: { domain: null } }, []);
+    await replay('/field', { mode: 'find', user_line: CANARY_SPARK, missing: 'grape' }, [
+      reply({ brief: { kind: 'find', setup: `${CANARY} find someone`, question: `${CANARY} what happened with the invoices last time?`, target: CANARY } })
+    ]);
+  } finally {
+    capture.restore();
+  }
+
+  const output = capture.lines.join('\n');
+  for (const reached of ['stated_span_not_verbatim_in_spark', 'words_not_in_spark', 'fragment_not_verbatim_in_answer', 'words_not_in_fragments', 'field_no_problem_no_domain']) {
+    assert.ok(output.includes(reached), `the run never reached ${reached}`);
+  }
+  assert.ok(!output.includes(CANARY), `the canary is in the worker's console output:\n${output}`);
+  assert.ok(!output.includes('zqinvented'), `the model's words are in the worker's console output:\n${output}`);
+});
