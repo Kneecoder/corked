@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 08
 
-Generated: 2026-10-10T12:59:53.886Z
+Generated: 2026-11-06T18:59:59.108Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -24,12 +24,12 @@ M0's line (verbatim, not shown in the app): "A tool for landlords when tenants p
   raw grades: M1=settled
 - **Tell**: settled — history: inert → settled (last raised by M6)
   raw grades: M2=settled, M6=clearing
-- **Vintage**: settled — history: inert → settled (last raised by M4)
-  raw grades: M2=settled, M3=settled, M4=turbid
+- **Vintage**: settled — history: inert → settled (last raised by M2)
+  raw grades: M2=settled
 - **Gap**: settled — history: inert → settled (last raised by M5)
   raw grades: M5=settled
 - **Echo**: settled — history: inert → settled (last raised by M6)
-  raw grades: M3=settled, M4=settled, M6=turbid
+  raw grades: M3=settled, M4=turbid, M6=turbid
 - **Limit**: settled — history: inert → settled (last raised by M7)
   raw grades: M7=settled
 
@@ -62,7 +62,7 @@ Response:
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The role is landlords and the stated problem is tenant payments arriving as random partial chunks that cannot be reconciled. Both are present and the Spark enters cleanly.",
+    "reason": "Cellar-ready. The role is landlords and the stated problem is tenants paying in random partial chunks nobody can reconcile. Both are present and the idea enters cleanly.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -71,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name the specific landlord this Spark starts from and the moment the partial payment problem became impossible to ignore.",
-    "hint": "A good answer names one landlord and describes a specific rent cycle when the chunks stopped adding up cleanly.",
+    "question": "Name a specific landlord and the moment they were sitting with a payment that could not be reconciled.",
+    "hint": "A good answer names the landlord, how many units or tenants they manage, and the specific payment situation that broke down.",
     "person_label": "Landlord",
-    "person_placeholder": "Derek, residential landlord with four units",
-    "when_label": "When it broke down",
-    "when_placeholder": "end of month when three tenants had each sent two or three transfers",
-    "trying_label": "What they were trying to do",
-    "trying_placeholder": "confirm which tenants had paid in full for the month",
-    "happened_label": "What they found instead",
-    "happened_placeholder": "six partial transfers across different amounts with no clear way to match them to specific tenants or months"
+    "person_placeholder": "Derek, owns four rental units",
+    "when_label": "When the payment problem hit",
+    "when_placeholder": "end of month when three partial payments came in from one tenant",
+    "trying_label": "What the landlord was trying to do",
+    "trying_placeholder": "figure out how much rent was still owed and by whom",
+    "happened_label": "What actually happened",
+    "happened_placeholder": "three separate transfers in different amounts arrived across five days, none matching the rent total, and Derek could not tell if the tenant was paid up or not"
   },
   "person_in_spark": {
     "grade": "none",
@@ -98,7 +98,27 @@ Response:
     "m0_ready_downgraded": false,
     "seal_contract_normalized": true,
     "m1_placeholders_nulled": false
-  }
+  },
+  "ai_fields": [
+    "user_line_candidate",
+    "digestibility.reason",
+    "m1_setup.question",
+    "m1_setup.hint",
+    "m1_setup.person_label",
+    "m1_setup.person_placeholder",
+    "m1_setup.when_label",
+    "m1_setup.when_placeholder",
+    "m1_setup.trying_label",
+    "m1_setup.trying_placeholder",
+    "m1_setup.happened_label",
+    "m1_setup.happened_placeholder",
+    "spark_parse.solution_form",
+    "spark_parse.implied_person",
+    "spark_parse.suspected_problem",
+    "spark_parse.domain"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -126,7 +146,7 @@ Response:
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "A named individual is present. A real stated relationship ties him to the problem domain.",
+    "surface_text": "A named individual is present. The relationship is concrete and specific.",
     "anchor_span": "my uncle, owns four rental flats"
   },
   "next_question": {
@@ -137,7 +157,13 @@ Response:
     "schema_valid": true,
     "anchor_verified": true,
     "visible_style_violations_cleaned": []
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text",
+    "grape.named_person"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -176,9 +202,12 @@ Response:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "question": "Walk me through the last time Bram received a set of partial payments he could not reconcile: what did he actually do with each chunk as it came in?",
+  "question": "Walk me through the last time Bram received one of these partial payments and tried to reconcile it against what was owed: what did he actually do, step by step?",
   "recovered_problem": "tenants do not just pay late, they pay in random partial chunks nobody can reconcile",
   "needs_confirmation": false,
+  "ai_fields": [
+    "question"
+  ],
   "server_checks": {
     "schema_valid": true,
     "model_outcome": "stated",
@@ -187,7 +216,9 @@ Response:
     "unsupported_words": [],
     "visible_style_violations_cleaned": [],
     "m2_question_repaired": false
-  }
+  },
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -225,7 +256,7 @@ Response:
     "anchor_span": "Last month a tenant sent three separate partial payments across two weeks"
   },
   "observation": {
-    "surface_text": "Tell is settled: a specific observable action is named. Vintage is settled: the behaviour is anchored to a single instance last month across a defined two-week window.",
+    "surface_text": "Bram's specific action is named and filmable: manual matching of bank transfers to a lease spreadsheet on a Sunday night. The moment is anchored to a single instance last month involving one tenant's three payments across two weeks.",
     "anchor_span": "Last month a tenant sent three separate partial payments across two weeks, and Bram spent Sunday night matching bank transfers to the lease spreadsheet by hand"
   },
   "substitution_detected": false,
@@ -237,7 +268,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_floor": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -267,12 +303,8 @@ Response:
     "state": "settled",
     "anchor_span": "My neighbor Tom, who rents out a duplex, told me last month he started asking for one lump sum only after a similar reconciling headache."
   },
-  "vintage": {
-    "state": "settled",
-    "anchor_span": "last month he started asking for one lump sum only after a similar reconciling headache"
-  },
   "observation": {
-    "surface_text": "The Echo bar finds one identifiable third party, Tom, distinct from Bram and from the founder, who changed his payment policy in response to a reconciliation problem. The Vintage bar finds a specific anchored moment: last month, triggered by a concrete event.",
+    "surface_text": "A named third party distinct from the grape and the founder hit a reconciliation problem and took a concrete behavioural step in response.",
     "anchor_span": "My neighbor Tom, who rents out a duplex, told me last month he started asking for one lump sum only after a similar reconciling headache."
   },
   "substitution_detected": false,
@@ -281,12 +313,17 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
 ### 6. [main] M4 · /m4
-Summary: state=settled · substitution_detected=false · swirl=no · changed=[none]
+Summary: state=turbid · substitution_detected=false · swirl=yes · changed=[none]
 Request:
 ```json
 {
@@ -307,31 +344,37 @@ Response:
 {
   "schema_version": "m4.v1",
   "mechanism": "M4",
-  "state": "settled",
+  "state": "turbid",
   "echo": {
-    "state": "settled",
-    "anchor_span": "Priya, who runs a small storage unit business, keeps a manual ledger for partial payments too"
-  },
-  "vintage": {
     "state": "turbid",
-    "anchor_span": null
+    "anchor_span": "the reconciling part is fine"
   },
   "contrast": {
-    "is_different_kind": "true",
-    "same_or_different": "different",
-    "anchor_span": "For her the pain is chasing the balance down, the reconciling part is fine"
+    "is_different_kind": "unclear",
+    "same_or_different": "unclear",
+    "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer names Priya, a storage business operator distinct from Bram and from Tom, with a concrete behaviour: manual ledger for partial payments. No specific past instance is anchored; the behaviour is described as ongoing practice.",
-    "anchor_span": "Priya, who runs a small storage unit business, keeps a manual ledger for partial payments too"
+    "surface_text": "Priya is named and keeps a manual ledger for partial payments, but the answer states the reconciling part is fine for her, meaning she has not hit the confirmed problem and her presence does not confirm it.",
+    "anchor_span": "the reconciling part is fine"
   },
   "substitution_detected": false,
+  "swirl": {
+    "kind": "reality",
+    "question": "Is there someone specific for whom the partial-payment reconciling itself is the breaking point, chasing the balance?"
+  },
   "server_checks": {
     "schema_valid": true,
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
-    "swirl_included": false
-  }
+    "swirl_included": true
+  },
+  "ai_fields": [
+    "observation.surface_text",
+    "swirl.question"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -359,10 +402,10 @@ Response:
   "state": "settled",
   "gap": {
     "state": "settled",
-    "anchor_span": "a shared spreadsheet to track rent, but it has no way to flag a partial payment against the wrong month"
+    "anchor_span": "shared spreadsheet to track rent"
   },
   "observation": {
-    "surface_text": "The answer names a shared spreadsheet as the existing solution Bram currently uses. A precise failure point is present: it cannot flag a partial payment attributed to the wrong month, causing mismatches to accumulate.",
+    "surface_text": "The answer names a shared spreadsheet as the existing solution Bram uses to track rent. A precise failure point is present: it cannot flag a partial payment against the wrong month, causing mismatches to accumulate.",
     "anchor_span": "it has no way to flag a partial payment against the wrong month, so mismatches pile up"
   },
   "substitution_detected": false,
@@ -371,7 +414,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -411,7 +459,7 @@ Response:
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer supplies a direct quote from a real exchange with Bram, and words_source is flagged real, meeting the settled bar. The words carry a stated frustration but no filmable action; the phrase \"after the Sunday one\" implies a recurring event without describing it visibly.",
+    "surface_text": "A direct quote from a real exchange is present and words_source is real, meeting the settled bar. The words carry a stated frustration but no filmable action; the phrase 'after the Sunday one' implies a recurring event without describing observable behaviour.",
     "anchor_span": "I just want one number a month, not a puzzle"
   },
   "substitution_detected": false,
@@ -420,7 +468,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -451,8 +504,8 @@ Response:
     "anchor_span": "Owen only rents to corporate tenants on annual leases paid in full upfront"
   },
   "observation": {
-    "surface_text": "The answer names a bounded individual with a specific lease structure that eliminates partial payments. The reason for immunity is present and concrete: full annual billing forecloses the partial-chunk scenario entirely.",
-    "anchor_span": "the whole year is billed at once"
+    "surface_text": "The answer names a bounded individual, Owen, with a specific arrangement: corporate tenants on annual leases billed in full upfront. The reason for immunity is present and mechanically specific: no partial payments can occur when the full year is collected at once.",
+    "anchor_span": "Partial payments never happen to him because the whole year is billed at once"
   },
   "substitution_detected": false,
   "server_checks": {
@@ -460,7 +513,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -470,6 +528,6 @@ Response:
 - ⚠ VOICE: contrast-formula ("not X but Y" / "not just X") found at M2-phaseA.problem.text: "tenants do not just pay late, they pay in random partial chunks nobody can reconcile"
 
 ## Floor notes (informational — a later mechanism offered a lower grade for an opportunistic bar; the floor correctly held, no action needed)
-- M4 offered turbid for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
+- M4 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it).
 - M6 offered clearing for Tell, held at floor settled (opportunistic grading correctly did not lower it).
 - M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it).

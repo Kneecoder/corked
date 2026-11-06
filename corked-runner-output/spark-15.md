@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 15
 
-Generated: 2026-10-10T13:04:36.956Z
+Generated: 2026-11-06T19:04:09.204Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -24,8 +24,8 @@ M0's line (verbatim, not shown in the app): "An app for one-man trade businesses
   raw grades: M1=settled
 - **Tell**: clearing — history: inert → clearing (last raised by M6)
   raw grades: M2=clearing, M6=clearing
-- **Vintage**: clearing — history: inert → turbid → clearing (last raised by M4)
-  raw grades: M2=turbid, M3=clearing, M4=turbid
+- **Vintage**: turbid — history: inert → turbid (last raised by M2)
+  raw grades: M2=turbid
 - **Gap**: clearing — history: inert → clearing (last raised by M5)
   raw grades: M5=clearing
 - **Echo**: settled — history: inert → settled (last raised by M6)
@@ -54,7 +54,7 @@ Response:
     "solution_form": "app",
     "implied_person": "one-man trade businesses",
     "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
-    "triggering_situation": "unpaid invoices left unchased until the money is a problem",
+    "triggering_situation": "when the money is a problem",
     "promised_change": null,
     "domain": "unpaid invoices",
     "solution_is_software": "software"
@@ -62,7 +62,7 @@ Response:
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The role is clear and the problem is stated in the user's own words: forgetting to chase unpaid invoices until the money is a problem.",
+    "reason": "Cellar-ready. The role is clear, the problem is stated, and the moment it becomes visible is named. It enters cleanly.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -71,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name a specific one-man trade business owner and the moment they realised an unpaid invoice had gone too long without being chased.",
-    "hint": "A good answer names the person by trade, and describes the moment the money shortage made the forgotten invoice visible.",
+    "question": "Name the specific one-man trade business owner this starts from, and the moment they realised unpaid invoices were a problem.",
+    "hint": "A good answer names the person and what they were looking at when the money got tight, for example a plumber checking his account before paying a supplier.",
     "person_label": "Tradesperson",
-    "person_placeholder": "Gary, self-employed electrician",
-    "when_label": "When did it surface",
-    "when_placeholder": "when his rent was due and three invoices were still unpaid",
+    "person_placeholder": "Dave, self-employed electrician",
+    "when_label": "When the invoice problem hit",
+    "when_placeholder": "when he couldn't cover a materials order because three invoices were still unpaid",
     "trying_label": "What he was trying to do",
-    "trying_placeholder": "cover his monthly costs without chasing clients",
+    "trying_placeholder": "keep jobs moving without having to think about chasing payment",
     "happened_label": "What actually happened",
-    "happened_placeholder": "he found three invoices he had never followed up, one over 60 days old, and had to make awkward calls while short on cash"
+    "happened_placeholder": "he noticed money was short and had to scroll back through old jobs to work out who still owed him"
   },
   "person_in_spark": {
     "grade": "none",
@@ -98,7 +98,28 @@ Response:
     "m0_ready_downgraded": false,
     "seal_contract_normalized": true,
     "m1_placeholders_nulled": false
-  }
+  },
+  "ai_fields": [
+    "user_line_candidate",
+    "digestibility.reason",
+    "m1_setup.question",
+    "m1_setup.hint",
+    "m1_setup.person_label",
+    "m1_setup.person_placeholder",
+    "m1_setup.when_label",
+    "m1_setup.when_placeholder",
+    "m1_setup.trying_label",
+    "m1_setup.trying_placeholder",
+    "m1_setup.happened_label",
+    "m1_setup.happened_placeholder",
+    "spark_parse.solution_form",
+    "spark_parse.implied_person",
+    "spark_parse.suspected_problem",
+    "spark_parse.triggering_situation",
+    "spark_parse.domain"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -137,7 +158,13 @@ Response:
     "schema_valid": true,
     "anchor_verified": true,
     "visible_style_violations_cleaned": []
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text",
+    "grape.named_person"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -153,7 +180,7 @@ Request:
     "solution_form": "app",
     "implied_person": "one-man trade businesses",
     "suspected_problem": "forgetting to chase unpaid invoices until the money is a problem",
-    "triggering_situation": "unpaid invoices left unchased until the money is a problem",
+    "triggering_situation": "when the money is a problem",
     "promised_change": null,
     "domain": "unpaid invoices",
     "solution_is_software": "software"
@@ -176,9 +203,12 @@ Response:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "question": "Tell me about the last time Noor forgot to chase an unpaid invoice and describe exactly what she did when she finally noticed the money was short.",
+  "question": "Tell me about the last time Noor realised she had forgotten to chase an unpaid invoice: what did she actually do when she noticed it?",
   "recovered_problem": "forget to chase unpaid invoices until the money is a problem",
   "needs_confirmation": false,
+  "ai_fields": [
+    "question"
+  ],
   "server_checks": {
     "schema_valid": true,
     "model_outcome": "stated",
@@ -187,7 +217,9 @@ Response:
     "unsupported_words": [],
     "visible_style_violations_cleaned": [],
     "m2_question_repaired": false
-  }
+  },
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -218,20 +250,20 @@ Response:
   "state": "turbid",
   "tell": {
     "state": "clearing",
-    "anchor_span": "puts off looking at the numbers"
+    "anchor_span": "she just puts off looking at the numbers"
   },
   "vintage": {
     "state": "turbid",
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The Tell contains an inferred pattern rather than a specific observable action a camera would capture. The Vintage bar finds no named moment, date, or single instance in the answer.",
-    "anchor_span": "puts off looking at the numbers"
+    "surface_text": "The answer names avoidance as a pattern but no specific observable action is captured. No single past instance is named in the answer.",
+    "anchor_span": "she just puts off looking at the numbers"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "When did Noor last mention a client going quiet to you, and what did she actually do in that conversation?"
+    "question": "Is there one specific moment with Noor, a date, a client, a conversation, where this avoidance was visible to you firsthand?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -241,12 +273,18 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_floor": true,
     "swirl_included": true
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text",
+    "swirl.question"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
 ### 5. [main] M3 · /m3
-Summary: state=settled · substitution_detected=false · swirl=no · changed=[Echo, Vintage]
+Summary: state=settled · substitution_detected=false · swirl=no · changed=[Echo]
 Request:
 ```json
 {
@@ -271,12 +309,8 @@ Response:
     "state": "settled",
     "anchor_span": "my colleague Jordan mentioned he hits this same thing and just pays a freelancer to sort it out whenever it comes up"
   },
-  "vintage": {
-    "state": "clearing",
-    "anchor_span": "Last month"
-  },
   "observation": {
-    "surface_text": "The Echo bar is settled: a named third party, Jordan, distinct from Noor and the founder, is identified hitting the same problem and paying a freelancer to handle it. The Vintage bar finds a time marker for the conversation but the workaround itself is described as a recurring pattern, not a single anchored instance.",
+    "surface_text": "One identifiable person separate from the grape and the founder is named with a concrete workaround behaviour tied directly to the confirmed problem.",
     "anchor_span": "my colleague Jordan mentioned he hits this same thing and just pays a freelancer to sort it out whenever it comes up"
   },
   "substitution_detected": false,
@@ -285,7 +319,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -316,30 +355,32 @@ Response:
     "state": "clearing",
     "anchor_span": "A friend named Priya, who works in a completely different setup, said she keeps a manual backup log for it"
   },
-  "vintage": {
-    "state": "turbid",
-    "anchor_span": null
-  },
   "contrast": {
     "is_different_kind": "unclear",
     "same_or_different": "different",
     "anchor_span": "for her it shows up a little differently"
   },
   "observation": {
-    "surface_text": "The answer names a person and a concrete behaviour but provides no role, context, or setup detail sufficient to confirm Priya as an identifiable individual distinct from a constructed stand-in. No specific past instance is present, only a described recurring practice.",
-    "anchor_span": "A friend named Priya, who works in a completely different setup, said she keeps a manual backup log for it"
+    "surface_text": "The answer names Priya and attributes one concrete behaviour to her, but her setup, role, and relationship to the confirmed problem remain too vague to distinguish her as a real specific individual rather than a constructed stand-in.",
+    "anchor_span": "A friend named Priya, who works in a completely different setup"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is Priya a real specific person the Winemaster could ask a follow-up question about, or a composite drawn from a general sense of others who handle this?"
+    "question": "What does Priya actually do, and what did she say exactly when the unpaid invoice problem came up for her?"
   },
   "server_checks": {
     "schema_valid": true,
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": true
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text",
+    "swirl.question"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -370,13 +411,13 @@ Response:
     "anchor_span": "plain spreadsheet template to track it"
   },
   "observation": {
-    "surface_text": "The answer names an existing solution: a plain spreadsheet template. The failure point given is vague, 'too late' describes a timing sentiment, not a specific thing the spreadsheet fails to do.",
+    "surface_text": "The answer names an existing solution: a plain spreadsheet template. The failure point offered, does not catch the problem until it is already too late, is a vague outcome rather than a precise operational shortfall.",
     "anchor_span": "it does not catch the problem until it is already too late"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "When Noor last had an overdue invoice, what specifically did the spreadsheet show her, or fail to show her, at that moment?"
+    "question": "Is Noor a specific person the founder has watched miss a payment recently, or a generalized picture of what a landscaper like her tends to do?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -385,7 +426,13 @@ Response:
     ],
     "overall_state_is_primary": true,
     "swirl_included": true
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text",
+    "swirl.question"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -418,14 +465,14 @@ Response:
   },
   "tell": {
     "state": "clearing",
-    "anchor_span": "\"I just want this part to be boring,\" Noor said, when we talked about it last week."
+    "anchor_span": "\"I just want this part to be boring,\" Noor said"
   },
   "echo": {
     "state": "turbid",
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "Words is settled: a direct quote from Noor is present and words_source is real. The quote carries a stated sentiment about the problem but no filmable action, and no third-party reference appears.",
+    "surface_text": "Words carries a direct quote from a named grape in a real, dated exchange, meeting the settled bar. The quoted words express a felt sentiment about the problem but contain no filmable action, and no third-party reference is present.",
     "anchor_span": "\"I just want this part to be boring,\" Noor said, when we talked about it last week."
   },
   "substitution_detected": false,
@@ -434,7 +481,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -465,7 +517,7 @@ Response:
     "anchor_span": "only ever takes retainer clients, so this never happens to him. He is paid whether the job happens or not."
   },
   "observation": {
-    "surface_text": "The answer names a bounded individual who does not have the problem: an uncle running the same kind of work on a retainer-only model. The reason for his immunity is specific and present: retainer billing collects payment regardless of whether a job occurs, eliminating the chase.",
+    "surface_text": "The answer names a bounded individual and a specific billing arrangement that removes the exposure. The reason is present and concrete: retainer billing means payment accrues regardless of whether work occurs, so no invoice chasing is required.",
     "anchor_span": "only ever takes retainer clients, so this never happens to him. He is paid whether the job happens or not."
   },
   "substitution_detected": false,
@@ -474,7 +526,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -483,5 +540,4 @@ Response:
 
 ## Floor notes (informational — a later mechanism offered a lower grade for an opportunistic bar; the floor correctly held, no action needed)
 - M4 offered clearing for Echo, held at floor settled (opportunistic grading correctly did not lower it).
-- M4 offered turbid for Vintage, held at floor clearing (opportunistic grading correctly did not lower it).
 - M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it).

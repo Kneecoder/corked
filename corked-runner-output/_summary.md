@@ -1,6 +1,6 @@
 # Batch run summary — Corked Phase 1 Test Battery
 
-Generated: 2026-10-10T13:07:38.997Z
+Generated: 2026-11-06T19:07:06.651Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 Line sent: the spark as typed
 
@@ -60,7 +60,7 @@ Outcome: PASS (completed full chain)
 ## 10. spark-10.md
 Spark: An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.
 Maturity: 0
-Outcome: PASS (completed full chain)
+Outcome: FAIL (unexpected halt: M1 request failed.)
 
 ## 11. spark-11.md
 Spark: An app for one-man trade businesses who forget to chase unpaid invoices until the money is a problem.

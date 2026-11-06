@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 03
 
-Generated: 2026-10-10T12:58:17.849Z
+Generated: 2026-11-06T18:58:23.050Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -17,7 +17,7 @@ expect_halt: false
 
 Line sent to the worker (the spark as typed): "A better scheduling app for gym owners."
 
-M0's line (verbatim, not shown in the app): "A scheduling app for gym owners that is better than what they currently use."
+M0's line (verbatim, not shown in the app): "A better scheduling app for gym owners."
 
 ## Element Tracker (final state, floor-enforced like corked_v6.html's rankUp — see "raw grades" for what each mechanism actually offered before the floor was applied)
 - **Grape**: settled — history: inert → settled (last raised by M1)
@@ -47,14 +47,14 @@ Response:
   "schema_version": "m0.v1",
   "mechanism": "M0",
   "raw_spark": "A better scheduling app for gym owners.",
-  "user_line_candidate": "A scheduling app for gym owners that is better than what they currently use.",
+  "user_line_candidate": "A better scheduling app for gym owners.",
   "spark_parse": {
     "solution_form": "app",
     "implied_person": "gym owners",
     "suspected_problem": null,
     "triggering_situation": null,
     "promised_change": null,
-    "domain": "gym scheduling",
+    "domain": "scheduling",
     "solution_is_software": "software"
   },
   "digestibility": {
@@ -62,21 +62,21 @@ Response:
     "missing": [
       "suspected_problem"
     ],
-    "reason": "Bottleable, cloudy. The form, the population, and the domain are visible, but no problem with scheduling is stated. That is what the cellar will age.",
+    "reason": "Bottleable, cloudy. The form, the role, and the domain are visible, but no problem is stated. That is what the cellar will age.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
   "followup": {
     "needed": true,
-    "question": "What is going wrong for gym owners with scheduling right now?"
+    "question": "What is going wrong with scheduling for gym owners right now?"
   },
   "m1_setup": {
     "question": "Name the specific gym owner and the moment when scheduling broke down for them.",
-    "hint": "A good answer names a real gym owner and describes a concrete scheduling situation that went wrong.",
-    "person_label": "Gym owner",
-    "person_placeholder": "Dana, gym owner",
-    "when_label": "When the scheduling problem hit",
-    "when_placeholder": "the morning a class double-booked and members showed up at the same time",
+    "hint": "A good answer names a real gym owner and describes a specific scheduling situation that went wrong.",
+    "person_label": "Gym Owner",
+    "person_placeholder": "Derek, gym owner",
+    "when_label": "When did it break down",
+    "when_placeholder": "the morning three instructors called in and the class board was chaos",
     "trying_label": "What they were trying to do",
     "trying_placeholder": null,
     "happened_label": "What actually happened",
@@ -98,7 +98,26 @@ Response:
     "m0_ready_downgraded": false,
     "seal_contract_normalized": true,
     "m1_placeholders_nulled": true
-  }
+  },
+  "ai_fields": [
+    "user_line_candidate",
+    "digestibility.reason",
+    "followup.question",
+    "m1_setup.question",
+    "m1_setup.hint",
+    "m1_setup.person_label",
+    "m1_setup.person_placeholder",
+    "m1_setup.when_label",
+    "m1_setup.when_placeholder",
+    "m1_setup.trying_label",
+    "m1_setup.happened_label",
+    "spark_parse.solution_form",
+    "spark_parse.implied_person",
+    "spark_parse.domain",
+    "digestibility.missing"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -126,7 +145,7 @@ Response:
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "Marco is identified as a named individual with a concrete real-world tie. The relationship is specific and verifiable.",
+    "surface_text": "Marco is identified by name with a concrete real-world tie. The relationship is specific and verifiable.",
     "anchor_span": "owns the boxing gym where I train"
   },
   "next_question": {
@@ -137,7 +156,13 @@ Response:
     "schema_valid": true,
     "anchor_verified": true,
     "visible_style_violations_cleaned": []
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text",
+    "grape.named_person"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -155,7 +180,7 @@ Request:
     "suspected_problem": null,
     "triggering_situation": null,
     "promised_change": null,
-    "domain": "gym scheduling",
+    "domain": "scheduling",
     "solution_is_software": "software"
   },
   "grape_name": "Marco",
@@ -175,6 +200,7 @@ Response:
   "question": null,
   "recovered_problem": null,
   "needs_confirmation": false,
+  "ai_fields": [],
   "server_checks": {
     "schema_valid": true,
     "model_outcome": "guessed",
@@ -185,17 +211,19 @@ Response:
         "to": "insufficient",
         "reason": "words_not_in_spark",
         "words": [
-          "current"
+          "existing"
         ],
-        "text": "Gym owners have trouble scheduling with their current app."
+        "text": "Gym owners have trouble scheduling with existing apps."
       }
     ],
     "unsupported_words": [
-      "current"
+      "existing"
     ],
     "visible_style_violations_cleaned": [],
     "m2_question_repaired": false
-  }
+  },
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 

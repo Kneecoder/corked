@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 06
 
-Generated: 2026-10-10T12:58:39.571Z
+Generated: 2026-11-06T18:58:45.292Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -63,7 +63,7 @@ Response:
       "domain",
       "problem"
     ],
-    "reason": "Not bottleable yet. No person, domain, or problem is present. There is nothing to work with.",
+    "reason": "Not bottleable yet. No person, no domain, and no problem are present. There is nothing concrete to work with.",
     "can_seal": false,
     "requires_followup_before_seal": true
   },
@@ -72,15 +72,15 @@ Response:
     "question": "Who is this for, and what problem are they sitting with before they find it?"
   },
   "m1_setup": {
-    "question": "Name the specific person and moment this idea starts from.",
-    "hint": "A good answer names who is struggling and what is going wrong for them, in their own situation.",
+    "question": "Name the specific person this starts from and the moment their life got harder.",
+    "hint": "A good answer names a real role and a concrete situation where something became difficult.",
     "person_label": "Person",
     "person_placeholder": null,
-    "when_label": "When",
+    "when_label": "When it got harder",
     "when_placeholder": null,
-    "trying_label": "Trying to",
+    "trying_label": "What they were trying to do",
     "trying_placeholder": null,
-    "happened_label": "What happened",
+    "happened_label": "What actually happened",
     "happened_placeholder": null
   },
   "person_in_spark": {
@@ -99,7 +99,21 @@ Response:
     "m0_ready_downgraded": false,
     "seal_contract_normalized": true,
     "m1_placeholders_nulled": true
-  }
+  },
+  "ai_fields": [
+    "user_line_candidate",
+    "digestibility.reason",
+    "followup.question",
+    "m1_setup.question",
+    "m1_setup.hint",
+    "m1_setup.person_label",
+    "m1_setup.when_label",
+    "m1_setup.trying_label",
+    "m1_setup.happened_label",
+    "digestibility.missing"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 

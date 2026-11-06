@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 05
 
-Generated: 2026-10-10T12:58:33.164Z
+Generated: 2026-11-06T18:58:38.455Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -75,7 +75,15 @@ Response:
   "server_checks": {
     "schema_valid": true,
     "scope_gated": true
-  }
+  },
+  "ai_fields": [
+    "user_line_candidate",
+    "spark_parse.solution_form",
+    "spark_parse.implied_person",
+    "spark_parse.domain"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 

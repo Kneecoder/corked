@@ -1,0 +1,177 @@
+Every grade that differs. Battery run 6 Nov against the live worker, after the deploy.
+Spark 10's first try stopped on a network error at this end (status 0, no reply), so it was run once more: battery-spark-10-rerun.md.
+
+== Against the last committed battery in corked-runner-output/ (2aa3f9d, 10 Oct) ==
+Baseline git:HEAD. Compared 293 grades across 20 reports. Differences: 63.
+spark-01.md | Echo raw M4 | was settled | now turbid | An app for wedding photographers who lose their deposit when couples c
+spark-01.md | Vintage raw M3 | was settled | now (none) | An app for wedding photographers who lose their deposit when couples c
+spark-01.md | Vintage raw M4 | was clearing | now (none) | An app for wedding photographers who lose their deposit when couples c
+spark-02.md | Echo raw M4 | was clearing | now turbid | A tool for freelance designers because Moneybird's payment reminders o
+spark-02.md | Vintage raw M3 | was settled | now (none) | A tool for freelance designers because Moneybird's payment reminders o
+spark-02.md | Vintage raw M4 | was turbid | now (none) | A tool for freelance designers because Moneybird's payment reminders o
+spark-07.md | Echo raw M4 | was clearing | now turbid | an app for my sister Marieke because customers are annoying with payme
+spark-07.md | Tell raw M6 | was settled | now clearing | an app for my sister Marieke because customers are annoying with payme
+spark-07.md | Vintage raw M3 | was settled | now (none) | an app for my sister Marieke because customers are annoying with payme
+spark-07.md | Vintage raw M4 | was turbid | now (none) | an app for my sister Marieke because customers are annoying with payme
+spark-08.md | Echo raw M4 | was settled | now turbid | A tool for landlords because tenants do not just pay late, they pay in
+spark-08.md | Vintage raw M3 | was settled | now (none) | A tool for landlords because tenants do not just pay late, they pay in
+spark-08.md | Vintage raw M4 | was turbid | now (none) | A tool for landlords because tenants do not just pay late, they pay in
+spark-09.md | Echo final | was settled | now clearing | A tool for physiotherapists in small practices because every time an i
+spark-09.md | Echo raw M3 | was settled | now clearing | A tool for physiotherapists in small practices because every time an i
+spark-09.md | Echo raw M4 | was settled | now turbid | A tool for physiotherapists in small practices because every time an i
+spark-09.md | Vintage raw M3 | was clearing | now (none) | A tool for physiotherapists in small practices because every time an i
+spark-09.md | Vintage raw M4 | was clearing | now (none) | A tool for physiotherapists in small practices because every time an i
+spark-10.md | Echo final | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Echo raw M3 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Echo raw M4 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Echo raw M6 | was turbid | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Gap final | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Gap raw M5 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Grape final | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Grape raw M1 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Limit final | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Limit raw M7 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | M2 Phase A outcome | was stated | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Tell final | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Tell raw M2 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Tell raw M6 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Vintage final | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Vintage raw M2 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Vintage raw M3 | was turbid | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Vintage raw M4 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-11.md | Echo final | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-11.md | Echo raw M4 | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-11.md | Vintage raw M3 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-11.md | Vintage raw M4 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-12.md | Echo final | was clearing | now turbid | An app to stop myself doomchecking my bank balance at the end of every
+spark-12.md | Echo raw M4 | was clearing | now turbid | An app to stop myself doomchecking my bank balance at the end of every
+spark-12.md | Vintage raw M3 | was turbid | now (none) | An app to stop myself doomchecking my bank balance at the end of every
+spark-12.md | Vintage raw M4 | was settled | now (none) | An app to stop myself doomchecking my bank balance at the end of every
+spark-13.md | Vintage raw M3 | was turbid | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-13.md | Vintage raw M4 | was turbid | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-14.md | Vintage raw M3 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-14.md | Vintage raw M4 | was turbid | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-15.md | Vintage final | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-15.md | Vintage raw M3 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-15.md | Vintage raw M4 | was turbid | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-16.md | Vintage raw M3 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-16.md | Vintage raw M4 | was turbid | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-17.md | Tell raw M2 | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-17.md | Vintage final | was settled | now clearing | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-17.md | Vintage raw M2 | was settled | now clearing | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-17.md | Vintage raw M3 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-17.md | Vintage raw M4 | was turbid | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-18.md | Tell raw M6 | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-18.md | Vintage raw M3 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-18.md | Vintage raw M4 | was turbid | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-19.md | Vintage raw M3 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-19.md | Vintage raw M4 | was turbid | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+
+== Against the 21 Oct run 1 (runs/2026-10-21-model-bakeoff/claude-sonnet-4-6) ==
+Baseline dir:runs/2026-10-21-model-bakeoff/claude-sonnet-4-6/run-1. Compared 263 grades across 20 reports. Differences: 32.
+spark-01.md | Echo raw M4 | was clearing | now turbid | An app for wedding photographers who lose their deposit when couples c
+spark-02.md | Echo raw M4 | was clearing | now turbid | A tool for freelance designers because Moneybird's payment reminders o
+spark-07.md | Echo raw M4 | was clearing | now turbid | an app for my sister Marieke because customers are annoying with payme
+spark-07.md | Tell raw M6 | was settled | now clearing | an app for my sister Marieke because customers are annoying with payme
+spark-08.md | Echo raw M4 | was settled | now turbid | A tool for landlords because tenants do not just pay late, they pay in
+spark-09.md | Echo final | was settled | now clearing | A tool for physiotherapists in small practices because every time an i
+spark-09.md | Echo raw M3 | was settled | now clearing | A tool for physiotherapists in small practices because every time an i
+spark-09.md | Echo raw M4 | was settled | now turbid | A tool for physiotherapists in small practices because every time an i
+spark-10.md | Echo final | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Echo raw M3 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Echo raw M4 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Echo raw M6 | was turbid | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Gap final | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Gap raw M5 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Grape final | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Grape raw M1 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Limit final | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Limit raw M7 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | M2 Phase A outcome | was stated | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Tell final | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Tell raw M2 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Tell raw M6 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Vintage final | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Vintage raw M2 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-11.md | Echo final | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-11.md | Echo raw M4 | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-12.md | Echo final | was clearing | now turbid | An app to stop myself doomchecking my bank balance at the end of every
+spark-12.md | Echo raw M4 | was clearing | now turbid | An app to stop myself doomchecking my bank balance at the end of every
+spark-17.md | Tell raw M2 | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-17.md | Vintage final | was settled | now clearing | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-17.md | Vintage raw M2 | was settled | now clearing | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-18.md | Tell raw M6 | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+
+== Against the 21 Oct run 2 (runs/2026-10-21-model-bakeoff/claude-sonnet-4-6) ==
+Baseline dir:runs/2026-10-21-model-bakeoff/claude-sonnet-4-6/run-2. Compared 263 grades across 20 reports. Differences: 33.
+spark-01.md | Echo raw M4 | was clearing | now turbid | An app for wedding photographers who lose their deposit when couples c
+spark-02.md | Echo raw M4 | was clearing | now turbid | A tool for freelance designers because Moneybird's payment reminders o
+spark-07.md | Echo raw M4 | was clearing | now turbid | an app for my sister Marieke because customers are annoying with payme
+spark-07.md | Tell raw M6 | was settled | now clearing | an app for my sister Marieke because customers are annoying with payme
+spark-08.md | Echo raw M4 | was settled | now turbid | A tool for landlords because tenants do not just pay late, they pay in
+spark-09.md | Echo final | was settled | now clearing | A tool for physiotherapists in small practices because every time an i
+spark-09.md | Echo raw M3 | was settled | now clearing | A tool for physiotherapists in small practices because every time an i
+spark-09.md | Echo raw M4 | was settled | now turbid | A tool for physiotherapists in small practices because every time an i
+spark-09.md | Tell raw M6 | was clearing | now settled | A tool for physiotherapists in small practices because every time an i
+spark-10.md | Echo final | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Echo raw M3 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Echo raw M4 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Echo raw M6 | was turbid | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Gap final | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Gap raw M5 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Grape final | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Grape raw M1 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Limit final | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Limit raw M7 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | M2 Phase A outcome | was stated | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Tell final | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Tell raw M2 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Tell raw M6 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Vintage final | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Vintage raw M2 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-11.md | Echo final | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-11.md | Echo raw M4 | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-12.md | Echo final | was clearing | now turbid | An app to stop myself doomchecking my bank balance at the end of every
+spark-12.md | Echo raw M4 | was clearing | now turbid | An app to stop myself doomchecking my bank balance at the end of every
+spark-17.md | Tell raw M2 | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-17.md | Vintage final | was settled | now clearing | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-17.md | Vintage raw M2 | was settled | now clearing | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-18.md | Tell raw M6 | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+
+== Against the 21 Oct run 3 (runs/2026-10-21-model-bakeoff/claude-sonnet-4-6) ==
+Baseline dir:runs/2026-10-21-model-bakeoff/claude-sonnet-4-6/run-3. Compared 263 grades across 20 reports. Differences: 34.
+spark-01.md | Echo raw M4 | was clearing | now turbid | An app for wedding photographers who lose their deposit when couples c
+spark-02.md | Echo raw M4 | was clearing | now turbid | A tool for freelance designers because Moneybird's payment reminders o
+spark-07.md | Echo raw M4 | was clearing | now turbid | an app for my sister Marieke because customers are annoying with payme
+spark-07.md | Tell raw M6 | was settled | now clearing | an app for my sister Marieke because customers are annoying with payme
+spark-08.md | Echo raw M4 | was settled | now turbid | A tool for landlords because tenants do not just pay late, they pay in
+spark-09.md | Echo final | was settled | now clearing | A tool for physiotherapists in small practices because every time an i
+spark-09.md | Echo raw M3 | was settled | now clearing | A tool for physiotherapists in small practices because every time an i
+spark-09.md | Echo raw M4 | was settled | now turbid | A tool for physiotherapists in small practices because every time an i
+spark-10.md | Echo final | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Echo raw M3 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Echo raw M4 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Echo raw M6 | was turbid | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Gap final | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Gap raw M5 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Grape final | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Grape raw M1 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Limit final | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Limit raw M7 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | M2 Phase A outcome | was stated | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Tell final | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Tell raw M2 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Tell raw M6 | was clearing | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Vintage final | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-10.md | Vintage raw M2 | was settled | now (none) | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-11.md | Echo final | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-11.md | Echo raw M4 | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-12.md | Echo final | was clearing | now turbid | An app to stop myself doomchecking my bank balance at the end of every
+spark-12.md | Echo raw M4 | was clearing | now turbid | An app to stop myself doomchecking my bank balance at the end of every
+spark-16.md | Limit final | was turbid | now clearing | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-16.md | Limit raw M7 | was turbid | now clearing | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-17.md | Tell raw M2 | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-17.md | Vintage final | was settled | now clearing | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-17.md | Vintage raw M2 | was settled | now clearing | An app for one-man trade businesses who forget to chase unpaid invoice
+spark-18.md | Tell raw M6 | was clearing | now turbid | An app for one-man trade businesses who forget to chase unpaid invoice
+

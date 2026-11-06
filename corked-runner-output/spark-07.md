@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 07
 
-Generated: 2026-10-10T12:59:16.021Z
+Generated: 2026-11-06T18:59:22.071Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -17,19 +17,19 @@ expect_halt: false
 
 Line sent to the worker (the spark as typed): "an app for my sister Marieke because customers are annoying with payments at her flower stall"
 
-M0's line (verbatim, not shown in the app): "An app for flower stall owners where customers are annoying with payments"
+M0's line (verbatim, not shown in the app): "An app for flower stall owners because customers are annoying with payments"
 
 ## Element Tracker (final state, floor-enforced like corked_v6.html's rankUp — see "raw grades" for what each mechanism actually offered before the floor was applied)
 - **Grape**: settled — history: inert → settled (last raised by M1)
   raw grades: M1=settled
 - **Tell**: settled — history: inert → settled (last raised by M6)
-  raw grades: M2=settled, M6=settled
-- **Vintage**: settled — history: inert → settled (last raised by M4)
-  raw grades: M2=settled, M3=settled, M4=turbid
+  raw grades: M2=settled, M6=clearing
+- **Vintage**: settled — history: inert → settled (last raised by M2)
+  raw grades: M2=settled
 - **Gap**: settled — history: inert → settled (last raised by M5)
   raw grades: M5=settled
 - **Echo**: settled — history: inert → settled (last raised by M6)
-  raw grades: M3=settled, M4=clearing, M6=turbid
+  raw grades: M3=settled, M4=turbid, M6=turbid
 - **Limit**: settled — history: inert → settled (last raised by M7)
   raw grades: M7=settled
 
@@ -49,12 +49,12 @@ Response:
   "schema_version": "m0.v1",
   "mechanism": "M0",
   "raw_spark": "an app for my sister Marieke because customers are annoying with payments at her flower stall",
-  "user_line_candidate": "An app for flower stall owners where customers are annoying with payments",
+  "user_line_candidate": "An app for flower stall owners because customers are annoying with payments",
   "spark_parse": {
     "solution_form": "app",
     "implied_person": "flower stall owners",
     "suspected_problem": "customers are annoying with payments",
-    "triggering_situation": "at her flower stall",
+    "triggering_situation": null,
     "promised_change": null,
     "domain": "flower stall",
     "solution_is_software": "software"
@@ -62,7 +62,7 @@ Response:
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. A flower stall owner role and a stated problem with payments from customers are both present. It enters cleanly.",
+    "reason": "Cellar-ready. A flower stall owner role is present and the stated problem is customers being annoying with payments. Both enter cleanly.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -71,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name the specific flower stall owner and the moment when a customer payment went wrong.",
-    "hint": "A good answer names who was at the stall, what they were trying to do when the payment issue happened, and what the scene actually looked like.",
+    "question": "Name the specific flower stall owner and the moment when a customer's payment became annoying.",
+    "hint": "A good answer names what the stall owner was doing and what the customer did or failed to do with the payment.",
     "person_label": "Flower stall owner",
     "person_placeholder": "Marieke, flower stall owner",
-    "when_label": "When it happened",
+    "when_label": "When did it happen",
     "when_placeholder": "during a busy Saturday market while serving a queue of customers",
     "trying_label": "What she was trying to do",
-    "trying_placeholder": "take payment quickly and move to the next customer",
-    "happened_label": "What actually happened",
-    "happened_placeholder": "a customer couldn't pay cash and had no way to pay another way, holding up the queue"
+    "trying_placeholder": "complete the sale quickly and move to the next customer",
+    "happened_label": "What happened with the payment",
+    "happened_placeholder": "the customer fumbled with cash, asked for change she didn't have, or held up the queue sorting out a card that wouldn't work"
   },
   "person_in_spark": {
     "grade": "settled",
@@ -98,7 +98,27 @@ Response:
     "m0_ready_downgraded": false,
     "seal_contract_normalized": true,
     "m1_placeholders_nulled": false
-  }
+  },
+  "ai_fields": [
+    "user_line_candidate",
+    "digestibility.reason",
+    "m1_setup.question",
+    "m1_setup.hint",
+    "m1_setup.person_label",
+    "m1_setup.person_placeholder",
+    "m1_setup.when_label",
+    "m1_setup.when_placeholder",
+    "m1_setup.trying_label",
+    "m1_setup.trying_placeholder",
+    "m1_setup.happened_label",
+    "m1_setup.happened_placeholder",
+    "spark_parse.solution_form",
+    "spark_parse.implied_person",
+    "spark_parse.suspected_problem",
+    "spark_parse.domain"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -126,7 +146,7 @@ Response:
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "The grape is settled. A named individual and a real stated relationship are both present.",
+    "surface_text": "A named individual is present. A real stated relationship binds the name to the context.",
     "anchor_span": "my sister"
   },
   "next_question": {
@@ -137,7 +157,13 @@ Response:
     "schema_valid": true,
     "anchor_verified": true,
     "visible_style_violations_cleaned": []
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text",
+    "grape.named_person"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -153,7 +179,7 @@ Request:
     "solution_form": "app",
     "implied_person": "flower stall owners",
     "suspected_problem": "customers are annoying with payments",
-    "triggering_situation": "at her flower stall",
+    "triggering_situation": null,
     "promised_change": null,
     "domain": "flower stall",
     "solution_is_software": "software"
@@ -176,9 +202,12 @@ Response:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "question": "Tell me about the last time a customer was annoying with a payment at Marieke's stall: what did the customer do and what did Marieke do in response?",
+  "question": "Tell me about the last time a customer was annoying with a payment at Marieke's stall: what did the customer actually do?",
   "recovered_problem": "customers are annoying with payments at her flower stall",
   "needs_confirmation": false,
+  "ai_fields": [
+    "question"
+  ],
   "server_checks": {
     "schema_valid": true,
     "model_outcome": "stated",
@@ -187,7 +216,9 @@ Response:
     "unsupported_words": [],
     "visible_style_violations_cleaned": [],
     "m2_question_repaired": false
-  }
+  },
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -218,14 +249,14 @@ Response:
   "state": "settled",
   "tell": {
     "state": "settled",
-    "anchor_span": "waved her off with the flowers anyway, saying she'd sort it out later"
+    "anchor_span": "Marieke just waved her off with the flowers anyway, saying she'd sort it out later"
   },
   "vintage": {
     "state": "settled",
-    "anchor_span": "Last Saturday"
+    "anchor_span": "Last Saturday a regular customer paid with a card that declined twice at the stall"
   },
   "observation": {
-    "surface_text": "The Tell is settled: a specific observable action is named. The Vintage is settled: the behaviour is anchored to a single named instance.",
+    "surface_text": "Tell is settled: a specific observable action is named. Vintage is settled: the behaviour is anchored to a single past instance.",
     "anchor_span": "Last Saturday a regular customer paid with a card that declined twice at the stall, and Marieke just waved her off with the flowers anyway"
   },
   "substitution_detected": false,
@@ -237,7 +268,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_floor": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -267,12 +303,8 @@ Response:
     "state": "settled",
     "anchor_span": "My friend Owen, who runs a farm stand, told me last month he started keeping a paper IOU pad after a similar situation with a regular."
   },
-  "vintage": {
-    "state": "settled",
-    "anchor_span": "last month he started keeping a paper IOU pad after a similar situation with a regular"
-  },
   "observation": {
-    "surface_text": "The Echo bar finds one identifiable separate person, Owen, who runs a farm stand and adopted a concrete workaround in response to a payment problem. The Vintage bar finds a specific anchored moment: last month, triggered by a situation with a named type of customer.",
+    "surface_text": "The answer names one identifiable third party, Owen, distinct from the grape and the founder, and reports a concrete workaround he adopted in response to the same payment friction.",
     "anchor_span": "My friend Owen, who runs a farm stand, told me last month he started keeping a paper IOU pad after a similar situation with a regular."
   },
   "substitution_detected": false,
@@ -281,12 +313,17 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
 ### 6. [main] M4 · /m4
-Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[none]
+Summary: state=turbid · substitution_detected=false · swirl=yes · changed=[none]
 Request:
 ```json
 {
@@ -307,35 +344,37 @@ Response:
 {
   "schema_version": "m4.v1",
   "mechanism": "M4",
-  "state": "clearing",
+  "state": "turbid",
   "echo": {
-    "state": "clearing",
-    "anchor_span": null
-  },
-  "vintage": {
     "state": "turbid",
-    "anchor_span": null
+    "anchor_span": "For her the pain is spotty signal, the payment method itself is fine"
   },
   "contrast": {
-    "is_different_kind": "true",
-    "same_or_different": "different",
+    "is_different_kind": "unclear",
+    "same_or_different": "unclear",
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer names Priya and a concrete behaviour (keeping a card reader as backup), but her stated problem is connectivity, not payment friction with customers, which is a different problem than the confirmed one. No specific past instance is present, only a standing practice.",
-    "anchor_span": "keeps a card reader as backup for exactly this"
+    "surface_text": "Priya is named and carries a concrete behaviour, but the answer states her pain is signal quality rather than customers being annoying with payments, so she has not hit the confirmed problem and does not move Echo.",
+    "anchor_span": "For her the pain is spotty signal, the payment method itself is fine"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is Priya someone the founder has spoken with directly about payment difficulties at her stall, or is she an example assembled to fit the confirmed problem?"
+    "question": "Is there a specific moment where Priya or anyone else was actually on the receiving end of a difficult customer payment interaction at a stall or stand like Marieke's?"
   },
   "server_checks": {
     "schema_valid": true,
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": true
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text",
+    "swirl.question"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -366,8 +405,8 @@ Response:
     "anchor_span": "a basic card reader clipped to her apron, but it has no offline mode, so a bad signal at the stall means she can't charge anything at all"
   },
   "observation": {
-    "surface_text": "The answer names a specific existing solution: a basic card reader. The precise failure point is also present: no offline mode causes complete inability to charge when signal is lost.",
-    "anchor_span": "a basic card reader clipped to her apron, but it has no offline mode, so a bad signal at the stall means she can't charge anything at all"
+    "surface_text": "The answer names an existing solution: a basic card reader. The precise failure point is stated: no offline mode causes a complete inability to charge when signal is poor.",
+    "anchor_span": "it has no offline mode, so a bad signal at the stall means she can't charge anything at all"
   },
   "substitution_detected": false,
   "server_checks": {
@@ -375,7 +414,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -404,19 +448,19 @@ Response:
   "state": "settled",
   "words": {
     "state": "settled",
-    "anchor_span": "I just want people to pay and go"
+    "anchor_span": "\"I just want people to pay and go,\" she said after the declined-card one."
   },
   "tell": {
-    "state": "settled",
-    "anchor_span": "after the declined-card one"
+    "state": "clearing",
+    "anchor_span": "\"I just want people to pay and go,\" she said after the declined-card one."
   },
   "echo": {
     "state": "turbid",
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer supplies a direct quote from a real exchange with Marieke, meeting the settled bar for Words. The quote is anchored to a specific incident and the surrounding recounting names a filmable trigger moment, meeting the settled bar for Tell.",
-    "anchor_span": "I just want people to pay and go"
+    "surface_text": "A direct quote from Marieke is present and words_source is real, satisfying the Words bar at settled. The quoted words carry a stated feeling tied to a named incident but no filmable action, placing Tell at clearing.",
+    "anchor_span": "\"I just want people to pay and go,\" she said after the declined-card one."
   },
   "substitution_detected": false,
   "server_checks": {
@@ -424,7 +468,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -455,7 +504,7 @@ Response:
     "anchor_span": "Jordan sells only pre-paid subscription flower boxes online. Payment problems at the point of sale never happen to him because nothing is sold in person."
   },
   "observation": {
-    "surface_text": "The answer names a bounded individual, Jordan, with a specific commercial arrangement that removes point-of-sale contact entirely. The reason for immunity is concrete: pre-paid online subscription eliminates in-person transaction friction by structural design.",
+    "surface_text": "The answer names a bounded individual, Jordan, with a specific arrangement: pre-paid online subscription sales only. The reason for immunity is present and concrete: no in-person transaction exists at which point-of-sale friction could occur.",
     "anchor_span": "nothing is sold in person"
   },
   "substitution_detected": false,
@@ -464,7 +513,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -472,6 +526,6 @@ Response:
 - none detected
 
 ## Floor notes (informational — a later mechanism offered a lower grade for an opportunistic bar; the floor correctly held, no action needed)
-- M4 offered clearing for Echo, held at floor settled (opportunistic grading correctly did not lower it).
-- M4 offered turbid for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
+- M4 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it).
+- M6 offered clearing for Tell, held at floor settled (opportunistic grading correctly did not lower it).
 - M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it).

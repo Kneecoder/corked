@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 20
 
-Generated: 2026-10-10T13:07:38.996Z
+Generated: 2026-11-06T19:07:06.650Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -70,15 +70,15 @@ Response:
     "question": "What problem are allotment gardeners having with their surplus vegetables?"
   },
   "m1_setup": {
-    "question": "Name the specific allotment gardener this starts from and the moment they were sitting with surplus vegetables and no good way to swap them.",
-    "hint": "A good answer names one gardener and a concrete moment, such as a glut of courgettes at the end of the week with no one nearby to take them.",
+    "question": "Name the specific allotment gardener this starts from, and the moment they were sitting with surplus vegetables they could not use.",
+    "hint": "A good answer names one gardener and what was going wrong with their surplus vegetables at a specific point in the season.",
     "person_label": "Allotment gardener",
-    "person_placeholder": "e.g. Janet, allotment plot holder",
-    "when_label": "When the surplus appeared",
-    "when_placeholder": "e.g. end of August when the courgettes came in all at once",
+    "person_placeholder": "e.g. Diane, allotment plot holder",
+    "when_label": "When the surplus hit",
+    "when_placeholder": "e.g. end of August when the courgettes were piling up",
     "trying_label": "What she was trying to do with the surplus",
     "trying_placeholder": null,
-    "happened_label": "What actually happened to the vegetables",
+    "happened_label": "What actually happened",
     "happened_placeholder": null
   },
   "person_in_spark": {
@@ -97,12 +97,31 @@ Response:
     "m0_ready_downgraded": false,
     "seal_contract_normalized": true,
     "m1_placeholders_nulled": true
-  }
+  },
+  "ai_fields": [
+    "user_line_candidate",
+    "digestibility.reason",
+    "followup.question",
+    "m1_setup.question",
+    "m1_setup.hint",
+    "m1_setup.person_label",
+    "m1_setup.person_placeholder",
+    "m1_setup.when_label",
+    "m1_setup.when_placeholder",
+    "m1_setup.trying_label",
+    "m1_setup.happened_label",
+    "spark_parse.solution_form",
+    "spark_parse.implied_person",
+    "spark_parse.domain",
+    "digestibility.missing"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
 ### 2. [park] M1 · /field
-Summary: brief target="allotment gardener with surplus"
+Summary: brief target="allotment gardener, surplus produce"
 Request:
 ```json
 {
@@ -131,9 +150,16 @@ Response:
   "brief": {
     "kind": "find",
     "setup": "Find an allotment gardener who has had surplus vegetables to deal with.",
-    "question": "Walk me through how you handle surplus vegetables at the end of a growing week, and tell me about the last time it caused you a headache.",
-    "target": "allotment gardener with surplus"
-  }
+    "question": "Walk me through how you handle surplus vegetables at the end of the season, and the last time it became a problem for you.",
+    "target": "allotment gardener, surplus produce"
+  },
+  "ai_fields": [
+    "brief.setup",
+    "brief.question",
+    "brief.target"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 

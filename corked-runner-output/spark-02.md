@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 02
 
-Generated: 2026-10-10T12:58:04.357Z
+Generated: 2026-11-06T18:58:09.346Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -17,19 +17,19 @@ expect_halt: false
 
 Line sent to the worker (the spark as typed): "A tool for freelance designers because Moneybird's payment reminders only go out after an invoice is already two weeks overdue."
 
-M0's line (verbatim, not shown in the app): "A tool for freelance designers whose payment reminders in Moneybird only go out after an invoice is already two weeks overdue."
+M0's line (verbatim, not shown in the app): "A tool for freelance designers where payment reminders go out before an invoice is two weeks overdue."
 
 ## Element Tracker (final state, floor-enforced like corked_v6.html's rankUp — see "raw grades" for what each mechanism actually offered before the floor was applied)
 - **Grape**: settled — history: inert → settled (last raised by M1)
   raw grades: M1=settled
 - **Tell**: settled — history: inert → settled (last raised by M6)
   raw grades: M2=settled, M6=settled
-- **Vintage**: settled — history: inert → settled (last raised by M4)
-  raw grades: M2=settled, M3=settled, M4=turbid
+- **Vintage**: settled — history: inert → settled (last raised by M2)
+  raw grades: M2=settled
 - **Gap**: settled — history: inert → clearing → settled (last raised by M5)
   raw grades: M2=clearing, M5=settled
 - **Echo**: settled — history: inert → settled (last raised by M6)
-  raw grades: M3=settled, M4=clearing, M6=turbid
+  raw grades: M3=settled, M4=turbid, M6=turbid
 - **Limit**: settled — history: inert → settled (last raised by M7)
   raw grades: M7=settled
 
@@ -49,12 +49,12 @@ Response:
   "schema_version": "m0.v1",
   "mechanism": "M0",
   "raw_spark": "A tool for freelance designers because Moneybird's payment reminders only go out after an invoice is already two weeks overdue.",
-  "user_line_candidate": "A tool for freelance designers whose payment reminders in Moneybird only go out after an invoice is already two weeks overdue.",
+  "user_line_candidate": "A tool for freelance designers where payment reminders go out before an invoice is two weeks overdue.",
   "spark_parse": {
     "solution_form": "tool",
     "implied_person": "freelance designers",
     "suspected_problem": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
-    "triggering_situation": "invoice is two weeks overdue",
+    "triggering_situation": null,
     "promised_change": null,
     "domain": "payment reminders",
     "solution_is_software": "software"
@@ -62,7 +62,7 @@ Response:
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The role is freelance designers and the stated problem is that Moneybird's payment reminders only go out after an invoice is already two weeks overdue. Both enter cleanly.",
+    "reason": "Cellar-ready. The role is freelance designers and the stated problem is that Moneybird's reminders fire after the invoice is already two weeks overdue. Both are present and clean.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -71,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name a specific freelance designer and the moment when they noticed Moneybird's reminder was already too late.",
-    "hint": "A good answer names one person and describes the invoice situation they were looking at when the timing problem became visible.",
+    "question": "Name the specific freelance designer this starts from and the moment they realised Moneybird's reminder had gone out too late.",
+    "hint": "A good answer names one person and says when they noticed the invoice had already been overdue for two weeks before any reminder fired.",
     "person_label": "Freelance designer",
-    "person_placeholder": "e.g. Lena, freelance brand designer",
+    "person_placeholder": "Lena, freelance brand designer",
     "when_label": "When did they notice",
-    "when_placeholder": "e.g. when a client was already two weeks past due and no reminder had gone out yet",
-    "trying_label": "What were they trying to do",
-    "trying_placeholder": "e.g. get the client to pay before the project handover",
+    "when_placeholder": "the day a client's payment was already 10 days late and Moneybird still hadn't sent a reminder",
+    "trying_label": "What they were trying to do",
+    "trying_placeholder": "follow up on an unpaid invoice without coming across as chasing money manually",
     "happened_label": "What actually happened",
-    "happened_placeholder": "e.g. Moneybird sent the first reminder only after the invoice had been overdue for two weeks, and by then the client had already gone quiet"
+    "happened_placeholder": "the reminder went out after the invoice had already been overdue for two weeks and the client acted surprised"
   },
   "person_in_spark": {
     "grade": "none",
@@ -98,7 +98,27 @@ Response:
     "m0_ready_downgraded": false,
     "seal_contract_normalized": true,
     "m1_placeholders_nulled": false
-  }
+  },
+  "ai_fields": [
+    "user_line_candidate",
+    "digestibility.reason",
+    "m1_setup.question",
+    "m1_setup.hint",
+    "m1_setup.person_label",
+    "m1_setup.person_placeholder",
+    "m1_setup.when_label",
+    "m1_setup.when_placeholder",
+    "m1_setup.trying_label",
+    "m1_setup.trying_placeholder",
+    "m1_setup.happened_label",
+    "m1_setup.happened_placeholder",
+    "spark_parse.solution_form",
+    "spark_parse.implied_person",
+    "spark_parse.suspected_problem",
+    "spark_parse.domain"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -126,7 +146,7 @@ Response:
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "A named individual is present. The stated relationship is a real and specific tie.",
+    "surface_text": "A named individual is present. The relationship is concrete and specific.",
     "anchor_span": "my old classmate, freelance designer"
   },
   "next_question": {
@@ -137,7 +157,13 @@ Response:
     "schema_valid": true,
     "anchor_verified": true,
     "visible_style_violations_cleaned": []
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text",
+    "grape.named_person"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -153,7 +179,7 @@ Request:
     "solution_form": "tool",
     "implied_person": "freelance designers",
     "suspected_problem": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
-    "triggering_situation": "invoice is two weeks overdue",
+    "triggering_situation": null,
     "promised_change": null,
     "domain": "payment reminders",
     "solution_is_software": "software"
@@ -176,9 +202,12 @@ Response:
     "status": "confirmed"
   },
   "gap_in_play": true,
-  "question": "Walk me through the last time Sanne's invoice hit that two-week mark with no reminder sent yet: what did she actually do when she noticed payment still hadn't come in?",
+  "question": "Walk me through the last time Sanne had an invoice sit past due before Moneybird sent a reminder: what did she actually do while she waited?",
   "recovered_problem": "Moneybird's payment reminders only go out after an invoice is already two weeks overdue",
   "needs_confirmation": false,
+  "ai_fields": [
+    "question"
+  ],
   "server_checks": {
     "schema_valid": true,
     "model_outcome": "stated",
@@ -187,7 +216,9 @@ Response:
     "unsupported_words": [],
     "visible_style_violations_cleaned": [],
     "m2_question_repaired": false
-  }
+  },
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -229,13 +260,13 @@ Response:
     "anchor_span": "reminder for the Bakker invoice had only just gone out on day 15"
   },
   "observation": {
-    "surface_text": "Vintage is anchored to a specific moment and Tell names a filmable action. The Gap answer names Moneybird and a timing detail but does not state how or why the system failed to act earlier, only that the reminder arrived late.",
+    "surface_text": "Sanne's action is filmable: she called the client herself while the screen was still open. The moment is anchored to two Fridays ago with the Bakker invoice named. Moneybird is named as the existing solution but its failure point is the system's configured delay, not a specific mechanism that blocked Sanne.",
     "anchor_span": "reminder for the Bakker invoice had only just gone out on day 15"
   },
   "substitution_detected": false,
   "swirl": {
-    "kind": "reality",
-    "question": "Is the Bakker invoice a real client job Sanne billed, or a placeholder name standing in for a recurring pattern?"
+    "kind": "ownership",
+    "question": "Who owns the Moneybird reminder settings on Sanne's account, and has she ever tried to change the delay herself?"
   },
   "server_checks": {
     "schema_valid": true,
@@ -246,7 +277,13 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_floor": true,
     "swirl_included": true
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text",
+    "swirl.question"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -276,13 +313,9 @@ Response:
     "state": "settled",
     "anchor_span": "My colleague Jordan, another freelance designer, told me last month he now sends his own manual reminder on day three because he can't wait two weeks for the system to catch it."
   },
-  "vintage": {
-    "state": "settled",
-    "anchor_span": "told me last month"
-  },
   "observation": {
-    "surface_text": "The Echo bar finds one identifiable person, Jordan, distinct from both grape and founder, with a concrete workaround: manual reminders sent on day three. The Vintage bar finds a specific anchored moment: the disclosure occurred last month.",
-    "anchor_span": "told me last month he now sends his own manual reminder on day three"
+    "surface_text": "A named third party distinct from the grape and the founder is present, with a concrete workaround behaviour reported at a specific time.",
+    "anchor_span": "My colleague Jordan, another freelance designer, told me last month he now sends his own manual reminder on day three because he can't wait two weeks for the system to catch it."
   },
   "substitution_detected": false,
   "server_checks": {
@@ -290,12 +323,17 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
 ### 6. [main] M4 · /m4
-Summary: state=clearing · substitution_detected=false · swirl=yes · changed=[none]
+Summary: state=turbid · substitution_detected=false · swirl=yes · changed=[none]
 Request:
 ```json
 {
@@ -316,37 +354,37 @@ Response:
 {
   "schema_version": "m4.v1",
   "mechanism": "M4",
-  "state": "clearing",
+  "state": "turbid",
   "echo": {
-    "state": "clearing",
+    "state": "turbid",
     "anchor_span": "the reminder timing part is fine"
   },
-  "vintage": {
-    "state": "turbid",
-    "anchor_span": null
-  },
   "contrast": {
-    "is_different_kind": "true",
-    "same_or_different": "different",
+    "is_different_kind": "unclear",
+    "same_or_different": "unclear",
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "Priya is a named, identifiable person distinct from the grape and from Jordan, but the answer states the confirmed problem does not apply to her, the reminder timing is fine for her. A second person who does not share the confirmed problem does not satisfy the Echo bar.",
+    "surface_text": "Priya is named and her spreadsheet behaviour is concrete, but the answer explicitly states the confirmed problem does not apply to her, making her a person without the problem who cannot move Echo upward.",
     "anchor_span": "the reminder timing part is fine"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is there a person in Priya's position or closer to Sanne's situation for whom the two-week reminder delay is itself the frustration, not the payment-matching step?"
+    "question": "Is there a specific person in Priya's situation who does find the two-week reminder window the actual source of pain, rather than the payment-matching step?"
   },
   "server_checks": {
     "schema_valid": true,
-    "visible_style_violations_cleaned": [
-      "observation.surface_text:dash"
-    ],
+    "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": true
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text",
+    "swirl.question"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -374,10 +412,10 @@ Response:
   "state": "settled",
   "gap": {
     "state": "settled",
-    "anchor_span": "Sanne uses Moneybird's built-in reminder schedule, but it only fires at the two-week mark"
+    "anchor_span": "Moneybird's built-in reminder schedule, but it only fires at the two-week mark"
   },
   "observation": {
-    "surface_text": "The answer names Moneybird's built-in reminder schedule as the existing solution. The precise failure point is that the reminder fires only at the two-week mark, by which point the client has already forgotten the invoice.",
+    "surface_text": "The answer names Moneybird's built-in reminder schedule as the existing solution. The precise failure point is stated: reminders fire only at the two-week mark, after the invoice is already overdue.",
     "anchor_span": "it only fires at the two-week mark, so by then the client has already forgotten the invoice existed"
   },
   "substitution_detected": false,
@@ -386,7 +424,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -426,16 +469,23 @@ Response:
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "Words bar finds a direct quote from a real exchange, attributed to Sanne, anchored to a named incident. The quote is tied to a specific moment (after the Bakker invoice), which constitutes filmable behaviour.",
+    "surface_text": "Words carries a direct quote from a real exchange with Sanne, flagged real, anchored to a specific named incident. The quoted words reference a concrete, filmable moment, a statement made after a particular client event, the Bakker one.",
     "anchor_span": "\"I am done chasing money like it's my fault,\" she said after the Bakker one."
   },
   "substitution_detected": false,
   "server_checks": {
     "schema_valid": true,
-    "visible_style_violations_cleaned": [],
+    "visible_style_violations_cleaned": [
+      "observation.surface_text:dash"
+    ],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -466,7 +516,7 @@ Response:
     "anchor_span": "Owen does retainer illustration work for two agencies. Late payments cost him nothing because the retainer bills monthly whether projects ship or not."
   },
   "observation": {
-    "surface_text": "The answer names a bounded individual in a specific retainer arrangement with two agencies. The reason for immunity is present and specific: monthly billing continues regardless of project delivery, so delayed payment carries no cost.",
+    "surface_text": "The answer names a bounded individual, Owen, in a specific retainer arrangement with two agencies. The reason for immunity is present and concrete: monthly billing runs regardless of project delivery, so invoice timing carries no financial consequence.",
     "anchor_span": "the retainer bills monthly whether projects ship or not"
   },
   "substitution_detected": false,
@@ -475,7 +525,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -483,6 +538,5 @@ Response:
 - none detected
 
 ## Floor notes (informational — a later mechanism offered a lower grade for an opportunistic bar; the floor correctly held, no action needed)
-- M4 offered clearing for Echo, held at floor settled (opportunistic grading correctly did not lower it).
-- M4 offered turbid for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
+- M4 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it).
 - M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it).

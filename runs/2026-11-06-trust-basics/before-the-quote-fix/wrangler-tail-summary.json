@@ -1,0 +1,22 @@
+{
+  "note": "What wrangler tail saw during this run. The raw tail holds request headers and location data, so it is not in the repo. The canary check ran on the raw text.",
+  "bytes": 176735,
+  "canary": "zq-canary-0611",
+  "canary_found": false,
+  "events": 37,
+  "events_by_path": {
+    "/nowhere": 2,
+    "/m0": 6,
+    "/m1": 4,
+    "/m2": 13,
+    "/field": 6,
+    "/m3": 4,
+    "/resolve": 2
+  },
+  "exceptions": 0,
+  "console_lines": [
+    [
+      "{\"event\":\"m2_downgrade\",\"phase\":\"problem\",\"from\":\"guessed\",\"to\":\"insufficient\",\"reason\":\"words_not_in_spark\",\"word_count\":17,\"char_count\":116}"
+    ]
+  ]
+}

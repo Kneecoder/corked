@@ -1,6 +1,6 @@
 # Corked Runner Report — spark 14
 
-Generated: 2026-10-10T13:03:55.121Z
+Generated: 2026-11-06T19:03:30.269Z
 Worker: https://orked-m1-proxy.kneebonewebdesign.workers.dev
 
 ## Test under this spark
@@ -24,8 +24,8 @@ M0's line (verbatim, not shown in the app): "An app for one-man trade businesses
   raw grades: M1=settled
 - **Tell**: settled — history: inert → settled (last raised by M6)
   raw grades: M2=settled, M6=clearing
-- **Vintage**: settled — history: inert → settled (last raised by M4)
-  raw grades: M2=settled, M3=settled, M4=turbid
+- **Vintage**: settled — history: inert → settled (last raised by M2)
+  raw grades: M2=settled
 - **Gap**: settled — history: inert → settled (last raised by M5)
   raw grades: M5=settled
 - **Echo**: settled — history: inert → settled (last raised by M6)
@@ -62,7 +62,7 @@ Response:
   "digestibility": {
     "state": "cellar_ready",
     "missing": [],
-    "reason": "Cellar-ready. The role is clear and the stated problem is present: one-man trade businesses forgetting to chase unpaid invoices until the money is a problem.",
+    "reason": "Cellar-ready. The role is clear and the problem is stated: one-man trade businesses who forget to chase unpaid invoices until the money is a problem.",
     "can_seal": true,
     "requires_followup_before_seal": false
   },
@@ -71,16 +71,16 @@ Response:
     "question": null
   },
   "m1_setup": {
-    "question": "Name a specific one-man trade business owner and the moment they realised an unpaid invoice had become a money problem.",
-    "hint": "A good answer names a real person, what they were doing when it hit them, and what they did or did not do about the unpaid invoice.",
+    "question": "Name the specific one-man trade business owner this starts from, and the moment they realised an unpaid invoice had become a money problem.",
+    "hint": "A good answer names a real person and a concrete moment, such as a plumber checking his account two weeks after a job, noticing the invoice was never paid and rent was due.",
     "person_label": "Tradesperson",
     "person_placeholder": "Dave, self-employed electrician",
-    "when_label": "When the money became a problem",
-    "when_placeholder": "when he checked his account before paying a supplier",
+    "when_label": "When the money problem surfaced",
+    "when_placeholder": "end of the month, invoice still unpaid and bills due",
     "trying_label": "What he was trying to do",
-    "trying_placeholder": "cover his costs at the end of a busy month",
-    "happened_label": "What actually happened with the invoice",
-    "happened_placeholder": "found three invoices from six weeks ago still unpaid and had not followed up on any of them"
+    "trying_placeholder": "cover costs after a run of jobs",
+    "happened_label": "What actually happened",
+    "happened_placeholder": "he found three invoices he had never followed up sitting in his sent folder"
   },
   "person_in_spark": {
     "grade": "none",
@@ -98,7 +98,27 @@ Response:
     "m0_ready_downgraded": false,
     "seal_contract_normalized": true,
     "m1_placeholders_nulled": false
-  }
+  },
+  "ai_fields": [
+    "user_line_candidate",
+    "digestibility.reason",
+    "m1_setup.question",
+    "m1_setup.hint",
+    "m1_setup.person_label",
+    "m1_setup.person_placeholder",
+    "m1_setup.when_label",
+    "m1_setup.when_placeholder",
+    "m1_setup.trying_label",
+    "m1_setup.trying_placeholder",
+    "m1_setup.happened_label",
+    "m1_setup.happened_placeholder",
+    "spark_parse.solution_form",
+    "spark_parse.implied_person",
+    "spark_parse.suspected_problem",
+    "spark_parse.domain"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -126,7 +146,7 @@ Response:
     "temporal_grounding": "present_general"
   },
   "observation": {
-    "surface_text": "Noor is named and tied to a concrete role: friend who runs a one-woman landscaping business. The grape is settled.",
+    "surface_text": "A named individual is present. The relationship is specific and real: a friend who runs a one-woman landscaping business.",
     "anchor_span": "my friend, runs a one-woman landscaping business"
   },
   "next_question": {
@@ -137,7 +157,13 @@ Response:
     "schema_valid": true,
     "anchor_verified": true,
     "visible_style_violations_cleaned": []
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text",
+    "grape.named_person"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -176,18 +202,25 @@ Response:
     "status": "confirmed"
   },
   "gap_in_play": false,
-  "question": "Walk me through the last time Noor forgot to chase an unpaid invoice and tell me what she actually did when she noticed the money was a problem.",
+  "question": "Tell me about the last time Noor realised she had forgotten to chase an unpaid invoice, what had she actually done in the days between sending the invoice and that moment?",
   "recovered_problem": "forget to chase unpaid invoices until the money is a problem",
   "needs_confirmation": false,
+  "ai_fields": [
+    "question"
+  ],
   "server_checks": {
     "schema_valid": true,
     "model_outcome": "stated",
     "outcome": "stated",
     "downgrades": [],
     "unsupported_words": [],
-    "visible_style_violations_cleaned": [],
+    "visible_style_violations_cleaned": [
+      "question:dash"
+    ],
     "m2_question_repaired": false
-  }
+  },
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -225,7 +258,7 @@ Response:
     "anchor_span": "Last month Noor finished a hedge-trimming job"
   },
   "observation": {
-    "surface_text": "The vintage is anchored to a single named job last month. The tell names observable behaviour: invoice withheld for two weeks, hours forgotten, total guessed.",
+    "surface_text": "The answer names a specific observable action: invoice not sent for two weeks, hours forgotten, total guessed. The moment is anchored to a single past instance: a hedge-trimming job completed last month.",
     "anchor_span": "Last month Noor finished a hedge-trimming job and didn't send the invoice for two weeks, by which point she'd forgotten the exact hours and had to guess the total"
   },
   "substitution_detected": false,
@@ -237,7 +270,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_floor": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -265,15 +303,11 @@ Response:
   "state": "settled",
   "echo": {
     "state": "settled",
-    "anchor_span": "My colleague Jordan pays a VA every month to chase his invoices"
-  },
-  "vintage": {
-    "state": "settled",
-    "anchor_span": "He set it up in February after a client stiffed him for six weeks"
+    "anchor_span": "My colleague Jordan pays a VA every month to chase his invoices. He set it up in February after a client stiffed him for six weeks."
   },
   "observation": {
-    "surface_text": "The Echo bar finds one identifiable separate person, Jordan, paying a VA to chase invoices, a concrete workaround distinct from the grape and founder. The Vintage bar finds a specific anchoring moment: setup in February following a client non-payment of six weeks.",
-    "anchor_span": "He set it up in February after a client stiffed him for six weeks"
+    "surface_text": "A named third party distinct from Noor and the founder is present, with a concrete workaround and an originating moment.",
+    "anchor_span": "My colleague Jordan pays a VA every month to chase his invoices. He set it up in February after a client stiffed him for six weeks."
   },
   "substitution_detected": false,
   "server_checks": {
@@ -281,7 +315,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -312,30 +351,32 @@ Response:
     "state": "clearing",
     "anchor_span": "a guy at my office who just has an assistant handle all his invoice chasing every month"
   },
-  "vintage": {
-    "state": "turbid",
-    "anchor_span": null
-  },
   "contrast": {
     "is_different_kind": "unclear",
     "same_or_different": "unclear",
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "The answer names an unidentified person whose behaviour matches the prior echo person (Jordan, VA, monthly invoice chasing) closely enough to read as a restatement rather than a second individual. No specific instance is present, only a recurring pattern.",
-    "anchor_span": "just has an assistant handle all his invoice chasing every month"
+    "surface_text": "The answer describes an unnamed office colleague using an assistant for invoice chasing, which mirrors the prior echo person (Jordan, a colleague who uses a VA for the same task) closely enough in role and behaviour that it does not constitute a distinct second person.",
+    "anchor_span": "a guy at my office who just has an assistant handle all his invoice chasing every month"
   },
   "substitution_detected": false,
   "swirl": {
     "kind": "reality",
-    "question": "Is the guy at your office a specific person whose name you know, or is he a stand-in for the general habit you have noticed around you?"
+    "question": "Is this office colleague a specific person with a name, or is he a stand-in for a general impression of how people in the office handle invoices?"
   },
   "server_checks": {
     "schema_valid": true,
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": true
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text",
+    "swirl.question"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -366,8 +407,8 @@ Response:
     "anchor_span": "paper receipt book for jobs, but it has no way to flag which jobs are still unpaid"
   },
   "observation": {
-    "surface_text": "The Gap bar finds a named existing solution: a paper receipt book used to track jobs. A precise failure point is stated: it cannot flag which jobs remain unpaid, allowing invoices to go unnoticed.",
-    "anchor_span": "paper receipt book for jobs, but it has no way to flag which jobs are still unpaid"
+    "surface_text": "The answer names a paper receipt book as the existing solution Noor uses to track jobs. A precise failure point is present: it cannot flag which jobs remain unpaid, allowing invoices to go unnoticed.",
+    "anchor_span": "it has no way to flag which jobs are still unpaid, so invoices slip through unnoticed"
   },
   "substitution_detected": false,
   "server_checks": {
@@ -375,7 +416,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -415,7 +461,7 @@ Response:
     "anchor_span": null
   },
   "observation": {
-    "surface_text": "A direct quote from a real exchange is present, placing Words at settled. The words carry a stated sentiment about invoicing but no filmable action, holding Tell at clearing.",
+    "surface_text": "A direct quote from a flagged real exchange is present, meeting the Words settled bar. The words carry a stated sentiment about the invoicing moment but no filmable action, holding Tell at clearing.",
     "anchor_span": "\"I just want to send it and forget it,\" she said after the two-week one."
   },
   "substitution_detected": false,
@@ -424,7 +470,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -455,7 +506,7 @@ Response:
     "anchor_span": "Priya only does fixed-price maintenance contracts billed automatically each month"
   },
   "observation": {
-    "surface_text": "The answer names a bounded individual and her specific billing arrangement as the exclusion. The reason is present and specific: automatic monthly billing eliminates per-job invoicing, removing the condition under which the problem occurs.",
+    "surface_text": "The answer names a bounded individual and a specific billing arrangement that removes per-job invoicing entirely. The reason for exclusion is present and structural: automatic monthly billing means no invoice is ever sent or chased.",
     "anchor_span": "nothing is billed per job"
   },
   "substitution_detected": false,
@@ -464,7 +515,12 @@ Response:
     "visible_style_violations_cleaned": [],
     "overall_state_is_primary": true,
     "swirl_included": false
-  }
+  },
+  "ai_fields": [
+    "observation.surface_text"
+  ],
+  "prompt_version": "2026-11-06",
+  "model": "claude-sonnet-4-6"
 }
 ```
 
@@ -473,6 +529,5 @@ Response:
 
 ## Floor notes (informational — a later mechanism offered a lower grade for an opportunistic bar; the floor correctly held, no action needed)
 - M4 offered clearing for Echo, held at floor settled (opportunistic grading correctly did not lower it).
-- M4 offered turbid for Vintage, held at floor settled (opportunistic grading correctly did not lower it).
 - M6 offered clearing for Tell, held at floor settled (opportunistic grading correctly did not lower it).
 - M6 offered turbid for Echo, held at floor settled (opportunistic grading correctly did not lower it).
