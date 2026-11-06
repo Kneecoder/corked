@@ -2068,7 +2068,7 @@ function renderIntake() {
               <span>Edit spark</span>
             </button>
           </div>`;
-    h += `<div class="spark-field-wrap"><textarea class="field" id="f-inp" rows="3" placeholder="">${v}</textarea></div>`;
+    h += `<div class="spark-field-wrap"><textarea class="field" id="f-inp" rows="3" maxlength="500" placeholder="">${v}</textarea></div>`;
     if (intakeStep === 0) {
       // Once per browser. After that it lives behind the link at the bottom of the cellar.
       if (!localStorage.getItem(AI_LINE_SEEN_KEY)) {
