@@ -823,7 +823,7 @@ const SCENARIOS = {
           const untagged = [...document.querySelectorAll('body *')]
             .filter(el => !el.matches('script, style') && !el.matches(notAi.join(', ')) && isVisible(el) && shown.has(textOf(el)))
             .filter(el => ![...el.children].some(c => textOf(c) === textOf(el)))
-            .filter(el => !el.hasAttribute('data-ai-generated'))
+            .filter(el => !el.closest('[data-ai-generated]'))
             .map(el => ({ where: name(el), text: textOf(el), listed_field: shown.get(textOf(el)).field }));
 
           const wrongly_marked = notAi.flatMap(sel => [...document.querySelectorAll(sel)]

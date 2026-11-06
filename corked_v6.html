@@ -69,6 +69,7 @@ button, input, textarea { font-family:inherit; color:inherit; }
    or reading a line back, gets the line alone. */
 .ai-tag { display:inline-block; margin-left:8px; font-size:11px; font-weight:400; line-height:1; white-space:nowrap; }
 .ai-tag::before { content:'AI'; }
+.m2-problem-label .ai-tag { margin-left:12px; }
 .ai-caution { margin-top:6px; font-size:14px; line-height:1.55; color:var(--ink-2); }
 .ai-line { margin-top:16px; font-size:14px; line-height:1.55; color:var(--ink-2); }
 
@@ -380,9 +381,9 @@ button, input, textarea { font-family:inherit; color:inherit; }
 .brief-setup { font-size:16px; line-height:1.5; color:var(--ink-2); }
 .brief-quote { border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:16px 0; }
 .brief-q-text { font-size:23px; line-height:1.4; font-weight:500; letter-spacing:-.015em; overflow-wrap:anywhere; }
-.brief-q-text::before { content:'\201C'; }
-.brief-q-text::after { content:'\201D'; }
-.brief-q-text.is-note::before, .brief-q-text.is-note::after { content:none; }
+.brief-q-words::before { content:'\201C'; }
+.brief-q-words::after { content:'\201D'; }
+.brief-q-text.is-note .brief-q-words::before, .brief-q-text.is-note .brief-q-words::after { content:none; }
 .brief-copy-btn {
   min-height:44px; padding:0 14px; background:transparent; border:1px solid var(--ink); border-radius:2px; color:var(--ink);
   font-family:var(--mono); font-size:13px; cursor:pointer;
@@ -2707,7 +2708,7 @@ function renderBriefHTML(brief, mode, grapeName) {
   return `<div class="errand-card">`
     + (tag ? `<div class="brief-addressing"${aiAttrs(tagMark)}>${escHtml(tag)}${aiTagHtml(tagMark)}</div>` : '')
     + (who ? `<div class="brief-setup"${aiAttrs(whoMark)}>${escHtml(who)}${aiTagHtml(whoMark)}</div>` : '')
-    + `<div class="brief-quote"><div class="brief-q-text${isSelf ? ' is-note' : ''}" id="${cid}-t"${aiAttrs(questionShownMark)}>${escHtml(question)}${aiTagHtml(questionShownMark)}</div></div>`
+    + `<div class="brief-quote"><div class="brief-q-text${isSelf ? ' is-note' : ''}" id="${cid}-t"${aiAttrs(questionShownMark)}><span class="brief-q-words">${escHtml(question)}</span>${aiTagHtml(questionShownMark)}</div></div>`
     + (isSelf ? '' : `<div><button type="button" class="brief-copy-btn" id="${cid}-b" onclick="copyBriefQ('${cid}')">Copy question</button></div>`)
     + `</div>`;
 }
