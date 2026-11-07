@@ -1,0 +1,571 @@
+{
+  "scenario": "b1b-t2",
+  "title": "B1b T2: fix, F1 typed \"Jamie Kneebone, it's me\"",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://abdeab65-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T14:00:56.453Z",
+  "finished_at": "2026-11-07T14:01:03.418Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T14:00:56.572Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T14:00:56.692Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:00:56.783Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:00:56.819Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are and how you know them."
+    },
+    {
+      "at": "2026-11-07T14:00:56.866Z",
+      "step": "answered F1",
+      "note": "Jamie Kneebone, it's me"
+    },
+    {
+      "at": "2026-11-07T14:01:03.082Z",
+      "step": "answered F2",
+      "note": "On Tuesday I sent three reminders in the group chat and still paid two shares myself."
+    },
+    {
+      "at": "2026-11-07T14:01:03.115Z",
+      "step": "answered F3",
+      "note": "Show who has paid before we get to the pitch."
+    },
+    {
+      "at": "2026-11-07T14:01:03.147Z",
+      "step": "answered F4",
+      "note": "A list of who has paid for this week's pitch."
+    },
+    {
+      "at": "2026-11-07T14:01:03.180Z",
+      "step": "answered F5",
+      "note": "That they forget and pay me back weeks later."
+    },
+    {
+      "at": "2026-11-07T14:01:03.217Z",
+      "step": "answered F6",
+      "note": "Everyone pays on time without being asked."
+    },
+    {
+      "at": "2026-11-07T14:01:03.414Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1b-t2\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "m1_replies": [
+      {
+        "at": "2026-11-07T14:01:02.919Z",
+        "body": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "clearing",
+          "grape": {
+            "state": "clearing",
+            "named_person": "Jamie Kneebone",
+            "person_kind": "self",
+            "temporal_grounding": "none"
+          },
+          "observation": {
+            "surface_text": "The relationship field reads 'it's me', making Jamie Kneebone the submitter rather than an external grape. No specific other person with a real stated relationship is present.",
+            "anchor_span": "it's me"
+          },
+          "next_question": {
+            "should_advance": false,
+            "framing": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "label": {
+              "check": "self",
+              "said": "you"
+            }
+          },
+          "ai_fields": [
+            "observation.surface_text",
+            "grape.named_person"
+          ],
+          "label": "you",
+          "is_self": true,
+          "prompt_version": "2026-11-07b",
+          "model": "claude-sonnet-4-6"
+        }
+      }
+    ],
+    "f2_waited_ms": 6162,
+    "burst": [
+      {
+        "screen": "screen-first",
+        "qid": "F1",
+        "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+        "start": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.",
+        "example": "e.g. \"S., a colleague who plans our team trips\"",
+        "taps": [
+          "It was me"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.\n\ne.g. \"S., a colleague who plans our team trips\"\n\nIt was me\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Jamie Kneebone, it's me"
+        },
+        "next_screen_after_ms": 2
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F2",
+        "question": "The last time they ran into it, what did they do right then?",
+        "start": null,
+        "example": "e.g. \"Spent an hour in three group chats trying to find a date.\"",
+        "taps": [
+          "I saw it",
+          "I was told",
+          "It was me"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "The last time they ran into it, what did they do right then?\n\ne.g. \"Spent an hour in three group chats trying to find a date.\"\n\nI saw it\nI was told\nIt was me\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "tap": "It was me",
+          "text": "On Tuesday I sent three reminders in the group chat and still paid two shares myself."
+        },
+        "next_screen_after_ms": 2
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F3",
+        "question": "If your idea could do only one thing for you, what would it be?",
+        "start": null,
+        "example": "e.g. \"Show everyone's free evenings in one place.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Show everyone's free evenings in one place.\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Show who has paid before we get to the pitch."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F4",
+        "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Don't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "A list of who has paid for this week's pitch."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F5",
+        "question": "When you ask someone else who runs into this, what do you expect to hear?",
+        "start": null,
+        "example": "e.g. \"That they gave up and picked a date themselves.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"That they gave up and picked a date themselves.\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "That they forget and pay me back weeks later."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F6",
+        "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+        "start": null,
+        "example": "e.g. \"...it only takes five minutes, they don't mind.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Not set yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": "Not set yet",
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"...it only takes five minutes, they don't mind.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Everyone pays on time without being asked."
+        },
+        "next_screen_after_ms": 2
+      }
+    ],
+    "end": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "An app for five-a-side players to see who has paid for this week's pitch.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "A list of who has paid for this week's pitch.\n7 Nov 2026"
+        },
+        {
+          "row": "person",
+          "label": "THE PERSON",
+          "value": "Jamie Kneebone, it's me"
+        },
+        {
+          "row": "last-time",
+          "label": "THE LAST TIME",
+          "value": "On Tuesday I sent three reminders in the group chat and still paid two shares myself.\nIt was me"
+        },
+        {
+          "row": "one-thing",
+          "label": "THE ONE THING",
+          "value": "Show who has paid before we get to the pitch."
+        },
+        {
+          "row": "expect",
+          "label": "WHAT YOU EXPECT TO HEAR",
+          "value": "That they forget and pay me back weeks later."
+        },
+        {
+          "row": "line",
+          "label": "YOU'D DROP IT IF",
+          "value": "Everyone pays on time without being asked."
+        }
+      ],
+      "observation": null,
+      "ai_tagged": [],
+      "nobody": null,
+      "switch_link": null,
+      "next_line": "What's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.",
+      "choices": [
+        {
+          "id": "fs-choice-ask",
+          "text": "Ask someone who runs into this",
+          "cls": "btn-second fs-choice",
+          "note": "Saves the step and a day. Nothing is sent."
+        },
+        {
+          "id": "fs-rethink",
+          "text": "Rethink it first",
+          "cls": "btn-second fs-choice",
+          "note": "Go over your sentence and the one thing again."
+        },
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn-ghost fs-cellar",
+          "note": null
+        }
+      ],
+      "visible_text": "FIRST\nAn app for five-a-side players to see who has paid for this week's pitch.\n7 Nov 2026\nNOW\nA list of who has paid for this week's pitch.\n7 Nov 2026\nTHE PERSON\nJamie Kneebone, it's me\nTHE LAST TIME\nOn Tuesday I sent three reminders in the group chat and still paid two shares myself.\nIt was me\nTHE ONE THING\nShow who has paid before we get to the pitch.\nWHAT YOU EXPECT TO HEAR\nThat they forget and pay me back weeks later.\nYOU'D DROP IT IF\nEveryone pays on time without being asked.\n\nWhat's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk someone who runs into this\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar"
+    }
+  },
+  "checkpoints": {
+    "label": {
+      "at": "2026-11-07T14:01:02.920Z",
+      "type": "label",
+      "step": "F1",
+      "label": "you",
+      "is_self": true,
+      "prompt_version": "2026-11-07b",
+      "model": "claude-sonnet-4-6",
+      "ai_fields": [
+        "observation.surface_text",
+        "grape.named_person"
+      ]
+    },
+    "bottle": {
+      "first": {
+        "at": "2026-11-07T14:00:56.762Z",
+        "path": "fix",
+        "slots": {
+          "who": {
+            "q": "F1",
+            "value": "answer",
+            "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+            "at": "2026-11-07T14:00:56.862Z",
+            "text": "Jamie Kneebone, it's me"
+          },
+          "last_time": {
+            "q": "F2",
+            "value": "answer",
+            "question": "The last time they ran into it, what did they do right then?",
+            "at": "2026-11-07T14:01:03.077Z",
+            "text": "On Tuesday I sent three reminders in the group chat and still paid two shares myself.",
+            "tap": "me",
+            "tap_label": "It was me"
+          },
+          "one_thing": {
+            "q": "F3",
+            "value": "answer",
+            "question": "If your idea could do only one thing for you, what would it be?",
+            "at": "2026-11-07T14:01:03.111Z",
+            "text": "Show who has paid before we get to the pitch."
+          },
+          "now": {
+            "q": "F4",
+            "value": "answer",
+            "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+            "at": "2026-11-07T14:01:03.144Z",
+            "text": "A list of who has paid for this week's pitch."
+          },
+          "expect": {
+            "q": "F5",
+            "value": "answer",
+            "question": "When you ask someone else who runs into this, what do you expect to hear?",
+            "at": "2026-11-07T14:01:03.177Z",
+            "text": "That they forget and pay me back weeks later."
+          },
+          "drop": {
+            "q": "F6",
+            "value": "answer",
+            "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+            "at": "2026-11-07T14:01:03.210Z",
+            "text": "Everyone pays on time without being asked."
+          }
+        },
+        "queue": [],
+        "grades": {
+          "person": {
+            "state": "clearing",
+            "person_kind": "self",
+            "one_person": true,
+            "for_text": "Jamie Kneebone, it's me",
+            "at": "2026-11-07T14:01:02.919Z"
+          }
+        },
+        "step": null,
+        "maturity": 2,
+        "m0_open": null,
+        "m2": null,
+        "labels": {
+          "person": {
+            "text": "you",
+            "is_self": true,
+            "for_text": "Jamie Kneebone, it's me",
+            "at": "2026-11-07T14:01:02.919Z"
+          }
+        }
+      },
+      "log": [
+        {
+          "at": "2026-11-07T14:00:56.762Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "spark",
+          "question": "What did you bring to the cellar?",
+          "answer": "An app for five-a-side players to see who has paid for this week's pitch."
+        },
+        {
+          "at": "2026-11-07T14:00:56.812Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "gate",
+          "question": "Is this a fix or an experiment?",
+          "answer": "A fix. I saw something go wrong, for someone or for me.",
+          "path": "fix"
+        },
+        {
+          "at": "2026-11-07T14:00:56.862Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F1",
+          "slot": "who",
+          "value": "answer",
+          "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+          "answer": "Jamie Kneebone, it's me"
+        },
+        {
+          "at": "2026-11-07T14:01:02.919Z",
+          "type": "grade",
+          "mech": "M1",
+          "step": "F1",
+          "state": "clearing",
+          "person_kind": "self",
+          "one_person": true,
+          "prompt_version": "2026-11-07b",
+          "model": "claude-sonnet-4-6",
+          "ai_fields": [
+            "observation.surface_text",
+            "grape.named_person"
+          ]
+        },
+        {
+          "at": "2026-11-07T14:01:02.920Z",
+          "type": "label",
+          "step": "F1",
+          "label": "you",
+          "is_self": true,
+          "prompt_version": "2026-11-07b",
+          "model": "claude-sonnet-4-6",
+          "ai_fields": [
+            "observation.surface_text",
+            "grape.named_person"
+          ]
+        },
+        {
+          "at": "2026-11-07T14:01:03.077Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F2",
+          "slot": "last_time",
+          "value": "answer",
+          "question": "The last time they ran into it, what did they do right then?",
+          "answer": "On Tuesday I sent three reminders in the group chat and still paid two shares myself.",
+          "tap": "me",
+          "tap_label": "It was me"
+        },
+        {
+          "at": "2026-11-07T14:01:03.111Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F3",
+          "slot": "one_thing",
+          "value": "answer",
+          "question": "If your idea could do only one thing for you, what would it be?",
+          "answer": "Show who has paid before we get to the pitch."
+        },
+        {
+          "at": "2026-11-07T14:01:03.144Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F4",
+          "slot": "now",
+          "value": "answer",
+          "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+          "answer": "A list of who has paid for this week's pitch."
+        },
+        {
+          "at": "2026-11-07T14:01:03.177Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F5",
+          "slot": "expect",
+          "value": "answer",
+          "question": "When you ask someone else who runs into this, what do you expect to hear?",
+          "answer": "That they forget and pay me back weeks later."
+        },
+        {
+          "at": "2026-11-07T14:01:03.211Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F6",
+          "slot": "drop",
+          "value": "answer",
+          "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+          "answer": "Everyone pays on time without being asked."
+        }
+      ]
+    }
+  },
+  "expected": [
+    {
+      "n": 1,
+      "expected": "/m1 returns is_self true; from then on the self wording shows. The record shows the answer verbatim.",
+      "happened": "/m1 replied: grape clearing, person kind self, is_self true, label \"you\", prompt_version 2026-11-07b, label check {\"check\":\"self\",\"said\":\"you\"}. Label log entry: {\"at\":\"2026-11-07T14:01:02.920Z\",\"type\":\"label\",\"step\":\"F1\",\"label\":\"you\",\"is_self\":true,\"prompt_version\":\"2026-11-07b\",\"model\":\"claude-sonnet-4-6\",\"ai_fields\":[\"observation.surface_text\",\"grape.named_person\"]}. F2 was on screen before the reply and said \"The last time they ran into it, what did they do right then?\"; the run waited 6162 ms on F2. After the reply: F3 \"If your idea could do only one thing for you, what would it be?\" (the self wording: true). F5 \"When you ask someone else who runs into this, what do you expect to hear?\" (the self wording: true). F6 \"Finish the sentence: I'd drop it if someone who runs into this told me...\" (the self wording: true). End line \"What's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.\" (the self wording: true). Ask button \"Ask someone who runs into this\" (the self wording: true). Questions or buttons with the typed name slotted: none. \"THE PERSON\" on the end screen: \"Jamie Kneebone, it's me\" (verbatim: true). Stored: {\"q\":\"F1\",\"value\":\"answer\",\"question\":\"Who last ran into this? A name, initials, or a few words about who they are and how you know them.\",\"at\":\"2026-11-07T14:00:56.862Z\",\"text\":\"Jamie Kneebone, it's me\"}. Page errors: none."
+    }
+  ],
+  "worker_requests": [
+    {
+      "at": "2026-11-07T14:00:56.766Z",
+      "ms": 1794060056766,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "An app for five-a-side players to see who has paid for this week's pitch."
+      }
+    },
+    {
+      "at": "2026-11-07T14:00:56.864Z",
+      "ms": 1794060056864,
+      "path": "/m1",
+      "body": {
+        "spark_summary": "An app for five-a-side players to see who has paid for this week's pitch.",
+        "person_name": "",
+        "relationship": "Jamie Kneebone, it's me",
+        "maturity_class": 0,
+        "with_label": true
+      }
+    },
+    {
+      "at": "2026-11-07T14:01:03.080Z",
+      "ms": 1794060063080,
+      "path": "/m2",
+      "body": {
+        "flow": "first_session_v1",
+        "user_line": "An app for five-a-side players to see who has paid for this week's pitch.",
+        "grape_name": "Jamie Kneebone",
+        "grape_relationship": "Jamie Kneebone, it's me",
+        "maturity_class": 2,
+        "user_answer": "On Tuesday I sent three reminders in the group chat and still paid two shares myself.",
+        "gap_in_play": false
+      }
+    }
+  ]
+}

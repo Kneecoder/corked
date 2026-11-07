@@ -1,0 +1,803 @@
+{
+  "scenario": "b1-s1",
+  "title": "B1 S1: fix, full answers, M0 held for 40 seconds",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://abdeab65-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T14:02:13.298Z",
+  "finished_at": "2026-11-07T14:02:44.074Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T14:02:13.427Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T14:02:13.575Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:02:13.663Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:02:13.700Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are and how you know them."
+    },
+    {
+      "at": "2026-11-07T14:02:13.747Z",
+      "step": "answered F1",
+      "note": "Dana, my neighbour, she walks six dogs for people on our street"
+    },
+    {
+      "at": "2026-11-07T14:02:13.813Z",
+      "step": "answered F2",
+      "note": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later."
+    },
+    {
+      "at": "2026-11-07T14:02:13.844Z",
+      "step": "answered F3",
+      "note": "Show her who has paid this week without opening the bank app."
+    },
+    {
+      "at": "2026-11-07T14:02:13.878Z",
+      "step": "answered F4",
+      "note": "A list that tells a dog walker who has paid for the week."
+    },
+    {
+      "at": "2026-11-07T14:02:13.912Z",
+      "step": "answered F5",
+      "note": "That she checks her bank app every Friday and still misses one or two owners."
+    },
+    {
+      "at": "2026-11-07T14:02:13.948Z",
+      "step": "answered F6",
+      "note": "If she says she always knows who owes her and it never costs her anything."
+    },
+    {
+      "at": "2026-11-07T14:02:14.047Z",
+      "step": "planned the step",
+      "note": "Ask the person you named about the last time, Planned for Tuesday. It's on this bottle in your cellar."
+    },
+    {
+      "at": "2026-11-07T14:02:44.070Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1b-rerun-s1\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "m0_hold": {
+      "held_ms": 40000,
+      "held_from": "2026-11-07T14:02:13.646Z"
+    },
+    "gate": {
+      "question": "Is this a fix or an experiment?",
+      "buttons": [
+        "A fix. I saw something go wrong, for someone or for me.",
+        "An experiment. I want to build it and see what people do with it."
+      ]
+    },
+    "first_question": {
+      "screen": "screen-first",
+      "qid": "F1",
+      "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+      "start": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.",
+      "example": "e.g. \"S., a colleague who plans our team trips\"",
+      "taps": [
+        "It was me"
+      ],
+      "tap_selected": null,
+      "buttons": [
+        "Don't know yet",
+        "Skip"
+      ],
+      "unsure": "Don't know yet",
+      "not_set": null,
+      "skip": "Skip",
+      "next": "Continue →",
+      "number_fields": 0,
+      "end": false,
+      "visible_text": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.\n\ne.g. \"S., a colleague who plans our team trips\"\n\nIt was me\nDon't know yet\nSkip\nContinue →"
+    },
+    "timing": {
+      "gate_after_cork_ms": 2,
+      "question_after_tap_ms": 2,
+      "question_after_cork_ms": 52,
+      "m0_still_held": true
+    },
+    "end": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "An app for dog walkers who lose track of which owners have paid for the week.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "A list that tells a dog walker who has paid for the week.\n7 Nov 2026"
+        },
+        {
+          "row": "person",
+          "label": "THE PERSON",
+          "value": "Dana, my neighbour, she walks six dogs for people on our street"
+        },
+        {
+          "row": "last-time",
+          "label": "THE LAST TIME",
+          "value": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later.\nI saw it"
+        },
+        {
+          "row": "one-thing",
+          "label": "THE ONE THING",
+          "value": "Show her who has paid this week without opening the bank app."
+        },
+        {
+          "row": "expect",
+          "label": "WHAT YOU EXPECT TO HEAR",
+          "value": "That she checks her bank app every Friday and still misses one or two owners."
+        },
+        {
+          "row": "line",
+          "label": "YOU'D DROP IT IF",
+          "value": "If she says she always knows who owes her and it never costs her anything."
+        }
+      ],
+      "observation": null,
+      "ai_tagged": [],
+      "nobody": null,
+      "switch_link": null,
+      "next_line": "What's next: ask the person you named about the last time, put what you hear next to what you expected, then decide what to do with the idea.",
+      "choices": [
+        {
+          "id": "fs-choice-ask",
+          "text": "Ask the person you named about the last time",
+          "cls": "btn-second fs-choice",
+          "note": "Saves the step and a day. Nothing is sent."
+        },
+        {
+          "id": "fs-rethink",
+          "text": "Rethink it first",
+          "cls": "btn-second fs-choice",
+          "note": "Go over your sentence and the one thing again."
+        },
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn-ghost fs-cellar",
+          "note": null
+        }
+      ],
+      "visible_text": "FIRST\nAn app for dog walkers who lose track of which owners have paid for the week.\n7 Nov 2026\nNOW\nA list that tells a dog walker who has paid for the week.\n7 Nov 2026\nTHE PERSON\nDana, my neighbour, she walks six dogs for people on our street\nTHE LAST TIME\nLast Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later.\nI saw it\nTHE ONE THING\nShow her who has paid this week without opening the bank app.\nWHAT YOU EXPECT TO HEAR\nThat she checks her bank app every Friday and still misses one or two owners.\nYOU'D DROP IT IF\nIf she says she always knows who owes her and it never costs her anything.\n\nWhat's next: ask the person you named about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk the person you named about the last time\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar"
+    },
+    "step": {
+      "line_asked": false,
+      "planning": "Ask the person you named about the last time",
+      "planned": {
+        "when": "Planned for Tuesday. It's on this bottle in your cellar.",
+        "step": "Ask the person you named about the last time"
+      }
+    },
+    "order": [
+      "spark",
+      "gate",
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6",
+      "end"
+    ],
+    "burst": [
+      {
+        "screen": "spark",
+        "spark": "An app for dog walkers who lose track of which owners have paid for the week."
+      },
+      {
+        "screen": "gate",
+        "question": "Is this a fix or an experiment?",
+        "buttons": [
+          "A fix. I saw something go wrong, for someone or for me.",
+          "An experiment. I want to build it and see what people do with it."
+        ],
+        "visible_text": "1 / 3\nEvery bottle starts here.\nWhat did you bring to the cellar?\nDo not polish the spark. Corked only needs enough shape to bottle it.\nYOUR SPARK\n\nAn AI model writes some of Corked's questions and the line after an answer; the rest are fixed. Not a person. What you type goes through Corked's server to Anthropic's Claude. Anthropic doesn't train on it and deletes it within 30 days, or keeps it up to two years if its safety systems flag it. Your cellar is saved in this browser only.\n\nWORKER ENDPOINT\nA fix. I saw something go wrong, for someone or for me.\n\ne.g. \"Tenants lose their deposit because they can't prove what the place looked like.\"\n\nAn experiment. I want to build it and see what people do with it.\n\ne.g. \"A daily game where you describe one picture in a single sentence.\""
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F1",
+        "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+        "start": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.",
+        "example": "e.g. \"S., a colleague who plans our team trips\"",
+        "taps": [
+          "It was me"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.\n\ne.g. \"S., a colleague who plans our team trips\"\n\nIt was me\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Dana, my neighbour, she walks six dogs for people on our street"
+        },
+        "next_screen_after_ms": 2
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F2",
+        "question": "The last time they ran into it, what did they do right then?",
+        "start": null,
+        "example": "e.g. \"Spent an hour in three group chats trying to find a date.\"",
+        "taps": [
+          "I saw it",
+          "I was told",
+          "It was me"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Spent an hour in three group chats trying to find a date.\"\n\nI saw it\nI was told\nIt was me\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "tap": "I saw it",
+          "text": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later."
+        },
+        "next_screen_after_ms": 2
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F3",
+        "question": "If your idea could do only one thing for them, what would it be?",
+        "start": null,
+        "example": "e.g. \"Show everyone's free evenings in one place.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Show everyone's free evenings in one place.\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Show her who has paid this week without opening the bank app."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F4",
+        "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Don't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "A list that tells a dog walker who has paid for the week."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F5",
+        "question": "When you ask them about the last time, what do you expect to hear?",
+        "start": null,
+        "example": "e.g. \"That they gave up and picked a date themselves.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"That they gave up and picked a date themselves.\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "That she checks her bank app every Friday and still misses one or two owners."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F6",
+        "question": "Finish the sentence: I'd drop it if they told me...",
+        "start": null,
+        "example": "e.g. \"...it only takes five minutes, they don't mind.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Not set yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": "Not set yet",
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"...it only takes five minutes, they don't mind.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →",
+        "answered": {
+          "text": "If she says she always knows who owes her and it never costs her anything."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "end",
+        "rows": [
+          "first",
+          "now",
+          "person",
+          "last-time",
+          "one-thing",
+          "expect",
+          "line"
+        ]
+      }
+    ],
+    "screens_seen": [
+      "screen-landing",
+      "screen-intake",
+      "screen-first"
+    ],
+    "end_after_replies": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "An app for dog walkers who lose track of which owners have paid for the week.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "A list that tells a dog walker who has paid for the week.\n7 Nov 2026"
+        },
+        {
+          "row": "person",
+          "label": "THE PERSON",
+          "value": "Dana, my neighbour, she walks six dogs for people on our street"
+        },
+        {
+          "row": "last-time",
+          "label": "THE LAST TIME",
+          "value": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later.\nI saw it"
+        },
+        {
+          "row": "one-thing",
+          "label": "THE ONE THING",
+          "value": "Show her who has paid this week without opening the bank app."
+        },
+        {
+          "row": "expect",
+          "label": "WHAT YOU EXPECT TO HEAR",
+          "value": "That she checks her bank app every Friday and still misses one or two owners."
+        },
+        {
+          "row": "line",
+          "label": "YOU'D DROP IT IF",
+          "value": "If she says she always knows who owes her and it never costs her anything."
+        }
+      ],
+      "observation": null,
+      "ai_tagged": [],
+      "nobody": null,
+      "switch_link": null,
+      "next_line": null,
+      "choices": [
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn",
+          "note": null
+        }
+      ],
+      "visible_text": "FIRST\nAn app for dog walkers who lose track of which owners have paid for the week.\n7 Nov 2026\nNOW\nA list that tells a dog walker who has paid for the week.\n7 Nov 2026\nTHE PERSON\nDana, my neighbour, she walks six dogs for people on our street\nTHE LAST TIME\nLast Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later.\nI saw it\nTHE ONE THING\nShow her who has paid this week without opening the bank app.\nWHAT YOU EXPECT TO HEAR\nThat she checks her bank app every Friday and still misses one or two owners.\nYOU'D DROP IT IF\nIf she says she always knows who owes her and it never costs her anything.\nAsk the person you named about the last time\nPlanned for Tuesday. It's on this bottle in your cellar.\nBack to the cellar"
+    }
+  },
+  "checkpoints": {
+    "m0": {
+      "at": "2026-11-07T14:02:43.646Z",
+      "type": "m0_failed",
+      "error": "The worker took too long to respond. Check your connection and try again."
+    },
+    "m1": {
+      "at": "2026-11-07T14:02:19.791Z",
+      "type": "grade",
+      "mech": "M1",
+      "step": "F1",
+      "state": "settled",
+      "person_kind": "named_individual",
+      "one_person": true,
+      "prompt_version": "2026-11-07b",
+      "model": "claude-sonnet-4-6",
+      "ai_fields": [
+        "observation.surface_text",
+        "grape.named_person",
+        "label"
+      ]
+    },
+    "m2": {
+      "at": "2026-11-07T14:02:17.546Z",
+      "type": "grade",
+      "mech": "M2",
+      "step": "F2",
+      "state": "settled",
+      "tell": "settled",
+      "vintage": "settled",
+      "observation": "The answer names two specific observable actions a camera would capture. The moment is anchored to a single named instance.",
+      "prompt_version": "2026-11-07",
+      "model": "claude-sonnet-4-6",
+      "ai_fields": [
+        "observation.surface_text"
+      ]
+    },
+    "bottle": {
+      "flow": "first_session_v1",
+      "pace": -1,
+      "first": {
+        "at": "2026-11-07T14:02:13.642Z",
+        "path": "fix",
+        "slots": {
+          "who": {
+            "q": "F1",
+            "value": "answer",
+            "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+            "at": "2026-11-07T14:02:13.742Z",
+            "text": "Dana, my neighbour, she walks six dogs for people on our street"
+          },
+          "last_time": {
+            "q": "F2",
+            "value": "answer",
+            "question": "The last time they ran into it, what did they do right then?",
+            "at": "2026-11-07T14:02:13.808Z",
+            "text": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later.",
+            "tap": "saw",
+            "tap_label": "I saw it"
+          },
+          "one_thing": {
+            "q": "F3",
+            "value": "answer",
+            "question": "If your idea could do only one thing for them, what would it be?",
+            "at": "2026-11-07T14:02:13.842Z",
+            "text": "Show her who has paid this week without opening the bank app."
+          },
+          "now": {
+            "q": "F4",
+            "value": "answer",
+            "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+            "at": "2026-11-07T14:02:13.875Z",
+            "text": "A list that tells a dog walker who has paid for the week."
+          },
+          "expect": {
+            "q": "F5",
+            "value": "answer",
+            "question": "When you ask them about the last time, what do you expect to hear?",
+            "at": "2026-11-07T14:02:13.909Z",
+            "text": "That she checks her bank app every Friday and still misses one or two owners."
+          },
+          "drop": {
+            "q": "F6",
+            "value": "answer",
+            "question": "Finish the sentence: I'd drop it if they told me...",
+            "at": "2026-11-07T14:02:13.942Z",
+            "text": "If she says she always knows who owes her and it never costs her anything."
+          }
+        },
+        "queue": [],
+        "grades": {
+          "last_time": {
+            "state": "settled",
+            "tell": "settled",
+            "vintage": "settled",
+            "for_text": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later.",
+            "at": "2026-11-07T14:02:17.546Z"
+          },
+          "person": {
+            "state": "settled",
+            "person_kind": "named_individual",
+            "one_person": true,
+            "for_text": "Dana, my neighbour, she walks six dogs for people on our street",
+            "at": "2026-11-07T14:02:19.791Z"
+          }
+        },
+        "step": {
+          "kind": "ask",
+          "label": "Ask the person you named about the last time",
+          "when": "day",
+          "day": "2026-11-10",
+          "at": "2026-11-07T14:02:14.042Z"
+        },
+        "maturity": 0,
+        "m0_open": null,
+        "m2": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "settled",
+          "tell": {
+            "state": "settled",
+            "anchor_span": "stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later"
+          },
+          "vintage": {
+            "state": "settled",
+            "anchor_span": "Last Friday"
+          },
+          "observation": {
+            "surface_text": "The answer names two specific observable actions a camera would capture. The moment is anchored to a single named instance.",
+            "anchor_span": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": true,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": false
+          },
+          "ai_fields": [
+            "observation.surface_text"
+          ],
+          "prompt_version": "2026-11-07",
+          "model": "claude-sonnet-4-6"
+        },
+        "labels": {
+          "person": {
+            "text": "Dana",
+            "is_self": false,
+            "for_text": "Dana, my neighbour, she walks six dogs for people on our street",
+            "at": "2026-11-07T14:02:19.791Z"
+          }
+        }
+      },
+      "restatements": [
+        {
+          "at": "2026-11-07T14:02:13.875Z",
+          "text": "A list that tells a dog walker who has paid for the week.",
+          "from": "F4"
+        }
+      ],
+      "log": [
+        {
+          "at": "2026-11-07T14:02:13.642Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "spark",
+          "question": "What did you bring to the cellar?",
+          "answer": "An app for dog walkers who lose track of which owners have paid for the week."
+        },
+        {
+          "at": "2026-11-07T14:02:13.692Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "gate",
+          "question": "Is this a fix or an experiment?",
+          "answer": "A fix. I saw something go wrong, for someone or for me.",
+          "path": "fix"
+        },
+        {
+          "at": "2026-11-07T14:02:13.742Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F1",
+          "slot": "who",
+          "value": "answer",
+          "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+          "answer": "Dana, my neighbour, she walks six dogs for people on our street"
+        },
+        {
+          "at": "2026-11-07T14:02:13.808Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F2",
+          "slot": "last_time",
+          "value": "answer",
+          "question": "The last time they ran into it, what did they do right then?",
+          "answer": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later.",
+          "tap": "saw",
+          "tap_label": "I saw it"
+        },
+        {
+          "at": "2026-11-07T14:02:13.842Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F3",
+          "slot": "one_thing",
+          "value": "answer",
+          "question": "If your idea could do only one thing for them, what would it be?",
+          "answer": "Show her who has paid this week without opening the bank app."
+        },
+        {
+          "at": "2026-11-07T14:02:13.875Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F4",
+          "slot": "now",
+          "value": "answer",
+          "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+          "answer": "A list that tells a dog walker who has paid for the week."
+        },
+        {
+          "at": "2026-11-07T14:02:13.909Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F5",
+          "slot": "expect",
+          "value": "answer",
+          "question": "When you ask them about the last time, what do you expect to hear?",
+          "answer": "That she checks her bank app every Friday and still misses one or two owners."
+        },
+        {
+          "at": "2026-11-07T14:02:13.942Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F6",
+          "slot": "drop",
+          "value": "answer",
+          "question": "Finish the sentence: I'd drop it if they told me...",
+          "answer": "If she says she always knows who owes her and it never costs her anything."
+        },
+        {
+          "at": "2026-11-07T14:02:14.042Z",
+          "type": "next_step",
+          "flow": "first_session_v1",
+          "kind": "ask",
+          "label": "Ask the person you named about the last time",
+          "when": "day",
+          "day": "2026-11-10"
+        },
+        {
+          "at": "2026-11-07T14:02:17.546Z",
+          "type": "grade",
+          "mech": "M2",
+          "step": "F2",
+          "state": "settled",
+          "tell": "settled",
+          "vintage": "settled",
+          "observation": "The answer names two specific observable actions a camera would capture. The moment is anchored to a single named instance.",
+          "prompt_version": "2026-11-07",
+          "model": "claude-sonnet-4-6",
+          "ai_fields": [
+            "observation.surface_text"
+          ]
+        },
+        {
+          "at": "2026-11-07T14:02:19.791Z",
+          "type": "grade",
+          "mech": "M1",
+          "step": "F1",
+          "state": "settled",
+          "person_kind": "named_individual",
+          "one_person": true,
+          "prompt_version": "2026-11-07b",
+          "model": "claude-sonnet-4-6",
+          "ai_fields": [
+            "observation.surface_text",
+            "grape.named_person",
+            "label"
+          ]
+        },
+        {
+          "at": "2026-11-07T14:02:19.791Z",
+          "type": "label",
+          "step": "F1",
+          "label": "Dana",
+          "is_self": false,
+          "prompt_version": "2026-11-07b",
+          "model": "claude-sonnet-4-6",
+          "ai_fields": [
+            "observation.surface_text",
+            "grape.named_person",
+            "label"
+          ]
+        },
+        {
+          "at": "2026-11-07T14:02:43.646Z",
+          "type": "m0_failed",
+          "error": "The worker took too long to respond. Check your connection and try again."
+        }
+      ]
+    }
+  },
+  "expected": [
+    {
+      "n": 1,
+      "expected": "The first burst question shows within 10 seconds of \"Bottle your spark →\", while M0 is held for 40 seconds.",
+      "happened": "Gate showed 2 ms after \"Bottle your spark →\". First question (F1) showed 2 ms after the gate tap, 52 ms after \"Bottle your spark →\". M0 still held then: true. M0 held from 2026-11-07T14:02:13.646Z, released never. M0 in the log: m0_failed \"The worker took too long to respond. Check your connection and try again.\" at 2026-11-07T14:02:43.646Z. Worker requests: /m0 at +0.0s, /m1 at +0.1s, /m2 at +0.2s."
+    },
+    {
+      "n": 2,
+      "expected": "Screens in this order: spark, gate, F1, F2, F3, F4, F5, F6, end screen.",
+      "happened": "Screens in order: spark, gate, F1, F2, F3, F4, F5, F6, end. Screens the page went through: screen-landing, screen-intake, screen-first."
+    },
+    {
+      "n": 3,
+      "expected": "None of the removed intake screens appear: the maturity questions, \"have you spoken to a real person\", \"how far along\", the pace picker, the time-of-day question.",
+      "happened": "Removed intake lines on any screen: none. Pace on the bottle: -1."
+    },
+    {
+      "n": 4,
+      "expected": "The end screen holds every answer verbatim.",
+      "happened": "F1 verbatim under \"THE PERSON\": true. F2 verbatim under \"THE LAST TIME\": true, tap \"I saw it\" shown: true. F3 verbatim under \"THE ONE THING\": true. F4 verbatim under \"NOW\": true. F5 verbatim under \"WHAT YOU EXPECT TO HEAR\": true. F6 verbatim under \"YOU'D DROP IT IF\": true. First: \"An app for dog walkers who lose track of which owners have paid for the week.\n7 Nov 2026\". Now: \"A list that tells a dog walker who has paid for the week.\n7 Nov 2026\". M2's line on the end screen: none. M1 in the log: {\"at\":\"2026-11-07T14:02:19.791Z\",\"type\":\"grade\",\"mech\":\"M1\",\"step\":\"F1\",\"state\":\"settled\",\"person_kind\":\"named_individual\",\"one_person\":true,\"prompt_version\":\"2026-11-07b\",\"model\":\"claude-sonnet-4-6\",\"ai_fields\":[\"observation.surface_text\",\"grape.named_person\",\"label\"]}. M2 in the log: {\"at\":\"2026-11-07T14:02:17.546Z\",\"type\":\"grade\",\"mech\":\"M2\",\"step\":\"F2\",\"state\":\"settled\",\"tell\":\"settled\",\"vintage\":\"settled\",\"observation\":\"The answer names two specific observable actions a camera would capture. The moment is anchored to a single named instance.\",\"prompt_version\":\"2026-11-07\",\"model\":\"claude-sonnet-4-6\",\"ai_fields\":[\"observation.surface_text\"]}."
+    },
+    {
+      "n": 5,
+      "expected": "The chosen step and its day are saved.",
+      "happened": "Saved step: {\"kind\":\"ask\",\"label\":\"Ask the person you named about the last time\",\"when\":\"day\",\"day\":\"2026-11-10\",\"at\":\"2026-11-07T14:02:14.042Z\"}. Log entry: {\"at\":\"2026-11-07T14:02:14.042Z\",\"type\":\"next_step\",\"flow\":\"first_session_v1\",\"kind\":\"ask\",\"label\":\"Ask the person you named about the last time\",\"when\":\"day\",\"day\":\"2026-11-10\"}. The screen said \"Ask the person you named about the last time\", \"Planned for Tuesday. It's on this bottle in your cellar.\". Day picked: 2026-11-10. Page errors: none."
+    }
+  ],
+  "worker_requests": [
+    {
+      "at": "2026-11-07T14:02:13.646Z",
+      "ms": 1794060133646,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "An app for dog walkers who lose track of which owners have paid for the week."
+      }
+    },
+    {
+      "at": "2026-11-07T14:02:13.744Z",
+      "ms": 1794060133744,
+      "path": "/m1",
+      "body": {
+        "spark_summary": "An app for dog walkers who lose track of which owners have paid for the week.",
+        "person_name": "",
+        "relationship": "Dana, my neighbour, she walks six dogs for people on our street",
+        "maturity_class": 0,
+        "with_label": true
+      }
+    },
+    {
+      "at": "2026-11-07T14:02:13.810Z",
+      "ms": 1794060133810,
+      "path": "/m2",
+      "body": {
+        "flow": "first_session_v1",
+        "user_line": "An app for dog walkers who lose track of which owners have paid for the week.",
+        "grape_name": "Dana",
+        "grape_relationship": "Dana, my neighbour, she walks six dogs for people on our street",
+        "maturity_class": 0,
+        "user_answer": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later.",
+        "gap_in_play": false
+      }
+    }
+  ]
+}

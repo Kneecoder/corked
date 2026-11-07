@@ -1,0 +1,491 @@
+{
+  "scenario": "b1b-t1",
+  "title": "B1b T1: fix, F1 tapped \"It was me\"",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://abdeab65-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T14:00:52.956Z",
+  "finished_at": "2026-11-07T14:00:53.965Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T14:00:53.120Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T14:00:53.268Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:00:53.361Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:00:53.403Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are and how you know them."
+    },
+    {
+      "at": "2026-11-07T14:00:53.465Z",
+      "step": "answered F1",
+      "note": "It was me"
+    },
+    {
+      "at": "2026-11-07T14:00:53.499Z",
+      "step": "answered F2",
+      "note": "On Sunday I found the basil wilted and watered everything at once, the cactus too."
+    },
+    {
+      "at": "2026-11-07T14:00:53.532Z",
+      "step": "answered F3",
+      "note": "Tell me which pot to water today."
+    },
+    {
+      "at": "2026-11-07T14:00:53.564Z",
+      "step": "answered F4",
+      "note": "A list of which balcony plants to water today."
+    },
+    {
+      "at": "2026-11-07T14:00:53.597Z",
+      "step": "answered F5",
+      "note": "That I forget the pots at the back."
+    },
+    {
+      "at": "2026-11-07T14:00:53.637Z",
+      "step": "answered F6",
+      "note": "I never actually lose a plant."
+    },
+    {
+      "at": "2026-11-07T14:00:53.717Z",
+      "step": "planned the step",
+      "note": "Ask someone who runs into this, Planned for today. It's on this bottle in your cellar."
+    },
+    {
+      "at": "2026-11-07T14:00:53.954Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1b-t1\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "burst": [
+      {
+        "screen": "screen-first",
+        "qid": "F1",
+        "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+        "start": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.",
+        "example": "e.g. \"S., a colleague who plans our team trips\"",
+        "taps": [
+          "It was me"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.\n\ne.g. \"S., a colleague who plans our team trips\"\n\nIt was me\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "tap": "It was me"
+        },
+        "next_screen_after_ms": 2
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F2",
+        "question": "The last time you ran into it, what did you do right then?",
+        "start": null,
+        "example": "e.g. \"Spent an hour in three group chats trying to find a date.\"",
+        "taps": [
+          "I saw it",
+          "I was told",
+          "It was me"
+        ],
+        "tap_selected": "It was me",
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Spent an hour in three group chats trying to find a date.\"\n\nI saw it\nI was told\nIt was me\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "tap": "It was me",
+          "text": "On Sunday I found the basil wilted and watered everything at once, the cactus too."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F3",
+        "question": "If your idea could do only one thing for you, what would it be?",
+        "start": null,
+        "example": "e.g. \"Show everyone's free evenings in one place.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Show everyone's free evenings in one place.\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Tell me which pot to water today."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F4",
+        "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Don't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "A list of which balcony plants to water today."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F5",
+        "question": "When you ask someone else who runs into this, what do you expect to hear?",
+        "start": null,
+        "example": "e.g. \"That they gave up and picked a date themselves.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"That they gave up and picked a date themselves.\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "That I forget the pots at the back."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F6",
+        "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+        "start": null,
+        "example": "e.g. \"...it only takes five minutes, they don't mind.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Not set yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": "Not set yet",
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"...it only takes five minutes, they don't mind.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →",
+        "answered": {
+          "text": "I never actually lose a plant."
+        },
+        "next_screen_after_ms": 1
+      }
+    ],
+    "end": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "An app that tells me which plants on my balcony to water today.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "A list of which balcony plants to water today.\n7 Nov 2026"
+        },
+        {
+          "row": "person",
+          "label": "THE PERSON",
+          "value": "It was me"
+        },
+        {
+          "row": "last-time",
+          "label": "THE LAST TIME",
+          "value": "On Sunday I found the basil wilted and watered everything at once, the cactus too.\nIt was me"
+        },
+        {
+          "row": "one-thing",
+          "label": "THE ONE THING",
+          "value": "Tell me which pot to water today."
+        },
+        {
+          "row": "expect",
+          "label": "WHAT YOU EXPECT TO HEAR",
+          "value": "That I forget the pots at the back."
+        },
+        {
+          "row": "line",
+          "label": "YOU'D DROP IT IF",
+          "value": "I never actually lose a plant."
+        }
+      ],
+      "observation": null,
+      "ai_tagged": [],
+      "nobody": null,
+      "switch_link": null,
+      "next_line": "What's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.",
+      "choices": [
+        {
+          "id": "fs-choice-ask",
+          "text": "Ask someone who runs into this",
+          "cls": "btn-second fs-choice",
+          "note": "Saves the step and a day. Nothing is sent."
+        },
+        {
+          "id": "fs-rethink",
+          "text": "Rethink it first",
+          "cls": "btn-second fs-choice",
+          "note": "Go over your sentence and the one thing again."
+        },
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn-ghost fs-cellar",
+          "note": null
+        }
+      ],
+      "visible_text": "FIRST\nAn app that tells me which plants on my balcony to water today.\n7 Nov 2026\nNOW\nA list of which balcony plants to water today.\n7 Nov 2026\nTHE PERSON\nIt was me\nTHE LAST TIME\nOn Sunday I found the basil wilted and watered everything at once, the cactus too.\nIt was me\nTHE ONE THING\nTell me which pot to water today.\nWHAT YOU EXPECT TO HEAR\nThat I forget the pots at the back.\nYOU'D DROP IT IF\nI never actually lose a plant.\n\nWhat's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk someone who runs into this\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar"
+    },
+    "step": {
+      "line_asked": false,
+      "planning": "Ask someone who runs into this",
+      "planned": {
+        "when": "Planned for today. It's on this bottle in your cellar.",
+        "step": "Ask someone who runs into this"
+      }
+    }
+  },
+  "checkpoints": {
+    "bottle": {
+      "first": {
+        "at": "2026-11-07T14:00:53.329Z",
+        "path": "fix",
+        "slots": {
+          "who": {
+            "q": "F1",
+            "value": "answer",
+            "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+            "at": "2026-11-07T14:00:53.462Z",
+            "tap": "me",
+            "tap_label": "It was me"
+          },
+          "last_time": {
+            "q": "F2",
+            "value": "answer",
+            "question": "The last time you ran into it, what did you do right then?",
+            "at": "2026-11-07T14:00:53.495Z",
+            "text": "On Sunday I found the basil wilted and watered everything at once, the cactus too.",
+            "tap": "me",
+            "tap_label": "It was me"
+          },
+          "one_thing": {
+            "q": "F3",
+            "value": "answer",
+            "question": "If your idea could do only one thing for you, what would it be?",
+            "at": "2026-11-07T14:00:53.529Z",
+            "text": "Tell me which pot to water today."
+          },
+          "now": {
+            "q": "F4",
+            "value": "answer",
+            "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+            "at": "2026-11-07T14:00:53.562Z",
+            "text": "A list of which balcony plants to water today."
+          },
+          "expect": {
+            "q": "F5",
+            "value": "answer",
+            "question": "When you ask someone else who runs into this, what do you expect to hear?",
+            "at": "2026-11-07T14:00:53.595Z",
+            "text": "That I forget the pots at the back."
+          },
+          "drop": {
+            "q": "F6",
+            "value": "answer",
+            "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+            "at": "2026-11-07T14:00:53.628Z",
+            "text": "I never actually lose a plant."
+          }
+        },
+        "queue": [],
+        "grades": {},
+        "step": {
+          "kind": "ask",
+          "label": "Ask someone who runs into this",
+          "when": "today",
+          "day": "2026-11-07",
+          "at": "2026-11-07T14:00:53.712Z"
+        },
+        "maturity": 2,
+        "m0_open": null,
+        "m2": null
+      },
+      "log": [
+        {
+          "at": "2026-11-07T14:00:53.331Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "spark",
+          "question": "What did you bring to the cellar?",
+          "answer": "An app that tells me which plants on my balcony to water today."
+        },
+        {
+          "at": "2026-11-07T14:00:53.396Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "gate",
+          "question": "Is this a fix or an experiment?",
+          "answer": "A fix. I saw something go wrong, for someone or for me.",
+          "path": "fix"
+        },
+        {
+          "at": "2026-11-07T14:00:53.462Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F1",
+          "slot": "who",
+          "value": "answer",
+          "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+          "answer": "It was me",
+          "tap": "me",
+          "tap_label": "It was me"
+        },
+        {
+          "at": "2026-11-07T14:00:53.495Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F2",
+          "slot": "last_time",
+          "value": "answer",
+          "question": "The last time you ran into it, what did you do right then?",
+          "answer": "On Sunday I found the basil wilted and watered everything at once, the cactus too.",
+          "tap": "me",
+          "tap_label": "It was me"
+        },
+        {
+          "at": "2026-11-07T14:00:53.529Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F3",
+          "slot": "one_thing",
+          "value": "answer",
+          "question": "If your idea could do only one thing for you, what would it be?",
+          "answer": "Tell me which pot to water today."
+        },
+        {
+          "at": "2026-11-07T14:00:53.562Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F4",
+          "slot": "now",
+          "value": "answer",
+          "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+          "answer": "A list of which balcony plants to water today."
+        },
+        {
+          "at": "2026-11-07T14:00:53.595Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F5",
+          "slot": "expect",
+          "value": "answer",
+          "question": "When you ask someone else who runs into this, what do you expect to hear?",
+          "answer": "That I forget the pots at the back."
+        },
+        {
+          "at": "2026-11-07T14:00:53.628Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F6",
+          "slot": "drop",
+          "value": "answer",
+          "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+          "answer": "I never actually lose a plant."
+        },
+        {
+          "at": "2026-11-07T14:00:53.712Z",
+          "type": "next_step",
+          "flow": "first_session_v1",
+          "kind": "ask",
+          "label": "Ask someone who runs into this",
+          "when": "today",
+          "day": "2026-11-07"
+        }
+      ]
+    }
+  },
+  "expected": [
+    {
+      "n": 1,
+      "expected": "F2, F3, F5, F6, the end line and the ask button use the self wording; no screen shows F1's text slotted.",
+      "happened": "F2 \"The last time you ran into it, what did you do right then?\" (the self wording: true). F3 \"If your idea could do only one thing for you, what would it be?\" (the self wording: true). F5 \"When you ask someone else who runs into this, what do you expect to hear?\" (the self wording: true). F6 \"Finish the sentence: I'd drop it if someone who runs into this told me...\" (the self wording: true). F2 started on the tap \"It was me\". End line \"What's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.\" (the self wording: true). Ask button \"Ask someone who runs into this\" (the self wording: true). Step saved: \"Ask someone who runs into this\". F1 stored as {\"q\":\"F1\",\"value\":\"answer\",\"question\":\"Who last ran into this? A name, initials, or a few words about who they are and how you know them.\",\"at\":\"2026-11-07T14:00:53.462Z\",\"tap\":\"me\",\"tap_label\":\"It was me\"}. Screens with F1's tap slotted as a name: none. /m1 calls: 0. Page errors: none."
+    }
+  ],
+  "worker_requests": [
+    {
+      "at": "2026-11-07T14:00:53.344Z",
+      "ms": 1794060053344,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "An app that tells me which plants on my balcony to water today."
+      }
+    },
+    {
+      "at": "2026-11-07T14:00:53.497Z",
+      "ms": 1794060053497,
+      "path": "/m2",
+      "body": {
+        "flow": "first_session_v1",
+        "user_line": "An app that tells me which plants on my balcony to water today.",
+        "grape_name": "",
+        "grape_relationship": "",
+        "maturity_class": 2,
+        "user_answer": "On Sunday I found the basil wilted and watered everything at once, the cactus too.",
+        "gap_in_play": false
+      }
+    }
+  ]
+}

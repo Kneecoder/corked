@@ -1,0 +1,780 @@
+{
+  "scenario": "b1-s3",
+  "title": "B1 S3: fix with Don't know yet at F1 and F2, then the switch",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://abdeab65-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T14:02:59.385Z",
+  "finished_at": "2026-11-07T14:03:03.381Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T14:02:59.493Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T14:02:59.617Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:02:59.693Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:02:59.730Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are and how you know them."
+    },
+    {
+      "at": "2026-11-07T14:02:59.760Z",
+      "step": "answered F1",
+      "note": "dont_know"
+    },
+    {
+      "at": "2026-11-07T14:02:59.792Z",
+      "step": "answered F2",
+      "note": "dont_know"
+    },
+    {
+      "at": "2026-11-07T14:02:59.826Z",
+      "step": "answered F3",
+      "note": "Find a jumper in the right size from another parent at the same school."
+    },
+    {
+      "at": "2026-11-07T14:02:59.858Z",
+      "step": "answered F4",
+      "note": "A swap board for outgrown school uniform between parents at one school."
+    },
+    {
+      "at": "2026-11-07T14:02:59.893Z",
+      "step": "answered F5",
+      "note": "That buying new every September costs more than they want to spend."
+    },
+    {
+      "at": "2026-11-07T14:02:59.929Z",
+      "step": "answered F6",
+      "note": "not_set"
+    },
+    {
+      "at": "2026-11-07T14:03:00.058Z",
+      "step": "answered E2",
+      "note": "Relief that the jumper is already waiting at the school gate."
+    },
+    {
+      "at": "2026-11-07T14:03:00.092Z",
+      "step": "answered E3",
+      "note": "A shared list with sizes and a name to message."
+    },
+    {
+      "at": "2026-11-07T14:03:00.126Z",
+      "step": "answered E4",
+      "note": "Two parents from my son's class"
+    },
+    {
+      "at": "2026-11-07T14:03:00.159Z",
+      "step": "answered E6",
+      "note": "Both of them list one item without me asking."
+    },
+    {
+      "at": "2026-11-07T14:03:03.376Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1b-rerun-s3\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "fix_screens": [
+      {
+        "screen": "spark",
+        "spark": "An app for parents to swap school uniform their kids have outgrown."
+      },
+      {
+        "screen": "gate",
+        "question": "Is this a fix or an experiment?",
+        "buttons": [
+          "A fix. I saw something go wrong, for someone or for me.",
+          "An experiment. I want to build it and see what people do with it."
+        ],
+        "visible_text": "1 / 3\nEvery bottle starts here.\nWhat did you bring to the cellar?\nDo not polish the spark. Corked only needs enough shape to bottle it.\nYOUR SPARK\n\nAn AI model writes some of Corked's questions and the line after an answer; the rest are fixed. Not a person. What you type goes through Corked's server to Anthropic's Claude. Anthropic doesn't train on it and deletes it within 30 days, or keeps it up to two years if its safety systems flag it. Your cellar is saved in this browser only.\n\nWORKER ENDPOINT\nA fix. I saw something go wrong, for someone or for me.\n\ne.g. \"Tenants lose their deposit because they can't prove what the place looked like.\"\n\nAn experiment. I want to build it and see what people do with it.\n\ne.g. \"A daily game where you describe one picture in a single sentence.\""
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F1",
+        "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+        "start": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.",
+        "example": "e.g. \"S., a colleague who plans our team trips\"",
+        "taps": [
+          "It was me"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.\n\ne.g. \"S., a colleague who plans our team trips\"\n\nIt was me\nDon't know yet\nSkip\nContinue →",
+        "answered": "dont_know",
+        "next_screen_after_ms": 2
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F2",
+        "question": "What did you see go wrong, and when?",
+        "start": null,
+        "example": "e.g. \"Spent an hour in three group chats trying to find a date.\"",
+        "taps": [
+          "I saw it",
+          "I was told",
+          "It was me"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Spent an hour in three group chats trying to find a date.\"\n\nI saw it\nI was told\nIt was me\nDon't know yet\nSkip\nContinue →",
+        "answered": "dont_know",
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F3",
+        "question": "If your idea could do only one thing, what would it be?",
+        "start": null,
+        "example": "e.g. \"Show everyone's free evenings in one place.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Show everyone's free evenings in one place.\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Find a jumper in the right size from another parent at the same school."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F4",
+        "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Don't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "A swap board for outgrown school uniform between parents at one school."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F5",
+        "question": "When you find someone who runs into this, what do you expect to hear?",
+        "start": null,
+        "example": "e.g. \"That they gave up and picked a date themselves.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"That they gave up and picked a date themselves.\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "That buying new every September costs more than they want to spend."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F6",
+        "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+        "start": null,
+        "example": "e.g. \"...it only takes five minutes, they don't mind.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Not set yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": "Not set yet",
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"...it only takes five minutes, they don't mind.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →",
+        "answered": "not_set",
+        "next_screen_after_ms": 1
+      }
+    ],
+    "end_fix": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "An app for parents to swap school uniform their kids have outgrown.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "A swap board for outgrown school uniform between parents at one school.\n7 Nov 2026"
+        },
+        {
+          "row": "person",
+          "label": "THE PERSON",
+          "value": "Don't know yet"
+        },
+        {
+          "row": "last-time",
+          "label": "THE LAST TIME",
+          "value": "Don't know yet"
+        },
+        {
+          "row": "one-thing",
+          "label": "THE ONE THING",
+          "value": "Find a jumper in the right size from another parent at the same school."
+        },
+        {
+          "row": "expect",
+          "label": "WHAT YOU EXPECT TO HEAR",
+          "value": "That buying new every September costs more than they want to spend."
+        },
+        {
+          "row": "line",
+          "label": "YOU'D DROP IT IF",
+          "value": "not set yet"
+        }
+      ],
+      "observation": null,
+      "ai_tagged": [],
+      "nobody": "Nobody's on record yet as running into this. If it's more something to build and see what people do with it, you can answer those questions instead.",
+      "switch_link": "Answer those questions",
+      "next_line": "What's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.",
+      "choices": [
+        {
+          "id": "fs-choice-ask",
+          "text": "Ask someone who runs into this",
+          "cls": "btn-second fs-choice",
+          "note": "Saves the step and a day. Nothing is sent."
+        },
+        {
+          "id": "fs-rethink",
+          "text": "Rethink it first",
+          "cls": "btn-second fs-choice",
+          "note": "Go over your sentence and the one thing again."
+        },
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn-ghost fs-cellar",
+          "note": null
+        }
+      ],
+      "visible_text": "FIRST\nAn app for parents to swap school uniform their kids have outgrown.\n7 Nov 2026\nNOW\nA swap board for outgrown school uniform between parents at one school.\n7 Nov 2026\nTHE PERSON\nDon't know yet\nTHE LAST TIME\nDon't know yet\nTHE ONE THING\nFind a jumper in the right size from another parent at the same school.\nWHAT YOU EXPECT TO HEAR\nThat buying new every September costs more than they want to spend.\nYOU'D DROP IT IF\nnot set yet\n\nNobody's on record yet as running into this. If it's more something to build and see what people do with it, you can answer those questions instead.\n\nAnswer those questions\n\nWhat's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk someone who runs into this\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar"
+    },
+    "asked_after_switch": [
+      {
+        "qid": "E2",
+        "question": "In the first minute of using it, what should someone feel?"
+      },
+      {
+        "qid": "E3",
+        "question": "What's the simplest version you could build quickly, so people can try it?"
+      },
+      {
+        "qid": "E4",
+        "question": "Who are the first one to three people you'd show it to? Names, initials, or a few words."
+      },
+      {
+        "qid": "E6",
+        "question": "What would they have to do for you to keep building it? A rough guess is fine."
+      }
+    ],
+    "end_experiment": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "An app for parents to swap school uniform their kids have outgrown.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "A swap board for outgrown school uniform between parents at one school.\n7 Nov 2026"
+        },
+        {
+          "row": "last-time",
+          "label": "THE LAST TIME SOMETHING LIKE IT HAPPENED",
+          "value": "Don't know yet"
+        },
+        {
+          "row": "feel",
+          "label": "THE FEELING",
+          "value": "Relief that the jumper is already waiting at the school gate."
+        },
+        {
+          "row": "smallest",
+          "label": "THE SMALLEST VERSION",
+          "value": "A shared list with sizes and a name to message."
+        },
+        {
+          "row": "people",
+          "label": "THE FIRST PEOPLE",
+          "value": "Two parents from my son's class"
+        },
+        {
+          "row": "line",
+          "label": "YOU'D KEEP GOING IF",
+          "value": "Both of them list one item without me asking."
+        }
+      ],
+      "observation": null,
+      "ai_tagged": [],
+      "nobody": null,
+      "switch_link": null,
+      "next_line": "What's next: let the people you named try it, or build the simplest version first, see what happens, then decide what to do with the idea.",
+      "choices": [
+        {
+          "id": "fs-choice-show",
+          "text": "Show it to the people you named",
+          "cls": "btn-second fs-choice",
+          "note": "Saves the step and a day. Nothing is sent."
+        },
+        {
+          "id": "fs-choice-build",
+          "text": "Build the simplest version first",
+          "cls": "btn-second fs-choice",
+          "note": "Saves the step and a day."
+        },
+        {
+          "id": "fs-rethink",
+          "text": "Rethink it first",
+          "cls": "btn-second fs-choice",
+          "note": "Go over your sentence, the feeling and the simplest version again."
+        },
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn-ghost fs-cellar",
+          "note": null
+        }
+      ],
+      "visible_text": "FIRST\nAn app for parents to swap school uniform their kids have outgrown.\n7 Nov 2026\nNOW\nA swap board for outgrown school uniform between parents at one school.\n7 Nov 2026\nTHE LAST TIME SOMETHING LIKE IT HAPPENED\nDon't know yet\nTHE FEELING\nRelief that the jumper is already waiting at the school gate.\nTHE SMALLEST VERSION\nA shared list with sizes and a name to message.\nTHE FIRST PEOPLE\nTwo parents from my son's class\nYOU'D KEEP GOING IF\nBoth of them list one item without me asking.\n\nWhat's next: let the people you named try it, or build the simplest version first, see what happens, then decide what to do with the idea.\n\nShow it to the people you named\nSaves the step and a day. Nothing is sent.\nBuild the simplest version first\nSaves the step and a day.\nRethink it first\nGo over your sentence, the feeling and the simplest version again.\nBack to the cellar"
+    }
+  },
+  "checkpoints": {
+    "before_switch": {
+      "slots": {
+        "who": {
+          "q": "F1",
+          "value": "dont_know",
+          "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+          "at": "2026-11-07T14:02:59.757Z"
+        },
+        "last_time": {
+          "q": "F2",
+          "value": "dont_know",
+          "question": "What did you see go wrong, and when?",
+          "at": "2026-11-07T14:02:59.789Z"
+        },
+        "one_thing": {
+          "q": "F3",
+          "value": "answer",
+          "question": "If your idea could do only one thing, what would it be?",
+          "at": "2026-11-07T14:02:59.824Z",
+          "text": "Find a jumper in the right size from another parent at the same school."
+        },
+        "now": {
+          "q": "F4",
+          "value": "answer",
+          "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+          "at": "2026-11-07T14:02:59.856Z",
+          "text": "A swap board for outgrown school uniform between parents at one school."
+        },
+        "expect": {
+          "q": "F5",
+          "value": "answer",
+          "question": "When you find someone who runs into this, what do you expect to hear?",
+          "at": "2026-11-07T14:02:59.890Z",
+          "text": "That buying new every September costs more than they want to spend."
+        },
+        "drop": {
+          "q": "F6",
+          "value": "not_set",
+          "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+          "at": "2026-11-07T14:02:59.924Z"
+        }
+      },
+      "log": [
+        {
+          "at": "2026-11-07T14:02:59.674Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "spark",
+          "question": "What did you bring to the cellar?",
+          "answer": "An app for parents to swap school uniform their kids have outgrown."
+        },
+        {
+          "at": "2026-11-07T14:02:59.724Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "gate",
+          "question": "Is this a fix or an experiment?",
+          "answer": "A fix. I saw something go wrong, for someone or for me.",
+          "path": "fix"
+        },
+        {
+          "at": "2026-11-07T14:02:59.757Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F1",
+          "slot": "who",
+          "value": "dont_know",
+          "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+          "answer": "Don't know yet"
+        },
+        {
+          "at": "2026-11-07T14:02:59.789Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F2",
+          "slot": "last_time",
+          "value": "dont_know",
+          "question": "What did you see go wrong, and when?",
+          "answer": "Don't know yet"
+        },
+        {
+          "at": "2026-11-07T14:02:59.824Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F3",
+          "slot": "one_thing",
+          "value": "answer",
+          "question": "If your idea could do only one thing, what would it be?",
+          "answer": "Find a jumper in the right size from another parent at the same school."
+        },
+        {
+          "at": "2026-11-07T14:02:59.856Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F4",
+          "slot": "now",
+          "value": "answer",
+          "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+          "answer": "A swap board for outgrown school uniform between parents at one school."
+        },
+        {
+          "at": "2026-11-07T14:02:59.890Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F5",
+          "slot": "expect",
+          "value": "answer",
+          "question": "When you find someone who runs into this, what do you expect to hear?",
+          "answer": "That buying new every September costs more than they want to spend."
+        },
+        {
+          "at": "2026-11-07T14:02:59.924Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F6",
+          "slot": "drop",
+          "value": "not_set",
+          "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+          "answer": "Not set yet"
+        }
+      ],
+      "restatements": [
+        {
+          "at": "2026-11-07T14:02:59.856Z",
+          "text": "A swap board for outgrown school uniform between parents at one school.",
+          "from": "F4"
+        }
+      ]
+    },
+    "after_switch": {
+      "slots": {
+        "who": {
+          "q": "F1",
+          "value": "dont_know",
+          "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+          "at": "2026-11-07T14:02:59.757Z"
+        },
+        "last_time": {
+          "q": "F2",
+          "value": "dont_know",
+          "question": "What did you see go wrong, and when?",
+          "at": "2026-11-07T14:02:59.789Z"
+        },
+        "one_thing": {
+          "q": "F3",
+          "value": "answer",
+          "question": "If your idea could do only one thing, what would it be?",
+          "at": "2026-11-07T14:02:59.824Z",
+          "text": "Find a jumper in the right size from another parent at the same school."
+        },
+        "now": {
+          "q": "F4",
+          "value": "answer",
+          "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+          "at": "2026-11-07T14:02:59.856Z",
+          "text": "A swap board for outgrown school uniform between parents at one school."
+        },
+        "expect": {
+          "q": "F5",
+          "value": "answer",
+          "question": "When you find someone who runs into this, what do you expect to hear?",
+          "at": "2026-11-07T14:02:59.890Z",
+          "text": "That buying new every September costs more than they want to spend."
+        },
+        "drop": {
+          "q": "F6",
+          "value": "not_set",
+          "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+          "at": "2026-11-07T14:02:59.924Z"
+        },
+        "feel": {
+          "q": "E2",
+          "value": "answer",
+          "question": "In the first minute of using it, what should someone feel?",
+          "at": "2026-11-07T14:03:00.056Z",
+          "text": "Relief that the jumper is already waiting at the school gate."
+        },
+        "smallest": {
+          "q": "E3",
+          "value": "answer",
+          "question": "What's the simplest version you could build quickly, so people can try it?",
+          "at": "2026-11-07T14:03:00.090Z",
+          "text": "A shared list with sizes and a name to message."
+        },
+        "first_people": {
+          "q": "E4",
+          "value": "answer",
+          "question": "Who are the first one to three people you'd show it to? Names, initials, or a few words.",
+          "at": "2026-11-07T14:03:00.123Z",
+          "text": "Two parents from my son's class"
+        },
+        "line": {
+          "q": "E6",
+          "value": "answer",
+          "question": "What would they have to do for you to keep building it? A rough guess is fine.",
+          "at": "2026-11-07T14:03:00.156Z",
+          "text": "Both of them list one item without me asking."
+        }
+      },
+      "log": [
+        {
+          "at": "2026-11-07T14:02:59.674Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "spark",
+          "question": "What did you bring to the cellar?",
+          "answer": "An app for parents to swap school uniform their kids have outgrown."
+        },
+        {
+          "at": "2026-11-07T14:02:59.724Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "gate",
+          "question": "Is this a fix or an experiment?",
+          "answer": "A fix. I saw something go wrong, for someone or for me.",
+          "path": "fix"
+        },
+        {
+          "at": "2026-11-07T14:02:59.757Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F1",
+          "slot": "who",
+          "value": "dont_know",
+          "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+          "answer": "Don't know yet"
+        },
+        {
+          "at": "2026-11-07T14:02:59.789Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F2",
+          "slot": "last_time",
+          "value": "dont_know",
+          "question": "What did you see go wrong, and when?",
+          "answer": "Don't know yet"
+        },
+        {
+          "at": "2026-11-07T14:02:59.824Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F3",
+          "slot": "one_thing",
+          "value": "answer",
+          "question": "If your idea could do only one thing, what would it be?",
+          "answer": "Find a jumper in the right size from another parent at the same school."
+        },
+        {
+          "at": "2026-11-07T14:02:59.856Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F4",
+          "slot": "now",
+          "value": "answer",
+          "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+          "answer": "A swap board for outgrown school uniform between parents at one school."
+        },
+        {
+          "at": "2026-11-07T14:02:59.890Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F5",
+          "slot": "expect",
+          "value": "answer",
+          "question": "When you find someone who runs into this, what do you expect to hear?",
+          "answer": "That buying new every September costs more than they want to spend."
+        },
+        {
+          "at": "2026-11-07T14:02:59.924Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "F6",
+          "slot": "drop",
+          "value": "not_set",
+          "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+          "answer": "Not set yet"
+        },
+        {
+          "at": "2026-11-07T14:03:00.024Z",
+          "type": "switch",
+          "flow": "first_session_v1",
+          "from": "fix",
+          "to": "experiment"
+        },
+        {
+          "at": "2026-11-07T14:03:00.056Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E2",
+          "slot": "feel",
+          "value": "answer",
+          "question": "In the first minute of using it, what should someone feel?",
+          "answer": "Relief that the jumper is already waiting at the school gate."
+        },
+        {
+          "at": "2026-11-07T14:03:00.090Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E3",
+          "slot": "smallest",
+          "value": "answer",
+          "question": "What's the simplest version you could build quickly, so people can try it?",
+          "answer": "A shared list with sizes and a name to message."
+        },
+        {
+          "at": "2026-11-07T14:03:00.123Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E4",
+          "slot": "first_people",
+          "value": "answer",
+          "question": "Who are the first one to three people you'd show it to? Names, initials, or a few words.",
+          "answer": "Two parents from my son's class"
+        },
+        {
+          "at": "2026-11-07T14:03:00.156Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E6",
+          "slot": "line",
+          "value": "answer",
+          "question": "What would they have to do for you to keep building it? A rough guess is fine.",
+          "answer": "Both of them list one item without me asking."
+        }
+      ],
+      "restatements": [
+        {
+          "at": "2026-11-07T14:02:59.856Z",
+          "text": "A swap board for outgrown school uniform between parents at one school.",
+          "from": "F4"
+        }
+      ],
+      "path": "experiment"
+    }
+  },
+  "expected": [
+    {
+      "n": 1,
+      "expected": "F2 and F5 show their no-person variants.",
+      "happened": "F2 asked \"What did you see go wrong, and when?\" (the brief's wording: true). F5 asked \"When you find someone who runs into this, what do you expect to hear?\" (the brief's wording: true). F3 asked \"If your idea could do only one thing, what would it be?\". F6 offered \"Don't know yet\"."
+    },
+    {
+      "n": 2,
+      "expected": "The end screen shows the switch line.",
+      "happened": "Line on the end screen: \"Nobody's on record yet as running into this. If it's more something to build and see what people do with it, you can answer those questions instead.\". Switch link: \"Answer those questions\". \"YOU'D DROP IT IF\": \"not set yet\"."
+    },
+    {
+      "n": 3,
+      "expected": "Switching asks only E2, E3, E4 and E6.",
+      "happened": "After the switch the screens asked: E2, E3, E4, E6. Path now: experiment."
+    },
+    {
+      "n": 4,
+      "expected": "Switching keeps every earlier answer.",
+      "happened": "Answers kept unchanged across the switch: 6 of 6 (who, last_time, one_thing, now, expect, drop). Restatements before 1, after 1. Log entries from before the switch still first and unchanged: true. Experiment end screen: FIRST \"An app for parents to swap school uniform their kids have outgrown. / 7 Nov 2026\"; NOW \"A swap board for outgrown school uniform between parents at one school. / 7 Nov 2026\"; THE LAST TIME SOMETHING LIKE IT HAPPENED \"Don't know yet\"; THE FEELING \"Relief that the jumper is already waiting at the school gate.\"; THE SMALLEST VERSION \"A shared list with sizes and a name to message.\"; THE FIRST PEOPLE \"Two parents from my son's class\"; YOU'D KEEP GOING IF \"Both of them list one item without me asking.\". Worker requests besides /m0: /label. Page errors: none."
+    }
+  ],
+  "worker_requests": [
+    {
+      "at": "2026-11-07T14:02:59.677Z",
+      "ms": 1794060179677,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "An app for parents to swap school uniform their kids have outgrown."
+      }
+    },
+    {
+      "at": "2026-11-07T14:03:00.125Z",
+      "ms": 1794060180125,
+      "path": "/label",
+      "body": {
+        "answer": "Two parents from my son's class",
+        "kind": "people"
+      }
+    }
+  ]
+}

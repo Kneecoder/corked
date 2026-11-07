@@ -1,0 +1,778 @@
+{
+  "scenario": "b1b-t6",
+  "title": "B1b T6: the end screens",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://abdeab65-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T14:01:44.933Z",
+  "finished_at": "2026-11-07T14:01:54.473Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T14:01:45.035Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T14:01:45.191Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:01:45.280Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:01:45.317Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are and how you know them."
+    },
+    {
+      "at": "2026-11-07T14:01:45.363Z",
+      "step": "answered F1",
+      "note": "Dana, my neighbour, she walks six dogs for people on our street"
+    },
+    {
+      "at": "2026-11-07T14:01:45.430Z",
+      "step": "answered F2",
+      "note": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later."
+    },
+    {
+      "at": "2026-11-07T14:01:45.462Z",
+      "step": "answered F3",
+      "note": "Show her who has paid this week without opening the bank app."
+    },
+    {
+      "at": "2026-11-07T14:01:45.512Z",
+      "step": "answered F4",
+      "note": "A list that tells a dog walker who has paid for the week."
+    },
+    {
+      "at": "2026-11-07T14:01:45.545Z",
+      "step": "answered F5",
+      "note": "That she checks her bank app every Friday and still misses one or two owners."
+    },
+    {
+      "at": "2026-11-07T14:01:45.582Z",
+      "step": "answered F6",
+      "note": "If she says she always knows who owes her and it never costs her anything."
+    },
+    {
+      "at": "2026-11-07T14:01:52.911Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:01:52.949Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:01:52.980Z",
+      "step": "picked experiment",
+      "note": "When did someone last do something like this, even by hand or in another app? \"No one I know of\" is an answer."
+    },
+    {
+      "at": "2026-11-07T14:01:53.012Z",
+      "step": "answered E1",
+      "note": "My friends post their Wordle scores in our group chat every morning."
+    },
+    {
+      "at": "2026-11-07T14:01:53.046Z",
+      "step": "answered E2",
+      "note": "Curious to see what the others wrote, and a little proud of their own sentence."
+    },
+    {
+      "at": "2026-11-07T14:01:53.129Z",
+      "step": "answered E3",
+      "note": "One photo, one text box, then every sentence on one page."
+    },
+    {
+      "at": "2026-11-07T14:01:53.162Z",
+      "step": "answered E4",
+      "note": "Sam, Priya and my brother Tom"
+    },
+    {
+      "at": "2026-11-07T14:01:53.195Z",
+      "step": "answered E5",
+      "note": "A daily photo where you write one sentence and then read everyone else's."
+    },
+    {
+      "at": "2026-11-07T14:01:53.229Z",
+      "step": "answered E6",
+      "note": "Two of the three come back on their own the next day and write another sentence."
+    },
+    {
+      "at": "2026-11-07T14:01:53.364Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:01:53.399Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:01:53.428Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are and how you know them."
+    },
+    {
+      "at": "2026-11-07T14:01:53.462Z",
+      "step": "answered F1",
+      "note": "dont_know"
+    },
+    {
+      "at": "2026-11-07T14:01:53.494Z",
+      "step": "answered F2",
+      "note": "dont_know"
+    },
+    {
+      "at": "2026-11-07T14:01:53.528Z",
+      "step": "answered F3",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:53.562Z",
+      "step": "answered F4",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:53.594Z",
+      "step": "answered F5",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:53.628Z",
+      "step": "answered F6",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:53.762Z",
+      "step": "answered E2",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:53.795Z",
+      "step": "answered E3",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:53.828Z",
+      "step": "answered E4",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:53.861Z",
+      "step": "answered E6",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:54.002Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:01:54.033Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:01:54.062Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are and how you know them."
+    },
+    {
+      "at": "2026-11-07T14:01:54.095Z",
+      "step": "answered F1",
+      "note": "dont_know"
+    },
+    {
+      "at": "2026-11-07T14:01:54.128Z",
+      "step": "answered F2",
+      "note": "Last week a cleaner told me she forgot to invoice two jobs."
+    },
+    {
+      "at": "2026-11-07T14:01:54.161Z",
+      "step": "answered F3",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:54.194Z",
+      "step": "answered F4",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:54.227Z",
+      "step": "answered F5",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:54.262Z",
+      "step": "answered F6",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:54.468Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1b-t6\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "ends": {
+      "fix_full": {
+        "screens": [
+          {
+            "qid": "F1",
+            "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+            "visible_text": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.\n\ne.g. \"S., a colleague who plans our team trips\"\n\nIt was me\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F2",
+            "question": "The last time they ran into it, what did they do right then?",
+            "visible_text": "e.g. \"Spent an hour in three group chats trying to find a date.\"\n\nI saw it\nI was told\nIt was me\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F3",
+            "question": "If your idea could do only one thing for them, what would it be?",
+            "visible_text": "e.g. \"Show everyone's free evenings in one place.\"\n\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F4",
+            "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+            "visible_text": "Don't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F5",
+            "question": "When you ask them about the last time, what do you expect to hear?",
+            "visible_text": "e.g. \"That they gave up and picked a date themselves.\"\n\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F6",
+            "question": "Finish the sentence: I'd drop it if they told me...",
+            "visible_text": "e.g. \"...it only takes five minutes, they don't mind.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →"
+          }
+        ],
+        "m2": {
+          "at": "2026-11-07T14:01:52.267Z",
+          "type": "grade",
+          "mech": "M2",
+          "step": "F2",
+          "state": "settled",
+          "tell": "settled",
+          "vintage": "settled",
+          "observation": "The vintage is anchored to a single named day. The tell names two sequential filmable actions performed by Dana at a specific location.",
+          "prompt_version": "2026-11-07",
+          "model": "claude-sonnet-4-6",
+          "ai_fields": [
+            "observation.surface_text"
+          ]
+        },
+        "end": {
+          "rows": [
+            {
+              "row": "first",
+              "label": "FIRST",
+              "value": "An app for dog walkers who lose track of which owners have paid for the week.\n7 Nov 2026"
+            },
+            {
+              "row": "now",
+              "label": "NOW",
+              "value": "A list that tells a dog walker who has paid for the week.\n7 Nov 2026"
+            },
+            {
+              "row": "person",
+              "label": "THE PERSON",
+              "value": "Dana, my neighbour, she walks six dogs for people on our street"
+            },
+            {
+              "row": "last-time",
+              "label": "THE LAST TIME",
+              "value": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later.\nI saw it"
+            },
+            {
+              "row": "one-thing",
+              "label": "THE ONE THING",
+              "value": "Show her who has paid this week without opening the bank app."
+            },
+            {
+              "row": "expect",
+              "label": "WHAT YOU EXPECT TO HEAR",
+              "value": "That she checks her bank app every Friday and still misses one or two owners."
+            },
+            {
+              "row": "line",
+              "label": "YOU'D DROP IT IF",
+              "value": "If she says she always knows who owes her and it never costs her anything."
+            }
+          ],
+          "observation": null,
+          "ai_tagged": [],
+          "nobody": null,
+          "switch_link": null,
+          "next_line": "What's next: ask Dana about the last time, put what you hear next to what you expected, then decide what to do with the idea.",
+          "choices": [
+            {
+              "id": "fs-choice-ask",
+              "text": "Ask Dana about the last time",
+              "cls": "btn-second fs-choice",
+              "note": "Saves the step and a day. Nothing is sent."
+            },
+            {
+              "id": "fs-rethink",
+              "text": "Rethink it first",
+              "cls": "btn-second fs-choice",
+              "note": "Go over your sentence and the one thing again."
+            },
+            {
+              "id": "fs-cellar",
+              "text": "Back to the cellar",
+              "cls": "btn-ghost fs-cellar",
+              "note": null
+            }
+          ],
+          "visible_text": "FIRST\nAn app for dog walkers who lose track of which owners have paid for the week.\n7 Nov 2026\nNOW\nA list that tells a dog walker who has paid for the week.\n7 Nov 2026\nTHE PERSON\nDana, my neighbour, she walks six dogs for people on our street\nTHE LAST TIME\nLast Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later.\nI saw it\nTHE ONE THING\nShow her who has paid this week without opening the bank app.\nWHAT YOU EXPECT TO HEAR\nThat she checks her bank app every Friday and still misses one or two owners.\nYOU'D DROP IT IF\nIf she says she always knows who owes her and it never costs her anything.\n\nWhat's next: ask Dana about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk Dana about the last time\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar"
+        },
+        "stored_observation": "The vintage is anchored to a single named day. The tell names two sequential filmable actions performed by Dana at a specific location."
+      },
+      "experiment_full": {
+        "screens": [
+          {
+            "qid": "E1",
+            "question": "When did someone last do something like this, even by hand or in another app? \"No one I know of\" is an answer.",
+            "visible_text": "Six short questions to pin down what you'd build first and who you'd show it to. Then you pick one next step.\n\ne.g. \"My friends make quizzes about each other in the group chat.\"\n\nNo one I know of\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "E2",
+            "question": "In the first minute of using it, what should someone feel?",
+            "visible_text": "e.g. \"Smug when they get one right.\" or \"Curious what comes next.\"\n\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "E3",
+            "question": "What's the simplest version you could build quickly, so people can try it?",
+            "visible_text": "e.g. \"Ten questions on one page and a score at the end.\"\n\nI already built it\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "E4",
+            "question": "Who are the first one to three people you'd show it to? Names, initials, or a few words.",
+            "visible_text": "e.g. \"Tom, and two friends from my running club\"\n\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "E5",
+            "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+            "visible_text": "Don't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "E6",
+            "question": "What would they have to do for you to keep building it? A rough guess is fine.",
+            "visible_text": "e.g. \"Play it two days in a row without me asking.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →"
+          }
+        ],
+        "end": {
+          "rows": [
+            {
+              "row": "first",
+              "label": "FIRST",
+              "value": "A daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it.\n7 Nov 2026"
+            },
+            {
+              "row": "now",
+              "label": "NOW",
+              "value": "A daily photo where you write one sentence and then read everyone else's.\n7 Nov 2026"
+            },
+            {
+              "row": "last-time",
+              "label": "THE LAST TIME SOMETHING LIKE IT HAPPENED",
+              "value": "My friends post their Wordle scores in our group chat every morning."
+            },
+            {
+              "row": "feel",
+              "label": "THE FEELING",
+              "value": "Curious to see what the others wrote, and a little proud of their own sentence."
+            },
+            {
+              "row": "smallest",
+              "label": "THE SMALLEST VERSION",
+              "value": "One photo, one text box, then every sentence on one page.\nI already built it\nhttps://example.com/one-photo"
+            },
+            {
+              "row": "people",
+              "label": "THE FIRST PEOPLE",
+              "value": "Sam, Priya and my brother Tom"
+            },
+            {
+              "row": "line",
+              "label": "YOU'D KEEP GOING IF",
+              "value": "Two of the three come back on their own the next day and write another sentence."
+            }
+          ],
+          "observation": null,
+          "ai_tagged": [],
+          "nobody": null,
+          "switch_link": null,
+          "next_line": "What's next: let the people you named try it, or build the simplest version first, see what happens, then decide what to do with the idea.",
+          "choices": [
+            {
+              "id": "fs-choice-show",
+              "text": "Show it to the people you named",
+              "cls": "btn-second fs-choice",
+              "note": "Saves the step and a day. Nothing is sent."
+            },
+            {
+              "id": "fs-choice-build",
+              "text": "Build the simplest version first",
+              "cls": "btn-second fs-choice",
+              "note": "Saves the step and a day."
+            },
+            {
+              "id": "fs-rethink",
+              "text": "Rethink it first",
+              "cls": "btn-second fs-choice",
+              "note": "Go over your sentence, the feeling and the simplest version again."
+            },
+            {
+              "id": "fs-cellar",
+              "text": "Back to the cellar",
+              "cls": "btn-ghost fs-cellar",
+              "note": null
+            }
+          ],
+          "visible_text": "FIRST\nA daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it.\n7 Nov 2026\nNOW\nA daily photo where you write one sentence and then read everyone else's.\n7 Nov 2026\nTHE LAST TIME SOMETHING LIKE IT HAPPENED\nMy friends post their Wordle scores in our group chat every morning.\nTHE FEELING\nCurious to see what the others wrote, and a little proud of their own sentence.\nTHE SMALLEST VERSION\nOne photo, one text box, then every sentence on one page.\nI already built it\nhttps://example.com/one-photo\nTHE FIRST PEOPLE\nSam, Priya and my brother Tom\nYOU'D KEEP GOING IF\nTwo of the three come back on their own the next day and write another sentence.\n\nWhat's next: let the people you named try it, or build the simplest version first, see what happens, then decide what to do with the idea.\n\nShow it to the people you named\nSaves the step and a day. Nothing is sent.\nBuild the simplest version first\nSaves the step and a day.\nRethink it first\nGo over your sentence, the feeling and the simplest version again.\nBack to the cellar"
+        },
+        "stored_observation": null
+      },
+      "fix_nobody": {
+        "screens": [
+          {
+            "qid": "F1",
+            "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+            "visible_text": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.\n\ne.g. \"S., a colleague who plans our team trips\"\n\nIt was me\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F2",
+            "question": "What did you see go wrong, and when?",
+            "visible_text": "e.g. \"Spent an hour in three group chats trying to find a date.\"\n\nI saw it\nI was told\nIt was me\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F3",
+            "question": "If your idea could do only one thing, what would it be?",
+            "visible_text": "e.g. \"Show everyone's free evenings in one place.\"\n\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F4",
+            "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+            "visible_text": "Don't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F5",
+            "question": "When you find someone who runs into this, what do you expect to hear?",
+            "visible_text": "e.g. \"That they gave up and picked a date themselves.\"\n\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F6",
+            "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+            "visible_text": "e.g. \"...it only takes five minutes, they don't mind.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →"
+          }
+        ],
+        "end": {
+          "rows": [
+            {
+              "row": "first",
+              "label": "FIRST",
+              "value": "An app for parents to swap school uniform their kids have outgrown.\n7 Nov 2026"
+            },
+            {
+              "row": "now",
+              "label": "NOW",
+              "value": "Skip"
+            },
+            {
+              "row": "person",
+              "label": "THE PERSON",
+              "value": "Don't know yet"
+            },
+            {
+              "row": "last-time",
+              "label": "THE LAST TIME",
+              "value": "Don't know yet"
+            },
+            {
+              "row": "one-thing",
+              "label": "THE ONE THING",
+              "value": "Skip"
+            },
+            {
+              "row": "expect",
+              "label": "WHAT YOU EXPECT TO HEAR",
+              "value": "Skip"
+            },
+            {
+              "row": "line",
+              "label": "YOU'D DROP IT IF",
+              "value": "Skip"
+            }
+          ],
+          "observation": null,
+          "ai_tagged": [],
+          "nobody": "Nobody's on record yet as running into this. If it's more something to build and see what people do with it, you can answer those questions instead.",
+          "switch_link": "Answer those questions",
+          "next_line": "What's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.",
+          "choices": [
+            {
+              "id": "fs-choice-ask",
+              "text": "Ask someone who runs into this",
+              "cls": "btn-second fs-choice",
+              "note": "Saves the step and a day. Nothing is sent."
+            },
+            {
+              "id": "fs-rethink",
+              "text": "Rethink it first",
+              "cls": "btn-second fs-choice",
+              "note": "Go over your sentence and the one thing again."
+            },
+            {
+              "id": "fs-cellar",
+              "text": "Back to the cellar",
+              "cls": "btn-ghost fs-cellar",
+              "note": null
+            }
+          ],
+          "visible_text": "FIRST\nAn app for parents to swap school uniform their kids have outgrown.\n7 Nov 2026\nNOW\nSkip\nTHE PERSON\nDon't know yet\nTHE LAST TIME\nDon't know yet\nTHE ONE THING\nSkip\nWHAT YOU EXPECT TO HEAR\nSkip\nYOU'D DROP IT IF\nSkip\n\nNobody's on record yet as running into this. If it's more something to build and see what people do with it, you can answer those questions instead.\n\nAnswer those questions\n\nWhat's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk someone who runs into this\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar"
+        },
+        "stored_observation": null,
+        "after_switch": [
+          "E2",
+          "E3",
+          "E4",
+          "E6"
+        ],
+        "end_after_switch": {
+          "rows": [
+            {
+              "row": "first",
+              "label": "FIRST",
+              "value": "An app for parents to swap school uniform their kids have outgrown.\n7 Nov 2026"
+            },
+            {
+              "row": "now",
+              "label": "NOW",
+              "value": "Skip"
+            },
+            {
+              "row": "last-time",
+              "label": "THE LAST TIME SOMETHING LIKE IT HAPPENED",
+              "value": "Don't know yet"
+            },
+            {
+              "row": "feel",
+              "label": "THE FEELING",
+              "value": "Skip"
+            },
+            {
+              "row": "smallest",
+              "label": "THE SMALLEST VERSION",
+              "value": "Skip"
+            },
+            {
+              "row": "people",
+              "label": "THE FIRST PEOPLE",
+              "value": "Skip"
+            },
+            {
+              "row": "line",
+              "label": "YOU'D KEEP GOING IF",
+              "value": "Skip"
+            }
+          ],
+          "observation": null,
+          "ai_tagged": [],
+          "nobody": null,
+          "switch_link": null,
+          "next_line": "What's next: let someone try it, or build the simplest version first, see what happens, then decide what to do with the idea.",
+          "choices": [
+            {
+              "id": "fs-choice-show",
+              "text": "Show it to someone",
+              "cls": "btn-second fs-choice",
+              "note": "Saves the step and a day. Nothing is sent."
+            },
+            {
+              "id": "fs-choice-build",
+              "text": "Build the simplest version first",
+              "cls": "btn-second fs-choice",
+              "note": "Saves the step and a day."
+            },
+            {
+              "id": "fs-rethink",
+              "text": "Rethink it first",
+              "cls": "btn-second fs-choice",
+              "note": "Go over your sentence, the feeling and the simplest version again."
+            },
+            {
+              "id": "fs-cellar",
+              "text": "Back to the cellar",
+              "cls": "btn-ghost fs-cellar",
+              "note": null
+            }
+          ],
+          "visible_text": "FIRST\nAn app for parents to swap school uniform their kids have outgrown.\n7 Nov 2026\nNOW\nSkip\nTHE LAST TIME SOMETHING LIKE IT HAPPENED\nDon't know yet\nTHE FEELING\nSkip\nTHE SMALLEST VERSION\nSkip\nTHE FIRST PEOPLE\nSkip\nYOU'D KEEP GOING IF\nSkip\n\nWhat's next: let someone try it, or build the simplest version first, see what happens, then decide what to do with the idea.\n\nShow it to someone\nSaves the step and a day. Nothing is sent.\nBuild the simplest version first\nSaves the step and a day.\nRethink it first\nGo over your sentence, the feeling and the simplest version again.\nBack to the cellar"
+        }
+      },
+      "fix_one_dont_know": {
+        "screens": [
+          {
+            "qid": "F1",
+            "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+            "visible_text": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.\n\ne.g. \"S., a colleague who plans our team trips\"\n\nIt was me\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F2",
+            "question": "What did you see go wrong, and when?",
+            "visible_text": "e.g. \"Spent an hour in three group chats trying to find a date.\"\n\nI saw it\nI was told\nIt was me\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F3",
+            "question": "If your idea could do only one thing, what would it be?",
+            "visible_text": "e.g. \"Show everyone's free evenings in one place.\"\n\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F4",
+            "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+            "visible_text": "Don't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F5",
+            "question": "When you find someone who runs into this, what do you expect to hear?",
+            "visible_text": "e.g. \"That they gave up and picked a date themselves.\"\n\nDon't know yet\nSkip\nContinue →"
+          },
+          {
+            "qid": "F6",
+            "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+            "visible_text": "e.g. \"...it only takes five minutes, they don't mind.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →"
+          }
+        ],
+        "end": {
+          "rows": [
+            {
+              "row": "first",
+              "label": "FIRST",
+              "value": "An app for small cleaning businesses that forget to send invoices after a job.\n7 Nov 2026"
+            },
+            {
+              "row": "now",
+              "label": "NOW",
+              "value": "Skip"
+            },
+            {
+              "row": "person",
+              "label": "THE PERSON",
+              "value": "Don't know yet"
+            },
+            {
+              "row": "last-time",
+              "label": "THE LAST TIME",
+              "value": "Last week a cleaner told me she forgot to invoice two jobs."
+            },
+            {
+              "row": "one-thing",
+              "label": "THE ONE THING",
+              "value": "Skip"
+            },
+            {
+              "row": "expect",
+              "label": "WHAT YOU EXPECT TO HEAR",
+              "value": "Skip"
+            },
+            {
+              "row": "line",
+              "label": "YOU'D DROP IT IF",
+              "value": "Skip"
+            }
+          ],
+          "observation": null,
+          "ai_tagged": [],
+          "nobody": null,
+          "switch_link": null,
+          "next_line": "What's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.",
+          "choices": [
+            {
+              "id": "fs-choice-ask",
+              "text": "Ask someone who runs into this",
+              "cls": "btn-second fs-choice",
+              "note": "Saves the step and a day. Nothing is sent."
+            },
+            {
+              "id": "fs-rethink",
+              "text": "Rethink it first",
+              "cls": "btn-second fs-choice",
+              "note": "Go over your sentence and the one thing again."
+            },
+            {
+              "id": "fs-cellar",
+              "text": "Back to the cellar",
+              "cls": "btn-ghost fs-cellar",
+              "note": null
+            }
+          ],
+          "visible_text": "FIRST\nAn app for small cleaning businesses that forget to send invoices after a job.\n7 Nov 2026\nNOW\nSkip\nTHE PERSON\nDon't know yet\nTHE LAST TIME\nLast week a cleaner told me she forgot to invoice two jobs.\nTHE ONE THING\nSkip\nWHAT YOU EXPECT TO HEAR\nSkip\nYOU'D DROP IT IF\nSkip\n\nWhat's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk someone who runs into this\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar"
+        },
+        "stored_observation": null
+      }
+    },
+    "everywhere": [
+      "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.\n\ne.g. \"S., a colleague who plans our team trips\"\n\nIt was me\nDon't know yet\nSkip\nContinue →",
+      "e.g. \"Spent an hour in three group chats trying to find a date.\"\n\nI saw it\nI was told\nIt was me\nDon't know yet\nSkip\nContinue →",
+      "e.g. \"Show everyone's free evenings in one place.\"\n\nDon't know yet\nSkip\nContinue →",
+      "Don't know yet\nSkip\nContinue →",
+      "e.g. \"That they gave up and picked a date themselves.\"\n\nDon't know yet\nSkip\nContinue →",
+      "e.g. \"...it only takes five minutes, they don't mind.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →",
+      "FIRST\nAn app for dog walkers who lose track of which owners have paid for the week.\n7 Nov 2026\nNOW\nA list that tells a dog walker who has paid for the week.\n7 Nov 2026\nTHE PERSON\nDana, my neighbour, she walks six dogs for people on our street\nTHE LAST TIME\nLast Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later.\nI saw it\nTHE ONE THING\nShow her who has paid this week without opening the bank app.\nWHAT YOU EXPECT TO HEAR\nThat she checks her bank app every Friday and still misses one or two owners.\nYOU'D DROP IT IF\nIf she says she always knows who owes her and it never costs her anything.\n\nWhat's next: ask Dana about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk Dana about the last time\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar",
+      "Six short questions to pin down what you'd build first and who you'd show it to. Then you pick one next step.\n\ne.g. \"My friends make quizzes about each other in the group chat.\"\n\nNo one I know of\nDon't know yet\nSkip\nContinue →",
+      "e.g. \"Smug when they get one right.\" or \"Curious what comes next.\"\n\nDon't know yet\nSkip\nContinue →",
+      "e.g. \"Ten questions on one page and a score at the end.\"\n\nI already built it\nDon't know yet\nSkip\nContinue →",
+      "e.g. \"Tom, and two friends from my running club\"\n\nDon't know yet\nSkip\nContinue →",
+      "Don't know yet\nSkip\nContinue →",
+      "e.g. \"Play it two days in a row without me asking.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →",
+      "FIRST\nA daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it.\n7 Nov 2026\nNOW\nA daily photo where you write one sentence and then read everyone else's.\n7 Nov 2026\nTHE LAST TIME SOMETHING LIKE IT HAPPENED\nMy friends post their Wordle scores in our group chat every morning.\nTHE FEELING\nCurious to see what the others wrote, and a little proud of their own sentence.\nTHE SMALLEST VERSION\nOne photo, one text box, then every sentence on one page.\nI already built it\nhttps://example.com/one-photo\nTHE FIRST PEOPLE\nSam, Priya and my brother Tom\nYOU'D KEEP GOING IF\nTwo of the three come back on their own the next day and write another sentence.\n\nWhat's next: let the people you named try it, or build the simplest version first, see what happens, then decide what to do with the idea.\n\nShow it to the people you named\nSaves the step and a day. Nothing is sent.\nBuild the simplest version first\nSaves the step and a day.\nRethink it first\nGo over your sentence, the feeling and the simplest version again.\nBack to the cellar",
+      "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.\n\ne.g. \"S., a colleague who plans our team trips\"\n\nIt was me\nDon't know yet\nSkip\nContinue →",
+      "e.g. \"Spent an hour in three group chats trying to find a date.\"\n\nI saw it\nI was told\nIt was me\nDon't know yet\nSkip\nContinue →",
+      "e.g. \"Show everyone's free evenings in one place.\"\n\nDon't know yet\nSkip\nContinue →",
+      "Don't know yet\nSkip\nContinue →",
+      "e.g. \"That they gave up and picked a date themselves.\"\n\nDon't know yet\nSkip\nContinue →",
+      "e.g. \"...it only takes five minutes, they don't mind.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →",
+      "FIRST\nAn app for parents to swap school uniform their kids have outgrown.\n7 Nov 2026\nNOW\nSkip\nTHE PERSON\nDon't know yet\nTHE LAST TIME\nDon't know yet\nTHE ONE THING\nSkip\nWHAT YOU EXPECT TO HEAR\nSkip\nYOU'D DROP IT IF\nSkip\n\nNobody's on record yet as running into this. If it's more something to build and see what people do with it, you can answer those questions instead.\n\nAnswer those questions\n\nWhat's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk someone who runs into this\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar",
+      "FIRST\nAn app for parents to swap school uniform their kids have outgrown.\n7 Nov 2026\nNOW\nSkip\nTHE LAST TIME SOMETHING LIKE IT HAPPENED\nDon't know yet\nTHE FEELING\nSkip\nTHE SMALLEST VERSION\nSkip\nTHE FIRST PEOPLE\nSkip\nYOU'D KEEP GOING IF\nSkip\n\nWhat's next: let someone try it, or build the simplest version first, see what happens, then decide what to do with the idea.\n\nShow it to someone\nSaves the step and a day. Nothing is sent.\nBuild the simplest version first\nSaves the step and a day.\nRethink it first\nGo over your sentence, the feeling and the simplest version again.\nBack to the cellar",
+      "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.\n\ne.g. \"S., a colleague who plans our team trips\"\n\nIt was me\nDon't know yet\nSkip\nContinue →",
+      "e.g. \"Spent an hour in three group chats trying to find a date.\"\n\nI saw it\nI was told\nIt was me\nDon't know yet\nSkip\nContinue →",
+      "e.g. \"Show everyone's free evenings in one place.\"\n\nDon't know yet\nSkip\nContinue →",
+      "Don't know yet\nSkip\nContinue →",
+      "e.g. \"That they gave up and picked a date themselves.\"\n\nDon't know yet\nSkip\nContinue →",
+      "e.g. \"...it only takes five minutes, they don't mind.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →",
+      "FIRST\nAn app for small cleaning businesses that forget to send invoices after a job.\n7 Nov 2026\nNOW\nSkip\nTHE PERSON\nDon't know yet\nTHE LAST TIME\nLast week a cleaner told me she forgot to invoice two jobs.\nTHE ONE THING\nSkip\nWHAT YOU EXPECT TO HEAR\nSkip\nYOU'D DROP IT IF\nSkip\n\nWhat's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk someone who runs into this\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar"
+    ]
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "No /m2 line on screen; it is still in storage.",
+      "happened": "Fix with a last time: M2 in the log {\"type\":\"grade\",\"state\":\"settled\",\"observation\":\"The vintage is anchored to a single named day. The tell names two sequential filmable actions performed by Dana at a specific location.\"}. Stored observation: \"The vintage is anchored to a single named day. The tell names two sequential filmable actions performed by Dana at a specific location.\". On the end screen: observation element none; the stored line in the screen's text: false; AI-tagged elements: none."
+    },
+    {
+      "n": 2,
+      "expected": "The next-step line and the small lines under the buttons show.",
+      "happened": "fix_full: next line \"What's next: ask Dana about the last time, put what you hear next to what you expected, then decide what to do with the idea.\"; \"Ask Dana about the last time\" / \"Saves the step and a day. Nothing is sent.\", \"Rethink it first\" / \"Go over your sentence and the one thing again.\", \"Back to the cellar\" / no note. experiment_full: next line \"What's next: let the people you named try it, or build the simplest version first, see what happens, then decide what to do with the idea.\"; \"Show it to the people you named\" / \"Saves the step and a day. Nothing is sent.\", \"Build the simplest version first\" / \"Saves the step and a day.\", \"Rethink it first\" / \"Go over your sentence, the feeling and the simplest version again.\", \"Back to the cellar\" / no note. fix_nobody: next line \"What's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.\"; \"Ask someone who runs into this\" / \"Saves the step and a day. Nothing is sent.\", \"Rethink it first\" / \"Go over your sentence and the one thing again.\", \"Back to the cellar\" / no note. fix_one_dont_know: next line \"What's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea.\"; \"Ask someone who runs into this\" / \"Saves the step and a day. Nothing is sent.\", \"Rethink it first\" / \"Go over your sentence and the one thing again.\", \"Back to the cellar\" / no note."
+    },
+    {
+      "n": 3,
+      "expected": "\"Your line\" and \"Switch to the\" appear nowhere.",
+      "happened": "Screens with \"Your line\": 0. With \"Switch to the\": 0. Experiment end rows: FIRST, NOW, THE LAST TIME SOMETHING LIKE IT HAPPENED, THE FEELING, THE SMALLEST VERSION, THE FIRST PEOPLE, YOU'D KEEP GOING IF."
+    },
+    {
+      "n": 4,
+      "expected": "The switch line shows only in the fix case where F1 and F2 were both \"Don't know yet\".",
+      "happened": "Fix with F1 and F2 Don't know yet: \"Nobody's on record yet as running into this. If it's more something to build and see what people do with it, you can answer those questions instead.\", button \"Answer those questions\"; after it the screens asked E2, E3, E4, E6, then the end screen with FIRST, NOW, THE LAST TIME SOMETHING LIKE IT HAPPENED, THE FEELING, THE SMALLEST VERSION, THE FIRST PEOPLE, YOU'D KEEP GOING IF. Fix full: none / none. Fix with only F1 Don't know yet: none / none. Experiment: none / none. Page errors: none."
+    }
+  ]
+}

@@ -1,0 +1,426 @@
+{
+  "scenario": "b1b-t5",
+  "title": "B1b T5: the examples, the count field and Not set yet",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://abdeab65-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T14:01:43.313Z",
+  "finished_at": "2026-11-07T14:01:44.569Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T14:01:43.412Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T14:01:43.550Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:01:43.629Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:01:43.666Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are and how you know them."
+    },
+    {
+      "at": "2026-11-07T14:01:43.696Z",
+      "step": "answered F1",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:43.729Z",
+      "step": "answered F2",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:43.763Z",
+      "step": "answered F3",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:43.795Z",
+      "step": "answered F4",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:43.831Z",
+      "step": "answered F5",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:43.864Z",
+      "step": "answered F6",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:44.062Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:01:44.100Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:01:44.130Z",
+      "step": "picked experiment",
+      "note": "When did someone last do something like this, even by hand or in another app? \"No one I know of\" is an answer."
+    },
+    {
+      "at": "2026-11-07T14:01:44.162Z",
+      "step": "answered E1",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:44.195Z",
+      "step": "answered E2",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:44.228Z",
+      "step": "answered E3",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:44.262Z",
+      "step": "answered E4",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:44.295Z",
+      "step": "answered E5",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:44.329Z",
+      "step": "answered E6",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:01:44.565Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1b-t5\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "gate_examples": [
+      "e.g. \"Tenants lose their deposit because they can't prove what the place looked like.\"",
+      "e.g. \"A daily game where you describe one picture in a single sentence.\""
+    ],
+    "fix": [
+      {
+        "screen": "screen-first",
+        "qid": "F1",
+        "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+        "start": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.",
+        "example": "e.g. \"S., a colleague who plans our team trips\"",
+        "taps": [
+          "It was me"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.\n\ne.g. \"S., a colleague who plans our team trips\"\n\nIt was me\nDon't know yet\nSkip\nContinue →",
+        "answered": "skip",
+        "next_screen_after_ms": 2
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F2",
+        "question": "What did you see go wrong, and when?",
+        "start": null,
+        "example": "e.g. \"Spent an hour in three group chats trying to find a date.\"",
+        "taps": [
+          "I saw it",
+          "I was told",
+          "It was me"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Spent an hour in three group chats trying to find a date.\"\n\nI saw it\nI was told\nIt was me\nDon't know yet\nSkip\nContinue →",
+        "answered": "skip",
+        "next_screen_after_ms": 2
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F3",
+        "question": "If your idea could do only one thing, what would it be?",
+        "start": null,
+        "example": "e.g. \"Show everyone's free evenings in one place.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Show everyone's free evenings in one place.\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": "skip",
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F4",
+        "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Don't know yet\nSkip\nContinue →",
+        "answered": "skip",
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F5",
+        "question": "When you find someone who runs into this, what do you expect to hear?",
+        "start": null,
+        "example": "e.g. \"That they gave up and picked a date themselves.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"That they gave up and picked a date themselves.\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": "skip",
+        "next_screen_after_ms": 2
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F6",
+        "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+        "start": null,
+        "example": "e.g. \"...it only takes five minutes, they don't mind.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Not set yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": "Not set yet",
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"...it only takes five minutes, they don't mind.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →",
+        "answered": "skip",
+        "next_screen_after_ms": 1
+      }
+    ],
+    "fix_line_step": {
+      "question": "Finish the sentence: I'd drop it if someone who runs into this told me...",
+      "example": "e.g. \"...it only takes five minutes, they don't mind.\"",
+      "number_fields": 0
+    },
+    "experiment": [
+      {
+        "screen": "screen-first",
+        "qid": "E1",
+        "question": "When did someone last do something like this, even by hand or in another app? \"No one I know of\" is an answer.",
+        "start": "Six short questions to pin down what you'd build first and who you'd show it to. Then you pick one next step.",
+        "example": "e.g. \"My friends make quizzes about each other in the group chat.\"",
+        "taps": [
+          "No one I know of"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Six short questions to pin down what you'd build first and who you'd show it to. Then you pick one next step.\n\ne.g. \"My friends make quizzes about each other in the group chat.\"\n\nNo one I know of\nDon't know yet\nSkip\nContinue →",
+        "answered": "skip",
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E2",
+        "question": "In the first minute of using it, what should someone feel?",
+        "start": null,
+        "example": "e.g. \"Smug when they get one right.\" or \"Curious what comes next.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Smug when they get one right.\" or \"Curious what comes next.\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": "skip",
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E3",
+        "question": "What's the simplest version you could build quickly, so people can try it?",
+        "start": null,
+        "example": "e.g. \"Ten questions on one page and a score at the end.\"",
+        "taps": [
+          "I already built it"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Ten questions on one page and a score at the end.\"\n\nI already built it\nDon't know yet\nSkip\nContinue →",
+        "answered": "skip",
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E4",
+        "question": "Who are the first one to three people you'd show it to? Names, initials, or a few words.",
+        "start": null,
+        "example": "e.g. \"Tom, and two friends from my running club\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Tom, and two friends from my running club\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": "skip",
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E5",
+        "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Don't know yet\nSkip\nContinue →",
+        "answered": "skip",
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E6",
+        "question": "What would people have to do for you to keep building it? A rough guess is fine.",
+        "start": null,
+        "example": "e.g. \"Play it two days in a row without me asking.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Not set yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": "Not set yet",
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Play it two days in a row without me asking.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →",
+        "answered": "skip",
+        "next_screen_after_ms": 1
+      }
+    ],
+    "experiment_line_step": {
+      "question": "What would people have to do for you to keep building it? A rough guess is fine.",
+      "example": "e.g. \"Play it two days in a row without me asking.\"",
+      "number_fields": 0
+    }
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "Every question screen has its example except F4 and E5.",
+      "happened": "F1 \"e.g. \"S., a colleague who plans our team trips\"\" (the brief's: true); F2 \"e.g. \"Spent an hour in three group chats trying to find a date.\"\" (the brief's: true); F3 \"e.g. \"Show everyone's free evenings in one place.\"\" (the brief's: true); F4 no example; F5 \"e.g. \"That they gave up and picked a date themselves.\"\" (the brief's: true); F6 \"e.g. \"...it only takes five minutes, they don't mind.\"\" (the brief's: true); E1 \"e.g. \"My friends make quizzes about each other in the group chat.\"\" (the brief's: true); E2 \"e.g. \"Smug when they get one right.\" or \"Curious what comes next.\"\" (the brief's: true); E3 \"e.g. \"Ten questions on one page and a score at the end.\"\" (the brief's: true); E4 \"e.g. \"Tom, and two friends from my running club\"\" (the brief's: true); E5 no example; E6 \"e.g. \"Play it two days in a row without me asking.\"\" (the brief's: true). Start line on: F1 \"Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.\" (the brief's: true); E1 \"Six short questions to pin down what you'd build first and who you'd show it to. Then you pick one next step.\" (the brief's: true). Gate examples: \"e.g. \"Tenants lose their deposit because they can't prove what the place looked like.\"\", \"e.g. \"A daily game where you describe one picture in a single sentence.\"\". The line step's example: fix \"e.g. \"...it only takes five minutes, they don't mind.\"\", experiment \"e.g. \"Play it two days in a row without me asking.\"\"."
+    },
+    {
+      "n": 2,
+      "expected": "E6 has no count field.",
+      "happened": "E6: 0 number fields; \"How many\" on screen: false. Line step after Show it: 0 number fields."
+    },
+    {
+      "n": 3,
+      "expected": "F6 and E6 offer \"Not set yet\".",
+      "happened": "F1: Don't know yet, Skip; F2: Don't know yet, Skip; F3: Don't know yet, Skip; F4: Don't know yet, Skip; F5: Don't know yet, Skip; F6: Don't know yet, Not set yet, Skip; E1: Don't know yet, Skip; E2: Don't know yet, Skip; E3: Don't know yet, Skip; E4: Don't know yet, Skip; E5: Don't know yet, Skip; E6: Don't know yet, Not set yet, Skip. Page errors: none."
+    }
+  ]
+}

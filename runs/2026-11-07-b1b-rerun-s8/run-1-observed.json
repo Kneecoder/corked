@@ -1,0 +1,188 @@
+{
+  "scenario": "b1-s8",
+  "title": "B1 S8: a new bottle's card before and after its day",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://abdeab65-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T14:03:30.996Z",
+  "finished_at": "2026-11-07T14:03:32.473Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T14:03:31.099Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T14:03:31.229Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:03:31.308Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:03:31.346Z",
+      "step": "picked experiment",
+      "note": "When did someone last do something like this, even by hand or in another app? \"No one I know of\" is an answer."
+    },
+    {
+      "at": "2026-11-07T14:03:31.376Z",
+      "step": "answered E1",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:03:31.408Z",
+      "step": "answered E2",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:03:31.441Z",
+      "step": "answered E3",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:03:31.474Z",
+      "step": "answered E4",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:03:31.508Z",
+      "step": "answered E5",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:03:31.543Z",
+      "step": "answered E6",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:03:31.643Z",
+      "step": "planned the step",
+      "note": "Build the simplest version first, Planned for Thursday. It's on this bottle in your cellar."
+    },
+    {
+      "at": "2026-11-07T14:03:32.468Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1b-rerun-s8\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "step": {
+      "line_asked": false,
+      "planning": "Build the simplest version first",
+      "planned": {
+        "when": "Planned for Thursday. It's on this bottle in your cellar.",
+        "step": "Build the simplest version first"
+      }
+    },
+    "cards": [
+      {
+        "status": "Planned for Thursday",
+        "step": "Build the simplest version first",
+        "date": "today",
+        "classes": "bottle-card",
+        "text": "PLANNED FOR THURSDAY\nA page where a book club votes on next month's book in one tap.\nBuild the simplest version first\nTODAY\nArchive\n×",
+        "when": "2026-11-07 10:00, the day it was planned",
+        "sag": false,
+        "stall_words": false,
+        "opened": {
+          "screen": "screen-first",
+          "stalled_panel": false,
+          "planned": "Planned for Thursday. It's on this bottle in your cellar.",
+          "stall_words": false
+        }
+      },
+      {
+        "status": "Planned for Thursday",
+        "step": "Build the simplest version first",
+        "date": "4 days ago",
+        "classes": "bottle-card",
+        "text": "PLANNED FOR THURSDAY\nA page where a book club votes on next month's book in one tap.\nBuild the simplest version first\n4 DAYS AGO\nArchive\n×",
+        "when": "2026-11-11T10:00:00",
+        "sag": false,
+        "stall_words": false,
+        "opened": {
+          "screen": "screen-first",
+          "stalled_panel": false,
+          "planned": "Planned for Thursday. It's on this bottle in your cellar.",
+          "stall_words": false
+        }
+      },
+      {
+        "status": "Planned for today",
+        "step": "Build the simplest version first",
+        "date": "5 days ago",
+        "classes": "bottle-card",
+        "text": "PLANNED FOR TODAY\nA page where a book club votes on next month's book in one tap.\nBuild the simplest version first\n5 DAYS AGO\nArchive\n×",
+        "when": "2026-11-12T10:00:00",
+        "sag": false,
+        "stall_words": false,
+        "opened": {
+          "screen": "screen-first",
+          "stalled_panel": false,
+          "planned": "Planned for today. It's on this bottle in your cellar.",
+          "stall_words": false
+        }
+      },
+      {
+        "status": "Planned for Thursday",
+        "step": "Build the simplest version first",
+        "date": "6 days ago",
+        "classes": "bottle-card",
+        "text": "PLANNED FOR THURSDAY\nA page where a book club votes on next month's book in one tap.\nBuild the simplest version first\n6 DAYS AGO\nArchive\n×",
+        "when": "2026-11-13T10:00:00",
+        "sag": false,
+        "stall_words": false,
+        "opened": {
+          "screen": "screen-first",
+          "stalled_panel": false,
+          "planned": "Planned for Thursday. It's on this bottle in your cellar.",
+          "stall_words": false
+        }
+      },
+      {
+        "status": "Planned for Thursday 12 Nov",
+        "step": "Build the simplest version first",
+        "date": "7 Nov",
+        "classes": "bottle-card",
+        "text": "PLANNED FOR THURSDAY 12 NOV\nA page where a book club votes on next month's book in one tap.\nBuild the simplest version first\n7 NOV\nArchive\n×",
+        "when": "2026-11-20T10:00:00",
+        "sag": false,
+        "stall_words": false,
+        "opened": {
+          "screen": "screen-first",
+          "stalled_panel": false,
+          "planned": "Planned for Thursday 12 Nov. It's on this bottle in your cellar.",
+          "stall_words": false
+        }
+      },
+      {
+        "status": "Planned for Thursday 12 Nov",
+        "step": "Build the simplest version first",
+        "date": "7 Nov",
+        "classes": "bottle-card",
+        "text": "PLANNED FOR THURSDAY 12 NOV\nA page where a book club votes on next month's book in one tap.\nBuild the simplest version first\n7 NOV\nArchive\n×",
+        "when": "2026-12-01T10:00:00",
+        "sag": false,
+        "stall_words": false,
+        "opened": {
+          "screen": "screen-first",
+          "stalled_panel": false,
+          "planned": "Planned for Thursday 12 Nov. It's on this bottle in your cellar.",
+          "stall_words": false
+        }
+      }
+    ]
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "The card says \"Planned for [day]\" before and after the day, with no lean, sag or stall note at any point.",
+      "happened": "Day planned: 2026-11-12 (a Thursday), \"Planned for Thursday. It's on this bottle in your cellar.\" on the end screen. 2026-11-07 10:00, the day it was planned: card \"Planned for Thursday\", step \"Build the simplest version first\", date \"today\", sag class false, stall words false; opened on screen-first, planned \"Planned for Thursday. It's on this bottle in your cellar.\", stall panel false, stall words false. 2026-11-11T10:00:00: card \"Planned for Thursday\", step \"Build the simplest version first\", date \"4 days ago\", sag class false, stall words false; opened on screen-first, planned \"Planned for Thursday. It's on this bottle in your cellar.\", stall panel false, stall words false. 2026-11-12T10:00:00: card \"Planned for today\", step \"Build the simplest version first\", date \"5 days ago\", sag class false, stall words false; opened on screen-first, planned \"Planned for today. It's on this bottle in your cellar.\", stall panel false, stall words false. 2026-11-13T10:00:00: card \"Planned for Thursday\", step \"Build the simplest version first\", date \"6 days ago\", sag class false, stall words false; opened on screen-first, planned \"Planned for Thursday. It's on this bottle in your cellar.\", stall panel false, stall words false. 2026-11-20T10:00:00: card \"Planned for Thursday 12 Nov\", step \"Build the simplest version first\", date \"7 Nov\", sag class false, stall words false; opened on screen-first, planned \"Planned for Thursday 12 Nov. It's on this bottle in your cellar.\", stall panel false, stall words false. 2026-12-01T10:00:00: card \"Planned for Thursday 12 Nov\", step \"Build the simplest version first\", date \"7 Nov\", sag class false, stall words false; opened on screen-first, planned \"Planned for Thursday 12 Nov. It's on this bottle in your cellar.\", stall panel false, stall words false. Page errors: none."
+    }
+  ]
+}

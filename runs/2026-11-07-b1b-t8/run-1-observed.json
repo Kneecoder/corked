@@ -1,0 +1,363 @@
+{
+  "scenario": "b1b-t8",
+  "title": "B1b T8: phone, 390x844",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://abdeab65-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T14:01:56.236Z",
+  "finished_at": "2026-11-07T14:02:02.105Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T14:01:56.379Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T14:01:56.510Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:01:56.612Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:01:56.648Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are and how you know them."
+    },
+    {
+      "at": "2026-11-07T14:01:57.029Z",
+      "step": "answered F1",
+      "note": "Dana, my neighbour, she walks six dogs for people on our street"
+    },
+    {
+      "at": "2026-11-07T14:01:57.444Z",
+      "step": "answered F2",
+      "note": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later."
+    },
+    {
+      "at": "2026-11-07T14:01:57.794Z",
+      "step": "answered F3",
+      "note": "Show her who has paid this week without opening the bank app."
+    },
+    {
+      "at": "2026-11-07T14:01:58.143Z",
+      "step": "answered F4",
+      "note": "A list that tells a dog walker who has paid for the week."
+    },
+    {
+      "at": "2026-11-07T14:01:58.510Z",
+      "step": "answered F5",
+      "note": "That she checks her bank app every Friday and still misses one or two owners."
+    },
+    {
+      "at": "2026-11-07T14:01:58.879Z",
+      "step": "answered F6",
+      "note": "If she says she always knows who owes her and it never costs her anything."
+    },
+    {
+      "at": "2026-11-07T14:01:59.335Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:01:59.364Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:01:59.395Z",
+      "step": "picked experiment",
+      "note": "When did someone last do something like this, even by hand or in another app? \"No one I know of\" is an answer."
+    },
+    {
+      "at": "2026-11-07T14:01:59.760Z",
+      "step": "answered E1",
+      "note": "My friends quiz each other about old match results in our group chat."
+    },
+    {
+      "at": "2026-11-07T14:02:00.127Z",
+      "step": "answered E2",
+      "note": "A trivia app with one football question every day."
+    },
+    {
+      "at": "2026-11-07T14:02:00.476Z",
+      "step": "answered E3",
+      "note": "This makes no sense this question ... why do you use the word still?"
+    },
+    {
+      "at": "2026-11-07T14:02:00.844Z",
+      "step": "answered E4",
+      "note": "Myself of course, and some of my football friends"
+    },
+    {
+      "at": "2026-11-07T14:02:01.194Z",
+      "step": "answered E5",
+      "note": "A football trivia app I play with my friends."
+    },
+    {
+      "at": "2026-11-07T14:02:01.561Z",
+      "step": "answered E6",
+      "note": "Play it every day for a week."
+    },
+    {
+      "at": "2026-11-07T14:02:02.099Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1b-t8\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "phone": [
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "start": true,
+        "example": true,
+        "button": {
+          "text": "Continue →",
+          "top": 473,
+          "bottom": 525,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F1",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "start": false,
+        "example": true,
+        "button": {
+          "text": "Continue →",
+          "top": 358,
+          "bottom": 410,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F2",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "start": false,
+        "example": true,
+        "button": {
+          "text": "Continue →",
+          "top": 298,
+          "bottom": 350,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F3",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "start": false,
+        "example": false,
+        "button": {
+          "text": "Continue →",
+          "top": 281,
+          "bottom": 333,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F4",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "start": false,
+        "example": true,
+        "button": {
+          "text": "Continue →",
+          "top": 298,
+          "bottom": 350,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F5",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "start": false,
+        "example": true,
+        "button": {
+          "text": "Continue →",
+          "top": 354,
+          "bottom": 406,
+          "left": 20,
+          "right": 163
+        },
+        "label": "fix-F6",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 1312,
+        "start": false,
+        "example": false,
+        "button": {
+          "text": "Ask the person you named about the last time",
+          "top": 608,
+          "bottom": 671,
+          "left": 20,
+          "right": 370
+        },
+        "label": "fix-end",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "start": true,
+        "example": true,
+        "button": {
+          "text": "Continue →",
+          "top": 503,
+          "bottom": 555,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E1",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "start": false,
+        "example": true,
+        "button": {
+          "text": "Continue →",
+          "top": 298,
+          "bottom": 350,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E2",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "start": false,
+        "example": true,
+        "button": {
+          "text": "Continue →",
+          "top": 388,
+          "bottom": 440,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E3",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "start": false,
+        "example": true,
+        "button": {
+          "text": "Continue →",
+          "top": 328,
+          "bottom": 380,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E4",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "start": false,
+        "example": false,
+        "button": {
+          "text": "Continue →",
+          "top": 281,
+          "bottom": 333,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E5",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "start": false,
+        "example": true,
+        "button": {
+          "text": "Continue →",
+          "top": 384,
+          "bottom": 436,
+          "left": 20,
+          "right": 163
+        },
+        "label": "experiment-E6",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 1225,
+        "start": false,
+        "example": false,
+        "button": {
+          "text": "Show it to your football friends",
+          "top": 526,
+          "bottom": 574,
+          "left": 20,
+          "right": 370
+        },
+        "label": "experiment-end",
+        "on_screen": true
+      }
+    ]
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "With the start line and examples added, the main button is on screen without scrolling on every burst screen and the end screen.",
+      "happened": "fix-F1: \"Continue →\" 473 to 525 of 844, scrolled 0, start line true, example true, on screen true; fix-F2: \"Continue →\" 358 to 410 of 844, scrolled 0, start line false, example true, on screen true; fix-F3: \"Continue →\" 298 to 350 of 844, scrolled 0, start line false, example true, on screen true; fix-F4: \"Continue →\" 281 to 333 of 844, scrolled 0, start line false, example false, on screen true; fix-F5: \"Continue →\" 298 to 350 of 844, scrolled 0, start line false, example true, on screen true; fix-F6: \"Continue →\" 354 to 406 of 844, scrolled 0, start line false, example true, on screen true; fix-end: \"Ask the person you named about the last time\" 608 to 671 of 844, scrolled 0, start line false, example false, on screen true; experiment-E1: \"Continue →\" 503 to 555 of 844, scrolled 0, start line true, example true, on screen true; experiment-E2: \"Continue →\" 298 to 350 of 844, scrolled 0, start line false, example true, on screen true; experiment-E3: \"Continue →\" 388 to 440 of 844, scrolled 0, start line false, example true, on screen true; experiment-E4: \"Continue →\" 328 to 380 of 844, scrolled 0, start line false, example true, on screen true; experiment-E5: \"Continue →\" 281 to 333 of 844, scrolled 0, start line false, example false, on screen true; experiment-E6: \"Continue →\" 384 to 436 of 844, scrolled 0, start line false, example true, on screen true; experiment-end: \"Show it to your football friends\" 526 to 574 of 844, scrolled 0, start line false, example false, on screen true. Screen 390x844. Page errors: none."
+    }
+  ],
+  "exported": true
+}

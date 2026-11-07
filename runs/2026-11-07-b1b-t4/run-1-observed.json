@@ -1,0 +1,689 @@
+{
+  "scenario": "b1b-t4",
+  "title": "B1b T4: the label calls held for 30 seconds",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://abdeab65-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T14:01:06.537Z",
+  "finished_at": "2026-11-07T14:01:42.954Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T14:01:06.654Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T14:01:06.791Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:01:06.890Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:01:06.935Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are and how you know them."
+    },
+    {
+      "at": "2026-11-07T14:01:06.981Z",
+      "step": "answered F1",
+      "note": "Dana, my neighbour, she walks six dogs for people on our street"
+    },
+    {
+      "at": "2026-11-07T14:01:07.048Z",
+      "step": "answered F2",
+      "note": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later."
+    },
+    {
+      "at": "2026-11-07T14:01:07.080Z",
+      "step": "answered F3",
+      "note": "Show her who has paid this week without opening the bank app."
+    },
+    {
+      "at": "2026-11-07T14:01:07.113Z",
+      "step": "answered F4",
+      "note": "A list that tells a dog walker who has paid for the week."
+    },
+    {
+      "at": "2026-11-07T14:01:07.147Z",
+      "step": "answered F5",
+      "note": "That she checks her bank app every Friday and still misses one or two owners."
+    },
+    {
+      "at": "2026-11-07T14:01:07.182Z",
+      "step": "answered F6",
+      "note": "If she says she always knows who owes her and it never costs her anything."
+    },
+    {
+      "at": "2026-11-07T14:01:07.248Z",
+      "step": "planned the step",
+      "note": "Ask the person you named about the last time, Planned for today. It's on this bottle in your cellar."
+    },
+    {
+      "at": "2026-11-07T14:01:07.410Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:01:07.450Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:01:07.481Z",
+      "step": "picked experiment",
+      "note": "When did someone last do something like this, even by hand or in another app? \"No one I know of\" is an answer."
+    },
+    {
+      "at": "2026-11-07T14:01:07.512Z",
+      "step": "answered E1",
+      "note": "My friends post their Wordle scores in our group chat every morning."
+    },
+    {
+      "at": "2026-11-07T14:01:07.546Z",
+      "step": "answered E2",
+      "note": "Curious to see what the others wrote, and a little proud of their own sentence."
+    },
+    {
+      "at": "2026-11-07T14:01:07.580Z",
+      "step": "answered E3",
+      "note": "One photo, one text box, then every sentence on one page."
+    },
+    {
+      "at": "2026-11-07T14:01:07.613Z",
+      "step": "answered E4",
+      "note": "Sam, Priya and my brother Tom"
+    },
+    {
+      "at": "2026-11-07T14:01:07.646Z",
+      "step": "answered E5",
+      "note": "A daily photo where you write one sentence and then read everyone else's."
+    },
+    {
+      "at": "2026-11-07T14:01:07.680Z",
+      "step": "answered E6",
+      "note": "Two of the three come back on their own the next day and write another sentence."
+    },
+    {
+      "at": "2026-11-07T14:01:07.747Z",
+      "step": "planned the step",
+      "note": "Show it to the people you named, Planned for today. It's on this bottle in your cellar."
+    },
+    {
+      "at": "2026-11-07T14:01:42.950Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1b-t4\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "held": [
+      {
+        "path": "/m1",
+        "held_from": "2026-11-07T14:01:06.979Z",
+        "released_at": "2026-11-07T14:01:36.990Z"
+      },
+      {
+        "path": "/label",
+        "held_from": "2026-11-07T14:01:07.612Z",
+        "released_at": "2026-11-07T14:01:37.618Z"
+      }
+    ],
+    "fix": [
+      {
+        "screen": "screen-first",
+        "qid": "F1",
+        "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+        "start": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.",
+        "example": "e.g. \"S., a colleague who plans our team trips\"",
+        "taps": [
+          "It was me"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Six short questions to pin down who runs into this and what you expect to hear from them. Then you pick one next step.\n\ne.g. \"S., a colleague who plans our team trips\"\n\nIt was me\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Dana, my neighbour, she walks six dogs for people on our street"
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F2",
+        "question": "The last time they ran into it, what did they do right then?",
+        "start": null,
+        "example": "e.g. \"Spent an hour in three group chats trying to find a date.\"",
+        "taps": [
+          "I saw it",
+          "I was told",
+          "It was me"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Spent an hour in three group chats trying to find a date.\"\n\nI saw it\nI was told\nIt was me\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "tap": "I saw it",
+          "text": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F3",
+        "question": "If your idea could do only one thing for them, what would it be?",
+        "start": null,
+        "example": "e.g. \"Show everyone's free evenings in one place.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Show everyone's free evenings in one place.\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Show her who has paid this week without opening the bank app."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F4",
+        "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Don't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "A list that tells a dog walker who has paid for the week."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F5",
+        "question": "When you ask them about the last time, what do you expect to hear?",
+        "start": null,
+        "example": "e.g. \"That they gave up and picked a date themselves.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"That they gave up and picked a date themselves.\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "That she checks her bank app every Friday and still misses one or two owners."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F6",
+        "question": "Finish the sentence: I'd drop it if they told me...",
+        "start": null,
+        "example": "e.g. \"...it only takes five minutes, they don't mind.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Not set yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": "Not set yet",
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"...it only takes five minutes, they don't mind.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →",
+        "answered": {
+          "text": "If she says she always knows who owes her and it never costs her anything."
+        },
+        "next_screen_after_ms": 1
+      }
+    ],
+    "fix_end": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "An app for dog walkers who lose track of which owners have paid for the week.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "A list that tells a dog walker who has paid for the week.\n7 Nov 2026"
+        },
+        {
+          "row": "person",
+          "label": "THE PERSON",
+          "value": "Dana, my neighbour, she walks six dogs for people on our street"
+        },
+        {
+          "row": "last-time",
+          "label": "THE LAST TIME",
+          "value": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later.\nI saw it"
+        },
+        {
+          "row": "one-thing",
+          "label": "THE ONE THING",
+          "value": "Show her who has paid this week without opening the bank app."
+        },
+        {
+          "row": "expect",
+          "label": "WHAT YOU EXPECT TO HEAR",
+          "value": "That she checks her bank app every Friday and still misses one or two owners."
+        },
+        {
+          "row": "line",
+          "label": "YOU'D DROP IT IF",
+          "value": "If she says she always knows who owes her and it never costs her anything."
+        }
+      ],
+      "observation": null,
+      "ai_tagged": [],
+      "nobody": null,
+      "switch_link": null,
+      "next_line": "What's next: ask the person you named about the last time, put what you hear next to what you expected, then decide what to do with the idea.",
+      "choices": [
+        {
+          "id": "fs-choice-ask",
+          "text": "Ask the person you named about the last time",
+          "cls": "btn-second fs-choice",
+          "note": "Saves the step and a day. Nothing is sent."
+        },
+        {
+          "id": "fs-rethink",
+          "text": "Rethink it first",
+          "cls": "btn-second fs-choice",
+          "note": "Go over your sentence and the one thing again."
+        },
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn-ghost fs-cellar",
+          "note": null
+        }
+      ],
+      "visible_text": "FIRST\nAn app for dog walkers who lose track of which owners have paid for the week.\n7 Nov 2026\nNOW\nA list that tells a dog walker who has paid for the week.\n7 Nov 2026\nTHE PERSON\nDana, my neighbour, she walks six dogs for people on our street\nTHE LAST TIME\nLast Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later.\nI saw it\nTHE ONE THING\nShow her who has paid this week without opening the bank app.\nWHAT YOU EXPECT TO HEAR\nThat she checks her bank app every Friday and still misses one or two owners.\nYOU'D DROP IT IF\nIf she says she always knows who owes her and it never costs her anything.\n\nWhat's next: ask the person you named about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk the person you named about the last time\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar"
+    },
+    "fix_step": {
+      "line_asked": false,
+      "planning": "Ask the person you named about the last time",
+      "planned": {
+        "when": "Planned for today. It's on this bottle in your cellar.",
+        "step": "Ask the person you named about the last time"
+      }
+    },
+    "fix_done_at": "2026-11-07T14:01:07.248Z",
+    "experiment": [
+      {
+        "screen": "screen-first",
+        "qid": "E1",
+        "question": "When did someone last do something like this, even by hand or in another app? \"No one I know of\" is an answer.",
+        "start": "Six short questions to pin down what you'd build first and who you'd show it to. Then you pick one next step.",
+        "example": "e.g. \"My friends make quizzes about each other in the group chat.\"",
+        "taps": [
+          "No one I know of"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Six short questions to pin down what you'd build first and who you'd show it to. Then you pick one next step.\n\ne.g. \"My friends make quizzes about each other in the group chat.\"\n\nNo one I know of\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "My friends post their Wordle scores in our group chat every morning."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E2",
+        "question": "In the first minute of using it, what should someone feel?",
+        "start": null,
+        "example": "e.g. \"Smug when they get one right.\" or \"Curious what comes next.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Smug when they get one right.\" or \"Curious what comes next.\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Curious to see what the others wrote, and a little proud of their own sentence."
+        },
+        "next_screen_after_ms": 2
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E3",
+        "question": "What's the simplest version you could build quickly, so people can try it?",
+        "start": null,
+        "example": "e.g. \"Ten questions on one page and a score at the end.\"",
+        "taps": [
+          "I already built it"
+        ],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Ten questions on one page and a score at the end.\"\n\nI already built it\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "One photo, one text box, then every sentence on one page."
+        },
+        "next_screen_after_ms": 2
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E4",
+        "question": "Who are the first one to three people you'd show it to? Names, initials, or a few words.",
+        "start": null,
+        "example": "e.g. \"Tom, and two friends from my running club\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Tom, and two friends from my running club\"\n\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Sam, Priya and my brother Tom"
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E5",
+        "question": "Say your idea again in one sentence, as you'd say it today. It's fine if it changed.",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "Don't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "A daily photo where you write one sentence and then read everyone else's."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E6",
+        "question": "What would they have to do for you to keep building it? A rough guess is fine.",
+        "start": null,
+        "example": "e.g. \"Play it two days in a row without me asking.\"",
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet",
+          "Not set yet",
+          "Skip"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": "Not set yet",
+        "skip": "Skip",
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "visible_text": "e.g. \"Play it two days in a row without me asking.\"\n\nDon't know yet\nNot set yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Two of the three come back on their own the next day and write another sentence."
+        },
+        "next_screen_after_ms": 2
+      }
+    ],
+    "experiment_end": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "A daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "A daily photo where you write one sentence and then read everyone else's.\n7 Nov 2026"
+        },
+        {
+          "row": "last-time",
+          "label": "THE LAST TIME SOMETHING LIKE IT HAPPENED",
+          "value": "My friends post their Wordle scores in our group chat every morning."
+        },
+        {
+          "row": "feel",
+          "label": "THE FEELING",
+          "value": "Curious to see what the others wrote, and a little proud of their own sentence."
+        },
+        {
+          "row": "smallest",
+          "label": "THE SMALLEST VERSION",
+          "value": "One photo, one text box, then every sentence on one page."
+        },
+        {
+          "row": "people",
+          "label": "THE FIRST PEOPLE",
+          "value": "Sam, Priya and my brother Tom"
+        },
+        {
+          "row": "line",
+          "label": "YOU'D KEEP GOING IF",
+          "value": "Two of the three come back on their own the next day and write another sentence."
+        }
+      ],
+      "observation": null,
+      "ai_tagged": [],
+      "nobody": null,
+      "switch_link": null,
+      "next_line": "What's next: let the people you named try it, or build the simplest version first, see what happens, then decide what to do with the idea.",
+      "choices": [
+        {
+          "id": "fs-choice-show",
+          "text": "Show it to the people you named",
+          "cls": "btn-second fs-choice",
+          "note": "Saves the step and a day. Nothing is sent."
+        },
+        {
+          "id": "fs-choice-build",
+          "text": "Build the simplest version first",
+          "cls": "btn-second fs-choice",
+          "note": "Saves the step and a day."
+        },
+        {
+          "id": "fs-rethink",
+          "text": "Rethink it first",
+          "cls": "btn-second fs-choice",
+          "note": "Go over your sentence, the feeling and the simplest version again."
+        },
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn-ghost fs-cellar",
+          "note": null
+        }
+      ],
+      "visible_text": "FIRST\nA daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it.\n7 Nov 2026\nNOW\nA daily photo where you write one sentence and then read everyone else's.\n7 Nov 2026\nTHE LAST TIME SOMETHING LIKE IT HAPPENED\nMy friends post their Wordle scores in our group chat every morning.\nTHE FEELING\nCurious to see what the others wrote, and a little proud of their own sentence.\nTHE SMALLEST VERSION\nOne photo, one text box, then every sentence on one page.\nTHE FIRST PEOPLE\nSam, Priya and my brother Tom\nYOU'D KEEP GOING IF\nTwo of the three come back on their own the next day and write another sentence.\n\nWhat's next: let the people you named try it, or build the simplest version first, see what happens, then decide what to do with the idea.\n\nShow it to the people you named\nSaves the step and a day. Nothing is sent.\nBuild the simplest version first\nSaves the step and a day.\nRethink it first\nGo over your sentence, the feeling and the simplest version again.\nBack to the cellar"
+    },
+    "experiment_step": {
+      "line_asked": false,
+      "planning": "Show it to the people you named",
+      "planned": {
+        "when": "Planned for today. It's on this bottle in your cellar.",
+        "step": "Show it to the people you named"
+      }
+    },
+    "experiment_done_at": "2026-11-07T14:01:07.747Z"
+  },
+  "checkpoints": {
+    "labels_after": [
+      {
+        "idea": "An app for dog walkers who lose track of which owners have paid for the week.",
+        "labels": null,
+        "label_log": [
+          {
+            "at": "2026-11-07T14:01:36.993Z",
+            "type": "grade_failed",
+            "mech": "M1",
+            "step": "F1",
+            "error": "The worker took too long to respond. Check your connection and try again."
+          }
+        ]
+      },
+      {
+        "idea": "A daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it.",
+        "labels": null,
+        "label_log": [
+          {
+            "at": "2026-11-07T14:01:37.619Z",
+            "type": "label_failed",
+            "step": "E4",
+            "error": "The worker took too long to respond. Check your connection and try again."
+          }
+        ]
+      }
+    ]
+  },
+  "expected": [
+    {
+      "n": 1,
+      "expected": "Every slot shows its fallback.",
+      "happened": "F2 \"The last time they ran into it, what did they do right then?\" (fallback: true). F3 \"If your idea could do only one thing for them, what would it be?\" (fallback: true). F5 \"When you ask them about the last time, what do you expect to hear?\" (fallback: true). F6 \"Finish the sentence: I'd drop it if they told me...\" (fallback: true). Fix end line \"What's next: ask the person you named about the last time, put what you hear next to what you expected, then decide what to do with the idea.\" (fallback: true). Ask button \"Ask the person you named about the last time\" (fallback: true). Fix step saved: \"Ask the person you named about the last time\". E6 \"What would they have to do for you to keep building it? A rough guess is fine.\" (fallback: true). Experiment end line \"What's next: let the people you named try it, or build the simplest version first, see what happens, then decide what to do with the idea.\" (fallback: true). Show it button \"Show it to the people you named\" (fallback: true). Experiment step saved: \"Show it to the people you named\". After the hold let go: [{\"idea\":\"An app for dog walkers who lose track of which owners have paid for the week.\",\"labels\":null,\"label_log\":[{\"at\":\"2026-11-07T14:01:36.993Z\",\"type\":\"grade_failed\",\"mech\":\"M1\",\"step\":\"F1\",\"error\":\"The worker took too long to respond. Check your connection and try again.\"}]},{\"idea\":\"A daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it.\",\"labels\":null,\"label_log\":[{\"at\":\"2026-11-07T14:01:37.619Z\",\"type\":\"label_failed\",\"step\":\"E4\",\"error\":\"The worker took too long to respond. Check your connection and try again.\"}]}]."
+    },
+    {
+      "n": 2,
+      "expected": "No screen waits.",
+      "happened": "From Continue to the next screen, in ms: F1 1, F2 1, F3 1, F4 1, F5 1, F6 1, E1 1, E2 2, E3 2, E4 1, E5 1, E6 2. Slowest: 2 ms. Held requests: /m1 from 2026-11-07T14:01:06.979Z to 2026-11-07T14:01:36.990Z; /label from 2026-11-07T14:01:07.612Z to 2026-11-07T14:01:37.618Z. Fix path finished at 2026-11-07T14:01:07.248Z, experiment at 2026-11-07T14:01:07.747Z. Page errors: none."
+    }
+  ],
+  "worker_requests": [
+    {
+      "at": "2026-11-07T14:01:06.873Z",
+      "ms": 1794060066873,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "An app for dog walkers who lose track of which owners have paid for the week."
+      }
+    },
+    {
+      "at": "2026-11-07T14:01:06.979Z",
+      "ms": 1794060066979,
+      "path": "/m1",
+      "body": {
+        "spark_summary": "An app for dog walkers who lose track of which owners have paid for the week.",
+        "person_name": "",
+        "relationship": "Dana, my neighbour, she walks six dogs for people on our street",
+        "maturity_class": 0,
+        "with_label": true
+      }
+    },
+    {
+      "at": "2026-11-07T14:01:07.045Z",
+      "ms": 1794060067045,
+      "path": "/m2",
+      "body": {
+        "flow": "first_session_v1",
+        "user_line": "An app for dog walkers who lose track of which owners have paid for the week.",
+        "grape_name": "Dana",
+        "grape_relationship": "Dana, my neighbour, she walks six dogs for people on our street",
+        "maturity_class": 0,
+        "user_answer": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later.",
+        "gap_in_play": false
+      }
+    },
+    {
+      "at": "2026-11-07T14:01:07.445Z",
+      "ms": 1794060067445,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "A daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it."
+      }
+    },
+    {
+      "at": "2026-11-07T14:01:07.612Z",
+      "ms": 1794060067612,
+      "path": "/label",
+      "body": {
+        "answer": "Sam, Priya and my brother Tom",
+        "kind": "people"
+      }
+    }
+  ]
+}

@@ -1,0 +1,499 @@
+{
+  "scenario": "b1-s2",
+  "title": "B1 S2: fix, the person as a name, initials, a description and a group",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://abdeab65-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T14:02:53.993Z",
+  "finished_at": "2026-11-07T14:02:59.016Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T14:02:54.092Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T14:02:54.240Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:02:54.327Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:02:54.364Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are and how you know them."
+    },
+    {
+      "at": "2026-11-07T14:02:54.411Z",
+      "step": "answered F1",
+      "note": "Maria Lopez, my sister"
+    },
+    {
+      "at": "2026-11-07T14:02:54.443Z",
+      "step": "answered F2",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:54.476Z",
+      "step": "answered F3",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:54.509Z",
+      "step": "answered F4",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:54.542Z",
+      "step": "answered F5",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:54.580Z",
+      "step": "answered F6",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:54.717Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:02:54.747Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:02:54.777Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are and how you know them."
+    },
+    {
+      "at": "2026-11-07T14:02:54.809Z",
+      "step": "answered F1",
+      "note": "M., my sister"
+    },
+    {
+      "at": "2026-11-07T14:02:54.842Z",
+      "step": "answered F2",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:54.876Z",
+      "step": "answered F3",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:54.909Z",
+      "step": "answered F4",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:54.942Z",
+      "step": "answered F5",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:54.976Z",
+      "step": "answered F6",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:55.117Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:02:55.146Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:02:55.177Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are and how you know them."
+    },
+    {
+      "at": "2026-11-07T14:02:55.209Z",
+      "step": "answered F1",
+      "note": "a colleague who manages bookings"
+    },
+    {
+      "at": "2026-11-07T14:02:55.242Z",
+      "step": "answered F2",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:55.276Z",
+      "step": "answered F3",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:55.309Z",
+      "step": "answered F4",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:55.342Z",
+      "step": "answered F5",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:55.376Z",
+      "step": "answered F6",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:55.517Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T14:02:55.545Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T14:02:55.577Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are and how you know them."
+    },
+    {
+      "at": "2026-11-07T14:02:55.610Z",
+      "step": "answered F1",
+      "note": "freelancers I know"
+    },
+    {
+      "at": "2026-11-07T14:02:55.642Z",
+      "step": "answered F2",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:55.676Z",
+      "step": "answered F3",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:55.708Z",
+      "step": "answered F4",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:55.742Z",
+      "step": "answered F5",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:55.776Z",
+      "step": "answered F6",
+      "note": "skip"
+    },
+    {
+      "at": "2026-11-07T14:02:59.011Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1b-rerun-s2\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "people": [
+      {
+        "person": "Maria Lopez, my sister",
+        "id": "mw6h3txc7bmw9",
+        "f1_question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+        "next_qid": "F2",
+        "next_question": "The last time they ran into it, what did they do right then?",
+        "next_after_ms": 1,
+        "end_text": "FIRST\nAn app for small cleaning businesses that forget to send invoices after a job.\n7 Nov 2026\nNOW\nSkip\nTHE PERSON\nMaria Lopez, my sister\nTHE LAST TIME\nSkip\nTHE ONE THING\nSkip\nWHAT YOU EXPECT TO HEAR\nSkip\nYOU'D DROP IT IF\nSkip\n\nWhat's next: ask the person you named about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk the person you named about the last time\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar",
+        "slot": {
+          "q": "F1",
+          "value": "answer",
+          "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+          "at": "2026-11-07T14:02:54.407Z",
+          "text": "Maria Lopez, my sister"
+        },
+        "grade": {
+          "state": "settled",
+          "person_kind": "named_individual",
+          "one_person": true,
+          "for_text": "Maria Lopez, my sister",
+          "at": "2026-11-07T14:02:57.335Z"
+        },
+        "log": [
+          {
+            "at": "2026-11-07T14:02:57.335Z",
+            "type": "grade",
+            "mech": "M1",
+            "step": "F1",
+            "state": "settled",
+            "person_kind": "named_individual",
+            "one_person": true,
+            "prompt_version": "2026-11-07b",
+            "model": "claude-sonnet-4-6",
+            "ai_fields": [
+              "observation.surface_text",
+              "grape.named_person",
+              "label"
+            ]
+          }
+        ]
+      },
+      {
+        "person": "M., my sister",
+        "id": "mw6h3ub5skfsv",
+        "f1_question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+        "next_qid": "F2",
+        "next_question": "The last time they ran into it, what did they do right then?",
+        "next_after_ms": 0,
+        "end_text": "FIRST\nAn app for small cleaning businesses that forget to send invoices after a job.\n7 Nov 2026\nNOW\nSkip\nTHE PERSON\nM., my sister\nTHE LAST TIME\nSkip\nTHE ONE THING\nSkip\nWHAT YOU EXPECT TO HEAR\nSkip\nYOU'D DROP IT IF\nSkip\n\nWhat's next: ask the person you named about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk the person you named about the last time\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar",
+        "slot": {
+          "q": "F1",
+          "value": "answer",
+          "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+          "at": "2026-11-07T14:02:54.806Z",
+          "text": "M., my sister"
+        },
+        "grade": {
+          "state": "settled",
+          "person_kind": "named_individual",
+          "one_person": true,
+          "for_text": "M., my sister",
+          "at": "2026-11-07T14:02:57.595Z"
+        },
+        "log": [
+          {
+            "at": "2026-11-07T14:02:57.595Z",
+            "type": "grade",
+            "mech": "M1",
+            "step": "F1",
+            "state": "settled",
+            "person_kind": "named_individual",
+            "one_person": true,
+            "prompt_version": "2026-11-07b",
+            "model": "claude-sonnet-4-6",
+            "ai_fields": [
+              "observation.surface_text",
+              "grape.named_person",
+              "label"
+            ]
+          }
+        ]
+      },
+      {
+        "person": "a colleague who manages bookings",
+        "id": "mw6h3um7ees5r",
+        "f1_question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+        "next_qid": "F2",
+        "next_question": "The last time they ran into it, what did they do right then?",
+        "next_after_ms": 1,
+        "end_text": "FIRST\nAn app for small cleaning businesses that forget to send invoices after a job.\n7 Nov 2026\nNOW\nSkip\nTHE PERSON\na colleague who manages bookings\nTHE LAST TIME\nSkip\nTHE ONE THING\nSkip\nWHAT YOU EXPECT TO HEAR\nSkip\nYOU'D DROP IT IF\nSkip\n\nWhat's next: ask the person you named about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk the person you named about the last time\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar",
+        "slot": {
+          "q": "F1",
+          "value": "answer",
+          "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+          "at": "2026-11-07T14:02:55.206Z",
+          "text": "a colleague who manages bookings"
+        },
+        "grade": {
+          "state": "settled",
+          "person_kind": "described_unnamed",
+          "one_person": true,
+          "for_text": "a colleague who manages bookings",
+          "at": "2026-11-07T14:02:58.024Z"
+        },
+        "log": [
+          {
+            "at": "2026-11-07T14:02:58.024Z",
+            "type": "grade",
+            "mech": "M1",
+            "step": "F1",
+            "state": "settled",
+            "person_kind": "described_unnamed",
+            "one_person": true,
+            "prompt_version": "2026-11-07b",
+            "model": "claude-sonnet-4-6",
+            "ai_fields": [
+              "observation.surface_text",
+              "grape.named_person",
+              "label"
+            ]
+          }
+        ]
+      },
+      {
+        "person": "freelancers I know",
+        "id": "mw6h3uxcx0te8",
+        "f1_question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+        "next_qid": "F2",
+        "next_question": "The last time they ran into it, what did they do right then?",
+        "next_after_ms": 1,
+        "end_text": "FIRST\nAn app for small cleaning businesses that forget to send invoices after a job.\n7 Nov 2026\nNOW\nSkip\nTHE PERSON\nfreelancers I know\nTHE LAST TIME\nSkip\nTHE ONE THING\nSkip\nWHAT YOU EXPECT TO HEAR\nSkip\nYOU'D DROP IT IF\nSkip\n\nWhat's next: ask the person you named about the last time, put what you hear next to what you expected, then decide what to do with the idea.\n\nAsk the person you named about the last time\nSaves the step and a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar",
+        "slot": {
+          "q": "F1",
+          "value": "answer",
+          "question": "Who last ran into this? A name, initials, or a few words about who they are and how you know them.",
+          "at": "2026-11-07T14:02:55.607Z",
+          "text": "freelancers I know"
+        },
+        "grade": {
+          "state": "turbid",
+          "person_kind": "category_only",
+          "one_person": false,
+          "for_text": "freelancers I know",
+          "at": "2026-11-07T14:02:58.333Z"
+        },
+        "log": [
+          {
+            "at": "2026-11-07T14:02:58.333Z",
+            "type": "grade",
+            "mech": "M1",
+            "step": "F1",
+            "state": "turbid",
+            "person_kind": "category_only",
+            "one_person": false,
+            "prompt_version": "2026-11-07b",
+            "model": "claude-sonnet-4-6",
+            "ai_fields": [
+              "observation.surface_text",
+              "label"
+            ]
+          }
+        ]
+      }
+    ],
+    "m1_requests": [
+      {
+        "spark_summary": "An app for small cleaning businesses that forget to send invoices after a job.",
+        "person_name": "",
+        "relationship": "Maria Lopez, my sister",
+        "maturity_class": 0,
+        "with_label": true
+      },
+      {
+        "spark_summary": "An app for small cleaning businesses that forget to send invoices after a job.",
+        "person_name": "",
+        "relationship": "M., my sister",
+        "maturity_class": 0,
+        "with_label": true
+      },
+      {
+        "spark_summary": "An app for small cleaning businesses that forget to send invoices after a job.",
+        "person_name": "",
+        "relationship": "a colleague who manages bookings",
+        "maturity_class": 0,
+        "with_label": true
+      },
+      {
+        "spark_summary": "An app for small cleaning businesses that forget to send invoices after a job.",
+        "person_name": "",
+        "relationship": "freelancers I know",
+        "maturity_class": 0,
+        "with_label": true
+      }
+    ]
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "\"M., my sister\" and \"a colleague who manages bookings\" get the same /m1 grade as a full name.",
+      "happened": "\"Maria Lopez, my sister\": settled, named_individual, one person true. \"M., my sister\": settled, named_individual, one person true. \"a colleague who manages bookings\": settled, described_unnamed, one person true. Same state as the full name: initials true, description true. Sent to /m1: {\"person_name\":\"\",\"relationship\":\"Maria Lopez, my sister\",\"maturity_class\":0}; {\"person_name\":\"\",\"relationship\":\"M., my sister\",\"maturity_class\":0}; {\"person_name\":\"\",\"relationship\":\"a colleague who manages bookings\",\"maturity_class\":0}; {\"person_name\":\"\",\"relationship\":\"freelancers I know\",\"maturity_class\":0}."
+    },
+    {
+      "n": 2,
+      "expected": "\"freelancers I know\" is saved, marked not one person, and the burst carries on.",
+      "happened": "\"freelancers I know\": turbid, category_only, one person false. Stored as: {\"q\":\"F1\",\"value\":\"answer\",\"question\":\"Who last ran into this? A name, initials, or a few words about who they are and how you know them.\",\"at\":\"2026-11-07T14:02:55.607Z\",\"text\":\"freelancers I know\"}. After F1, every bottle showed the next question straight away: \"Maria Lopez, my sister\" → F2 \"The last time they ran into it, what did they do right then?\" 1 ms; \"M., my sister\" → F2 \"The last time they ran into it, what did they do right then?\" 0 ms; \"a colleague who manages bookings\" → F2 \"The last time they ran into it, what did they do right then?\" 1 ms; \"freelancers I know\" → F2 \"The last time they ran into it, what did they do right then?\" 1 ms."
+    },
+    {
+      "n": 3,
+      "expected": "No grade shows on any screen.",
+      "happened": "Grade words on any end screen: none. Page errors: none."
+    }
+  ],
+  "worker_requests": [
+    {
+      "at": "2026-11-07T14:02:54.311Z",
+      "ms": 1794060174311,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "An app for small cleaning businesses that forget to send invoices after a job."
+      }
+    },
+    {
+      "at": "2026-11-07T14:02:54.409Z",
+      "ms": 1794060174409,
+      "path": "/m1",
+      "body": {
+        "spark_summary": "An app for small cleaning businesses that forget to send invoices after a job.",
+        "person_name": "",
+        "relationship": "Maria Lopez, my sister",
+        "maturity_class": 0,
+        "with_label": true
+      }
+    },
+    {
+      "at": "2026-11-07T14:02:54.742Z",
+      "ms": 1794060174742,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "An app for small cleaning businesses that forget to send invoices after a job."
+      }
+    },
+    {
+      "at": "2026-11-07T14:02:54.807Z",
+      "ms": 1794060174807,
+      "path": "/m1",
+      "body": {
+        "spark_summary": "An app for small cleaning businesses that forget to send invoices after a job.",
+        "person_name": "",
+        "relationship": "M., my sister",
+        "maturity_class": 0,
+        "with_label": true
+      }
+    },
+    {
+      "at": "2026-11-07T14:02:55.140Z",
+      "ms": 1794060175140,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "An app for small cleaning businesses that forget to send invoices after a job."
+      }
+    },
+    {
+      "at": "2026-11-07T14:02:55.208Z",
+      "ms": 1794060175208,
+      "path": "/m1",
+      "body": {
+        "spark_summary": "An app for small cleaning businesses that forget to send invoices after a job.",
+        "person_name": "",
+        "relationship": "a colleague who manages bookings",
+        "maturity_class": 0,
+        "with_label": true
+      }
+    },
+    {
+      "at": "2026-11-07T14:02:55.540Z",
+      "ms": 1794060175540,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "An app for small cleaning businesses that forget to send invoices after a job."
+      }
+    },
+    {
+      "at": "2026-11-07T14:02:55.608Z",
+      "ms": 1794060175608,
+      "path": "/m1",
+      "body": {
+        "spark_summary": "An app for small cleaning businesses that forget to send invoices after a job.",
+        "person_name": "",
+        "relationship": "freelancers I know",
+        "maturity_class": 0,
+        "with_label": true
+      }
+    }
+  ]
+}
