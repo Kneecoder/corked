@@ -23,6 +23,9 @@
 - After an answer, the screen shows what fits the situation: something settled, a thin answer with its follow-up, an errand, or a failed send. The one-line observation stays in every situation.
 - The bottle stays full and its layers go clear as elements settle. No fill level.
 
+## 6 Nov
+- The gate asks "Is this a fix or an experiment?" A: "A fix. I saw something go wrong, for someone or for me." B: "An experiment. I want to build it and see what people do with it." Both kinds get a path. Nothing is turned away. This replaces the 5 Nov turn-away.
+
 ## 7 Nov
 1. Yes to putting the first minutes first; exact questions, sidebar contents and next steps remain open for B1/B3. This approves the direction, not every detail of the example session.
 2. Yes: park the full End of Phase 1 machinery for the pilot and use one simple review and decision screen. Every bottle still ends on a decision; the screen's contents, the endings and any scheduling rules stay open for C4.
