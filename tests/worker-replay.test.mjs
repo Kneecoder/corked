@@ -259,6 +259,30 @@ test('an API failure comes back as a 502 with the detail', async () => {
   }
 });
 
+test('a failed API call prints the status and the error type, never the message text', async () => {
+  const real = globalThis.fetch;
+  const error = console.error;
+  const printed = [];
+  console.error = (...args) => printed.push(args.join(' '));
+  const failure = (status, body) => async () => new Response(body, { status });
+  try {
+    globalThis.fetch = failure(400, JSON.stringify({ type: 'error', error: { type: 'invalid_request_error', message: 'It quoted zq-canary-0611' } }));
+    await worker.fetch(request('/m3', { problem: PROBLEM, user_answer: 'An answer.' }), { ...ENV, ANTHROPIC_API_KEY: 'k' });
+    globalThis.fetch = failure(529, 'zq-canary-0611 is not JSON');
+    await worker.fetch(request('/m3', { problem: PROBLEM, user_answer: 'An answer.' }), { ...ENV, ANTHROPIC_API_KEY: 'k' });
+    globalThis.fetch = failure(500, JSON.stringify({ error: { type: 'zq-canary-0611 in the type' } }));
+    await worker.fetch(request('/m3', { problem: PROBLEM, user_answer: 'An answer.' }), { ...ENV, ANTHROPIC_API_KEY: 'k' });
+  } finally {
+    globalThis.fetch = real;
+    console.error = error;
+  }
+  assert.deepEqual(printed, [
+    'ANTHROPIC_ERROR: 400 invalid_request_error',
+    'ANTHROPIC_ERROR: 529 unreadable',
+    'ANTHROPIC_ERROR: 500 unreadable'
+  ]);
+});
+
 test('adapter options: thinking goes out, and only text blocks come back', async () => {
   const real = globalThis.fetch;
   let sent;

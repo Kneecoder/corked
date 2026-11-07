@@ -146,6 +146,8 @@ button, input, textarea { font-family:inherit; color:inherit; }
 .spark-edit-btn { display:none; align-items:center; gap:6px; }
 .spark-edit-btn svg { width:12px; height:12px; stroke-width:1.8; }
 .spark-field-wrap { position:relative; }
+.spark-limit { font-size:14px; line-height:1.55; color:var(--ink-2); }
+.spark-limit:not(:empty) { margin-top:12px; }
 .ph-overlay {
   position:absolute; inset:0; padding:20px 22px;
   font-family:var(--serif); font-size:25px; line-height:1.45; color:var(--ink-3); pointer-events:none;
@@ -1426,6 +1428,8 @@ function finishAllLines() {
 // has nothing on record. The text stays in its field and on the bottle as a draft, and sending it
 // again is the first time it goes on record.
 const SEND_FAILED_TEXT = "Not sent. Corked couldn't be reached, so nothing went on record. Your answer is still here.";
+// M2's first read and parking an errand: nothing was typed, so there is no answer to keep.
+const SEND_FAILED_NOTHING_TYPED = "Not sent. Corked couldn't be reached, so nothing went on record.";
 const SEND_FAILED_HTML = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.5" stroke="#7A2232" stroke-width="1.5"/><path d="M10 5.5v5.5" stroke="#7A2232" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="14" r="1" fill="#7A2232"/></svg><div><strong>Not sent.</strong> Corked couldn't be reached, so nothing went on record. Your answer is still here.</div>`;
 
 function showSendFailedIn(el) {
@@ -2068,7 +2072,7 @@ function renderIntake() {
               <span>Edit spark</span>
             </button>
           </div>`;
-    h += `<div class="spark-field-wrap"><textarea class="field" id="f-inp" rows="3" maxlength="500" placeholder="">${v}</textarea></div>`;
+    h += `<div class="spark-field-wrap"><textarea class="field" id="f-inp" rows="3" maxlength="${SPARK_LIMIT}" placeholder="" oninput="updateSparkLimit()">${v}</textarea><p class="spark-limit" id="spark-limit" role="status">${v.length >= SPARK_LIMIT ? SPARK_LIMIT_LINE : ''}</p></div>`;
     if (intakeStep === 0) {
       // Once per browser. After that it lives behind the link at the bottom of the cellar.
       if (!localStorage.getItem(AI_LINE_SEEN_KEY)) {
@@ -3598,7 +3602,7 @@ async function triggerM2PhaseA() {
     if (!stillHere()) return;
     // Phase A failed: say so under the buttons, and Continue tries again.
     console.warn('[triggerM2PhaseA] send failed', err);
-    showM2Error(SEND_FAILED_TEXT);
+    showM2Error(SEND_FAILED_NOTHING_TYPED);
     setPhaseBusy(false, 'Try again →');
     return;
   }
@@ -3870,7 +3874,7 @@ async function parkItAction(status = 'dormant') {
     // Success routes on to showCellar() inside finishPark(); runPark() puts the labels back.
   } catch (err) {
     console.warn('[parkItAction] park failed', err);
-    if (errEl) { errEl.textContent = SEND_FAILED_TEXT; errEl.style.display = 'block'; }
+    if (errEl) { errEl.textContent = SEND_FAILED_NOTHING_TYPED; errEl.style.display = 'block'; }
   }
 }
 
@@ -4794,7 +4798,7 @@ async function openDormantFind(id, record) {
   const fallbackBrief = finalBrief.question || finalBrief.text
     ? finalBrief
     : { question: finalBrief.pending
-        ? 'The worker could not be reached. Find the first person this spark draws from and come back with their name and how you know them.'
+        ? "Corked couldn't be reached. Find the first person this spark draws from and come back with their name and how you know them."
         : 'Find the first real person this spark draws from. Walk them through how they handle the relevant thing now and the last time it gave them trouble.',
         kind: 'find', target: finalBrief.target || null };
 
@@ -5109,6 +5113,16 @@ function showM0Refusal(line) {
   setTimeout(() => content.classList.remove('m0-revealing'), 2300);
 }
 
+// The worker's limit for a spark. The field stops there, typed or pasted, and says so.
+const SPARK_LIMIT = 500;
+const SPARK_LIMIT_LINE = 'Sparks stop at 500 characters.';
+
+function updateSparkLimit() {
+  const inp = document.getElementById('f-inp');
+  const line = document.getElementById('spark-limit');
+  if (inp && line) line.textContent = inp.value.length >= SPARK_LIMIT ? SPARK_LIMIT_LINE : '';
+}
+
 async function v6BottleSpark() {
   const inp = document.getElementById('f-inp');
   const spark = ((inp || {}).value || '').trim();
@@ -5207,6 +5221,7 @@ function v6Rewrite() {
     inp.removeAttribute('readonly');
     inp.classList.remove('spark-provenance');
     if (window._v6M0.state === 'unbottleable') inp.value = '';
+    updateSparkLimit();
     inp.focus();
     inp.setSelectionRange(inp.value.length, inp.value.length);
   }

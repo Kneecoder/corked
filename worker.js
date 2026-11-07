@@ -4,7 +4,7 @@ import './shared/mechanisms.js';
 
 // The prompts' version, as a date. Move it whenever a prompt or a message builder changes. Every
 // JSON reply carries it, and the app stores it with each history log entry.
-const PROMPT_VERSION = '2026-11-06';
+const PROMPT_VERSION = '2026-11-07';
 
 const { anchorSpan, verifyAnchor, quotedSpan, unsupportedWords } = globalThis.CorkedProvenance;
 const Mechanisms = globalThis.CorkedMechanisms;

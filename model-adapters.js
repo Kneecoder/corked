@@ -11,6 +11,16 @@
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 
+// Anthropic's error type, for the logs. Its message text can quote what was sent, so it never gets there.
+function anthropicErrorType(detail) {
+  try {
+    const type = JSON.parse(detail)?.error?.type;
+    return typeof type === 'string' && /^[a-z0-9_]{1,64}$/.test(type) ? type : 'unreadable';
+  } catch {
+    return 'unreadable';
+  }
+}
+
 // options.thinking: sent as the request's `thinking` setting.
 // options.textBlocksOnly: drops every reply block that isn't text, so content[0] is the text.
 // options.onCall: told about each call, for the bake-off's records.
@@ -35,7 +45,7 @@ export function createAnthropicAdapter({ thinking, textBlocksOnly = false, onCal
     if (!response.ok) {
       const detail = await response.text();
       if (onCall) onCall({ response, detail });
-      console.error('ANTHROPIC_ERROR:', response.status, detail);
+      console.error('ANTHROPIC_ERROR:', response.status, anthropicErrorType(detail));
       throw new Response(JSON.stringify({ error: 'Claude API error', detail }), { status: 502 });
     }
 

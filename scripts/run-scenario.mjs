@@ -717,11 +717,111 @@ const TRUST = {
   }
 };
 
+// The phone pass: the spark screen on an empty cellar, with the AI line showing, at 390x844. It has its
+// own browser profile, because the line shows once per browser. It makes no worker call.
+const PHONE_EXPECTED = 'At 390x844, on an empty cellar, the spark screen shows the AI line. Report where the Bottle button sits against the bottom of the screen, and save a screenshot.';
+const LIMIT_EXPECTED = 'At 499 characters the spark field shows no limit line. At 500, typed or pasted, it shows "Sparks stop at 500 characters." under the field and takes no more. Emptied, the line is gone.';
+
+async function phoneSparkPass(app, rec, watch = () => {}) {
+  const context = await app.browser.newContext({ viewport: { width: 390, height: 844 } });
+  try {
+    const page = await context.newPage();
+    page.on('pageerror', err => rec.page_errors.push(String(err && err.message || err)));
+    watch(page);
+    const phone = driver(page, rec);
+    await phone.open();
+    await page.locator('#bottle-cta').click();
+    await page.locator('#screen-intake.active .ph-overlay').waitFor({ state: 'attached', timeout: STEP_TIMEOUT });
+    await page.waitForFunction(() => !document.querySelector('.typed-rest'), undefined, { timeout: 30000, polling: 100 });
+    rec.screens.phone = await page.evaluate(() => {
+      const box = sel => {
+        const el = document.querySelector(sel);
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        return { top: Math.round(r.top), bottom: Math.round(r.bottom), visible: r.height > 0 && getComputedStyle(el).visibility !== 'hidden', text: (el.textContent || '').replace(/\s+/g, ' ').trim() };
+      };
+      return {
+        viewport_width: window.innerWidth,
+        viewport_height: window.innerHeight,
+        scroll_y: window.scrollY,
+        field: box('#f-inp'),
+        ai_line: box('#spark-ai-line'),
+        bottle_button: box('#v6-bottle-btn')
+      };
+    });
+    await page.screenshot({ path: join(app.outDir, `run-${rec.run}-spark-screen-phone.png`) });
+    const button = rec.screens.phone.bottle_button;
+    app.step('the spark screen at 390x844', { note: `Bottle button bottom ${button?.bottom}, screen ends at ${rec.screens.phone.viewport_height}` });
+
+    // The spark limit, typed and then pasted.
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: `http://localhost:${PORT}` });
+    const readLimit = () => page.evaluate(() => {
+      const line = document.getElementById('spark-limit');
+      return {
+        length: document.getElementById('f-inp').value.length,
+        line: (line?.textContent || '').trim(),
+        line_visible: (line?.getBoundingClientRect().height || 0) > 0,
+        line_under_field: !!line && line.getBoundingClientRect().top >= document.getElementById('f-inp').getBoundingClientRect().bottom
+      };
+    });
+    const long = 'spark '.repeat(120);
+    const limit = rec.screens.spark_limit = {};
+    await page.locator('#f-inp').click();
+    await page.keyboard.type(long.slice(0, 499));
+    limit.typed_499 = await readLimit();
+    await page.keyboard.type('x');
+    limit.typed_500 = await readLimit();
+    await page.screenshot({ path: join(app.outDir, `run-${rec.run}-spark-limit-phone.png`) });
+    await page.keyboard.type('y');
+    limit.one_key_more = await readLimit();
+    await page.keyboard.press('Control+A');
+    await page.keyboard.press('Delete');
+    limit.emptied = await readLimit();
+    await page.evaluate(text => navigator.clipboard.writeText(text), long.slice(0, 600));
+    await page.keyboard.press('Control+V');
+    limit.pasted_600 = await readLimit();
+    app.step('the spark limit, typed and pasted', { note: `pasted 600, the field holds ${limit.pasted_600.length}` });
+  } finally {
+    await context.close();
+  }
+}
+
+function phoneSparkReport(rec) {
+  const p = rec.screens?.phone;
+  if (!p) return 'Not reached.';
+  const b = p.bottle_button;
+  return `Screen ${p.viewport_width}x${p.viewport_height}, scrolled ${p.scroll_y}px. AI line visible ${!!p.ai_line?.visible}, from ${p.ai_line?.top} to ${p.ai_line?.bottom}, text "${p.ai_line?.text}".`
+    + ` Bottle button "${b?.text}" from ${b?.top} to ${b?.bottom}. Below the bottom of the screen: ${!!b && b.bottom > p.viewport_height}.`;
+}
+
+function sparkLimitReport(rec) {
+  const l = rec.screens?.spark_limit;
+  if (!l?.pasted_600) return 'Not reached.';
+  const say = r => `field holds ${r.length}, line "${r.line}", visible ${r.line_visible}, under the field ${r.line_under_field}`;
+  return `Typed 499: ${say(l.typed_499)}. Typed 500: ${say(l.typed_500)}. One key more: ${say(l.one_key_more)}. Emptied: ${say(l.emptied)}. Pasted 600: ${say(l.pasted_600)}.`;
+}
+
 // ── SCENARIOS ──
 // Each scenario plays its steps into rec.screens and rec.checkpoints, then reports, for every
 // expected result, what happened. A report states facts. It never says pass or fail.
 
 const SCENARIOS = {
+  // The phone pass by itself. It costs nothing and needs no worker.
+  'trust-basics-phone': {
+    title: 'Trust basics, the phone pass',
+    expected: [PHONE_EXPECTED, LIMIT_EXPECTED],
+    async play(app, rec) {
+      rec.exported = true;   // nothing to export: no bottle gets made
+      await phoneSparkPass(app, rec);
+    },
+    report(rec) {
+      return [
+        phoneSparkReport(rec),
+        sparkLimitReport(rec) + `${rec.broke_off ? ` Broke off: ${rec.broke_off}` : ''} Page errors: ${rec.page_errors.length ? rec.page_errors.join('; ') : 'none'}.`
+      ];
+    }
+  },
+
   'trust-basics': {
     title: 'Trust basics',
     expected: [
@@ -731,7 +831,9 @@ const SCENARIOS = {
       'Every element that shows a field the worker listed in ai_fields has data-ai-generated="true", data-ai-model and a visible AI tag. No other element has them: not the spark, the builder\'s answers, the mechanism table\'s questions or M2\'s scene question.',
       'The exported cellar\'s log entries from worker replies carry prompt_version, model and ai_fields.',
       'With the worker URL set to an address that doesn\'t answer, bottling a spark shows the failed-send message, never "Could not reach the worker", and the harness reports it as a failed bottling.',
-      'The bottle drawings in the sidebar, the phone header and on cellar cards have an accessible name that starts with the spark\'s first words and holds no count (nothing like "3 of 6"). The two landing bottles are aria-hidden.'
+      'The bottle drawings in the sidebar, the phone header and on cellar cards have an accessible name that starts with the spark\'s first words and holds no count (nothing like "3 of 6"). The two landing bottles are aria-hidden.',
+      PHONE_EXPECTED,
+      LIMIT_EXPECTED
     ],
 
     async play(app, rec) {
@@ -1130,6 +1232,9 @@ const SCENARIOS = {
       fail.says_could_not_reach = (await deadPage.locator('body').innerText()).includes('Could not reach the worker');
       fail.spark_still_in_field = await deadPage.locator('#f-inp').inputValue().catch(() => null);
       await context.close();
+
+      // Expected 8 and 9, in their own browser profile.
+      await phoneSparkPass(app, rec, watchFonts);
     },
 
     report(rec) {
@@ -1196,6 +1301,9 @@ const SCENARIOS = {
         checkName('self mode sidebar', names.c_self_mode?.sidebar, TRUST.C.spark),
         `landing bottles aria-hidden: ${s.landing_bottles?.ld_bottle}, ${s.landing_bottles?.ld_bottle_phone}`
       ].join('; ') + '.');
+
+      out.push(phoneSparkReport(rec));
+      out.push(sparkLimitReport(rec));
 
       if (rec.broke_off) out[out.length - 1] += ` Broke off: ${rec.broke_off}`;
       out[out.length - 1] += ` Page errors: ${rec.page_errors.length ? rec.page_errors.join('; ') : 'none'}.`;

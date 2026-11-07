@@ -62,6 +62,7 @@ The repo is `C:\Users\James\Desktop\ClaudeCodeTest`. GitHub: Kneecoder/corked, b
 - `worker.js`: the Cloudflare Worker. Every prompt (the `*_DOCTRINE` strings), every route, and every server-side check: length caps, dash and style cleaning. It reads `shared/mechanisms.js` and `shared/provenance.js`.
 - `model-adapters.js`: the seam under `callClaude()`. Anthropic in production, the bake-off options, and a replay adapter for recorded replies. `ANTHROPIC_MODEL` stays pinned in `wrangler.toml`.
 - `wrangler.toml`: worker name `orked-m1-proxy`, the account, `ANTHROPIC_MODEL`, `ALLOWED_ORIGINS`. The Anthropic key is a worker secret (`ANTHROPIC_API_KEY`). It is not in the repo.
+- `fonts/`: the fonts as woff2, with their licences. Inter, Newsreader and IBM Plex Mono, in the weights the app uses. `corked_v6.html` loads them itself. The bench pages load them through `fonts/bench-fonts.css`.
 - `docs/audit-2026-09-24.md`: code audit with numbered findings. Briefs cite them as "audit #5".
 - `docs/Corked_Test_Run_2026-09-25.md`: notes from a test run.
 - `docs/Corked_The_Object_v1.md`, `docs/Corked_The_Object_v2.md`: design notes for the record.
