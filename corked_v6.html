@@ -6184,6 +6184,7 @@ function fs2LabelLanded() {
     return;
   }
   if (!_fsPlan && !_fs2Confirm && document.querySelector('#screen-first.active #fs-record')) fs2RenderEnd();
+  else if (_fs2Confirm && document.querySelector('#screen-first.active #fs-plan')) fs2RenderConfirm();
 }
 
 // ── The screens, in order ──
