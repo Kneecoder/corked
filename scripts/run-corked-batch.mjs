@@ -9,7 +9,12 @@
 //                                                      follow-up; kept as a record of the case)
 //   wordsSource: 'real' | 'reconstructed'             (M6 words_source; default 'real')
 //   expectHalt: true | false | 'maybe'                (drives PASS/FAIL framing in the summary)
-//   stopAfter: 'M1'                                   (stops the chain after the person grade)
+//   stopAfter: 'M1' | 'M0'                            (stops the chain after the person grade, or
+//                                                      after M0 and its scope gate)
+//   firstSessionM2: { answer }                        (no chain: one /m2 call graded the way a new
+//                                                      bottle's F2 sends it, flow first_session_v1,
+//                                                      no problem; grapeName, grapeRel and maturity
+//                                                      as the app would send them)
 //   note: string                                      (freeform — the assertion under test, echoed
 //                                                      verbatim into the report for the later read)
 //
@@ -22,8 +27,19 @@
 //     bake-off's `_bakeoff` record, it is lifted out of the response before logging and
 //     checks, and kept on the log entry as `calls`.
 //   CORKED_JSON=1 also writes spark-NN.json: the whole run record, raw responses included.
+//   CORKED_ONLY=24-28 (or 3,24,26) runs only those cases. Their files keep their numbers.
 
 const WORKER_URL = process.env.CORKED_WORKER || 'https://orked-m1-proxy.kneebonewebdesign.workers.dev';
+const ONLY = (() => {
+  const spec = (process.env.CORKED_ONLY || '').trim();
+  if (!spec) return null;
+  const set = new Set();
+  for (const part of spec.split(',')) {
+    const [a, b] = part.split('-').map(n => parseInt(n, 10));
+    for (let i = a; i <= (Number.isInteger(b) ? b : a); i++) set.add(i);
+  }
+  return set;
+})();
 const WRITE_JSON = process.env.CORKED_JSON === '1';
 const LINE_SOURCE = process.env.CORKED_LINE === 'm0' ? 'm0' : 'spark';
 const OUT_DIR = new URL('../' + (process.env.CORKED_OUT || 'corked-runner-output').replace(/\/?$/, '/'), import.meta.url);
@@ -321,6 +337,47 @@ const SPARKS = [
     stopAfter: 'M1',
     expectHalt: true,
     note: "A group (v48 call 9). Expect: grape turbid, person_kind category_only: not one person."
+  },
+  // 24 to 26. /m2 grading F2 on a new bottle: flow first_session_v1, no problem on record. Sent the
+  // way the app's first session sends it. /m2 doesn't read the spark here; the sparks are stand-ins.
+  // 24. Jamie's rental answer from 7 Nov, as typed. He was the person: F1 "It was me", F2 "It was me".
+  {
+    raw_spark: 'A tool to document a rented place.',
+    maturity: 2, grapeName: '', grapeRel: '',
+    firstSessionM2: { answer: 'I took a lot of pictures of different outlets, sinks, basically the condition of the place. But I did not really know what mattered, and how to really bundle it in one profesional locatoin.' },
+    expectHalt: 'maybe',
+    note: "First session /m2, Jamie's rental answer from 7 Nov (self, maturity 2). Baseline only: no expected grade given."
+  },
+  // 25. One named, dated moment. F1 "my sister", F2 "I saw it".
+  {
+    raw_spark: 'An app that finds an evening when everyone in a group is free.',
+    maturity: 0, grapeName: 'my sister', grapeRel: 'my sister',
+    firstSessionM2: { answer: 'Last Tuesday my sister spent an hour in three group chats trying to find a date for her birthday dinner' },
+    expectHalt: 'maybe',
+    note: 'First session /m2, one answer naming a single dated moment (maturity 0). Baseline only: no expected grade given.'
+  },
+  // 26. A vague answer. F1 skipped, F2 typed with no tap.
+  {
+    raw_spark: 'An app that finds an evening when everyone in a group is free.',
+    maturity: 0, grapeName: '', grapeRel: '',
+    firstSessionM2: { answer: 'people struggle with this all the time' },
+    expectHalt: 'maybe',
+    note: 'First session /m2, a vague answer, no person on record (maturity 0). Baseline only: no expected grade given.'
+  },
+  // 27 and 28. M0 on two experiment sparks, and what its scope gate says.
+  {
+    raw_spark: 'A trivia app for football fans to challenge each others ballknowledge.',
+    maturity: 0, grapeName: '', grapeRel: '',
+    stopAfter: 'M0',
+    expectHalt: 'maybe',
+    note: "M0 on an experiment spark: digestibility and the scope gate. Baseline only: no expected grade given."
+  },
+  {
+    raw_spark: 'A daily game where you describe one picture in a single sentence.',
+    maturity: 0, grapeName: '', grapeRel: '',
+    stopAfter: 'M0',
+    expectHalt: 'maybe',
+    note: "M0 on an experiment spark: digestibility and the scope gate. Baseline only: no expected grade given."
   }
 ];
 
@@ -538,8 +595,29 @@ function logEntry(R, entry) {
 }
 function halt(R, msg) { R.halted = true; R.haltMsg = msg; }
 
+// A new bottle's F2, graded the way the app's first session sends it: no M0, M1 or Phase A on the
+// way, no problem, flow first_session_v1. One call.
+async function runFirstSessionM2(cfg, R) {
+  const answer = cfg.firstSessionM2.answer;
+  R.userLine = R.raw_spark;
+  R.answers.M2 = answer;
+  const req = { flow: 'first_session_v1', user_line: R.raw_spark, grape_name: R.grapeName, grape_relationship: R.grapeRel, maturity_class: R.maturity, user_answer: answer, gap_in_play: false };
+  const res = await callWorker('/m2', req);
+  if (!res.ok) {
+    logEntry(R, { mech: 'M2', endpoint: '/m2 (first session)', kind: 'main', request: req, response: res.data, calls: res.calls, summary: 'ERROR ' + res.status });
+    halt(R, 'First session /m2 request failed.');
+    return R;
+  }
+  const changed = applyMechResult('M2', res.data, R);
+  logEntry(R, { mech: 'M2', endpoint: '/m2 (first session)', kind: 'main', request: req, response: res.data, calls: res.calls, summary: summarize('M2', res.data, changed) });
+  runAssertions(R, 'M2', res.data);
+  halt(R, 'First session /m2: one call, graded with no problem.');
+  return R;
+}
+
 async function runOne(cfg, idx) {
   const R = makeR(cfg);
+  if (cfg.firstSessionM2) return runFirstSessionM2(cfg, R);
 
   // M0
   let res = await callWorker('/m0', { raw_spark: R.raw_spark });
@@ -562,6 +640,11 @@ async function runOne(cfg, idx) {
   R.userLine = LINE_SOURCE === 'm0' ? (data.user_line_candidate || R.raw_spark) : R.raw_spark;
   R.sparkParse = data.spark_parse || null;
   R.domain = (data.spark_parse && data.spark_parse.domain) || '';
+
+  if (cfg.stopAfter === 'M0') {
+    halt(R, 'Stops after M0: this case checks M0 and its scope gate only.');
+    return R;
+  }
 
   // As in the app: M0 asks no follow-up. A thin spark bottles as is; an unbottleable one stops.
   if (data.digestibility && data.digestibility.state === 'unbottleable') {
@@ -729,6 +812,7 @@ async function main() {
   for (let i = 0; i < SPARKS.length; i++) {
     const cfg = SPARKS[i];
     const idx = i + 1;
+    if (ONLY && !ONLY.has(idx)) continue;
     process.stdout.write('Running spark ' + idx + '/' + SPARKS.length + '... ');
     let R;
     try {

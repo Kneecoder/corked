@@ -88,7 +88,7 @@ All POST, JSON in and out, at https://orked-m1-proxy.kneebonewebdesign.workers.d
 
 ### Test runners and batteries
 - `tests/`: offline tests, `npm test`. No browser, no key, no cost. The shared modules with plain inputs, and the worker's own checks driven by recorded replies from `runs/` through the replay adapter. They check code, not screens, and they add to the scripted runs a brief asks for. They replace nothing.
-- `scripts/run-corked-batch.mjs`: the 20-spark Phase 1 battery. Runs in Node with no browser: `node scripts/run-corked-batch.mjs`. Calls the live worker for M0 to M7. Writes one report per spark to `corked-runner-output/`, which is tracked in git.
+- `scripts/run-corked-batch.mjs`: the 20-spark Phase 1 battery. Runs in Node with no browser: `node scripts/run-corked-batch.mjs`. Calls the live worker for M0 to M7. Writes one report per spark to `corked-runner-output/`, which is tracked in git. Cases 21 to 23 are B1's person cases (M1 only). Cases 24 to 26 grade a new bottle's F2 on /m2 with no problem, and 27 and 28 run M0 alone on two experiment sparks; their baseline is `runs/2026-11-07-battery-24-28-baseline`. `CORKED_ONLY=24-28` runs only those cases.
 - `scripts/run-corked-batch-2026-07-12.mjs`: the same runner. Writes to `corked-runner-output-2026-07-12/`.
 - `corked-runner.html`: a browser runner that steps one spark through the chain.
 - `m0-bench.html`: the 17-spark M0 regression bench. A browser page.

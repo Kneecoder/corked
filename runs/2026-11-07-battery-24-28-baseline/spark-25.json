@@ -1,0 +1,146 @@
+{
+  "idx": 25,
+  "cfg": {
+    "raw_spark": "An app that finds an evening when everyone in a group is free.",
+    "maturity": 0,
+    "grapeName": "my sister",
+    "grapeRel": "my sister",
+    "firstSessionM2": {
+      "answer": "Last Tuesday my sister spent an hour in three group chats trying to find a date for her birthday dinner"
+    },
+    "expectHalt": "maybe",
+    "note": "First session /m2, one answer naming a single dated moment (maturity 0). Baseline only: no expected grade given."
+  },
+  "outcome": "RECORDED (halted: First session /m2: one call, graded with no problem.)",
+  "run": {
+    "workerUrl": "https://orked-m1-proxy.kneebonewebdesign.workers.dev",
+    "raw_spark": "An app that finds an evening when everyone in a group is free.",
+    "maturity": 0,
+    "grapeName": "my sister",
+    "grapeRel": "my sister",
+    "wordsSource": "real",
+    "m0": null,
+    "userLine": "An app that finds an evening when everyone in a group is free.",
+    "sparkParse": null,
+    "domain": "",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {
+      "M2": "Last Tuesday my sister spent an hour in three group chats trying to find a date for her birthday dinner"
+    },
+    "log": [
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (first session)",
+        "kind": "main",
+        "request": {
+          "flow": "first_session_v1",
+          "user_line": "An app that finds an evening when everyone in a group is free.",
+          "grape_name": "my sister",
+          "grape_relationship": "my sister",
+          "maturity_class": 0,
+          "user_answer": "Last Tuesday my sister spent an hour in three group chats trying to find a date for her birthday dinner",
+          "gap_in_play": false
+        },
+        "response": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "settled",
+          "tell": {
+            "state": "settled",
+            "anchor_span": "spent an hour in three group chats trying to find a date for her birthday dinner"
+          },
+          "vintage": {
+            "state": "settled",
+            "anchor_span": "Last Tuesday"
+          },
+          "observation": {
+            "surface_text": "The answer names a specific observable action: coordinating across three group chats for an hour. The moment is anchored to a single named day.",
+            "anchor_span": "Last Tuesday my sister spent an hour in three group chats trying to find a date for her birthday dinner"
+          },
+          "substitution_detected": false,
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": true,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": false
+          },
+          "ai_fields": [
+            "observation.surface_text"
+          ],
+          "prompt_version": "2026-11-07",
+          "model": "claude-sonnet-4-6"
+        },
+        "summary": "state=settled · substitution_detected=false · swirl=no · changed=[Tell, Vintage]",
+        "ts": "2026-11-07T14:14:47.410Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "vintage": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "First session /m2: one call, graded with no problem."
+  }
+}

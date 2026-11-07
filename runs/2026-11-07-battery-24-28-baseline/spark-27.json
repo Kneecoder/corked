@@ -1,0 +1,248 @@
+{
+  "idx": 27,
+  "cfg": {
+    "raw_spark": "A trivia app for football fans to challenge each others ballknowledge.",
+    "maturity": 0,
+    "grapeName": "",
+    "grapeRel": "",
+    "stopAfter": "M0",
+    "expectHalt": "maybe",
+    "note": "M0 on an experiment spark: digestibility and the scope gate. Baseline only: no expected grade given."
+  },
+  "outcome": "RECORDED (halted: Stops after M0: this case checks M0 and its scope gate only.)",
+  "run": {
+    "workerUrl": "https://orked-m1-proxy.kneebonewebdesign.workers.dev",
+    "raw_spark": "A trivia app for football fans to challenge each others ballknowledge.",
+    "maturity": 0,
+    "grapeName": "",
+    "grapeRel": "",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "A trivia app for football fans to challenge each others ballknowledge.",
+      "user_line_candidate": "A trivia app for football fans to challenge each other's ball knowledge.",
+      "spark_parse": {
+        "solution_form": "app",
+        "implied_person": "football fans",
+        "suspected_problem": null,
+        "triggering_situation": null,
+        "promised_change": null,
+        "domain": "football",
+        "solution_is_software": "software"
+      },
+      "digestibility": {
+        "state": "bottleable_cloudy",
+        "missing": [
+          "suspected_problem"
+        ],
+        "reason": "Bottleable, cloudy. The app form, the population, and the football domain are visible, but no problem is stated. That is what the cellar will age.",
+        "can_seal": true,
+        "requires_followup_before_seal": false
+      },
+      "followup": {
+        "needed": true,
+        "question": "What problem are football fans having with testing or challenging each other's football knowledge right now?"
+      },
+      "m1_setup": {
+        "question": "Name a specific football fan and the moment they wanted to challenge someone else's football knowledge but couldn't.",
+        "hint": "A good answer names the person, what they were trying to do with another fan, and what got in the way.",
+        "person_label": "Football fan",
+        "person_placeholder": "Jake, weekend league player and football obsessive",
+        "when_label": "When did it happen",
+        "when_placeholder": "after a match when an argument broke out about player stats",
+        "trying_label": "What they were trying to do",
+        "trying_placeholder": null,
+        "happened_label": "What actually happened",
+        "happened_placeholder": null
+      },
+      "person_in_spark": {
+        "grade": "none",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": true
+      },
+      "ai_fields": [
+        "user_line_candidate",
+        "digestibility.reason",
+        "followup.question",
+        "m1_setup.question",
+        "m1_setup.hint",
+        "m1_setup.person_label",
+        "m1_setup.person_placeholder",
+        "m1_setup.when_label",
+        "m1_setup.when_placeholder",
+        "m1_setup.trying_label",
+        "m1_setup.happened_label",
+        "spark_parse.solution_form",
+        "spark_parse.implied_person",
+        "spark_parse.domain",
+        "digestibility.missing"
+      ],
+      "prompt_version": "2026-11-07",
+      "model": "claude-sonnet-4-6"
+    },
+    "userLine": "A trivia app for football fans to challenge each others ballknowledge.",
+    "sparkParse": {
+      "solution_form": "app",
+      "implied_person": "football fans",
+      "suspected_problem": null,
+      "triggering_situation": null,
+      "promised_change": null,
+      "domain": "football",
+      "solution_is_software": "software"
+    },
+    "domain": "football",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {},
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A trivia app for football fans to challenge each others ballknowledge."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "A trivia app for football fans to challenge each others ballknowledge.",
+          "user_line_candidate": "A trivia app for football fans to challenge each other's ball knowledge.",
+          "spark_parse": {
+            "solution_form": "app",
+            "implied_person": "football fans",
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "football",
+            "solution_is_software": "software"
+          },
+          "digestibility": {
+            "state": "bottleable_cloudy",
+            "missing": [
+              "suspected_problem"
+            ],
+            "reason": "Bottleable, cloudy. The app form, the population, and the football domain are visible, but no problem is stated. That is what the cellar will age.",
+            "can_seal": true,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": true,
+            "question": "What problem are football fans having with testing or challenging each other's football knowledge right now?"
+          },
+          "m1_setup": {
+            "question": "Name a specific football fan and the moment they wanted to challenge someone else's football knowledge but couldn't.",
+            "hint": "A good answer names the person, what they were trying to do with another fan, and what got in the way.",
+            "person_label": "Football fan",
+            "person_placeholder": "Jake, weekend league player and football obsessive",
+            "when_label": "When did it happen",
+            "when_placeholder": "after a match when an argument broke out about player stats",
+            "trying_label": "What they were trying to do",
+            "trying_placeholder": null,
+            "happened_label": "What actually happened",
+            "happened_placeholder": null
+          },
+          "person_in_spark": {
+            "grade": "none",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": true
+          },
+          "ai_fields": [
+            "user_line_candidate",
+            "digestibility.reason",
+            "followup.question",
+            "m1_setup.question",
+            "m1_setup.hint",
+            "m1_setup.person_label",
+            "m1_setup.person_placeholder",
+            "m1_setup.when_label",
+            "m1_setup.when_placeholder",
+            "m1_setup.trying_label",
+            "m1_setup.happened_label",
+            "spark_parse.solution_form",
+            "spark_parse.implied_person",
+            "spark_parse.domain",
+            "digestibility.missing"
+          ],
+          "prompt_version": "2026-11-07",
+          "model": "claude-sonnet-4-6"
+        },
+        "summary": "digestibility=bottleable_cloudy · in_scope=true · followup_needed=true",
+        "ts": "2026-11-07T14:15:00.379Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "Stops after M0: this case checks M0 and its scope gate only."
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "idx": 26,
+  "cfg": {
+    "raw_spark": "An app that finds an evening when everyone in a group is free.",
+    "maturity": 0,
+    "grapeName": "",
+    "grapeRel": "",
+    "firstSessionM2": {
+      "answer": "people struggle with this all the time"
+    },
+    "expectHalt": "maybe",
+    "note": "First session /m2, a vague answer, no person on record (maturity 0). Baseline only: no expected grade given."
+  },
+  "outcome": "RECORDED (halted: First session /m2: one call, graded with no problem.)",
+  "run": {
+    "workerUrl": "https://orked-m1-proxy.kneebonewebdesign.workers.dev",
+    "raw_spark": "An app that finds an evening when everyone in a group is free.",
+    "maturity": 0,
+    "grapeName": "",
+    "grapeRel": "",
+    "wordsSource": "real",
+    "m0": null,
+    "userLine": "An app that finds an evening when everyone in a group is free.",
+    "sparkParse": null,
+    "domain": "",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {
+      "M2": "people struggle with this all the time"
+    },
+    "log": [
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (first session)",
+        "kind": "main",
+        "request": {
+          "flow": "first_session_v1",
+          "user_line": "An app that finds an evening when everyone in a group is free.",
+          "grape_name": "",
+          "grape_relationship": "",
+          "maturity_class": 0,
+          "user_answer": "people struggle with this all the time",
+          "gap_in_play": false
+        },
+        "response": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "turbid",
+          "tell": {
+            "state": "turbid",
+            "anchor_span": "people struggle with this all the time"
+          },
+          "vintage": {
+            "state": "turbid",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "The answer names no specific person performing any observable action. No instance, time, or context is present to anchor the claim.",
+            "anchor_span": "people struggle with this all the time"
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "Who is the specific person this answer is meant to be about, and when did you last watch them run into this?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": false,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": true
+          },
+          "ai_fields": [
+            "observation.surface_text",
+            "swirl.question"
+          ],
+          "prompt_version": "2026-11-07",
+          "model": "claude-sonnet-4-6"
+        },
+        "summary": "state=turbid · substitution_detected=false · swirl=yes · changed=[Tell, Vintage]",
+        "ts": "2026-11-07T14:14:51.441Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "turbid",
+        "history": [
+          "inert",
+          "turbid"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "turbid"
+          }
+        ]
+      },
+      "vintage": {
+        "state": "turbid",
+        "history": [
+          "inert",
+          "turbid"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "turbid"
+          }
+        ]
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "First session /m2: one call, graded with no problem."
+  }
+}

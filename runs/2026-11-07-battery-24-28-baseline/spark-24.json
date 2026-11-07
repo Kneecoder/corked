@@ -1,0 +1,153 @@
+{
+  "idx": 24,
+  "cfg": {
+    "raw_spark": "A tool to document a rented place.",
+    "maturity": 2,
+    "grapeName": "",
+    "grapeRel": "",
+    "firstSessionM2": {
+      "answer": "I took a lot of pictures of different outlets, sinks, basically the condition of the place. But I did not really know what mattered, and how to really bundle it in one profesional locatoin."
+    },
+    "expectHalt": "maybe",
+    "note": "First session /m2, Jamie's rental answer from 7 Nov (self, maturity 2). Baseline only: no expected grade given."
+  },
+  "outcome": "RECORDED (halted: First session /m2: one call, graded with no problem.)",
+  "run": {
+    "workerUrl": "https://orked-m1-proxy.kneebonewebdesign.workers.dev",
+    "raw_spark": "A tool to document a rented place.",
+    "maturity": 2,
+    "grapeName": "",
+    "grapeRel": "",
+    "wordsSource": "real",
+    "m0": null,
+    "userLine": "A tool to document a rented place.",
+    "sparkParse": null,
+    "domain": "",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {
+      "M2": "I took a lot of pictures of different outlets, sinks, basically the condition of the place. But I did not really know what mattered, and how to really bundle it in one profesional locatoin."
+    },
+    "log": [
+      {
+        "mech": "M2",
+        "endpoint": "/m2 (first session)",
+        "kind": "main",
+        "request": {
+          "flow": "first_session_v1",
+          "user_line": "A tool to document a rented place.",
+          "grape_name": "",
+          "grape_relationship": "",
+          "maturity_class": 2,
+          "user_answer": "I took a lot of pictures of different outlets, sinks, basically the condition of the place. But I did not really know what mattered, and how to really bundle it in one profesional locatoin.",
+          "gap_in_play": false
+        },
+        "response": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "clearing",
+          "tell": {
+            "state": "settled",
+            "anchor_span": "I took a lot of pictures of different outlets, sinks, basically the condition of the place"
+          },
+          "vintage": {
+            "state": "clearing",
+            "anchor_span": "I took a lot of pictures"
+          },
+          "observation": {
+            "surface_text": "The answer names a specific filmable action: photographing outlets, sinks, and general condition. The moment is unanchored, no single instance, date, or context is named, only a recurring or general account of the behaviour.",
+            "anchor_span": "I took a lot of pictures of different outlets, sinks, basically the condition of the place"
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "Was this one specific property visit on a specific day, or a pattern that happened across multiple visits or locations?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": true,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [
+              "observation.surface_text:dash"
+            ],
+            "overall_state_is_floor": true,
+            "swirl_included": true
+          },
+          "ai_fields": [
+            "observation.surface_text",
+            "swirl.question"
+          ],
+          "prompt_version": "2026-11-07",
+          "model": "claude-sonnet-4-6"
+        },
+        "summary": "state=clearing · substitution_detected=false · swirl=yes · changed=[Tell, Vintage]",
+        "ts": "2026-11-07T14:14:44.141Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "settled",
+        "history": [
+          "inert",
+          "settled"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "settled"
+          }
+        ]
+      },
+      "vintage": {
+        "state": "clearing",
+        "history": [
+          "inert",
+          "clearing"
+        ],
+        "mech": "M2",
+        "rawGrades": [
+          {
+            "mech": "M2",
+            "offeredState": "clearing"
+          }
+        ]
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "First session /m2: one call, graded with no problem."
+  }
+}
