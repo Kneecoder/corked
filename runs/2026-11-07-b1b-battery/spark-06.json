@@ -1,0 +1,242 @@
+{
+  "idx": 6,
+  "cfg": {
+    "raw_spark": "Something that makes life easier.",
+    "maturity": 1,
+    "grapeName": "",
+    "grapeRel": "",
+    "m0FollowupAnswer": "It's for freelancers.",
+    "expectHalt": true,
+    "note": "Unbottleable rescue guard. Expect: unbottleable on first pass. Followup supplies a person only (no domain, no problem), so unbottleable_rescue_blocked true and state stays unbottleable. Chain halts. If it re-bottles, the rescue guard has a hole."
+  },
+  "outcome": "PASS (halted as expected: M0: unbottleable, nothing to bottle.)",
+  "run": {
+    "workerUrl": "https://abdeab65-orked-m1-proxy.kneebonewebdesign.workers.dev",
+    "raw_spark": "Something that makes life easier.",
+    "maturity": 1,
+    "grapeName": "",
+    "grapeRel": "",
+    "wordsSource": "real",
+    "m0": {
+      "schema_version": "m0.v1",
+      "mechanism": "M0",
+      "raw_spark": "Something that makes life easier.",
+      "user_line_candidate": "Something that makes life easier.",
+      "spark_parse": {
+        "solution_form": null,
+        "implied_person": null,
+        "suspected_problem": null,
+        "triggering_situation": null,
+        "promised_change": null,
+        "domain": null,
+        "solution_is_software": "unstated"
+      },
+      "digestibility": {
+        "state": "unbottleable",
+        "missing": [
+          "person or role",
+          "domain",
+          "problem"
+        ],
+        "reason": "Not bottleable yet. No person, no domain, and no problem are present. There is nothing to age.",
+        "can_seal": false,
+        "requires_followup_before_seal": true
+      },
+      "followup": {
+        "needed": true,
+        "question": "Who is this for, and what problem are they sitting with before they find it?"
+      },
+      "m1_setup": {
+        "question": "Name the specific person and moment this idea starts from.",
+        "hint": "A good answer names who is struggling, with what, and when it happens.",
+        "person_label": "Person",
+        "person_placeholder": null,
+        "when_label": "When",
+        "when_placeholder": null,
+        "trying_label": "What they were trying to do",
+        "trying_placeholder": null,
+        "happened_label": "What happened",
+        "happened_placeholder": null
+      },
+      "person_in_spark": {
+        "grade": "none",
+        "named_person": null,
+        "relationship_tie": null
+      },
+      "server_checks": {
+        "schema_valid": true,
+        "banned_words_found": [],
+        "visible_style_violations_cleaned": [],
+        "m1_setup_present": true,
+        "followup_repaired": false,
+        "unbottleable_rescue_blocked": false,
+        "m0_moment_cloudiness_overridden": false,
+        "m0_ready_downgraded": false,
+        "seal_contract_normalized": true,
+        "m1_placeholders_nulled": true
+      },
+      "ai_fields": [
+        "user_line_candidate",
+        "digestibility.reason",
+        "followup.question",
+        "m1_setup.question",
+        "m1_setup.hint",
+        "m1_setup.person_label",
+        "m1_setup.when_label",
+        "m1_setup.trying_label",
+        "m1_setup.happened_label",
+        "digestibility.missing"
+      ],
+      "prompt_version": "2026-11-07",
+      "model": "claude-sonnet-4-6"
+    },
+    "userLine": "Something that makes life easier.",
+    "sparkParse": {
+      "solution_form": null,
+      "implied_person": null,
+      "suspected_problem": null,
+      "triggering_situation": null,
+      "promised_change": null,
+      "domain": null,
+      "solution_is_software": "unstated"
+    },
+    "domain": "",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {},
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "Something that makes life easier."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "Something that makes life easier.",
+          "user_line_candidate": "Something that makes life easier.",
+          "spark_parse": {
+            "solution_form": null,
+            "implied_person": null,
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": null,
+            "solution_is_software": "unstated"
+          },
+          "digestibility": {
+            "state": "unbottleable",
+            "missing": [
+              "person or role",
+              "domain",
+              "problem"
+            ],
+            "reason": "Not bottleable yet. No person, no domain, and no problem are present. There is nothing to age.",
+            "can_seal": false,
+            "requires_followup_before_seal": true
+          },
+          "followup": {
+            "needed": true,
+            "question": "Who is this for, and what problem are they sitting with before they find it?"
+          },
+          "m1_setup": {
+            "question": "Name the specific person and moment this idea starts from.",
+            "hint": "A good answer names who is struggling, with what, and when it happens.",
+            "person_label": "Person",
+            "person_placeholder": null,
+            "when_label": "When",
+            "when_placeholder": null,
+            "trying_label": "What they were trying to do",
+            "trying_placeholder": null,
+            "happened_label": "What happened",
+            "happened_placeholder": null
+          },
+          "person_in_spark": {
+            "grade": "none",
+            "named_person": null,
+            "relationship_tie": null
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "banned_words_found": [],
+            "visible_style_violations_cleaned": [],
+            "m1_setup_present": true,
+            "followup_repaired": false,
+            "unbottleable_rescue_blocked": false,
+            "m0_moment_cloudiness_overridden": false,
+            "m0_ready_downgraded": false,
+            "seal_contract_normalized": true,
+            "m1_placeholders_nulled": true
+          },
+          "ai_fields": [
+            "user_line_candidate",
+            "digestibility.reason",
+            "followup.question",
+            "m1_setup.question",
+            "m1_setup.hint",
+            "m1_setup.person_label",
+            "m1_setup.when_label",
+            "m1_setup.trying_label",
+            "m1_setup.happened_label",
+            "digestibility.missing"
+          ],
+          "prompt_version": "2026-11-07",
+          "model": "claude-sonnet-4-6"
+        },
+        "summary": "digestibility=unbottleable · in_scope=true · followup_needed=true",
+        "ts": "2026-11-07T14:02:35.473Z"
+      }
+    ],
+    "anomalies": [],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "M0: unbottleable, nothing to bottle."
+  }
+}
