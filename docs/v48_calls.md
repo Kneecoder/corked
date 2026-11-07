@@ -40,3 +40,6 @@
 11. Yes to the principle: Corked's own line is set in advance. Before Stage 0, settle what counts as an unprompted return, what counts as a useful return, the threshold for a five-person second round, and the consequence.
 
 Across all calls: Fix and experiment each get a test that fits them. A fix checks the problem with real people; an experiment lets people try a small version. No path requires an interview, and an experiment needs no problem and no repeat use by default. The builder picks, before running the test, which behaviour by other people would count, and sets the line for it. This is the rule for testing only; an outside test is never a prerequisite for a useful first shaping session.
+
+## 7 Nov 2026, B1c
+- Jamie's go-ahead: first-session questions are written by the AI for each idea, around fixed purposes. The builder's answers are stored word for word, with the exact question shown.
