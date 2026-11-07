@@ -1,0 +1,438 @@
+{
+  "scenario": "b1-s4",
+  "title": "B1 S4: experiment, full answers, a daily image-description game",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T11:49:07.813Z",
+  "finished_at": "2026-11-07T11:49:16.959Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T11:49:07.973Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T11:49:08.167Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T11:49:08.256Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T11:49:08.304Z",
+      "step": "picked experiment",
+      "note": "When did someone last do something like this, even by hand or in another app?"
+    },
+    {
+      "at": "2026-11-07T11:49:08.350Z",
+      "step": "answered E1",
+      "note": "My friends post their Wordle scores in our group chat every morning."
+    },
+    {
+      "at": "2026-11-07T11:49:08.400Z",
+      "step": "answered E2",
+      "note": "Curious to see what the others wrote, and a little proud of their own sentence."
+    },
+    {
+      "at": "2026-11-07T11:49:08.481Z",
+      "step": "answered E3",
+      "note": "One photo, one text box, then every sentence on one page."
+    },
+    {
+      "at": "2026-11-07T11:49:08.515Z",
+      "step": "answered E4",
+      "note": "Sam, Priya and my brother Tom"
+    },
+    {
+      "at": "2026-11-07T11:49:08.549Z",
+      "step": "answered E5",
+      "note": "A daily photo where you write one sentence and then read everyone else's."
+    },
+    {
+      "at": "2026-11-07T11:49:08.600Z",
+      "step": "answered E6",
+      "note": "Two of the three come back on their own the next day and write another sentence."
+    },
+    {
+      "at": "2026-11-07T11:49:08.670Z",
+      "step": "planned the step",
+      "note": "Build the smallest version first, Planned for this week"
+    },
+    {
+      "at": "2026-11-07T11:49:16.953Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1-s4\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "tapped_at": "2026-11-07T11:49:08.301Z",
+    "burst": [
+      {
+        "screen": "screen-first",
+        "qid": "E1",
+        "question": "When did someone last do something like this, even by hand or in another app?",
+        "taps": [
+          "No one I know of"
+        ],
+        "unsure": "Don't know yet",
+        "skip": "Skip",
+        "next": "Continue →",
+        "end": false,
+        "visible_text": "No one I know of\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "My friends post their Wordle scores in our group chat every morning."
+        }
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E2",
+        "question": "What should someone feel in the first minute?",
+        "taps": [],
+        "unsure": "Don't know yet",
+        "skip": "Skip",
+        "next": "Continue →",
+        "end": false,
+        "visible_text": "Don't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Curious to see what the others wrote, and a little proud of their own sentence."
+        }
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E3",
+        "question": "What's the smallest version that still gives them that?",
+        "taps": [
+          "I already built it"
+        ],
+        "unsure": "Don't know yet",
+        "skip": "Skip",
+        "next": "Continue →",
+        "end": false,
+        "visible_text": "I already built it\nDon't know yet\nSkip\nContinue →",
+        "answered": {
+          "tap": "I already built it",
+          "link": "https://example.com/one-photo",
+          "text": "One photo, one text box, then every sentence on one page."
+        }
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E4",
+        "question": "Who are the first one to three people you'd show it to? Names, initials, or a few words about who they are.",
+        "taps": [],
+        "unsure": "Don't know yet",
+        "skip": "Skip",
+        "next": "Continue →",
+        "end": false,
+        "visible_text": "Don't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Sam, Priya and my brother Tom"
+        }
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E5",
+        "question": "Say your idea again in one sentence, as you'd say it today.",
+        "taps": [],
+        "unsure": "Don't know yet",
+        "skip": "Skip",
+        "next": "Continue →",
+        "end": false,
+        "visible_text": "Don't know yet\nSkip\nContinue →",
+        "answered": {
+          "text": "A daily photo where you write one sentence and then read everyone else's."
+        }
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E6",
+        "question": "What would those people have to do with it for you to keep going?",
+        "taps": [],
+        "unsure": "Not set yet",
+        "skip": "Skip",
+        "next": "Continue →",
+        "end": false,
+        "visible_text": "HOW MANY, OUT OF HOW MANY\nout of\nNot set yet\nSkip\nContinue →",
+        "answered": {
+          "text": "Two of the three come back on their own the next day and write another sentence.",
+          "howMany": 2,
+          "outOf": 3
+        }
+      }
+    ],
+    "end": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "A daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "A daily photo where you write one sentence and then read everyone else's.\n7 Nov 2026"
+        },
+        {
+          "row": "last-time",
+          "label": "THE LAST TIME SOMETHING LIKE IT HAPPENED",
+          "value": "My friends post their Wordle scores in our group chat every morning."
+        },
+        {
+          "row": "feel",
+          "label": "THE FEELING",
+          "value": "Curious to see what the others wrote, and a little proud of their own sentence."
+        },
+        {
+          "row": "smallest",
+          "label": "THE SMALLEST VERSION",
+          "value": "One photo, one text box, then every sentence on one page.\nI already built it\nhttps://example.com/one-photo"
+        },
+        {
+          "row": "people",
+          "label": "THE FIRST PEOPLE",
+          "value": "Sam, Priya and my brother Tom"
+        },
+        {
+          "row": "line",
+          "label": "YOUR LINE",
+          "value": "Two of the three come back on their own the next day and write another sentence.\n2 out of 3"
+        }
+      ],
+      "observation": null,
+      "nobody": null,
+      "switch_link": "Switch to the fix questions",
+      "choices": [
+        {
+          "id": "fs-choice-show",
+          "text": "Show it to Sam, Priya and my brother Tom",
+          "cls": "btn-second fs-choice"
+        },
+        {
+          "id": "fs-choice-build",
+          "text": "Build the smallest version first",
+          "cls": "btn-second fs-choice"
+        },
+        {
+          "id": "fs-rethink",
+          "text": "Rethink it first",
+          "cls": "btn-second fs-choice"
+        },
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn-ghost fs-cellar"
+        }
+      ],
+      "visible_text": "FIRST\nA daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it.\n7 Nov 2026\nNOW\nA daily photo where you write one sentence and then read everyone else's.\n7 Nov 2026\nTHE LAST TIME SOMETHING LIKE IT HAPPENED\nMy friends post their Wordle scores in our group chat every morning.\nTHE FEELING\nCurious to see what the others wrote, and a little proud of their own sentence.\nTHE SMALLEST VERSION\nOne photo, one text box, then every sentence on one page.\nI already built it\nhttps://example.com/one-photo\nTHE FIRST PEOPLE\nSam, Priya and my brother Tom\nYOUR LINE\nTwo of the three come back on their own the next day and write another sentence.\n2 out of 3\nSwitch to the fix questions\nShow it to Sam, Priya and my brother Tom\nBuild the smallest version first\nRethink it first\nBack to the cellar"
+    },
+    "step": {
+      "line_asked": false,
+      "planning": "Build the smallest version first",
+      "planned": {
+        "when": "Planned for this week",
+        "step": "Build the smallest version first"
+      }
+    }
+  },
+  "checkpoints": {
+    "bottle": {
+      "first": {
+        "at": "2026-11-07T11:49:08.229Z",
+        "path": "experiment",
+        "slots": {
+          "last_time": {
+            "q": "E1",
+            "value": "answer",
+            "question": "When did someone last do something like this, even by hand or in another app?",
+            "at": "2026-11-07T11:49:08.346Z",
+            "text": "My friends post their Wordle scores in our group chat every morning."
+          },
+          "feel": {
+            "q": "E2",
+            "value": "answer",
+            "question": "What should someone feel in the first minute?",
+            "at": "2026-11-07T11:49:08.396Z",
+            "text": "Curious to see what the others wrote, and a little proud of their own sentence."
+          },
+          "smallest": {
+            "q": "E3",
+            "value": "answer",
+            "question": "What's the smallest version that still gives them that?",
+            "at": "2026-11-07T11:49:08.478Z",
+            "text": "One photo, one text box, then every sentence on one page.",
+            "tap": "built",
+            "tap_label": "I already built it",
+            "link": "https://example.com/one-photo"
+          },
+          "first_people": {
+            "q": "E4",
+            "value": "answer",
+            "question": "Who are the first one to three people you'd show it to? Names, initials, or a few words about who they are.",
+            "at": "2026-11-07T11:49:08.512Z",
+            "text": "Sam, Priya and my brother Tom"
+          },
+          "now": {
+            "q": "E5",
+            "value": "answer",
+            "question": "Say your idea again in one sentence, as you'd say it today.",
+            "at": "2026-11-07T11:49:08.547Z",
+            "text": "A daily photo where you write one sentence and then read everyone else's."
+          },
+          "line": {
+            "q": "E6",
+            "value": "answer",
+            "question": "What would those people have to do with it for you to keep going?",
+            "at": "2026-11-07T11:49:08.595Z",
+            "text": "Two of the three come back on their own the next day and write another sentence.",
+            "how_many": "2",
+            "out_of": "3"
+          }
+        },
+        "queue": [],
+        "grades": {},
+        "step": {
+          "kind": "build",
+          "label": "Build the smallest version first",
+          "when": "this_week",
+          "day": "2026-11-08",
+          "at": "2026-11-07T11:49:08.662Z"
+        },
+        "maturity": null,
+        "m0_open": null,
+        "m2": null
+      },
+      "log": [
+        {
+          "at": "2026-11-07T11:49:08.229Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "spark",
+          "question": "What did you bring to the cellar?",
+          "answer": "A daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it."
+        },
+        {
+          "at": "2026-11-07T11:49:08.296Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "gate",
+          "question": "Is this a fix or an experiment?",
+          "answer": "An experiment. I want to build it and see what people do with it.",
+          "path": "experiment"
+        },
+        {
+          "at": "2026-11-07T11:49:08.346Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E1",
+          "slot": "last_time",
+          "value": "answer",
+          "question": "When did someone last do something like this, even by hand or in another app?",
+          "answer": "My friends post their Wordle scores in our group chat every morning."
+        },
+        {
+          "at": "2026-11-07T11:49:08.396Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E2",
+          "slot": "feel",
+          "value": "answer",
+          "question": "What should someone feel in the first minute?",
+          "answer": "Curious to see what the others wrote, and a little proud of their own sentence."
+        },
+        {
+          "at": "2026-11-07T11:49:08.478Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E3",
+          "slot": "smallest",
+          "value": "answer",
+          "question": "What's the smallest version that still gives them that?",
+          "answer": "One photo, one text box, then every sentence on one page.",
+          "tap": "built",
+          "tap_label": "I already built it",
+          "link": "https://example.com/one-photo"
+        },
+        {
+          "at": "2026-11-07T11:49:08.512Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E4",
+          "slot": "first_people",
+          "value": "answer",
+          "question": "Who are the first one to three people you'd show it to? Names, initials, or a few words about who they are.",
+          "answer": "Sam, Priya and my brother Tom"
+        },
+        {
+          "at": "2026-11-07T11:49:08.547Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E5",
+          "slot": "now",
+          "value": "answer",
+          "question": "Say your idea again in one sentence, as you'd say it today.",
+          "answer": "A daily photo where you write one sentence and then read everyone else's."
+        },
+        {
+          "at": "2026-11-07T11:49:08.595Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E6",
+          "slot": "line",
+          "value": "answer",
+          "question": "What would those people have to do with it for you to keep going?",
+          "answer": "Two of the three come back on their own the next day and write another sentence.",
+          "how_many": "2",
+          "out_of": "3"
+        },
+        {
+          "at": "2026-11-07T11:49:08.662Z",
+          "type": "next_step",
+          "flow": "first_session_v1",
+          "kind": "build",
+          "label": "Build the smallest version first",
+          "when": "this_week",
+          "day": "2026-11-08"
+        }
+      ],
+      "restatements": [
+        {
+          "at": "2026-11-07T11:49:08.547Z",
+          "text": "A daily photo where you write one sentence and then read everyone else's.",
+          "from": "E5"
+        }
+      ]
+    }
+  },
+  "expected": [
+    {
+      "n": 1,
+      "expected": "No question contains \"problem\", \"need\", \"wrong\" or \"stopped\".",
+      "happened": "Questions: E1 \"When did someone last do something like this, even by hand or in another app?\"; E2 \"What should someone feel in the first minute?\"; E3 \"What's the smallest version that still gives them that?\"; E4 \"Who are the first one to three people you'd show it to? Names, initials, or a few words about who they are.\"; E5 \"Say your idea again in one sentence, as you'd say it today.\"; E6 \"What would those people have to do with it for you to keep going?\". The words anywhere else on those screens: none. On the end screen: none."
+    },
+    {
+      "n": 2,
+      "expected": "No model call after M0.",
+      "happened": "Worker requests in the run: /m0 at 2026-11-07T11:49:08.233Z. Gate tapped at 2026-11-07T11:49:08.301Z. Requests other than /m0: 0."
+    },
+    {
+      "n": 3,
+      "expected": "The line is saved verbatim.",
+      "happened": "Line stored: \"Two of the three come back on their own the next day and write another sentence.\", how many 2, out of 3. Same as typed: true. Log entry: answer \"Two of the three come back on their own the next day and write another sentence.\", how many 2, out of 3. End screen, \"YOUR LINE\": \"Two of the three come back on their own the next day and write another sentence. / 2 out of 3\". Step: {\"kind\":\"build\",\"label\":\"Build the smallest version first\",\"when\":\"this_week\",\"day\":\"2026-11-08\",\"at\":\"2026-11-07T11:49:08.662Z\"}; line asked before it: false. Page errors: none."
+    }
+  ],
+  "worker_requests": [
+    {
+      "at": "2026-11-07T11:49:08.233Z",
+      "ms": 1794052148233,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "A daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it."
+      }
+    }
+  ]
+}

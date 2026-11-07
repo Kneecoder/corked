@@ -1,0 +1,164 @@
+{
+  "scenario": "b1-s6",
+  "title": "B1 S6: old bottles from an exported cellar",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T11:49:18.982Z",
+  "finished_at": "2026-11-07T11:49:29.308Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T11:49:22.502Z",
+      "step": "opened an old bottle in both apps",
+      "note": "mw5o61t4no0y1: same view true"
+    },
+    {
+      "at": "2026-11-07T11:49:25.786Z",
+      "step": "opened an old bottle in both apps",
+      "note": "mw5ocstdh5b6y: same view true"
+    },
+    {
+      "at": "2026-11-07T11:49:29.067Z",
+      "step": "opened an old bottle in both apps",
+      "note": "mw5odezyi6aob: same view true"
+    },
+    {
+      "at": "2026-11-07T11:49:29.302Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1-s6\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "export_file": "runs/2026-11-07-trust-basics/run-1-cellar.json",
+    "app_before": "ce54d35:corked_v6.html on port 5500",
+    "bottles": [
+      {
+        "id": "mw5o61t4no0y1",
+        "idea": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot. zq-canary-0611",
+        "mechIndex": 2,
+        "status": "active",
+        "qLifecycle": "answered",
+        "app_now": {
+          "view": {
+            "screen": "screen-phase1",
+            "panels": [
+              "stalled-panel"
+            ],
+            "mech_label": "—",
+            "question": "",
+            "main_button": "Continue →",
+            "rhythm_panel": false,
+            "first_session_screen": false
+          },
+          "s_fields_changed": [],
+          "record_fields_changed": []
+        },
+        "app_before_b1": {
+          "view": {
+            "screen": "screen-phase1",
+            "panels": [
+              "stalled-panel"
+            ],
+            "mech_label": "—",
+            "question": "",
+            "main_button": "Continue →",
+            "rhythm_panel": false,
+            "first_session_screen": false
+          },
+          "s_fields_changed": [],
+          "record_fields_changed": []
+        },
+        "same_view": true,
+        "same_changes": true
+      },
+      {
+        "id": "mw5ocstdh5b6y",
+        "idea": "A better scheduling app for gym owners. zq-canary-0611",
+        "mechIndex": 1,
+        "status": "active",
+        "qLifecycle": "active",
+        "app_now": {
+          "view": {
+            "screen": "screen-phase1",
+            "panels": [
+              "question-panel"
+            ],
+            "mech_label": "The Friction Test",
+            "question": "Have Marco walk you through exactly what happened between the moment the two trainers wrote their classes down and the moment he realized the boxing ring was double booked.",
+            "main_button": "Continue →",
+            "rhythm_panel": false,
+            "first_session_screen": false
+          },
+          "s_fields_changed": [],
+          "record_fields_changed": []
+        },
+        "app_before_b1": {
+          "view": {
+            "screen": "screen-phase1",
+            "panels": [
+              "question-panel"
+            ],
+            "mech_label": "The Friction Test",
+            "question": "Have Marco walk you through exactly what happened between the moment the two trainers wrote their classes down and the moment he realized the boxing ring was double booked.",
+            "main_button": "Continue →",
+            "rhythm_panel": false,
+            "first_session_screen": false
+          },
+          "s_fields_changed": [],
+          "record_fields_changed": []
+        },
+        "same_view": true,
+        "same_changes": true
+      },
+      {
+        "id": "mw5odezyi6aob",
+        "idea": "A way to stop losing my receipts before tax season. zq-canary-0611",
+        "mechIndex": 1,
+        "status": "active",
+        "qLifecycle": "active",
+        "app_now": {
+          "view": {
+            "screen": "screen-phase1",
+            "panels": [
+              "question-panel"
+            ],
+            "mech_label": "The Friction Test",
+            "question": "Walk me through the last specific time you lost a receipt before tax season: what were you doing with it right before it disappeared?",
+            "main_button": "Continue →",
+            "rhythm_panel": false,
+            "first_session_screen": false
+          },
+          "s_fields_changed": [],
+          "record_fields_changed": []
+        },
+        "app_before_b1": {
+          "view": {
+            "screen": "screen-phase1",
+            "panels": [
+              "question-panel"
+            ],
+            "mech_label": "The Friction Test",
+            "question": "Walk me through the last specific time you lost a receipt before tax season: what were you doing with it right before it disappeared?",
+            "main_button": "Continue →",
+            "rhythm_panel": false,
+            "first_session_screen": false
+          },
+          "s_fields_changed": [],
+          "record_fields_changed": []
+        },
+        "same_view": true,
+        "same_changes": true
+      }
+    ]
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "Each old bottle opens in its current flow, unchanged: the same screen, panel, question and button as the app before B1 shows for it, and no first-session screen.",
+      "happened": "\"An app for wedding photographers who lose their deposit when couples cancel two days before the shoot. zq-canary-0611\" (mechIndex 2, active, answered). Now: screen-phase1, panels stalled-panel, \"—\", question \"\", button \"Continue →\", rhythm panel false, first-session screen false. Before B1: screen-phase1, panels stalled-panel, \"—\", question \"\", button \"Continue →\", rhythm panel false, first-session screen false. Same: true. Stored fields the open changed, now: [], before B1: []. \"A better scheduling app for gym owners. zq-canary-0611\" (mechIndex 1, active, active). Now: screen-phase1, panels question-panel, \"The Friction Test\", question \"Have Marco walk you through exactly what happened between the moment the two trainers wrote their classes down and the moment he realized the boxing ring was double booked.\", button \"Continue →\", rhythm panel false, first-session screen false. Before B1: screen-phase1, panels question-panel, \"The Friction Test\", question \"Have Marco walk you through exactly what happened between the moment the two trainers wrote their classes down and the moment he realized the boxing ring was double booked.\", button \"Continue →\", rhythm panel false, first-session screen false. Same: true. Stored fields the open changed, now: [], before B1: []. \"A way to stop losing my receipts before tax season. zq-canary-0611\" (mechIndex 1, active, active). Now: screen-phase1, panels question-panel, \"The Friction Test\", question \"Walk me through the last specific time you lost a receipt before tax season: what were you doing with it right before it disappeared?\", button \"Continue →\", rhythm panel false, first-session screen false. Before B1: screen-phase1, panels question-panel, \"The Friction Test\", question \"Walk me through the last specific time you lost a receipt before tax season: what were you doing with it right before it disappeared?\", button \"Continue →\", rhythm panel false, first-session screen false. Same: true. Stored fields the open changed, now: [], before B1: []. Export: runs/2026-11-07-trust-basics/run-1-cellar.json. App before B1: ce54d35:corked_v6.html on port 5500. Page errors: none."
+    }
+  ]
+}

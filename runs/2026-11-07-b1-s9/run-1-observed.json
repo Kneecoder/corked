@@ -1,0 +1,369 @@
+{
+  "scenario": "b1-s9",
+  "title": "B1 S9: the line not set at E6, then \"Show it to them\"",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T11:49:38.902Z",
+  "finished_at": "2026-11-07T11:49:40.065Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T11:49:39.095Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T11:49:39.267Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T11:49:39.373Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T11:49:39.420Z",
+      "step": "picked experiment",
+      "note": "When did someone last do something like this, even by hand or in another app?"
+    },
+    {
+      "at": "2026-11-07T11:49:39.465Z",
+      "step": "answered E1",
+      "note": "Last month my neighbour borrowed my drill after a WhatsApp message and brought it back a week later."
+    },
+    {
+      "at": "2026-11-07T11:49:39.496Z",
+      "step": "answered E2",
+      "note": "That it is easy to ask and easy to say no."
+    },
+    {
+      "at": "2026-11-07T11:49:39.532Z",
+      "step": "answered E3",
+      "note": "A shared list of five tools on one street."
+    },
+    {
+      "at": "2026-11-07T11:49:39.579Z",
+      "step": "answered E4",
+      "note": "Sam and Priya"
+    },
+    {
+      "at": "2026-11-07T11:49:39.615Z",
+      "step": "answered E5",
+      "note": "A list of tools neighbours on one street can borrow for a weekend."
+    },
+    {
+      "at": "2026-11-07T11:49:39.651Z",
+      "step": "answered E6",
+      "note": "not_set"
+    },
+    {
+      "at": "2026-11-07T11:49:39.782Z",
+      "step": "planned the step",
+      "note": "Show it to Sam and Priya, Planned for today"
+    },
+    {
+      "at": "2026-11-07T11:49:40.059Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1-s9\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "e6": {
+      "screen": "screen-first",
+      "qid": "E6",
+      "question": "What would those people have to do with it for you to keep going?",
+      "taps": [],
+      "unsure": "Not set yet",
+      "skip": "Skip",
+      "next": "Continue →",
+      "end": false,
+      "visible_text": "HOW MANY, OUT OF HOW MANY\nout of\nNot set yet\nSkip\nContinue →",
+      "answered": "not_set"
+    },
+    "end": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "A board where neighbours lend each other tools for a weekend.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "A list of tools neighbours on one street can borrow for a weekend.\n7 Nov 2026"
+        },
+        {
+          "row": "last-time",
+          "label": "THE LAST TIME SOMETHING LIKE IT HAPPENED",
+          "value": "Last month my neighbour borrowed my drill after a WhatsApp message and brought it back a week later."
+        },
+        {
+          "row": "feel",
+          "label": "THE FEELING",
+          "value": "That it is easy to ask and easy to say no."
+        },
+        {
+          "row": "smallest",
+          "label": "THE SMALLEST VERSION",
+          "value": "A shared list of five tools on one street."
+        },
+        {
+          "row": "people",
+          "label": "THE FIRST PEOPLE",
+          "value": "Sam and Priya"
+        },
+        {
+          "row": "line",
+          "label": "YOUR LINE",
+          "value": "not set yet"
+        }
+      ],
+      "observation": null,
+      "nobody": null,
+      "switch_link": "Switch to the fix questions",
+      "choices": [
+        {
+          "id": "fs-choice-show",
+          "text": "Show it to Sam and Priya",
+          "cls": "btn-second fs-choice"
+        },
+        {
+          "id": "fs-choice-build",
+          "text": "Build the smallest version first",
+          "cls": "btn-second fs-choice"
+        },
+        {
+          "id": "fs-rethink",
+          "text": "Rethink it first",
+          "cls": "btn-second fs-choice"
+        },
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn-ghost fs-cellar"
+        }
+      ],
+      "visible_text": "FIRST\nA board where neighbours lend each other tools for a weekend.\n7 Nov 2026\nNOW\nA list of tools neighbours on one street can borrow for a weekend.\n7 Nov 2026\nTHE LAST TIME SOMETHING LIKE IT HAPPENED\nLast month my neighbour borrowed my drill after a WhatsApp message and brought it back a week later.\nTHE FEELING\nThat it is easy to ask and easy to say no.\nTHE SMALLEST VERSION\nA shared list of five tools on one street.\nTHE FIRST PEOPLE\nSam and Priya\nYOUR LINE\nnot set yet\nSwitch to the fix questions\nShow it to Sam and Priya\nBuild the smallest version first\nRethink it first\nBack to the cellar"
+    },
+    "step": {
+      "line_asked": true,
+      "line_question": "What would those people have to do with it for you to keep going?",
+      "step_before_line": null,
+      "planning": "Show it to Sam and Priya",
+      "planned": {
+        "when": "Planned for today",
+        "step": "Show it to Sam and Priya"
+      }
+    },
+    "end_after": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "A board where neighbours lend each other tools for a weekend.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "A list of tools neighbours on one street can borrow for a weekend.\n7 Nov 2026"
+        },
+        {
+          "row": "last-time",
+          "label": "THE LAST TIME SOMETHING LIKE IT HAPPENED",
+          "value": "Last month my neighbour borrowed my drill after a WhatsApp message and brought it back a week later."
+        },
+        {
+          "row": "feel",
+          "label": "THE FEELING",
+          "value": "That it is easy to ask and easy to say no."
+        },
+        {
+          "row": "smallest",
+          "label": "THE SMALLEST VERSION",
+          "value": "A shared list of five tools on one street."
+        },
+        {
+          "row": "people",
+          "label": "THE FIRST PEOPLE",
+          "value": "Sam and Priya"
+        },
+        {
+          "row": "line",
+          "label": "YOUR LINE",
+          "value": "One of them borrows a tool from the other within two weeks.\n1 out of 2"
+        }
+      ],
+      "observation": null,
+      "nobody": null,
+      "switch_link": "Switch to the fix questions",
+      "choices": [
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn"
+        }
+      ],
+      "visible_text": "FIRST\nA board where neighbours lend each other tools for a weekend.\n7 Nov 2026\nNOW\nA list of tools neighbours on one street can borrow for a weekend.\n7 Nov 2026\nTHE LAST TIME SOMETHING LIKE IT HAPPENED\nLast month my neighbour borrowed my drill after a WhatsApp message and brought it back a week later.\nTHE FEELING\nThat it is easy to ask and easy to say no.\nTHE SMALLEST VERSION\nA shared list of five tools on one street.\nTHE FIRST PEOPLE\nSam and Priya\nYOUR LINE\nOne of them borrows a tool from the other within two weeks.\n1 out of 2\nSwitch to the fix questions\nPLANNED FOR TODAY\nShow it to Sam and Priya\nBack to the cellar"
+    }
+  },
+  "checkpoints": {
+    "before": {
+      "line": {
+        "q": "E6",
+        "value": "not_set",
+        "question": "What would those people have to do with it for you to keep going?",
+        "at": "2026-11-07T11:49:39.644Z"
+      },
+      "step": null
+    },
+    "after": {
+      "line": {
+        "q": "E6",
+        "value": "answer",
+        "question": "What would those people have to do with it for you to keep going?",
+        "at": "2026-11-07T11:49:39.745Z",
+        "text": "One of them borrows a tool from the other within two weeks.",
+        "how_many": "1",
+        "out_of": "2",
+        "before_step": "show"
+      },
+      "step": {
+        "kind": "show",
+        "label": "Show it to Sam and Priya",
+        "when": "today",
+        "day": "2026-11-07",
+        "at": "2026-11-07T11:49:39.777Z"
+      },
+      "log": [
+        {
+          "at": "2026-11-07T11:49:39.345Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "spark",
+          "question": "What did you bring to the cellar?",
+          "answer": "A board where neighbours lend each other tools for a weekend."
+        },
+        {
+          "at": "2026-11-07T11:49:39.411Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "gate",
+          "question": "Is this a fix or an experiment?",
+          "answer": "An experiment. I want to build it and see what people do with it.",
+          "path": "experiment"
+        },
+        {
+          "at": "2026-11-07T11:49:39.462Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E1",
+          "slot": "last_time",
+          "value": "answer",
+          "question": "When did someone last do something like this, even by hand or in another app?",
+          "answer": "Last month my neighbour borrowed my drill after a WhatsApp message and brought it back a week later."
+        },
+        {
+          "at": "2026-11-07T11:49:39.493Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E2",
+          "slot": "feel",
+          "value": "answer",
+          "question": "What should someone feel in the first minute?",
+          "answer": "That it is easy to ask and easy to say no."
+        },
+        {
+          "at": "2026-11-07T11:49:39.529Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E3",
+          "slot": "smallest",
+          "value": "answer",
+          "question": "What's the smallest version that still gives them that?",
+          "answer": "A shared list of five tools on one street."
+        },
+        {
+          "at": "2026-11-07T11:49:39.576Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E4",
+          "slot": "first_people",
+          "value": "answer",
+          "question": "Who are the first one to three people you'd show it to? Names, initials, or a few words about who they are.",
+          "answer": "Sam and Priya"
+        },
+        {
+          "at": "2026-11-07T11:49:39.611Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E5",
+          "slot": "now",
+          "value": "answer",
+          "question": "Say your idea again in one sentence, as you'd say it today.",
+          "answer": "A list of tools neighbours on one street can borrow for a weekend."
+        },
+        {
+          "at": "2026-11-07T11:49:39.644Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E6",
+          "slot": "line",
+          "value": "not_set",
+          "question": "What would those people have to do with it for you to keep going?",
+          "answer": "Not set yet"
+        },
+        {
+          "at": "2026-11-07T11:49:39.745Z",
+          "type": "answer",
+          "flow": "first_session_v1",
+          "step": "E6",
+          "slot": "line",
+          "value": "answer",
+          "question": "What would those people have to do with it for you to keep going?",
+          "answer": "One of them borrows a tool from the other within two weeks.",
+          "how_many": "1",
+          "out_of": "2",
+          "before_step": "show"
+        },
+        {
+          "at": "2026-11-07T11:49:39.777Z",
+          "type": "next_step",
+          "flow": "first_session_v1",
+          "kind": "show",
+          "label": "Show it to Sam and Priya",
+          "when": "today",
+          "day": "2026-11-07"
+        }
+      ]
+    }
+  },
+  "expected": [
+    {
+      "n": 1,
+      "expected": "E6 offers \"Not set yet\" and saves it; the end screen shows \"Your line: not set yet\".",
+      "happened": "E6 offered \"Not set yet\" and \"Skip\". Stored: {\"q\":\"E6\",\"value\":\"not_set\",\"question\":\"What would those people have to do with it for you to keep going?\",\"at\":\"2026-11-07T11:49:39.644Z\"}. End screen: \"YOUR LINE: not set yet\"."
+    },
+    {
+      "n": 2,
+      "expected": "\"Show it to [people]\" asks for the line before any step is saved.",
+      "happened": "\"Show it to Sam and Priya\" asked for the line first: true. Question: \"What would those people have to do with it for you to keep going?\". Step stored while it was asked: null. Step stored before the choice: null."
+    },
+    {
+      "n": 3,
+      "expected": "Once the line is given, the step and its day are saved, and the line is on record before the step.",
+      "happened": "Line stored: {\"q\":\"E6\",\"value\":\"answer\",\"question\":\"What would those people have to do with it for you to keep going?\",\"at\":\"2026-11-07T11:49:39.745Z\",\"text\":\"One of them borrows a tool from the other within two weeks.\",\"how_many\":\"1\",\"out_of\":\"2\",\"before_step\":\"show\"}. Step: {\"kind\":\"show\",\"label\":\"Show it to Sam and Priya\",\"when\":\"today\",\"day\":\"2026-11-07\",\"at\":\"2026-11-07T11:49:39.777Z\"}. In the log, the line is entry 8 and the step entry 9. The screen said \"Show it to Sam and Priya\", \"Planned for today\". End screen line row now: \"One of them borrows a tool from the other within two weeks. / 1 out of 2\". Page errors: none."
+    }
+  ],
+  "worker_requests": [
+    {
+      "at": "2026-11-07T11:49:39.350Z",
+      "ms": 1794052179350,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "A board where neighbours lend each other tools for a weekend."
+      }
+    }
+  ]
+}

@@ -1,0 +1,335 @@
+{
+  "scenario": "b1-s7",
+  "title": "B1 S7: phone, 390x844",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T11:49:29.787Z",
+  "finished_at": "2026-11-07T11:49:36.147Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T11:49:29.993Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T11:49:30.135Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T11:49:30.222Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T11:49:30.286Z",
+      "step": "picked fix",
+      "note": "Who last ran into this? A name, initials, or a few words about who they are, and how you know them."
+    },
+    {
+      "at": "2026-11-07T11:49:30.666Z",
+      "step": "answered F1",
+      "note": "Dana, my neighbour, she walks six dogs for people on our street"
+    },
+    {
+      "at": "2026-11-07T11:49:31.083Z",
+      "step": "answered F2",
+      "note": "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later."
+    },
+    {
+      "at": "2026-11-07T11:49:31.465Z",
+      "step": "answered F3",
+      "note": "Show her who has paid this week without opening the bank app."
+    },
+    {
+      "at": "2026-11-07T11:49:31.847Z",
+      "step": "answered F4",
+      "note": "A list that tells a dog walker who has paid for the week."
+    },
+    {
+      "at": "2026-11-07T11:49:32.215Z",
+      "step": "answered F5",
+      "note": "That she checks her bank app every Friday and still misses one or two owners."
+    },
+    {
+      "at": "2026-11-07T11:49:32.600Z",
+      "step": "answered F6",
+      "note": "If she says she always knows who owes her and it never costs her anything."
+    },
+    {
+      "at": "2026-11-07T11:49:33.168Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T11:49:33.203Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T11:49:33.233Z",
+      "step": "picked experiment",
+      "note": "When did someone last do something like this, even by hand or in another app?"
+    },
+    {
+      "at": "2026-11-07T11:49:33.614Z",
+      "step": "answered E1",
+      "note": "My friends post their Wordle scores in our group chat every morning."
+    },
+    {
+      "at": "2026-11-07T11:49:33.997Z",
+      "step": "answered E2",
+      "note": "Curious to see what the others wrote, and a little proud of their own sentence."
+    },
+    {
+      "at": "2026-11-07T11:49:34.398Z",
+      "step": "answered E3",
+      "note": "One photo, one text box, then every sentence on one page."
+    },
+    {
+      "at": "2026-11-07T11:49:34.766Z",
+      "step": "answered E4",
+      "note": "Sam, Priya and my brother Tom"
+    },
+    {
+      "at": "2026-11-07T11:49:35.132Z",
+      "step": "answered E5",
+      "note": "A daily photo where you write one sentence and then read everyone else's."
+    },
+    {
+      "at": "2026-11-07T11:49:35.531Z",
+      "step": "answered E6",
+      "note": "Two of the three come back on their own the next day and write another sentence."
+    },
+    {
+      "at": "2026-11-07T11:49:36.139Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1-s7\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "phone": [
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 371,
+          "bottom": 423,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F1",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 311,
+          "bottom": 363,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F2",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 251,
+          "bottom": 303,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F3",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 251,
+          "bottom": 303,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F4",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 251,
+          "bottom": 303,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F5",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 251,
+          "bottom": 303,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F6",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 1218,
+        "button": {
+          "text": "Ask Dana about the last time",
+          "top": 668,
+          "bottom": 716,
+          "left": 20,
+          "right": 370
+        },
+        "label": "fix-end",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 341,
+          "bottom": 393,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E1",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 251,
+          "bottom": 303,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E2",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 311,
+          "bottom": 363,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E3",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 311,
+          "bottom": 363,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E4",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 251,
+          "bottom": 303,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E5",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 350,
+          "bottom": 402,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E6",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "page_h": 1288,
+        "button": {
+          "text": "Show it to Sam, Priya and my brother Tom",
+          "top": 596,
+          "bottom": 660,
+          "left": 20,
+          "right": 370
+        },
+        "label": "experiment-end",
+        "on_screen": true
+      }
+    ]
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "On every burst screen and the end screen, at 390x844, the main button is on screen without scrolling.",
+      "happened": "fix-F1: \"Continue →\" 371 to 423 of 844, scrolled 0, on screen true; fix-F2: \"Continue →\" 311 to 363 of 844, scrolled 0, on screen true; fix-F3: \"Continue →\" 251 to 303 of 844, scrolled 0, on screen true; fix-F4: \"Continue →\" 251 to 303 of 844, scrolled 0, on screen true; fix-F5: \"Continue →\" 251 to 303 of 844, scrolled 0, on screen true; fix-F6: \"Continue →\" 251 to 303 of 844, scrolled 0, on screen true; fix-end: \"Ask Dana about the last time\" 668 to 716 of 844, scrolled 0, on screen true; experiment-E1: \"Continue →\" 341 to 393 of 844, scrolled 0, on screen true; experiment-E2: \"Continue →\" 251 to 303 of 844, scrolled 0, on screen true; experiment-E3: \"Continue →\" 311 to 363 of 844, scrolled 0, on screen true; experiment-E4: \"Continue →\" 311 to 363 of 844, scrolled 0, on screen true; experiment-E5: \"Continue →\" 251 to 303 of 844, scrolled 0, on screen true; experiment-E6: \"Continue →\" 350 to 402 of 844, scrolled 0, on screen true; experiment-end: \"Show it to Sam, Priya and my brother Tom\" 596 to 660 of 844, scrolled 0, on screen true. Screen 390x844. Page errors: none."
+    }
+  ],
+  "exported": true
+}
