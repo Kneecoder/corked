@@ -18,6 +18,7 @@ import { createServer } from 'node:http';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { dirname, extname, join, normalize, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = 8080;
@@ -801,11 +802,876 @@ function sparkLimitReport(rec) {
   return `Typed 499: ${say(l.typed_499)}. Typed 500: ${say(l.typed_500)}. One key more: ${say(l.one_key_more)}. Emptied: ${say(l.emptied)}. Pasted 600: ${say(l.pasted_600)}.`;
 }
 
+// ── B1: A NEW BOTTLE'S FIRST SESSION ──
+// The spark, the gate, one burst of questions, the end screen. Helpers shared by b1-s1 to b1-s9.
+
+// The app before B1, for S6: the same repo with corked_v6.html as it was at this commit, served on
+// port 5500, which is in the worker's ALLOWED_ORIGINS.
+const B1_BEFORE = 'ce54d35';
+const OLD_APP_PORT = 5500;
+
+// Lines from the intake screens a new bottle no longer shows.
+const B1_REMOVED_LINES = [
+  'Have you spoken to a real person',
+  'Can you name them, and have you witnessed',
+  'Does this spark come from you?',
+  'Name the person this spark comes from.',
+  'How often should this spark return to you?',
+  'When should it surface?',
+  'Cellar rhythm',
+  'Set rhythm first',
+  'how far along'
+];
+
+// The variants as the brief words them.
+const B1_BRIEF = {
+  F2_no_person: 'What did you see go wrong, and when?',
+  F5_no_person: 'When you find someone who runs into this, what do you expect to hear?'
+};
+
+const B1_EXPERIMENT_WORDS = /\b(problem|need|wrong|stopped)/i;
+
+function b1NoteScreens(page) {
+  return page.addInitScript(() => {
+    window.__screens = [];
+    const note = () => {
+      const id = document.querySelector('.screen.active')?.id;
+      if (id && window.__screens[window.__screens.length - 1] !== id) window.__screens.push(id);
+    };
+    const start = () => {
+      note();
+      new MutationObserver(note).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+    else start();
+  });
+}
+
+function b1WatchWorker(page, list, origin = WORKER_URL) {
+  page.on('request', r => {
+    if (!r.url().startsWith(origin) || r.method() !== 'POST') return;
+    let body = null;
+    try { body = JSON.parse(r.postData() || 'null'); } catch {}
+    list.push({ at: new Date().toISOString(), ms: Date.now(), path: new URL(r.url()).pathname, body });
+  });
+}
+
+// What a first-session screen shows.
+function b1Snap(page) {
+  return page.evaluate(() => {
+    const q = document.getElementById('fs-q');
+    const screen = document.querySelector('.screen.active');
+    return {
+      screen: screen?.id || null,
+      qid: q?.dataset.q || null,
+      question: q ? q.textContent.replace(/\s+/g, ' ').trim() : null,
+      taps: [...document.querySelectorAll('#first-body .fs-tap')].map(b => b.textContent.trim()),
+      unsure: document.getElementById('fs-unsure')?.textContent.trim() || null,
+      skip: document.getElementById('fs-skip')?.textContent.trim() || null,
+      next: document.getElementById('fs-next')?.textContent.trim() || null,
+      end: !!document.getElementById('fs-record'),
+      visible_text: (screen?.innerText || '').trim()
+    };
+  });
+}
+
+function b1Driver(app, rec) {
+  const page = app.page;
+  const fs = {
+    screens: [],
+
+    // From the landing or the cellar: type the spark, "Bottle your spark →", and the gate shows.
+    async newBottle(spark, { fromCellar = false } = {}) {
+      app.spark = spark;
+      const typed = await app.typeSpark(spark, { fromCellar });
+      if (typed.field_value !== spark) throw new Error('The spark did not reach the field.');
+      await page.locator('#v6-bottle-btn').click();
+      fs.corkedAt = Date.now();
+      if (await page.locator('#m0-config').isVisible()) {
+        await page.locator('#v6-worker-url').fill(WORKER_URL);
+        await page.locator('#v6-bottle-btn').click();
+        fs.corkedAt = Date.now();
+      }
+      await page.locator('#spark-gate').waitFor({ state: 'visible', timeout: STEP_TIMEOUT });
+      fs.gateAt = Date.now();
+      const gate = {
+        question: await app.text('#gate-q'),
+        buttons: (await page.locator('#spark-gate button').allTextContents()).map(t => t.trim())
+      };
+      fs.screens.push({ screen: 'spark', spark });
+      fs.screens.push({ screen: 'gate', ...gate, visible_text: (await page.locator('#screen-intake').innerText()).trim() });
+      app.step('bottled the spark, the gate shows', { note: gate.question });
+      return gate;
+    },
+
+    async pick(path) {
+      const label = path === 'fix' ? 'A fix.' : 'An experiment.';
+      await page.locator('#spark-gate button:visible, #fs-gate button:visible', { hasText: label }).first().click();
+      fs.tappedAt = Date.now();
+      await page.locator('#screen-first.active #fs-q').waitFor({ timeout: STEP_TIMEOUT });
+      fs.firstQuestionAt = Date.now();
+      const snap = await b1Snap(page);
+      app.step(`picked ${path}`, { note: snap.question });
+      return snap;
+    },
+
+    // a: { text, tap, link, howMany, outOf }, or 'dont_know', 'not_set' or 'skip'.
+    async answer(a) {
+      const before = await b1Snap(page);
+      if (!before.qid) throw new Error(`No question on screen (screen ${before.screen}).`);
+      if (typeof a === 'string') {
+        await page.locator(a === 'skip' ? '#fs-skip' : '#fs-unsure').click();
+      } else {
+        if (a.tap) await page.locator('#first-body .fs-tap').filter({ hasText: new RegExp(`^${a.tap}$`) }).click();
+        if (a.link) await page.locator('#fs-link').fill(a.link);
+        if (a.text) await page.locator('#fs-inp').fill(a.text);
+        if (a.howMany != null) await page.locator('#fs-how-many').fill(String(a.howMany));
+        if (a.outOf != null) await page.locator('#fs-out-of').fill(String(a.outOf));
+        await page.locator('#fs-next').click();
+      }
+      await page.waitForFunction(prev => {
+        const q = document.getElementById('fs-q');
+        return (q && q.dataset.q !== prev) || !!document.getElementById('fs-record');
+      }, before.qid, { timeout: 10000, polling: 100 });
+      fs.screens.push({ ...before, answered: a });
+      app.step(`answered ${before.qid}`, { note: typeof a === 'string' ? a : (a.text || a.tap || '') });
+      return before;
+    },
+
+    async readEnd() {
+      await page.locator('#fs-record').waitFor({ timeout: STEP_TIMEOUT });
+      return page.evaluate(() => {
+        const t = el => (el?.innerText || '').trim();
+        const obs = document.getElementById('fs-obs');
+        return {
+          rows: [...document.querySelectorAll('#fs-record .fs-rec-row')].map(r => ({
+            row: r.dataset.row, label: t(r.querySelector('.fs-rec-label')), value: t(r.querySelector('.fs-rec-value'))
+          })),
+          observation: obs && obs.style.display !== 'none' && obs.textContent.trim()
+            ? { text: obs.textContent.trim(), ai_tag: !!obs.querySelector('.ai-tag'), ai_model: obs.dataset.aiModel || null }
+            : null,
+          nobody: document.getElementById('fs-nobody')?.textContent.trim() || null,
+          switch_link: document.getElementById('fs-switch')?.textContent.trim() || null,
+          choices: [...document.querySelectorAll('#fs-choices button')].map(b => ({ id: b.id, text: b.textContent.trim(), cls: b.className })),
+          visible_text: t(document.getElementById('screen-first'))
+        };
+      });
+    },
+
+    async endScreen() {
+      const end = await fs.readEnd();
+      fs.screens.push({ screen: 'end', rows: end.rows.map(r => r.row) });
+      return end;
+    },
+
+    // kind: ask, show or build. line: { text, howMany, outOf } when the line is asked for first.
+    async planStep(kind, when, { day = null, line = null } = {}) {
+      await page.locator(`#fs-choice-${kind}`).click();
+      const asked = { line_asked: false };
+      await page.waitForFunction(() => !!document.getElementById('fs-line-q') || !!document.getElementById('fs-when'), undefined, { timeout: 10000 });
+      if (await page.locator('#fs-line-q').isVisible()) {
+        asked.line_asked = true;
+        asked.line_question = await app.text('#fs-line-q');
+        asked.step_before_line = (await app.bottle())?.s?.first?.step || null;
+        if (!line) throw new Error('The line was asked for and the scenario has none.');
+        await page.locator('#fs-line-inp').fill(line.text);
+        if (line.howMany != null) await page.locator('#fs-line-how-many').fill(String(line.howMany));
+        if (line.outOf != null) await page.locator('#fs-line-out-of').fill(String(line.outOf));
+        await page.locator('#fs-line-next').click();
+        await page.locator('#fs-when').waitFor({ timeout: 10000 });
+      }
+      asked.planning = await app.text('#fs-planning');
+      if (when === 'today') await page.locator('#fs-when-today').click();
+      else if (when === 'this_week') await page.locator('#fs-when-week').click();
+      else {
+        await page.locator('#fs-when-day').click();
+        await page.locator('#fs-day').fill(day);
+        await page.locator('#fs-day-save').click();
+      }
+      await page.locator('#fs-planned').waitFor({ timeout: 10000 });
+      asked.planned = { when: await app.text('#fs-planned-when'), step: await app.text('#fs-planned-step') };
+      app.step('planned the step', { note: `${asked.planned.step}, ${asked.planned.when}` });
+      return asked;
+    },
+
+    // Polls the stored bottle until a log entry matches, or the time runs out.
+    async waitForLog(match, timeout = 90000) {
+      const until = Date.now() + timeout;
+      while (Date.now() < until) {
+        const b = await app.bottle();
+        const hit = (b?.s?.log || []).find(match);
+        if (hit) return hit;
+        await page.waitForTimeout(500);
+      }
+      return null;
+    },
+
+    async screensSeen() {
+      return page.evaluate(() => window.__screens || []);
+    },
+
+    async backToCellar() {
+      await page.locator('#fs-cellar').click();
+      await page.locator('#screen-cellar.active').waitFor({ timeout: 10000 });
+    }
+  };
+  return fs;
+}
+
+// Which removed intake lines a screen's visible text holds.
+function b1RemovedSeen(screens) {
+  const seen = [];
+  for (const s of screens) {
+    const text = (s.visible_text || '').toLowerCase();
+    for (const line of B1_REMOVED_LINES) if (text.includes(line.toLowerCase())) seen.push(`${s.qid || s.screen}: "${line}"`);
+  }
+  return seen;
+}
+
+function b1Order(screens) {
+  return screens.map(s => s.qid || s.screen);
+}
+
+function b1Tail(rec) {
+  return ` Page errors: ${rec.page_errors.length ? rec.page_errors.join('; ') : 'none'}.${rec.broke_off ? ` Broke off: ${rec.broke_off}` : ''}`;
+}
+
+// The day the app calls today, by the cellar's 05:00 rule, plus n days.
+function b1DayKey(n = 0, from = new Date()) {
+  const d = new Date(from);
+  if (d.getHours() < 5) d.setDate(d.getDate() - 1);
+  d.setDate(d.getDate() + n);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+// Serves the repo on the old-app port with corked_v6.html as it was before B1.
+async function b1ServeOldApp() {
+  const oldHtml = execFileSync('git', ['show', `${B1_BEFORE}:corked_v6.html`], { cwd: REPO, maxBuffer: 32 * 1024 * 1024 });
+  const types = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.json': 'application/json',
+    '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon', '.woff2': 'font/woff2' };
+  const server = createServer(async (req, res) => {
+    const pathname = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+    if (pathname === '/corked_v6.html') {
+      res.writeHead(200, { 'Content-Type': 'text/html', 'Cache-Control': 'no-store' });
+      res.end(oldHtml);
+      return;
+    }
+    const path = normalize(join(REPO, pathname));
+    if (!path.startsWith(REPO + sep)) { res.writeHead(403); res.end(); return; }
+    try {
+      const body = await readFile(path);
+      res.writeHead(200, { 'Content-Type': types[extname(path)] || 'application/octet-stream', 'Cache-Control': 'no-store' });
+      res.end(body);
+    } catch { res.writeHead(404); res.end(); }
+  });
+  await new Promise((ok, fail) => server.once('error', fail).listen(OLD_APP_PORT, 'localhost', ok));
+  return server;
+}
+
+// What an opened old bottle shows: the screen, the panel, the question and the main button.
+function b1OldBottleView(page) {
+  return page.evaluate(() => {
+    const vis = id => { const el = document.getElementById(id); return !!el && el.getClientRects().length > 0 && getComputedStyle(el).display !== 'none'; };
+    const t = id => (document.getElementById(id)?.textContent || '').replace(/\s+/g, ' ').trim();
+    return {
+      screen: document.querySelector('.screen.active')?.id || null,
+      panels: ['question-panel', 'review-panel', 'dormant-panel', 'stalled-panel'].filter(vis),
+      mech_label: t('m-label'),
+      question: t('m-q'),
+      main_button: t('p1-btn'),
+      rhythm_panel: vis('rhythm-panel'),
+      first_session_screen: !!document.querySelector('#screen-first.active')
+    };
+  });
+}
+
+// The keys of two objects whose values differ.
+function b1Diff(a, b) {
+  const keys = new Set([...Object.keys(a || {}), ...Object.keys(b || {})]);
+  return [...keys].filter(k => JSON.stringify(a?.[k]) !== JSON.stringify(b?.[k]));
+}
+
+const B1_S6_EXPORT = 'runs/2026-11-07-trust-basics/run-1-cellar.json';
+
+// The answers each scenario types.
+const B1_S1 = {
+  spark: 'An app for dog walkers who lose track of which owners have paid for the week.',
+  answers: [
+    { text: 'Dana, my neighbour, she walks six dogs for people on our street' },
+    { tap: 'I saw it', text: "Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later." },
+    { text: 'Show her who has paid this week without opening the bank app.' },
+    { text: 'A list that tells a dog walker who has paid for the week.' },
+    { text: 'That she checks her bank app every Friday and still misses one or two owners.' },
+    { text: 'If she says she always knows who owes her and it never costs her anything.' }
+  ],
+  day: b1DayKey(3)
+};
+
+const B1_S2 = {
+  spark: 'An app for small cleaning businesses that forget to send invoices after a job.',
+  people: ['Maria Lopez, my sister', 'M., my sister', 'a colleague who manages bookings', 'freelancers I know']
+};
+
+const B1_S3 = {
+  spark: 'An app for parents to swap school uniform their kids have outgrown.',
+  fix: [
+    'dont_know',
+    'dont_know',
+    { text: 'Find a jumper in the right size from another parent at the same school.' },
+    { text: 'A swap board for outgrown school uniform between parents at one school.' },
+    { text: 'That buying new every September costs more than they want to spend.' },
+    'not_set'
+  ],
+  experiment: {
+    E2: { text: 'Relief that the jumper is already waiting at the school gate.' },
+    E3: { text: 'A shared list with sizes and a name to message.' },
+    E4: { text: "Two parents from my son's class" },
+    E6: { text: 'Both of them list one item without me asking.', howMany: 2, outOf: 2 }
+  }
+};
+
+const B1_S4 = {
+  spark: 'A daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it.',
+  answers: [
+    { text: 'My friends post their Wordle scores in our group chat every morning.' },
+    { text: 'Curious to see what the others wrote, and a little proud of their own sentence.' },
+    { tap: 'I already built it', link: 'https://example.com/one-photo', text: 'One photo, one text box, then every sentence on one page.' },
+    { text: 'Sam, Priya and my brother Tom' },
+    { text: "A daily photo where you write one sentence and then read everyone else's." },
+    { text: 'Two of the three come back on their own the next day and write another sentence.', howMany: 2, outOf: 3 }
+  ]
+};
+
+const B1_S5 = {
+  spark: 'An app that tells me which plants on my balcony to water today.',
+  answers: [
+    { tap: 'It was me' },
+    { tap: 'It was me', text: 'On Sunday I found the basil wilted and watered everything at once, the cactus too.' },
+    { text: 'Tell me which pot to water today.' },
+    { text: 'A list of which balcony plants to water today.' },
+    { text: 'That I forget the pots at the back.' },
+    { text: 'If I never actually lose a plant.' }
+  ],
+  rethink: {
+    now: 'A note on my phone each morning naming the pots that are dry.',
+    F3: 'Name the one pot that is driest.'
+  }
+};
+
+const B1_S8 = {
+  spark: 'A page where a book club votes on next month\'s book in one tap.',
+  day: '2026-11-12',
+  later: ['2026-11-11T10:00:00', '2026-11-12T10:00:00', '2026-11-13T10:00:00', '2026-11-20T10:00:00', '2026-12-01T10:00:00']
+};
+
+const B1_S9 = {
+  spark: 'A board where neighbours lend each other tools for a weekend.',
+  answers: [
+    { text: 'Last month my neighbour borrowed my drill after a WhatsApp message and brought it back a week later.' },
+    { text: 'That it is easy to ask and easy to say no.' },
+    { text: 'A shared list of five tools on one street.' },
+    { text: 'Sam and Priya' },
+    { text: 'A list of tools neighbours on one street can borrow for a weekend.' },
+    'not_set'
+  ],
+  line: { text: 'One of them borrows a tool from the other within two weeks.', howMany: 1, outOf: 2 }
+};
+
 // ── SCENARIOS ──
 // Each scenario plays its steps into rec.screens and rec.checkpoints, then reports, for every
 // expected result, what happened. A report states facts. It never says pass or fail.
 
 const SCENARIOS = {
+  // ── B1: a new bottle's first session ──
+  'b1-s1': {
+    title: 'B1 S1: fix, full answers, M0 held for 40 seconds',
+    expected: [
+      'The first burst question shows within 10 seconds of "Bottle your spark →", while M0 is held for 40 seconds.',
+      'Screens in this order: spark, gate, F1, F2, F3, F4, F5, F6, end screen.',
+      'None of the removed intake screens appear: the maturity questions, "have you spoken to a real person", "how far along", the pace picker, the time-of-day question.',
+      'The end screen holds every answer verbatim.',
+      'The chosen step and its day are saved.'
+    ],
+    async play(app, rec) {
+      const page = app.page;
+      const fs = b1Driver(app, rec);
+      const requests = rec.worker_requests = [];
+      b1WatchWorker(page, requests);
+      await b1NoteScreens(page);
+      const m0 = rec.screens.m0_hold = { held_ms: 40000 };
+      await page.route(`${WORKER_URL}/m0`, async route => {
+        m0.held_from = new Date().toISOString();
+        await new Promise(r => setTimeout(r, 40000));
+        m0.released_at = new Date().toISOString();
+        await route.continue().catch(err => { m0.continue_error = String(err?.message || err); });
+      });
+      await app.open();
+      rec.screens.gate = await fs.newBottle(B1_S1.spark);
+      rec.screens.first_question = await fs.pick('fix');
+      rec.screens.timing = {
+        gate_after_cork_ms: fs.gateAt - fs.corkedAt,
+        question_after_tap_ms: fs.firstQuestionAt - fs.tappedAt,
+        question_after_cork_ms: fs.firstQuestionAt - fs.corkedAt,
+        m0_still_held: !m0.released_at
+      };
+      for (const a of B1_S1.answers) await fs.answer(a);
+      rec.screens.end = await fs.endScreen();
+      rec.screens.step = await fs.planStep('ask', 'day', { day: B1_S1.day });
+      rec.screens.order = b1Order(fs.screens);
+      rec.screens.burst = fs.screens;
+      rec.screens.screens_seen = await fs.screensSeen();
+      rec.checkpoints.m0 = await fs.waitForLog(e => e.type === 'm0_result' || e.type === 'm0_failed', 60000);
+      rec.checkpoints.m1 = await fs.waitForLog(e => e.mech === 'M1' && (e.type === 'grade' || e.type === 'grade_failed'));
+      rec.checkpoints.m2 = await fs.waitForLog(e => e.mech === 'M2' && (e.type === 'grade' || e.type === 'grade_failed'));
+      rec.screens.end_after_replies = await fs.readEnd();
+      const b = await app.bottle();
+      rec.checkpoints.bottle = { flow: b?.s?.flow, pace: b?.s?.pace, first: b?.s?.first, restatements: b?.s?.restatements, log: b?.s?.log };
+    },
+    report(rec) {
+      const s = rec.screens, t = s.timing, b = rec.checkpoints.bottle;
+      if (!t) return ['Not reached.' + b1Tail(rec), '', '', '', ''];
+      const m0 = rec.checkpoints.m0;
+      const sent = (rec.worker_requests || []).map(r => `${r.path} at +${((r.ms - (rec.worker_requests[0]?.ms || r.ms)) / 1000).toFixed(1)}s`).join(', ');
+      const end = s.end_after_replies || s.end;
+      const rowValue = key => end?.rows.find(r => r.row === key)?.value || '';
+      const verbatim = B1_S1.answers.map((a, i) => {
+        const key = ['person', 'last-time', 'one-thing', 'now', 'expect', 'line'][i];
+        const has = rowValue(key).includes(a.text);
+        const tap = a.tap ? `, tap "${a.tap}" shown: ${rowValue(key).includes(a.tap)}` : '';
+        return `F${i + 1} verbatim under "${end?.rows.find(r => r.row === key)?.label}": ${has}${tap}`;
+      }).join('. ');
+      const step = b?.first?.step;
+      const logged = (b?.log || []).find(e => e.type === 'next_step');
+      return [
+        `Gate showed ${t.gate_after_cork_ms} ms after "Bottle your spark →". First question (${s.first_question?.qid}) showed ${t.question_after_tap_ms} ms after the gate tap, ${t.question_after_cork_ms} ms after "Bottle your spark →". M0 still held then: ${t.m0_still_held}. M0 held from ${s.m0_hold?.held_from}, released ${s.m0_hold?.released_at || 'never'}${s.m0_hold?.continue_error ? ` (continue: ${s.m0_hold.continue_error})` : ''}. M0 in the log: ${m0 ? `${m0.type}${m0.state ? ' ' + m0.state : ''}${m0.error ? ' "' + m0.error + '"' : ''} at ${m0.at}` : 'nothing'}. Worker requests: ${sent || 'none'}.`,
+        `Screens in order: ${(s.order || []).join(', ')}. Screens the page went through: ${(s.screens_seen || []).join(', ')}.`,
+        `Removed intake lines on any screen: ${b1RemovedSeen(s.burst || []).join('; ') || 'none'}. Pace on the bottle: ${b?.pace}.`,
+        `${verbatim}. First: "${rowValue('first')}". Now: "${rowValue('now')}". M2's line on the end screen: ${end?.observation ? `"${end.observation.text}", AI tag ${end.observation.ai_tag}, model ${end.observation.ai_model}` : 'none'}. M1 in the log: ${JSON.stringify(rec.checkpoints.m1 || null)}. M2 in the log: ${JSON.stringify(rec.checkpoints.m2 || null)}.`,
+        `Saved step: ${JSON.stringify(step || null)}. Log entry: ${JSON.stringify(logged || null)}. The screen said "${s.step?.planned?.step}", "${s.step?.planned?.when}". Day picked: ${B1_S1.day}.` + b1Tail(rec)
+      ];
+    }
+  },
+
+  'b1-s2': {
+    title: 'B1 S2: fix, the person as a name, initials, a description and a group',
+    expected: [
+      '"M., my sister" and "a colleague who manages bookings" get the same /m1 grade as a full name.',
+      '"freelancers I know" is saved, marked not one person, and the burst carries on.',
+      'No grade shows on any screen.'
+    ],
+    async play(app, rec) {
+      const page = app.page;
+      const fs = b1Driver(app, rec);
+      const requests = rec.worker_requests = [];
+      b1WatchWorker(page, requests);
+      const people = rec.screens.people = [];
+      await app.open();
+      for (let i = 0; i < B1_S2.people.length; i++) {
+        const person = B1_S2.people[i];
+        await fs.newBottle(B1_S2.spark, { fromCellar: i > 0 });
+        const id = await page.evaluate(() => activeBottleId);
+        await fs.pick('fix');
+        const asked = await fs.answer({ text: person });
+        const continuedAt = Date.now();
+        const next = await b1Snap(page);
+        const entry = { person, id, f1_question: asked.question, next_qid: next.qid, next_question: next.question, next_after_ms: Date.now() - continuedAt };
+        for (let k = 0; k < 5; k++) await fs.answer('skip');
+        const end = await fs.endScreen();
+        entry.end_text = end.visible_text;
+        people.push(entry);
+        await fs.backToCellar();
+      }
+      // The grades land in the background.
+      const until = Date.now() + 120000;
+      while (Date.now() < until) {
+        const stored = await page.evaluate(key => JSON.parse(localStorage.getItem(key) || '[]'), CELLAR_KEY);
+        for (const p of people) {
+          const b = stored.find(x => x.id === p.id);
+          p.slot = b?.s?.first?.slots?.who || null;
+          p.grade = b?.s?.first?.grades?.person || null;
+          p.log = (b?.s?.log || []).filter(e => e.mech === 'M1');
+        }
+        if (people.every(p => p.grade || p.log.some(e => e.type === 'grade_failed'))) break;
+        await page.waitForTimeout(1000);
+      }
+      rec.screens.m1_requests = requests.filter(r => r.path === '/m1').map(r => r.body);
+    },
+    report(rec) {
+      const people = rec.screens.people || [];
+      if (people.length < 4) return [`Not reached: ${people.length} of 4 bottles.` + b1Tail(rec), '', ''];
+      const say = p => `"${p.person}": ${p.grade ? `${p.grade.state}, ${p.grade.person_kind}, one person ${p.grade.one_person}` : `no grade (${p.log.map(e => e.type + (e.error ? ' ' + e.error : '')).join(', ') || 'nothing logged'})`}`;
+      const [full, initials, description, group] = people;
+      const same = p => !!p.grade && !!full.grade && p.grade.state === full.grade.state;
+      const words = /\b(settled|clearing|turbid|grade)\b/i;
+      return [
+        `${say(full)}. ${say(initials)}. ${say(description)}. Same state as the full name: initials ${same(initials)}, description ${same(description)}. Sent to /m1: ${(rec.screens.m1_requests || []).map(b => JSON.stringify({ person_name: b.person_name, relationship: b.relationship, maturity_class: b.maturity_class })).join('; ')}.`,
+        `${say(group)}. Stored as: ${JSON.stringify(group.slot)}. After F1, every bottle showed the next question straight away: ${people.map(p => `"${p.person}" → ${p.next_qid} "${p.next_question}" ${p.next_after_ms} ms`).join('; ')}.`,
+        `Grade words on any end screen: ${people.filter(p => words.test(p.end_text)).map(p => `"${p.person}"`).join(', ') || 'none'}.` + b1Tail(rec)
+      ];
+    }
+  },
+
+  'b1-s3': {
+    title: 'B1 S3: fix with Don\'t know yet at F1 and F2, then the switch',
+    expected: [
+      'F2 and F5 show their no-person variants.',
+      'The end screen shows the switch line.',
+      'Switching asks only E2, E3, E4 and E6.',
+      'Switching keeps every earlier answer.'
+    ],
+    async play(app, rec) {
+      const page = app.page;
+      const fs = b1Driver(app, rec);
+      const requests = rec.worker_requests = [];
+      b1WatchWorker(page, requests);
+      await app.open();
+      await fs.newBottle(B1_S3.spark);
+      await fs.pick('fix');
+      for (const a of B1_S3.fix) await fs.answer(a);
+      rec.screens.fix_screens = [...fs.screens];
+      rec.screens.end_fix = await fs.endScreen();
+      const before = await app.bottle();
+      rec.checkpoints.before_switch = { slots: before.s.first.slots, log: before.s.log, restatements: before.s.restatements };
+      await page.locator('#fs-switch').click();
+      const asked = rec.screens.asked_after_switch = [];
+      for (let k = 0; k < 8; k++) {
+        const snap = await b1Snap(page);
+        if (snap.end) break;
+        asked.push({ qid: snap.qid, question: snap.question });
+        await fs.answer(B1_S3.experiment[snap.qid] || 'skip');
+      }
+      rec.screens.end_experiment = await fs.endScreen();
+      const after = await app.bottle();
+      rec.checkpoints.after_switch = { slots: after.s.first.slots, log: after.s.log, restatements: after.s.restatements, path: after.s.first.path };
+      await page.waitForTimeout(3000);
+    },
+    report(rec) {
+      const s = rec.screens, c = rec.checkpoints;
+      const q = id => (s.fix_screens || []).find(x => x.qid === id)?.question || '(not shown)';
+      if (!s.end_fix) return [`F2 asked "${q('F2')}". F5 asked "${q('F5')}".` + b1Tail(rec), 'Not reached.', 'Not reached.', 'Not reached.'];
+      const lineRow = s.end_fix.rows.find(r => r.row === 'line');
+      const before = c.before_switch, after = c.after_switch;
+      const kept = before && after ? Object.keys(before.slots).filter(k => JSON.stringify(before.slots[k]) === JSON.stringify(after.slots[k])) : [];
+      const changed = before && after ? Object.keys(before.slots).filter(k => !kept.includes(k)) : [];
+      const logKept = before && after && JSON.stringify(after.log.slice(0, before.log.length)) === JSON.stringify(before.log);
+      const models = (rec.worker_requests || []).filter(r => r.path !== '/m0').map(r => r.path);
+      return [
+        `F2 asked "${q('F2')}" (the brief's wording: ${q('F2') === B1_BRIEF.F2_no_person}). F5 asked "${q('F5')}" (the brief's wording: ${q('F5') === B1_BRIEF.F5_no_person}). F3 asked "${q('F3')}". F6 offered "${(s.fix_screens || []).find(x => x.qid === 'F6')?.unsure}".`,
+        `Line on the end screen: ${s.end_fix.nobody ? `"${s.end_fix.nobody}"` : 'none'}. Switch link: "${s.end_fix.switch_link}". "${lineRow?.label}": "${lineRow?.value}".`,
+        `After the switch the screens asked: ${(s.asked_after_switch || []).map(x => x.qid).join(', ') || 'none'}. Path now: ${after?.path}.`,
+        `Answers kept unchanged across the switch: ${kept.length} of ${Object.keys(before?.slots || {}).length} (${kept.join(', ')})${changed.length ? `; changed: ${changed.join(', ')}` : ''}. Restatements before ${before?.restatements?.length}, after ${after?.restatements?.length}. Log entries from before the switch still first and unchanged: ${logKept}. Experiment end screen: ${(s.end_experiment?.rows || []).map(r => `${r.label} "${r.value.replace(/\n/g, ' / ')}"`).join('; ')}. Worker requests besides /m0: ${models.join(', ') || 'none'}.` + b1Tail(rec)
+      ];
+    }
+  },
+
+  'b1-s4': {
+    title: 'B1 S4: experiment, full answers, a daily image-description game',
+    expected: [
+      'No question contains "problem", "need", "wrong" or "stopped".',
+      'No model call after M0.',
+      'The line is saved verbatim.'
+    ],
+    async play(app, rec) {
+      const page = app.page;
+      const fs = b1Driver(app, rec);
+      const requests = rec.worker_requests = [];
+      b1WatchWorker(page, requests);
+      await app.open();
+      await fs.newBottle(B1_S4.spark);
+      rec.screens.tapped_at = null;
+      await fs.pick('experiment');
+      rec.screens.tapped_at = new Date(fs.tappedAt).toISOString();
+      for (const a of B1_S4.answers) await fs.answer(a);
+      rec.screens.burst = fs.screens.filter(x => x.qid);
+      rec.screens.end = await fs.endScreen();
+      rec.screens.step = await fs.planStep('build', 'this_week');
+      await page.waitForTimeout(8000);
+      const b = await app.bottle();
+      rec.checkpoints.bottle = { first: b?.s?.first, log: b?.s?.log, restatements: b?.s?.restatements };
+    },
+    report(rec) {
+      const s = rec.screens, b = rec.checkpoints.bottle;
+      if (!s.end) return ['Not reached.' + b1Tail(rec), '', ''];
+      const questions = (s.burst || []).map(x => `${x.qid} "${x.question}"${B1_EXPERIMENT_WORDS.test(x.question) ? ` HAS "${x.question.match(B1_EXPERIMENT_WORDS)[1]}"` : ''}`);
+      const elsewhere = (s.burst || []).filter(x => B1_EXPERIMENT_WORDS.test(x.visible_text)).map(x => `${x.qid}: "${x.visible_text.match(B1_EXPERIMENT_WORDS)[1]}"`);
+      const endWords = B1_EXPERIMENT_WORDS.test(s.end.visible_text) ? s.end.visible_text.match(B1_EXPERIMENT_WORDS)[1] : null;
+      const reqs = (rec.worker_requests || []).map(r => `${r.path} at ${r.at}`);
+      const line = b?.first?.slots?.line;
+      const typed = B1_S4.answers[5];
+      const logged = (b?.log || []).find(e => e.step === 'E6');
+      const row = s.end.rows.find(r => r.row === 'line');
+      return [
+        `Questions: ${questions.join('; ')}. The words anywhere else on those screens: ${elsewhere.join('; ') || 'none'}. On the end screen: ${endWords ? `"${endWords}"` : 'none'}.`,
+        `Worker requests in the run: ${reqs.join(', ') || 'none'}. Gate tapped at ${s.tapped_at}. Requests other than /m0: ${(rec.worker_requests || []).filter(r => r.path !== '/m0').length}.`,
+        `Line stored: "${line?.text}", how many ${line?.how_many}, out of ${line?.out_of}. Same as typed: ${line?.text === typed.text && line?.how_many === String(typed.howMany) && line?.out_of === String(typed.outOf)}. Log entry: answer "${logged?.answer}", how many ${logged?.how_many}, out of ${logged?.out_of}. End screen, "${row?.label}": "${row?.value.replace(/\n/g, ' / ')}". Step: ${JSON.stringify(b?.first?.step || null)}; line asked before it: ${s.step?.line_asked}.` + b1Tail(rec)
+      ];
+    }
+  },
+
+  'b1-s5': {
+    title: 'B1 S5: Rethink it first',
+    expected: [
+      'A second Now is saved and dated.',
+      'The first Now is still there.'
+    ],
+    async play(app, rec) {
+      const page = app.page;
+      const fs = b1Driver(app, rec);
+      const requests = rec.worker_requests = [];
+      b1WatchWorker(page, requests);
+      await app.open();
+      await fs.newBottle(B1_S5.spark);
+      await fs.pick('fix');
+      for (const a of B1_S5.answers) await fs.answer(a);
+      rec.screens.fix_screens = [...fs.screens];
+      rec.screens.end_first = await fs.endScreen();
+      rec.checkpoints.before = (await app.bottle())?.s?.restatements || [];
+      await page.locator('#fs-rethink').click();
+      const asked = rec.screens.rethink_asked = [];
+      for (let k = 0; k < 5; k++) {
+        const snap = await b1Snap(page);
+        if (snap.end) break;
+        asked.push({ qid: snap.qid, question: snap.question, visible_text: snap.visible_text });
+        await fs.answer(snap.qid === 'F4' ? { text: B1_S5.rethink.now } : snap.qid === 'F3' ? { text: B1_S5.rethink.F3 } : 'skip');
+      }
+      rec.screens.end_after = await fs.endScreen();
+      const b = await app.bottle();
+      rec.checkpoints.after = b?.s?.restatements || [];
+      rec.checkpoints.slots = b?.s?.first?.slots;
+      rec.checkpoints.log = b?.s?.log;
+    },
+    report(rec) {
+      const s = rec.screens, c = rec.checkpoints;
+      if (!s.end_after) return ['Not reached.' + b1Tail(rec), ''];
+      const [first, second] = c.after || [];
+      const timer = (s.rethink_asked || []).filter(x => /next question|timer|wait/i.test(x.visible_text)).map(x => x.qid);
+      const now = s.end_after.rows.find(r => r.row === 'now');
+      const self = (s.fix_screens || []).filter(x => ['F2', 'F3', 'F5'].includes(x.qid)).map(x => `${x.qid} "${x.question}"`).join('; ');
+      return [
+        `Restatements after the rethink: ${(c.after || []).length}. Second: ${second ? `"${second.text}", at ${second.at}, from ${second.from}` : 'none'}. The rethink asked: ${(s.rethink_asked || []).map(x => `${x.qid} "${x.question}"`).join('; ')}. Timer or wait wording on those screens: ${timer.join(', ') || 'none'}. One thing now: "${c.slots?.one_thing?.text}".`,
+        `First restatement before: ${JSON.stringify(c.before?.[0] || null)}; after: ${JSON.stringify(first || null)}; the same: ${JSON.stringify(c.before?.[0]) === JSON.stringify(first)}. Now on the end screen: "${now?.value.replace(/\n/g, ' / ')}". The self questions asked: ${self}.` + b1Tail(rec)
+      ];
+    }
+  },
+
+  'b1-s6': {
+    title: 'B1 S6: old bottles from an exported cellar',
+    expected: [
+      'Each old bottle opens in its current flow, unchanged: the same screen, panel, question and button as the app before B1 shows for it, and no first-session screen.'
+    ],
+    async play(app, rec) {
+      const exportFile = JSON.parse(await readFile(join(REPO, B1_S6_EXPORT), 'utf8'));
+      const cellar = JSON.parse(exportFile.keys[CELLAR_KEY]);
+      rec.screens.export_file = B1_S6_EXPORT;
+      rec.screens.app_before = `${B1_BEFORE}:corked_v6.html on port ${OLD_APP_PORT}`;
+      const server = await b1ServeOldApp();
+      const bottles = rec.screens.bottles = [];
+      const oldUrl = `http://localhost:${OLD_APP_PORT}/corked_v6.html?rhythmtest=1`;
+      const oldCtx = await app.browser.newContext({ viewport: { width: 1400, height: 900 } });
+      try {
+        const oldPage = await oldCtx.newPage();
+        oldPage.on('pageerror', err => rec.page_errors.push('app before B1: ' + String(err?.message || err)));
+        // The import's own effect: every key from the file, then a reload.
+        const load = async (page, url) => {
+          await page.goto(url, { waitUntil: 'domcontentloaded' });
+          await page.evaluate(keys => { localStorage.clear(); for (const [k, v] of Object.entries(keys)) localStorage.setItem(k, v); }, exportFile.keys);
+          await page.goto(url, { waitUntil: 'domcontentloaded' });
+          await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+        };
+        const openIn = async (page, url, id) => {
+          await load(page, url);
+          const stored = () => page.evaluate(([key, id]) => JSON.parse(localStorage.getItem(key) || '[]').find(b => b.id === id) || null, [CELLAR_KEY, id]);
+          const before = await stored();
+          await page.locator(`.bottle-card[data-bottle-id="${id}"]`).click();
+          await page.waitForTimeout(1500);
+          await page.waitForFunction(() => !/Reading/.test(document.getElementById('p1-btn')?.textContent || ''), undefined, { timeout: STEP_TIMEOUT, polling: 250 }).catch(() => {});
+          await page.evaluate(() => typeof finishAllLines === 'function' && finishAllLines());
+          const view = await b1OldBottleView(page);
+          const after = await stored();
+          return { view, s_fields_changed: b1Diff(before?.s, after?.s), record_fields_changed: b1Diff({ ...before, s: null }, { ...after, s: null }) };
+        };
+        for (const b of cellar) {
+          const now = await openIn(app.page, APP_URL, b.id);
+          const old = await openIn(oldPage, oldUrl, b.id);
+          bottles.push({
+            id: b.id, idea: b.s?.idea, mechIndex: b.mechIndex, status: b.status, qLifecycle: b.s?.qLifecycle,
+            app_now: now, app_before_b1: old,
+            same_view: JSON.stringify(now.view) === JSON.stringify(old.view),
+            same_changes: JSON.stringify(now.s_fields_changed) === JSON.stringify(old.s_fields_changed)
+          });
+          app.step('opened an old bottle in both apps', { note: `${b.id}: same view ${bottles[bottles.length - 1].same_view}` });
+        }
+      } finally {
+        await oldCtx.close();
+        server.close();
+      }
+    },
+    report(rec) {
+      const bottles = rec.screens.bottles || [];
+      if (!bottles.length) return ['Not reached.' + b1Tail(rec)];
+      const view = v => `${v.screen}, panels ${v.panels.join('/') || 'none'}, "${v.mech_label}", question "${v.question}", button "${v.main_button}", rhythm panel ${v.rhythm_panel}, first-session screen ${v.first_session_screen}`;
+      return [bottles.map(b => `"${b.idea}" (mechIndex ${b.mechIndex}, ${b.status}, ${b.qLifecycle}). Now: ${view(b.app_now.view)}. Before B1: ${view(b.app_before_b1.view)}. Same: ${b.same_view}. Stored fields the open changed, now: [${b.app_now.s_fields_changed.join(', ')}], before B1: [${b.app_before_b1.s_fields_changed.join(', ')}].`).join(' ') + ` Export: ${rec.screens.export_file}. App before B1: ${rec.screens.app_before}.` + b1Tail(rec)];
+    }
+  },
+
+  'b1-s7': {
+    title: 'B1 S7: phone, 390x844',
+    expected: [
+      'On every burst screen and the end screen, at 390x844, the main button is on screen without scrolling.'
+    ],
+    async play(app, rec) {
+      const context = await app.browser.newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
+      try {
+        const page = await context.newPage();
+        page.on('pageerror', err => rec.page_errors.push(String(err && err.message || err)));
+        const phone = driver(page, rec);
+        phone.outDir = app.outDir;
+        const fs = b1Driver(phone, rec);
+        const looks = rec.screens.phone = [];
+        const measure = async (label, sel) => {
+          await page.waitForTimeout(300);
+          const m = await page.evaluate(sel => {
+            const el = document.querySelector(sel);
+            const r = el?.getBoundingClientRect();
+            return {
+              scroll_y: window.scrollY, viewport_w: window.innerWidth, viewport_h: window.innerHeight,
+              page_h: document.documentElement.scrollHeight,
+              button: el ? { text: el.textContent.trim(), top: Math.round(r.top), bottom: Math.round(r.bottom), left: Math.round(r.left), right: Math.round(r.right) } : null
+            };
+          }, sel);
+          m.label = label;
+          m.on_screen = !!m.button && m.button.top >= 0 && m.button.bottom <= m.viewport_h && m.button.left >= 0 && m.button.right <= m.viewport_w;
+          looks.push(m);
+          await page.screenshot({ path: join(app.outDir, `run-${rec.run}-phone-${String(looks.length).padStart(2, '0')}-${label}.png`) });
+        };
+        await phone.open();
+        await fs.newBottle(B1_S1.spark);
+        await fs.pick('fix');
+        for (const a of B1_S1.answers) {
+          const snap = await b1Snap(page);
+          await measure(`fix-${snap.qid}`, '#fs-next');
+          await fs.answer(a);
+        }
+        await fs.readEnd();
+        await measure('fix-end', '#fs-choice-ask');
+        await fs.backToCellar();
+        await fs.newBottle(B1_S4.spark, { fromCellar: true });
+        await fs.pick('experiment');
+        for (const a of B1_S4.answers) {
+          const snap = await b1Snap(page);
+          await measure(`experiment-${snap.qid}`, '#fs-next');
+          await fs.answer(a);
+        }
+        await fs.readEnd();
+        await measure('experiment-end', '#fs-choice-show');
+        await phone.exportCellar(join(app.outDir, `run-${rec.run}-cellar.json`));
+        rec.exported = true;
+      } finally {
+        await context.close();
+      }
+    },
+    report(rec) {
+      const looks = rec.screens.phone || [];
+      if (!looks.length) return ['Not reached.' + b1Tail(rec)];
+      return [looks.map(m => `${m.label}: "${m.button?.text}" ${m.button?.top} to ${m.button?.bottom} of ${m.viewport_h}, scrolled ${m.scroll_y}, on screen ${m.on_screen}`).join('; ') + `. Screen ${looks[0].viewport_w}x${looks[0].viewport_h}.` + b1Tail(rec)];
+    }
+  },
+
+  'b1-s8': {
+    title: 'B1 S8: a new bottle\'s card before and after its day',
+    expected: [
+      'The card says "Planned for [day]" before and after the day, with no lean, sag or stall note at any point.'
+    ],
+    async play(app, rec) {
+      const page = app.page;
+      const fs = b1Driver(app, rec);
+      await app.open({ at: '2026-11-07T10:00:00' });
+      await fs.newBottle(B1_S8.spark);
+      await fs.pick('experiment');
+      for (let k = 0; k < 6; k++) await fs.answer('skip');
+      await fs.endScreen();
+      rec.screens.step = await fs.planStep('build', 'day', { day: B1_S8.day });
+      await fs.backToCellar();
+      const cards = rec.screens.cards = [];
+      const look = async (when, { open = true } = {}) => {
+        const card = await app.card().evaluate(el => ({
+          status: el.querySelector('.bottle-card-status')?.textContent.trim() || null,
+          step: el.querySelector('.bottle-card-step')?.textContent.trim() || null,
+          date: el.querySelector('.bottle-card-date')?.textContent.trim() || null,
+          classes: el.className,
+          text: el.innerText
+        }));
+        card.when = when;
+        card.sag = /bottle-card--sag/.test(card.classes);
+        card.stall_words = /stall|behind|overdue/i.test(card.text);
+        if (open) {
+          await app.card().click();
+          await page.locator('#screen-first.active, #screen-phase1.active').first().waitFor({ timeout: 10000 });
+          card.opened = await page.evaluate(() => ({
+            screen: document.querySelector('.screen.active')?.id || null,
+            stalled_panel: !!document.getElementById('stalled-panel') && getComputedStyle(document.getElementById('stalled-panel')).display !== 'none' && !!document.querySelector('#screen-phase1.active'),
+            planned: document.getElementById('fs-planned-when')?.textContent.trim() || null,
+            stall_words: /stall|behind|overdue/i.test(document.querySelector('.screen.active')?.innerText || '')
+          }));
+          await fs.backToCellar();
+        }
+        cards.push(card);
+      };
+      await look('2026-11-07 10:00, the day it was planned');
+      for (const at of B1_S8.later) {
+        await page.clock.setFixedTime(new Date(at));
+        await page.goto(APP_URL, { waitUntil: 'domcontentloaded' });
+        await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+        await look(at);
+      }
+    },
+    report(rec) {
+      const cards = rec.screens.cards || [];
+      if (!cards.length) return ['Not reached.' + b1Tail(rec)];
+      return [`Day planned: ${B1_S8.day} (a Thursday), "${rec.screens.step?.planned?.when}" on the end screen. ` + cards.map(c => `${c.when}: card "${c.status}", step "${c.step}", date "${c.date}", sag class ${c.sag}, stall words ${c.stall_words}; opened on ${c.opened?.screen}, planned "${c.opened?.planned}", stall panel ${c.opened?.stalled_panel}, stall words ${c.opened?.stall_words}`).join('. ') + '.' + b1Tail(rec)];
+    }
+  },
+
+  'b1-s9': {
+    title: 'B1 S9: the line not set at E6, then "Show it to them"',
+    expected: [
+      'E6 offers "Not set yet" and saves it; the end screen shows "Your line: not set yet".',
+      '"Show it to [people]" asks for the line before any step is saved.',
+      'Once the line is given, the step and its day are saved, and the line is on record before the step.'
+    ],
+    async play(app, rec) {
+      const page = app.page;
+      const fs = b1Driver(app, rec);
+      const requests = rec.worker_requests = [];
+      b1WatchWorker(page, requests);
+      await app.open();
+      await fs.newBottle(B1_S9.spark);
+      await fs.pick('experiment');
+      for (const a of B1_S9.answers) await fs.answer(a);
+      rec.screens.e6 = fs.screens.find(x => x.qid === 'E6') || null;
+      rec.screens.end = await fs.endScreen();
+      const before = await app.bottle();
+      rec.checkpoints.before = { line: before?.s?.first?.slots?.line, step: before?.s?.first?.step || null };
+      rec.screens.step = await fs.planStep('show', 'today', { line: B1_S9.line });
+      rec.screens.end_after = await fs.readEnd();
+      const after = await app.bottle();
+      rec.checkpoints.after = { line: after?.s?.first?.slots?.line, step: after?.s?.first?.step || null, log: after?.s?.log };
+    },
+    report(rec) {
+      const s = rec.screens, c = rec.checkpoints;
+      if (!s.end) return ['Not reached.' + b1Tail(rec), '', ''];
+      const row = s.end.rows.find(r => r.row === 'line');
+      const log = c.after?.log || [];
+      const lineAt = log.findIndex(e => e.step === 'E6' && e.value === 'answer');
+      const stepAt = log.findIndex(e => e.type === 'next_step');
+      return [
+        `E6 offered "${s.e6?.unsure}" and "${s.e6?.skip}". Stored: ${JSON.stringify(c.before?.line || null)}. End screen: "${row?.label}: ${row?.value}".`,
+        `"${s.step?.planning}" asked for the line first: ${s.step?.line_asked}. Question: "${s.step?.line_question}". Step stored while it was asked: ${JSON.stringify(s.step?.step_before_line || null)}. Step stored before the choice: ${JSON.stringify(c.before?.step)}.`,
+        `Line stored: ${JSON.stringify(c.after?.line || null)}. Step: ${JSON.stringify(c.after?.step || null)}. In the log, the line is entry ${lineAt} and the step entry ${stepAt}. The screen said "${s.step?.planned?.step}", "${s.step?.planned?.when}". End screen line row now: "${s.end_after?.rows.find(r => r.row === 'line')?.value.replace(/\n/g, ' / ')}".` + b1Tail(rec)
+      ];
+    }
+  },
+
   // The phone pass by itself. It costs nothing and needs no worker.
   'trust-basics-phone': {
     title: 'Trust basics, the phone pass',
