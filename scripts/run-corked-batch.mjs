@@ -9,6 +9,7 @@
 //                                                      follow-up; kept as a record of the case)
 //   wordsSource: 'real' | 'reconstructed'             (M6 words_source; default 'real')
 //   expectHalt: true | false | 'maybe'                (drives PASS/FAIL framing in the summary)
+//   stopAfter: 'M1'                                   (stops the chain after the person grade)
 //   note: string                                      (freeform — the assertion under test, echoed
 //                                                      verbatim into the report for the later read)
 //
@@ -294,6 +295,32 @@ const SPARKS = [
     m0FollowupAnswer: "Vegetables rot on the plot before anyone finds out who has surplus and who wants some, because there's no shared way to see it.",
     expectHalt: true,
     note: "Class 3 FIND path. Expect: chain stops after M0, one /field call in find mode. The brief must not assert a problem the spark never stated, target drawn from the spark's own nouns (gardeners, vegetables, allotment), question open and past-anchored, no pitch, no \"would you use\". A generic \"ask them about their workflow\" brief is a fail."
+  },
+  // 21 to 23. The person as one answer, as B1's first question takes it (v48 call 9, 7 Nov).
+  // Sent the way the new first session sends it: the whole answer as the relationship, no name.
+  // 21. Initials
+  {
+    raw_spark: SHARED_SPARK,
+    maturity: 0, grapeName: '', grapeRel: 'M., my sister, she runs a one-woman cleaning business',
+    stopAfter: 'M1',
+    expectHalt: true,
+    note: "Initials (v48 call 9). Expect: grape graded the same as a full name with the same tie. Initials are never marked down for not being a full name."
+  },
+  // 22. A description of one specific person
+  {
+    raw_spark: SHARED_SPARK,
+    maturity: 0, grapeName: '', grapeRel: 'a colleague who manages bookings for our plumbing crew',
+    stopAfter: 'M1',
+    expectHalt: true,
+    note: "A description of one specific person (v48 call 9). Expect: grape graded the same as a full name with the same tie. No name is asked for."
+  },
+  // 23. A group
+  {
+    raw_spark: SHARED_SPARK,
+    maturity: 0, grapeName: '', grapeRel: 'freelancers I know',
+    stopAfter: 'M1',
+    expectHalt: true,
+    note: "A group (v48 call 9). Expect: grape turbid, person_kind category_only: not one person."
   }
 ];
 
@@ -572,6 +599,10 @@ async function runOne(cfg, idx) {
     changed = applyMechResult('M1', res.data, R);
     logEntry(R, { mech: 'M1', endpoint: '/m1', kind: 'main', request: m1req, response: res.data, calls: res.calls, summary: summarize('M1', res.data, changed) });
     runAssertions(R, 'M1', res.data);
+  }
+  if (cfg.stopAfter === 'M1') {
+    halt(R, 'Stops after M1: this case checks the person grade only.');
+    return R;
   }
 
   // M2 Phase A: stated, guessed or insufficient. The request mirrors the app's.
