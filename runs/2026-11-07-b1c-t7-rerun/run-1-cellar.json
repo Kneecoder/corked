@@ -1,0 +1,10 @@
+{
+  "exported_at": "2026-11-07T15:39:51.393Z",
+  "version": 1,
+  "keys": {
+    "corked-typed-lines-v1": "{\"landing\":{\"upTo\":-1,\"lines\":[\"landing:0:110:2308908051\",\"landing:1:50:606645318\",\"landing:2:77:2729363494\"]}}",
+    "corked-cellar-v1": "[{\"id\":\"mw6kkidknxiud\",\"created_at\":\"2026-11-07T15:39:51.309Z\",\"updated_at\":\"2026-11-07T15:39:51.309Z\",\"status\":\"active\",\"s\":{\"idea\":\"A trivia app for football fans to challenge each others ballknowledge.\",\"grape\":\"\",\"maturity\":-1,\"progress\":-1,\"pace\":-1,\"notifTiming\":-1,\"grape_name\":\"\",\"grape_relationship\":\"\",\"elements\":{\"grape\":\"inert\",\"tell\":\"inert\",\"vintage\":\"inert\",\"gap\":\"inert\",\"echo\":\"inert\",\"limit\":\"inert\"},\"lastSource\":{},\"answers\":{},\"drafts\":{},\"failedSends\":{},\"reopenDrafts\":{},\"pendingFollowUp\":null,\"m1Fields\":{\"person\":\"\",\"when\":\"\",\"trying\":\"\",\"happened\":\"\"},\"label\":{\"grape\":\"\",\"tell\":\"\",\"vintage\":\"\",\"gap\":\"\",\"echo\":\"\",\"limit\":\"\"},\"m0\":null,\"m1\":null,\"problem\":null,\"mechIndex\":0,\"grapeStep\":false,\"cellarEntryPlayed\":false,\"thresholdDone\":false,\"questionOpensAt\":null,\"swirl_done\":{},\"qLifecycle\":\"active\",\"parkKind\":null,\"log\":[{\"at\":\"2026-11-07T15:39:51.309Z\",\"type\":\"answer\",\"flow\":\"first_session_v2\",\"step\":\"spark\",\"question\":\"What's the idea?\",\"answer\":\"A trivia app for football fans to challenge each others ballknowledge.\"}],\"restatements\":[],\"flow\":\"first_session_v2\",\"lineIsSpark\":true,\"first\":{\"at\":\"2026-11-07T15:39:51.308Z\",\"path\":null,\"slots\":{},\"queue\":[],\"grades\":{},\"step\":null,\"maturity\":null,\"m0_open\":null,\"m2\":null,\"labels\":{},\"shown\":{}}},\"mechIndex\":0}]",
+    "corked_worker_url": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+    "corked_last_export_at": "2026-11-07T15:39:51.393Z"
+  }
+}

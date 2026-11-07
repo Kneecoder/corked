@@ -1,0 +1,67 @@
+{
+  "scenario": "b1c-t7",
+  "title": "B1c T7: the spark screen and the gate",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T15:39:50.921Z",
+  "finished_at": "2026-11-07T15:39:51.514Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T15:39:51.065Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T15:39:51.250Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T15:39:51.329Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T15:39:51.509Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1c-t7-rerun\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "spark": {
+      "question": "What's the idea?",
+      "note": "An app, a game, a tool you wish existed. Get the rough thought down while it's fresh. It doesn't need to be worked out yet.",
+      "label": "YOUR IDEA",
+      "button": "Next →",
+      "bar": false,
+      "opening": "",
+      "visible_text": "What's the idea?\nAn app, a game, a tool you wish existed. Get the rough thought down while it's fresh. It doesn't need to be worked out yet.\nYOUR IDEA\n\nA way for independent bookshops to recommend books the way a friend would.\n\nAn AI model writes some of Corked's questions and the line after an answer; the rest are fixed. Not a person. What you type goes through Corked's server to Anthropic's Claude. Anthropic doesn't train on it and deletes it within 30 days, or keeps it up to two years if its safety systems flag it. Your cellar is saved in this browser only.\n\nNext →"
+    },
+    "gate": {
+      "question": "Is this a fix or an experiment?",
+      "buttons": [
+        "A fix. I saw something go wrong, for someone or for me.",
+        "An experiment. I want to build it and see what people do with it."
+      ]
+    },
+    "gate_lines": [
+      "Like Dropbox, whose founder kept forgetting his USB stick.",
+      "Like Wordle, a word game one guy made for his partner."
+    ]
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "The spark screen shows the new copy, with no \"Every bottle starts here.\" and no \"1 / 3\" bar.",
+      "happened": "Question \"What's the idea?\" (true). Line \"An app, a game, a tool you wish existed. Get the rough thought down while it's fresh. It doesn't need to be worked out yet.\" (true). Label \"YOUR IDEA\" (true). Button \"Next →\" (true). \"Every bottle starts here.\" on screen: false. Bar: false; \"1 / 3\" on screen: false."
+    },
+    {
+      "n": 2,
+      "expected": "The gate shows the Dropbox and Wordle lines.",
+      "happened": "Gate lines: \"Like Dropbox, whose founder kept forgetting his USB stick.\", \"Like Wordle, a word game one guy made for his partner.\" (Dropbox true, Wordle true). Page errors: none."
+    }
+  ]
+}

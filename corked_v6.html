@@ -5237,7 +5237,11 @@ function showSparkGate() {
   const status = document.getElementById('v6-bottle-status');
   if (status) status.textContent = '';
   document.getElementById('v6-bottom-bar').style.display = 'none';
-  document.getElementById('spark-gate').style.display = 'block';
+  const gate = document.getElementById('spark-gate');
+  gate.style.display = 'block';
+  // On a small screen the gate opens below the spark: the page scrolls just far enough to show both
+  // choices and their lines (B1c). Where it already fits, nothing moves.
+  gate.scrollIntoView({ block: 'nearest' });
   const q = document.getElementById('gate-q');
   const line = q.textContent;
   showLine(q, line, lineKey('intake', 'gate', line));
