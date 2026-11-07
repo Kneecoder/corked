@@ -53,10 +53,11 @@ Scores, streaks or counts. Accounts, payments, push or email delivery, sharing. 
 The repo is `C:\Users\James\Desktop\ClaudeCodeTest`. GitHub: Kneecoder/corked, branch `main`.
 
 ### Files that matter
-- `corked_v6.html`: the app (HTML, CSS, script). Intake (M0 spark, the setup question, the person step), Phase 1 (M1 to M7), the cellar, parking, the label screen. It loads the four files in `shared/`, so it has to be served from the repo folder.
+- `corked_v6.html`: the app (HTML, CSS, script). Intake (M0 spark, the setup question, the person step), Phase 1 (M1 to M7), the cellar, parking, the label screen. A new bottle (`s.flow` is `first_session_v1`) has its own first session instead: the spark, the gate, one burst of questions and the end screen (search for FIRST SESSION). Old bottles keep the old flow. It loads the five files in `shared/`, so it has to be served from the repo folder.
 - `shared/mechanisms.js`: the mechanism table. Each mechanism's route, bars, primary bar, the elements it may move, its anchors, its errand and its copy. The app, the worker and the test tools all read it. A doctrine call about what a mechanism grades is one row here.
 - `shared/provenance.js`: the one rule for "is this the builder's own words". Anchors, quotes from the spark, and the never-invent word check. The worker, the app and the bake-off scoring ask it.
 - `shared/cellar-clock.js`: pace, part of the day, the 05:00 rule, and every comeback, stall and wording answer. It takes `now` as an input.
+- `shared/first-session-copy.js`: every sentence of a new bottle's first session. The gate, the fix and experiment questions, the end screen, the cellar card. Wording changes go here.
 - `shared/cellar-store.js`: the one writer of `corked-cellar-v1`. It takes its storage as an input. Cellar import is the one other way in: it restores a whole export.
 - Bottles live in the browser's localStorage under `corked-cellar-v1`. The worker URL is typed in the spark step and saved as `corked_worker_url`.
 - `worker.js`: the Cloudflare Worker. Every prompt (the `*_DOCTRINE` strings), every route, and every server-side check: length caps, dash and style cleaning. It reads `shared/mechanisms.js` and `shared/provenance.js`.
@@ -78,7 +79,7 @@ All POST, JSON in and out, at https://orked-m1-proxy.kneebonewebdesign.workers.d
 - `/m2`: three calls on one route.
   - Phase A (no `user_answer`): outcome `stated`, `self_answer`, `guessed` or `insufficient`.
   - `phase: "scene"`: builds a problem from the builder's scene answer.
-  - Phase B (with `user_answer`): grades Tell, Vintage, and Gap when `gap_in_play`.
+  - Phase B (with `user_answer`): grades Tell, Vintage, and Gap when `gap_in_play`. A new bottle's first session sends `flow: "first_session_v1"` with no problem, and is graded on the answer alone.
 - `/m3` to `/m7`: grading for each mechanism.
 - `/field`: field briefs. Modes `find`, `ask`, `echo`, `contrast`, `words`, `limit`.
 - `/resolve`: the resolving question on the label screen.
