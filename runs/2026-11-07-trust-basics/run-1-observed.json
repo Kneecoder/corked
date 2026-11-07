@@ -1,0 +1,1487 @@
+{
+  "scenario": "trust-basics",
+  "title": "Trust basics",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T00:32:46.971Z",
+  "finished_at": "2026-11-07T00:38:50.449Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T00:32:47.085Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T00:32:48.176Z",
+      "step": "the spark screen, first time",
+      "note": "AI line visible: true"
+    },
+    {
+      "at": "2026-11-07T00:32:48.754Z",
+      "step": "the spark screen, after a reload",
+      "note": "AI line visible: false"
+    },
+    {
+      "at": "2026-11-07T00:32:48.907Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T00:32:48.965Z",
+      "step": "the gate is showing",
+      "note": "Is this about a problem someone has, or something you want to make for its own sake?"
+    },
+    {
+      "at": "2026-11-07T00:33:01.253Z",
+      "step": "bottled the spark",
+      "note": "screen asks \"Have you spoken to a real person this spark comes from?\""
+    },
+    {
+      "at": "2026-11-07T00:33:01.276Z",
+      "step": "picked",
+      "note": "Yes."
+    },
+    {
+      "at": "2026-11-07T00:33:01.309Z",
+      "step": "picked",
+      "note": "Yes, I can name them and I know the moment."
+    },
+    {
+      "at": "2026-11-07T00:33:04.245Z",
+      "step": "entered the grape",
+      "note": "Lotte, \"my cousin, she shoots weddings\""
+    },
+    {
+      "at": "2026-11-07T00:33:08.910Z",
+      "step": "swept: A: M1 reading",
+      "note": "1 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:33:09.394Z",
+      "step": "set the rhythm",
+      "note": "Every other day, Evening"
+    },
+    {
+      "at": "2026-11-07T00:33:11.984Z",
+      "step": "M2 opened",
+      "note": "friction stage"
+    },
+    {
+      "at": "2026-11-07T00:33:14.960Z",
+      "step": "swept: A: M2 question",
+      "note": "1 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:33:19.699Z",
+      "step": "answered",
+      "note": "The Friction Test"
+    },
+    {
+      "at": "2026-11-07T00:33:24.484Z",
+      "step": "swept: A: M2 reading",
+      "note": "3 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:33:24.942Z",
+      "step": "swept: A: M2 reading, the answer fold open",
+      "note": "3 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:33:25.367Z",
+      "step": "swept: A: M2 follow-up",
+      "note": "3 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:33:30.609Z",
+      "step": "answered the follow-up"
+    },
+    {
+      "at": "2026-11-07T00:33:34.594Z",
+      "step": "swept: A: after the M2 follow-up",
+      "note": "3 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:33:35.014Z",
+      "step": "swept: A: M2 errand",
+      "note": "3 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:33:35.245Z",
+      "step": "opened tell",
+      "note": "M2 · The Friction Test · answer again"
+    },
+    {
+      "at": "2026-11-07T00:33:35.665Z",
+      "step": "swept: A: the Tell in the sidebar, with its reopen",
+      "note": "2 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:33:35.726Z",
+      "step": "parked, waiting for it to come back",
+      "note": "card reads \"Parked · a question to ask\", due 2026-11-07T00:35:35.706Z"
+    },
+    {
+      "at": "2026-11-07T00:35:36.864Z",
+      "step": "the parked question came back"
+    },
+    {
+      "at": "2026-11-07T00:35:37.275Z",
+      "step": "swept: A: the parked question came back",
+      "note": "2 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:35:40.937Z",
+      "step": "answered the parked question",
+      "note": "The Friction Test"
+    },
+    {
+      "at": "2026-11-07T00:35:43.126Z",
+      "step": "swept: A: the parked answer read",
+      "note": "3 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:35:43.155Z",
+      "step": "back in the cellar, waiting out the hold",
+      "note": "question due 2026-11-07T00:37:40.919Z"
+    },
+    {
+      "at": "2026-11-07T00:37:42.105Z",
+      "step": "the hold is over",
+      "note": "card reads \"Question ready\""
+    },
+    {
+      "at": "2026-11-07T00:37:42.118Z",
+      "step": "opened the bottle",
+      "note": "The Friction Test"
+    },
+    {
+      "at": "2026-11-07T00:37:42.149Z",
+      "step": "errand warning shown, continuing anyway"
+    },
+    {
+      "at": "2026-11-07T00:37:43.927Z",
+      "step": "swept: A: M3 question, from the mechanism table",
+      "note": "0 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:37:48.134Z",
+      "step": "answered",
+      "note": "Third-Party Workarounds"
+    },
+    {
+      "at": "2026-11-07T00:37:53.461Z",
+      "step": "swept: A: M3 reading",
+      "note": "2 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:37:53.881Z",
+      "step": "swept: A: M3 follow-up",
+      "note": "2 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:37:58.340Z",
+      "step": "answered the follow-up"
+    },
+    {
+      "at": "2026-11-07T00:38:00.885Z",
+      "step": "swept: A: after the M3 follow-up",
+      "note": "3 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:38:01.298Z",
+      "step": "swept: A: M3 errand",
+      "note": "3 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:38:03.130Z",
+      "step": "swept: A: the resolving question, opened directly",
+      "note": "4 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:38:03.711Z",
+      "step": "swept: the cellar with one bottle",
+      "note": "0 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:38:03.812Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T00:38:04.333Z",
+      "step": "the gate is showing",
+      "note": "Is this about a problem someone has, or something you want to make for its own sake?"
+    },
+    {
+      "at": "2026-11-07T00:38:12.696Z",
+      "step": "bottled the spark",
+      "note": "screen asks \"Have you spoken to a real person this spark comes from?\""
+    },
+    {
+      "at": "2026-11-07T00:38:12.712Z",
+      "step": "picked",
+      "note": "Yes."
+    },
+    {
+      "at": "2026-11-07T00:38:12.745Z",
+      "step": "picked",
+      "note": "I can name them, but I have only heard about it secondhand."
+    },
+    {
+      "at": "2026-11-07T00:38:15.417Z",
+      "step": "entered the grape",
+      "note": "Marco, \"owns the boxing gym where I train\""
+    },
+    {
+      "at": "2026-11-07T00:38:20.635Z",
+      "step": "swept: B: M1 reading",
+      "note": "1 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:38:20.763Z",
+      "step": "set the rhythm",
+      "note": "Every other day, Evening"
+    },
+    {
+      "at": "2026-11-07T00:38:23.608Z",
+      "step": "M2 opened",
+      "note": "scene stage"
+    },
+    {
+      "at": "2026-11-07T00:38:25.811Z",
+      "step": "swept: B: M2 opened on the scene stage",
+      "note": "0 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:38:29.392Z",
+      "step": "swept: B: the problem built from the scene, waiting for the builder",
+      "note": "1 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:38:32.440Z",
+      "step": "swept: B: M2 friction question after the scene",
+      "note": "2 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:38:32.568Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T00:38:32.597Z",
+      "step": "the gate is showing",
+      "note": "Is this about a problem someone has, or something you want to make for its own sake?"
+    },
+    {
+      "at": "2026-11-07T00:38:42.268Z",
+      "step": "bottled the spark",
+      "note": "screen asks \"Have you spoken to a real person this spark comes from?\""
+    },
+    {
+      "at": "2026-11-07T00:38:42.278Z",
+      "step": "picked",
+      "note": "No."
+    },
+    {
+      "at": "2026-11-07T00:38:42.312Z",
+      "step": "picked",
+      "note": "Yes. This comes from my own experience."
+    },
+    {
+      "at": "2026-11-07T00:38:42.382Z",
+      "step": "entered the grape",
+      "note": "Jamie, \"I lost a whole folder of receipts last March and paid more tax for it. zq-canary-0611\""
+    },
+    {
+      "at": "2026-11-07T00:38:42.513Z",
+      "step": "set the rhythm",
+      "note": "Every other day, Evening"
+    },
+    {
+      "at": "2026-11-07T00:38:45.320Z",
+      "step": "M2 opened",
+      "note": "friction stage"
+    },
+    {
+      "at": "2026-11-07T00:38:47.412Z",
+      "step": "swept: C: M2 question, self mode",
+      "note": "1 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:38:47.862Z",
+      "step": "swept: the cellar with three bottles",
+      "note": "0 marked, 0 unmarked, 0 wrongly marked"
+    },
+    {
+      "at": "2026-11-07T00:38:48.027Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-trust-basics\\run-1-cellar.json"
+    },
+    {
+      "at": "2026-11-07T00:38:48.469Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T00:38:48.596Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T00:38:48.640Z",
+      "step": "the gate is showing",
+      "note": "Is this about a problem someone has, or something you want to make for its own sake?"
+    },
+    {
+      "at": "2026-11-07T00:38:49.036Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T00:38:50.100Z",
+      "step": "the spark screen at 390x844",
+      "note": "Bottle button bottom 619, screen ends at 844"
+    },
+    {
+      "at": "2026-11-07T00:38:50.444Z",
+      "step": "the spark limit, typed and pasted",
+      "note": "pasted 600, the field holds 500"
+    }
+  ],
+  "screens": {
+    "ai_line": {
+      "first_time": {
+        "visible": true,
+        "text": "An AI model writes some of Corked's questions and the line after an answer; the rest are fixed. Not a person. What you type goes through Corked's server to Anthropic's Claude. Anthropic doesn't train on it and deletes it within 30 days, or keeps it up to two years if its safety systems flag it. Your cellar is saved in this browser only.",
+        "comes_after_the_field": true
+      },
+      "after_reload": {
+        "visible": false,
+        "text": null,
+        "comes_after_the_field": false
+      },
+      "cellar_link": {
+        "link_text": "Who writes the questions",
+        "visible": true,
+        "text": "An AI model writes some of Corked's questions and the line after an answer; the rest are fixed. Not a person. What you type goes through Corked's server to Anthropic's Claude. Anthropic doesn't train on it and deletes it within 30 days, or keeps it up to two years if its safety systems flag it. Your cellar is saved in this browser only."
+      },
+      "second_spark": {
+        "visible": false,
+        "text": null,
+        "comes_after_the_field": false
+      }
+    },
+    "fonts": {
+      "blocked_requests": [],
+      "font_files": [
+        "/fonts/newsreader-latin-opsz-400-normal.woff2",
+        "/fonts/ibm-plex-mono-latin-400-normal.woff2",
+        "/fonts/inter-latin-500-normal.woff2",
+        "/fonts/inter-latin-600-normal.woff2",
+        "/fonts/inter-latin-400-normal.woff2",
+        "/fonts/newsreader-latin-opsz-400-normal.woff2",
+        "/fonts/ibm-plex-mono-latin-400-normal.woff2",
+        "/fonts/inter-latin-500-normal.woff2",
+        "/fonts/inter-latin-600-normal.woff2",
+        "/fonts/inter-latin-400-normal.woff2",
+        "/fonts/newsreader-latin-opsz-400-normal.woff2",
+        "/fonts/ibm-plex-mono-latin-400-normal.woff2",
+        "/fonts/inter-latin-500-normal.woff2",
+        "/fonts/inter-latin-600-normal.woff2",
+        "/fonts/inter-latin-400-normal.woff2",
+        "/fonts/newsreader-latin-opsz-400-normal.woff2",
+        "/fonts/ibm-plex-mono-latin-400-normal.woff2",
+        "/fonts/inter-latin-500-normal.woff2",
+        "/fonts/inter-latin-600-normal.woff2",
+        "/fonts/inter-latin-400-normal.woff2",
+        "/fonts/newsreader-latin-opsz-400-normal.woff2",
+        "/fonts/ibm-plex-mono-latin-400-normal.woff2",
+        "/fonts/inter-latin-500-normal.woff2",
+        "/fonts/inter-latin-600-normal.woff2",
+        "/fonts/inter-latin-400-normal.woff2"
+      ],
+      "faces": [
+        {
+          "family": "Inter",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Inter",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Newsreader",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Newsreader",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "IBM Plex Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "IBM Plex Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        }
+      ]
+    },
+    "persist": {
+      "before_first_bottle": {
+        "calls": 0,
+        "persisted": false
+      },
+      "after_first_bottle": {
+        "calls": 1,
+        "persisted": false
+      },
+      "around_export": {
+        "before": {
+          "calls": 1,
+          "persisted": false
+        },
+        "after": {
+          "calls": 2,
+          "persisted": false
+        }
+      }
+    },
+    "sweeps": [
+      {
+        "when": "A: M1 reading",
+        "tagged": [
+          {
+            "where": "#obs-box",
+            "text": "A named individual is present. The relationship is specific and occupationally grounded.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "observation.surface_text"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": {
+          "mech": "M1",
+          "m2_stage": null,
+          "text": "Lotte is the person this spark must answer to.",
+          "marked": false
+        },
+        "caution": [
+          {
+            "text": "The AI can misread an answer. Check anything you act on.",
+            "under": "#obs-box"
+          }
+        ]
+      },
+      {
+        "when": "A: M2 question",
+        "tagged": [
+          {
+            "where": "#m-q",
+            "text": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date: what did she do when she found out, and what steps did she actually take after that?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": {
+          "mech": "M2",
+          "m2_stage": "friction",
+          "text": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date: what did she do when she found out, and what steps did she actually take after that?",
+          "marked": true
+        },
+        "caution": []
+      },
+      {
+        "when": "A: M2 reading",
+        "tagged": [
+          {
+            "where": "#obs-box",
+            "text": "The Tell names an emotional state and a vague pattern rather than a filmable action. No specific instance is named in the answer, only a frequency estimate with no anchoring event.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "observation.surface_text"
+          },
+          {
+            "where": "#swirl-q",
+            "text": "Is Lotte a specific cousin you have spoken to about this, or a composite of wedding photographers you have encountered?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "swirl.question"
+          },
+          {
+            "where": "#fold-q",
+            "text": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date: what did she do when she found out, and what steps did she actually take after that?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "A: M2 reading, the answer fold open",
+        "tagged": [
+          {
+            "where": "#obs-box",
+            "text": "The Tell names an emotional state and a vague pattern rather than a filmable action. No specific instance is named in the answer, only a frequency estimate with no anchoring event.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "observation.surface_text"
+          },
+          {
+            "where": "#swirl-q",
+            "text": "Is Lotte a specific cousin you have spoken to about this, or a composite of wedding photographers you have encountered?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "swirl.question"
+          },
+          {
+            "where": "#fold-q",
+            "text": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date: what did she do when she found out, and what steps did she actually take after that?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "A: M2 follow-up",
+        "tagged": [
+          {
+            "where": "#obs-box",
+            "text": "The Tell names an emotional state and a vague pattern rather than a filmable action. No specific instance is named in the answer, only a frequency estimate with no anchoring event.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "observation.surface_text"
+          },
+          {
+            "where": "#swirl-q",
+            "text": "Is Lotte a specific cousin you have spoken to about this, or a composite of wedding photographers you have encountered?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "swirl.question"
+          },
+          {
+            "where": "#fold-q",
+            "text": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date: what did she do when she found out, and what steps did she actually take after that?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "A: after the M2 follow-up",
+        "tagged": [
+          {
+            "where": "#obs-box",
+            "text": "Tell contains an emotional state and a vague pattern where a filmable action is required. No specific instance is named in the answer, only a recurring frequency. The answer also notes the behaviour was not witnessed directly but reported secondhand.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "observation.surface_text"
+          },
+          {
+            "where": "#bc-dqelmr-t",
+            "text": "Walk me through the last time a couple cancelled close to the shoot date. What happened with the deposit?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "brief.question"
+          },
+          {
+            "where": "#fold-q",
+            "text": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date: what did she do when she found out, and what steps did she actually take after that?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "A: M2 errand",
+        "tagged": [
+          {
+            "where": "#obs-box",
+            "text": "Tell contains an emotional state and a vague pattern where a filmable action is required. No specific instance is named in the answer, only a recurring frequency. The answer also notes the behaviour was not witnessed directly but reported secondhand.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "observation.surface_text"
+          },
+          {
+            "where": "#bc-dqelmr-t",
+            "text": "Walk me through the last time a couple cancelled close to the shoot date. What happened with the deposit?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "brief.question"
+          },
+          {
+            "where": "#fold-q",
+            "text": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date: what did she do when she found out, and what steps did she actually take after that?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "A: the Tell in the sidebar, with its reopen",
+        "tagged": [
+          {
+            "where": ".review-q",
+            "text": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date: what did she do when she found out, and what steps did she actually take after that?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "question"
+          },
+          {
+            "where": "#rv-reopen-q",
+            "text": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date: what did she do when she found out, and what steps did she actually take after that?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "A: the parked question came back",
+        "tagged": [
+          {
+            "where": "#bc-st0am5-t",
+            "text": "Walk me through the last time a couple cancelled close to the shoot date. What happened with the deposit?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "brief.question"
+          },
+          {
+            "where": ".mech-q",
+            "text": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date: what did she do when she found out, and what steps did she actually take after that?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "A: the parked answer read",
+        "tagged": [
+          {
+            "where": "#obs-box",
+            "text": "The answer contains no observable action filmable by a camera. No specific instance, time, or context is named in the answer.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "observation.surface_text"
+          },
+          {
+            "where": "#bc-kmddj3-t",
+            "text": "Walk me through the last time a couple cancelled close to the shoot date. What happened with the deposit?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "brief.question"
+          },
+          {
+            "where": "#fold-q",
+            "text": "Walk me through the last time Lotte lost a deposit because a couple cancelled close to the shoot date: what did she do when she found out, and what steps did she actually take after that?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "A: M3 question, from the mechanism table",
+        "tagged": [],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": {
+          "mech": "M3",
+          "m2_stage": null,
+          "text": "Set Lotte aside. Who else hits this? Name one person and tell me what they have actually done about it.",
+          "marked": false
+        },
+        "caution": []
+      },
+      {
+        "when": "A: M3 reading",
+        "tagged": [
+          {
+            "where": "#obs-box",
+            "text": "The answer offers no third party at all, only the founder's inference about an unnamed category, with no identifiable person and no concrete behaviour observed.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "observation.surface_text"
+          },
+          {
+            "where": "#swirl-q",
+            "text": "Is there a single specific photographer, even one seen complaining in a forum or at a workshop, whose actual response to a last-minute cancellation is known?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "swirl.question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "A: M3 follow-up",
+        "tagged": [
+          {
+            "where": "#obs-box",
+            "text": "The answer offers no third party at all, only the founder's inference about an unnamed category, with no identifiable person and no concrete behaviour observed.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "observation.surface_text"
+          },
+          {
+            "where": "#swirl-q",
+            "text": "Is there a single specific photographer, even one seen complaining in a forum or at a workshop, whose actual response to a last-minute cancellation is known?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "swirl.question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "A: after the M3 follow-up",
+        "tagged": [
+          {
+            "where": "#obs-box",
+            "text": "No third party is present; the answer offers only the founder's inference about what others must experience, with no named person and no concrete behaviour reported.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "observation.surface_text"
+          },
+          {
+            "where": ".brief-setup",
+            "text": "Find another wedding photographer, not Lotte. Ask about late cancellations.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "brief.setup"
+          },
+          {
+            "where": "#bc-trf9lg-t",
+            "text": "The last time a couple cancelled days before the shoot, walk me through what you actually did about the deposit.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "brief.question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "A: M3 errand",
+        "tagged": [
+          {
+            "where": "#obs-box",
+            "text": "No third party is present; the answer offers only the founder's inference about what others must experience, with no named person and no concrete behaviour reported.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "observation.surface_text"
+          },
+          {
+            "where": ".brief-setup",
+            "text": "Find another wedding photographer, not Lotte. Ask about late cancellations.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "brief.setup"
+          },
+          {
+            "where": "#bc-trf9lg-t",
+            "text": "The last time a couple cancelled days before the shoot, walk me through what you actually did about the deposit.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "brief.question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "A: the resolving question, opened directly",
+        "tagged": [
+          {
+            "where": "#lr-question",
+            "text": "When a couple cancels two days before the shoot, what does Lotte say out loud to them about the deposit?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "question"
+          },
+          {
+            "where": "#obs-box",
+            "text": "No third party is present; the answer offers only the founder's inference about what others must experience, with no named person and no concrete behaviour reported.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "observation.surface_text"
+          },
+          {
+            "where": ".brief-setup",
+            "text": "Find another wedding photographer, not Lotte. Ask about late cancellations.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "brief.setup"
+          },
+          {
+            "where": "#bc-trf9lg-t",
+            "text": "The last time a couple cancelled days before the shoot, walk me through what you actually did about the deposit.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "brief.question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "the cellar with one bottle",
+        "tagged": [],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "B: M1 reading",
+        "tagged": [
+          {
+            "where": "#obs-box",
+            "text": "A named individual is present. The relationship is specific and real: Marco owns the boxing gym where the user trains.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "observation.surface_text"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": {
+          "mech": "M1",
+          "m2_stage": null,
+          "text": "Marco is the person this spark must answer to.",
+          "marked": false
+        },
+        "caution": []
+      },
+      {
+        "when": "B: M2 opened on the scene stage",
+        "tagged": [],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": {
+          "mech": "M2",
+          "m2_stage": "scene",
+          "text": "What has Marco told you about the last time they needed what your spark is for? What were they trying to do, and where did it stop working?",
+          "marked": false
+        },
+        "caution": []
+      },
+      {
+        "when": "B: the problem built from the scene, waiting for the builder",
+        "tagged": [
+          {
+            "where": "#m2-problem-inp",
+            "text": "Marco double booked the boxing ring because two trainers wrote their classes on different paper sheets and had to send six people home.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "problem.text"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      },
+      {
+        "when": "B: M2 friction question after the scene",
+        "tagged": [
+          {
+            "where": "#m2-problem-text",
+            "text": "Marco double booked the boxing ring because two trainers wrote their classes on different paper sheets and had to send six people home.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "problem.text"
+          },
+          {
+            "where": "#m-q",
+            "text": "Have Marco walk you through exactly what happened between the moment the two trainers wrote their classes down and the moment he realized the boxing ring was double booked.",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": {
+          "mech": "M2",
+          "m2_stage": "friction",
+          "text": "Have Marco walk you through exactly what happened between the moment the two trainers wrote their classes down and the moment he realized the boxing ring was double booked.",
+          "marked": true
+        },
+        "caution": []
+      },
+      {
+        "when": "C: M2 question, self mode",
+        "tagged": [
+          {
+            "where": "#m-q",
+            "text": "Walk me through the last specific time you lost a receipt before tax season: what were you doing with it right before it disappeared?",
+            "generated": "true",
+            "model": "claude-sonnet-4-6",
+            "tag_visible": true,
+            "listed_field": "question"
+          }
+        ],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": {
+          "mech": "M2",
+          "m2_stage": "friction",
+          "text": "Walk me through the last specific time you lost a receipt before tax season: what were you doing with it right before it disappeared?",
+          "marked": true
+        },
+        "caution": []
+      },
+      {
+        "when": "the cellar with three bottles",
+        "tagged": [],
+        "untagged": [],
+        "wrongly_marked": [],
+        "question": null,
+        "caution": []
+      }
+    ],
+    "replies": [
+      {
+        "route": "/m0",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "user_line_candidate",
+          "digestibility.reason",
+          "m1_setup.question",
+          "m1_setup.hint",
+          "m1_setup.person_label",
+          "m1_setup.person_placeholder",
+          "m1_setup.when_label",
+          "m1_setup.when_placeholder",
+          "m1_setup.trying_label",
+          "m1_setup.trying_placeholder",
+          "m1_setup.happened_label",
+          "m1_setup.happened_placeholder",
+          "spark_parse.solution_form",
+          "spark_parse.implied_person",
+          "spark_parse.suspected_problem",
+          "spark_parse.triggering_situation",
+          "spark_parse.domain"
+        ]
+      },
+      {
+        "route": "/m1",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "observation.surface_text",
+          "grape.named_person"
+        ]
+      },
+      {
+        "route": "/m2",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "question"
+        ]
+      },
+      {
+        "route": "/m2",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "observation.surface_text",
+          "swirl.question"
+        ]
+      },
+      {
+        "route": "/m2",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "observation.surface_text",
+          "swirl.question"
+        ]
+      },
+      {
+        "route": "/field",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "brief.question"
+        ]
+      },
+      {
+        "route": "/m2",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "observation.surface_text",
+          "swirl.question"
+        ]
+      },
+      {
+        "route": "/field",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "brief.question"
+        ]
+      },
+      {
+        "route": "/m3",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "observation.surface_text",
+          "swirl.question"
+        ]
+      },
+      {
+        "route": "/m3",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "observation.surface_text",
+          "swirl.question"
+        ]
+      },
+      {
+        "route": "/field",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "brief.setup",
+          "brief.question",
+          "brief.target"
+        ]
+      },
+      {
+        "route": "/resolve",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "question"
+        ]
+      },
+      {
+        "route": "/m0",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "user_line_candidate",
+          "digestibility.reason",
+          "followup.question",
+          "m1_setup.question",
+          "m1_setup.hint",
+          "m1_setup.person_label",
+          "m1_setup.person_placeholder",
+          "m1_setup.when_label",
+          "m1_setup.trying_label",
+          "m1_setup.happened_label",
+          "spark_parse.solution_form",
+          "spark_parse.implied_person",
+          "spark_parse.domain",
+          "digestibility.missing"
+        ]
+      },
+      {
+        "route": "/m1",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "observation.surface_text",
+          "grape.named_person"
+        ]
+      },
+      {
+        "route": "/m2",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": []
+      },
+      {
+        "route": "/m2",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "problem.text",
+          "question"
+        ]
+      },
+      {
+        "route": "/m0",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "user_line_candidate",
+          "digestibility.reason",
+          "m1_setup.question",
+          "m1_setup.hint",
+          "m1_setup.person_label",
+          "m1_setup.person_placeholder",
+          "m1_setup.when_label",
+          "m1_setup.when_placeholder",
+          "m1_setup.trying_label",
+          "m1_setup.trying_placeholder",
+          "m1_setup.happened_label",
+          "m1_setup.happened_placeholder",
+          "spark_parse.implied_person",
+          "spark_parse.suspected_problem",
+          "spark_parse.triggering_situation",
+          "spark_parse.promised_change",
+          "spark_parse.domain"
+        ]
+      },
+      {
+        "route": "/m2",
+        "status": 200,
+        "prompt_version": "2026-11-07",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "question"
+        ]
+      }
+    ],
+    "copy_question": {
+      "on_screen": "Walk me through the last time a couple cancelled close to the shoot date. What happened with the deposit?",
+      "on_the_clipboard": "Walk me through the last time a couple cancelled close to the shoot date. What happened with the deposit?"
+    },
+    "failed_bottling": {
+      "harness_reported": "Bottling failed: Not sent. Corked couldn't be reached, so nothing went on record. Your answer is still here.",
+      "status_line": "Not sent. Corked couldn't be reached, so nothing went on record. Your answer is still here.",
+      "says_could_not_reach": false,
+      "spark_still_in_field": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot. zq-canary-0611"
+    },
+    "bottle_names": {
+      "a_at_grape": {
+        "sidebar": {
+          "role": "img",
+          "name": "An app for wedding photographers who lose their deposit when. On record: the person. Still open: what they did, the moment, where the current fix fails, someone else, who doesn't have it.",
+          "aria_hidden": null
+        },
+        "phone_header": {
+          "role": "img",
+          "name": "An app for wedding photographers who lose their deposit when. On record: the person. Still open: what they did, the moment, where the current fix fails, someone else, who doesn't have it.",
+          "aria_hidden": null
+        }
+      },
+      "a_after_m2": {
+        "sidebar": {
+          "role": "img",
+          "name": "An app for wedding photographers who lose their deposit when. On record: the person. Still open: what they did, the moment, where the current fix fails, someone else, who doesn't have it.",
+          "aria_hidden": null
+        },
+        "phone_header": {
+          "role": "img",
+          "name": "An app for wedding photographers who lose their deposit when. On record: the person. Still open: what they did, the moment, where the current fix fails, someone else, who doesn't have it.",
+          "aria_hidden": null
+        }
+      },
+      "c_self_mode": {
+        "sidebar": {
+          "role": "img",
+          "name": "A way to stop losing my receipts before tax season. zq-canar. On record: you. Still open: what you did, the moment, where the current fix fails, someone else, who doesn't have it.",
+          "aria_hidden": null
+        },
+        "phone_header": {
+          "role": "img",
+          "name": "A way to stop losing my receipts before tax season. zq-canar. On record: you. Still open: what you did, the moment, where the current fix fails, someone else, who doesn't have it.",
+          "aria_hidden": null
+        }
+      },
+      "cards": [
+        {
+          "role": "img",
+          "name": "A way to stop losing my receipts before tax season. zq-canar. On record: you. Still open: what you did, the moment, where the current fix fails, someone else, who doesn't have it.",
+          "aria_hidden": null
+        },
+        {
+          "role": "img",
+          "name": "A better scheduling app for gym owners. zq-canary-0611. On record: the person. Still open: what they did, the moment, where the current fix fails, someone else, who doesn't have it.",
+          "aria_hidden": null
+        },
+        {
+          "role": "img",
+          "name": "An app for wedding photographers who lose their deposit when. On record: the person. Still open: what they did, the moment, where the current fix fails, someone else, who doesn't have it.",
+          "aria_hidden": null
+        }
+      ]
+    },
+    "landing_bottles": {
+      "ld_bottle": "true",
+      "ld_bottle_phone": "true"
+    },
+    "caution": {
+      "seen": [
+        {
+          "when": "A: M1 reading",
+          "text": "The AI can misread an answer. Check anything you act on.",
+          "under": "#obs-box"
+        }
+      ]
+    },
+    "backup_line": {
+      "after_export": null,
+      "last_export_key": "2026-11-07T00:38:47.894Z",
+      "key_in_the_export": true,
+      "last_export_8_days_old": "Last backup: 30 Oct. Export the cellar.",
+      "never_exported_bottle_8_days_old": "No backup yet. Export the cellar.",
+      "never_exported_new_bottles": null
+    },
+    "reached": {
+      "a_after_m2": "M3",
+      "b_m2_stage": "scene"
+    },
+    "phone": {
+      "viewport_width": 390,
+      "viewport_height": 844,
+      "scroll_y": 0,
+      "field": {
+        "top": 261,
+        "bottom": 367,
+        "visible": true,
+        "text": ""
+      },
+      "ai_line": {
+        "top": 383,
+        "bottom": 535,
+        "visible": true,
+        "text": "An AI model writes some of Corked's questions and the line after an answer; the rest are fixed. Not a person. What you type goes through Corked's server to Anthropic's Claude. Anthropic doesn't train on it and deletes it within 30 days, or keeps it up to two years if its safety systems flag it. Your cellar is saved in this browser only."
+      },
+      "bottle_button": {
+        "top": 567,
+        "bottom": 619,
+        "visible": true,
+        "text": "Bottle your spark →"
+      }
+    },
+    "spark_limit": {
+      "typed_499": {
+        "length": 499,
+        "line": "",
+        "line_visible": false,
+        "line_under_field": true
+      },
+      "typed_500": {
+        "length": 500,
+        "line": "Sparks stop at 500 characters.",
+        "line_visible": true,
+        "line_under_field": true
+      },
+      "one_key_more": {
+        "length": 500,
+        "line": "Sparks stop at 500 characters.",
+        "line_visible": true,
+        "line_under_field": true
+      },
+      "emptied": {
+        "length": 0,
+        "line": "",
+        "line_visible": false,
+        "line_under_field": true
+      },
+      "pasted_600": {
+        "length": 500,
+        "line": "Sparks stop at 500 characters.",
+        "line_visible": true,
+        "line_under_field": true
+      }
+    }
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "On an empty cellar the spark screen shows the AI line. After a reload it doesn't. The cellar link opens the same text.",
+      "happened": "First time on the spark screen: AI line visible true, after the field true, text matches the brief true. After a reload: visible false. A second spark in the same browser: visible false. Cellar link \"Who writes the questions\": opened true, same text true."
+    },
+    {
+      "n": 2,
+      "expected": "During the whole run, no request goes to fonts.googleapis.com or fonts.gstatic.com.",
+      "happened": "Requests to fonts.googleapis.com or fonts.gstatic.com: 0. Font files fetched from fonts/: /fonts/newsreader-latin-opsz-400-normal.woff2, /fonts/ibm-plex-mono-latin-400-normal.woff2, /fonts/inter-latin-500-normal.woff2, /fonts/inter-latin-600-normal.woff2, /fonts/inter-latin-400-normal.woff2. Faces at the end: Inter 400 loaded, Inter 400 unloaded, Inter 500 loaded, Inter 500 unloaded, Inter 600 loaded, Inter 600 unloaded, Newsreader 400 loaded, Newsreader 400 unloaded, IBM Plex Mono 400 loaded, IBM Plex Mono 400 unloaded."
+    },
+    {
+      "n": 3,
+      "expected": "After the first bottle is saved, navigator.storage.persist was called. Record what navigator.storage.persisted() returns.",
+      "happened": "persist calls before the first bottle: 0. After it: 1. persisted() returned false. Around the export: 1 then 2 calls, persisted() false."
+    },
+    {
+      "n": 4,
+      "expected": "Every element that shows a field the worker listed in ai_fields has data-ai-generated=\"true\", data-ai-model and a visible AI tag. No other element has them: not the spark, the builder's answers, the mechanism table's questions or M2's scene question.",
+      "happened": "23 screens swept. Marked: #obs-box (observation.surface_text), #m-q (question), #swirl-q (swirl.question), #fold-q (question), #bc-dqelmr-t (brief.question), .review-q (question), #rv-reopen-q (question), #bc-st0am5-t (brief.question), .mech-q (question), #bc-kmddj3-t (brief.question), .brief-setup (brief.setup), #bc-trf9lg-t (brief.question), #lr-question (question), #m2-problem-inp (problem.text), #m2-problem-text (problem.text). Problems: none. M2's scene question: reached, marked false. A table question: M3 reached, marked false. Copy question: clipboard equals the question on screen true. Caution line: \"The AI can misread an answer. Check anything you act on.\" under #obs-box at \"A: M1 reading\"."
+    },
+    {
+      "n": 5,
+      "expected": "The exported cellar's log entries from worker replies carry prompt_version, model and ai_fields.",
+      "happened": "Log entries from worker replies: 11. Carrying all three: 11. Missing: none."
+    },
+    {
+      "n": 6,
+      "expected": "With the worker URL set to an address that doesn't answer, bottling a spark shows the failed-send message, never \"Could not reach the worker\", and the harness reports it as a failed bottling.",
+      "happened": "Status line: \"Not sent. Corked couldn't be reached, so nothing went on record. Your answer is still here.\". Is the failed-send message: true. \"Could not reach the worker\" on screen: false. Harness reported: Bottling failed: Not sent. Corked couldn't be reached, so nothing went on record. Your answer is still here.."
+    },
+    {
+      "n": 7,
+      "expected": "The bottle drawings in the sidebar, the phone header and on cellar cards have an accessible name that starts with the spark's first words and holds no count (nothing like \"3 of 6\"). The two landing bottles are aria-hidden.",
+      "happened": "sidebar: \"An app for wedding photographers who lose their deposit when. On record: the person. Still open: what they did, the moment, where the current fix fails, someone else, who doesn't have it.\" (starts with the spark true, count false, aria-hidden null); phone header: \"An app for wedding photographers who lose their deposit when. On record: the person. Still open: what they did, the moment, where the current fix fails, someone else, who doesn't have it.\" (starts with the spark true, count false, aria-hidden null); card 1: \"A way to stop losing my receipts before tax season. zq-canar. On record: you. Still open: what you did, the moment, where the current fix fails, someone else, who doesn't have it.\" (starts with the spark true, count false, aria-hidden null); card 2: \"A better scheduling app for gym owners. zq-canary-0611. On record: the person. Still open: what they did, the moment, where the current fix fails, someone else, who doesn't have it.\" (starts with the spark true, count false, aria-hidden null); card 3: \"An app for wedding photographers who lose their deposit when. On record: the person. Still open: what they did, the moment, where the current fix fails, someone else, who doesn't have it.\" (starts with the spark true, count false, aria-hidden null); self mode sidebar: \"A way to stop losing my receipts before tax season. zq-canar. On record: you. Still open: what you did, the moment, where the current fix fails, someone else, who doesn't have it.\" (starts with the spark true, count false, aria-hidden null); landing bottles aria-hidden: true, true."
+    },
+    {
+      "n": 8,
+      "expected": "At 390x844, on an empty cellar, the spark screen shows the AI line. Report where the Bottle button sits against the bottom of the screen, and save a screenshot.",
+      "happened": "Screen 390x844, scrolled 0px. AI line visible true, from 383 to 535, text \"An AI model writes some of Corked's questions and the line after an answer; the rest are fixed. Not a person. What you type goes through Corked's server to Anthropic's Claude. Anthropic doesn't train on it and deletes it within 30 days, or keeps it up to two years if its safety systems flag it. Your cellar is saved in this browser only.\". Bottle button \"Bottle your spark →\" from 567 to 619. Below the bottom of the screen: false."
+    },
+    {
+      "n": 9,
+      "expected": "At 499 characters the spark field shows no limit line. At 500, typed or pasted, it shows \"Sparks stop at 500 characters.\" under the field and takes no more. Emptied, the line is gone.",
+      "happened": "Typed 499: field holds 499, line \"\", visible false, under the field true. Typed 500: field holds 500, line \"Sparks stop at 500 characters.\", visible true, under the field true. One key more: field holds 500, line \"Sparks stop at 500 characters.\", visible true, under the field true. Emptied: field holds 0, line \"\", visible false, under the field true. Pasted 600: field holds 500, line \"Sparks stop at 500 characters.\", visible true, under the field true. Page errors: none."
+    }
+  ],
+  "exported": true
+}
