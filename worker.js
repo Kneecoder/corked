@@ -1,6 +1,7 @@
 import { anthropicAdapter } from './model-adapters.js';
 import './shared/provenance.js';
 import './shared/mechanisms.js';
+import './shared/first-session-copy.js';
 
 // The prompts' version, as a date. Move it whenever a prompt or a message builder changes. Every
 // JSON reply carries it, and the app stores it with each history log entry. A letter after the
@@ -9,7 +10,8 @@ import './shared/mechanisms.js';
 const PROMPT_VERSION = '2026-11-07';
 const ROUTE_PROMPT_VERSIONS = {
   '/m1': '2026-11-07b',     // B1b: with_label also asks for the short label and is_self
-  '/label': '2026-11-07b'   // B1b: the short label for the first people
+  '/label': '2026-11-07b',  // B1b: the short label for the first people
+  '/question': '2026-11-07c' // B1c: the first-session question writer
 };
 
 const { anchorSpan, verifyAnchor, quotedSpan, unsupportedWords } = globalThis.CorkedProvenance;
@@ -231,6 +233,50 @@ EXAMPLES:
 "freelancers I know" -> "the freelancers you know"
 
 If the answer names no person or group, label is null and is_self is false.
+
+Return one JSON object only. No text before or after it.
+Return only JSON.`;
+
+// The first-session question writer (B1c, v48 7 Nov 2026). Each question keeps a fixed purpose; the
+// model writes the sentence for this idea and these answers. The worker checks every question
+// before it leaves (CorkedFirstSessionCopy.v2.check); one that fails goes out as null and the app
+// shows the fixed fallback.
+const QUESTION_PURPOSES = {
+  F1: 'One real person who had this problem. The builder may be that person; the question says so in a few words.',
+  F2: 'What that person actually did the last time the problem came up. If the answer to F1 is "Don\'t know yet": what the builder saw go wrong, and when.',
+  F3: 'The one thing the idea should have done for that person, then.',
+  F5: 'What the builder expects that person to say when asked about that moment.',
+  E1: 'Whether people already do something like this, by hand or in another app, and when the builder last saw it.',
+  E2: 'What someone should feel in their first minute with it.',
+  E3: 'The simplest version the builder could build quickly so people can try it.'
+};
+const QUESTION_SLOTS = { fix: ['F1', 'F2', 'F3', 'F5'], experiment: ['E1', 'E2', 'E3'] };
+
+const QUESTION_DOCTRINE = `You write one question for Corked, an app where a builder thinks through a new software idea.
+
+In the builder's first session Corked asks a few questions. Each question has a fixed purpose. You write the sentence for this idea and these answers, so it fits the idea's own subject and the people the builder named. The builder's answers are kept word for word next to the question you write.
+
+You receive the path (fix or experiment), the slot and its purpose, the builder's idea as typed, and the builder's answers so far in this session, word for word, each with the question it answered. "Don't know yet" means the builder didn't know.
+
+PURPOSES:
+${Object.entries(QUESTION_PURPOSES).map(([slot, purpose]) => `${slot}  ${purpose}`).join('\n')}
+
+RULES:
+- One question.
+- Plain everyday English.
+- At most 25 words.
+- Use the idea's own subject (the garden, the flat, the quiz) and the person as the builder named them ("your grandpa").
+- Never "the last time" without saying of what.
+- Never suggest an answer, give an example, comment on or praise an earlier answer, or explain why you ask.
+- Never assume a fact the builder didn't give.
+- On the experiment path, never mention a problem, a need or something going wrong.
+- Speak to the builder as "you". When the builder is the person, ask about "you".
+- No dashes.
+
+GOOD QUESTIONS, for an idea about keeping a garden up, where the builder named their grandpa:
+F1 "Who's the last person you saw struggle with keeping a garden up?"
+F2 "The last time your grandpa's garden needed work, what did he do?"
+F3 "If your idea could have done one thing for him that day, what would it be?"
 
 Return one JSON object only. No text before or after it.
 Return only JSON.`;
@@ -594,6 +640,24 @@ Return exactly this JSON shape:
 {
   "label": "at most five words, or null",
   "is_self": true|false
+}`;
+}
+
+function buildQuestionUserMessage(path, slot, spark, answers) {
+  const said = answers.length
+    ? answers.map(a => `<answer slot="${a.slot}">\n<question>${a.question}</question>\n<text>${a.answer}</text>\n</answer>`).join('\n')
+    : '(none yet)';
+  return `<path>${path}</path>
+<slot>${slot}</slot>
+<purpose>${QUESTION_PURPOSES[slot]}</purpose>
+<idea>${spark}</idea>
+<answers_so_far>
+${said}
+</answers_so_far>
+
+Return exactly this JSON shape:
+{
+  "question": "the one question"
 }`;
 }
 
@@ -2620,6 +2684,47 @@ async function handleLabel(request, env, corsHeaders) {
   }, 200, corsHeaders);
 }
 
+// ── THE QUESTION WRITER ──
+// Nothing here logs the builder's words.
+const QUESTION_MAX_ANSWERS = 12;
+
+async function handleQuestion(request, env, corsHeaders) {
+  const body = await request.json();
+  const path = body.path === 'experiment' ? 'experiment' : body.path === 'fix' ? 'fix' : null;
+  const slot = String(body.slot || '');
+  const spark = String(body.spark || '').trim();
+  const answers = (Array.isArray(body.answers) ? body.answers : []).slice(0, QUESTION_MAX_ANSWERS).map(a => ({
+    slot: String(a?.slot || '').slice(0, 8),
+    question: String(a?.question || '').trim(),
+    answer: String(a?.answer || '').trim()
+  }));
+
+  const capViolation = checkLengthCaps(corsHeaders, [
+    { value: spark, max: RAW_SPARK_LENGTH_CAP, name: 'spark' },
+    ...answers.flatMap((a, i) => [
+      { value: a.question, max: FIELD_LENGTH_CAP, name: `answers[${i}].question` },
+      { value: a.answer, max: ANSWER_LENGTH_CAP, name: `answers[${i}].answer` }
+    ])
+  ]);
+  if (capViolation) return capViolation;
+  if (!path || !QUESTION_SLOTS[path].includes(slot) || !spark) {
+    return jsonResponse({ error: 'Missing or unknown path, slot or spark' }, 400, corsHeaders);
+  }
+
+  const parsed = await callClaude(env, QUESTION_DOCTRINE, buildQuestionUserMessage(path, slot, spark, answers), 200);
+  const raw = parsed && typeof parsed === 'object' ? parsed.question : null;
+  const question = typeof raw === 'string' ? raw.replace(/\s+/g, ' ').trim().replace(/^["“]+|["”]+$/g, '').trim() : '';
+  const failed = globalThis.CorkedFirstSessionCopy.v2.check(question, path);
+  return jsonResponse({
+    schema_version: 'question.v1',
+    path,
+    slot,
+    question: failed ? null : question,
+    server_checks: { schema_valid: true, question: failed ? { check: failed, said: typeof raw === 'string' ? raw : null } : { check: 'ok' } },
+    ai_fields: failed ? [] : ['question']
+  }, 200, corsHeaders);
+}
+
 async function handleM1(request, env, corsHeaders) {
   const body = await request.json();
   const sparkSummary = String(body.spark_summary || '').trim();
@@ -2688,6 +2793,7 @@ async function route(request, env, corsHeaders) {
     if (url.pathname === '/m0') return await handleM0(request, env, corsHeaders);
     if (url.pathname === '/m1') return await handleM1(request, env, corsHeaders);
     if (url.pathname === '/label') return await handleLabel(request, env, corsHeaders);
+    if (url.pathname === '/question') return await handleQuestion(request, env, corsHeaders);
     if (url.pathname === '/m2') return await handleM2(request, env, corsHeaders);
     for (const mechId of Object.keys(EVIDENCE_GRADERS)) {
       if (url.pathname === Mechanisms.get(mechId).route) return await handleEvidence(mechId, request, env, corsHeaders);

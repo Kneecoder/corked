@@ -633,3 +633,49 @@ test('/m1 with_label: the grading prompt is the one the old intake gets', async 
   assert.equal(systems[0], systems[2]);
   assert.match(systems[1], /short label/);
 });
+
+// ── B1c: the question writer ──
+const QBODY = { path: 'fix', slot: 'F2', spark: 'A tool to analyse gardens', answers: [{ slot: 'F1', question: "Who's the last person you saw struggle with keeping a garden up?", answer: 'My grandpa, 76.' }] };
+const asked = async (body, question) => (await replay('/question', body, [reply({ question })])).body;
+
+test('/question: a question that passes goes out as written, with its own version', async () => {
+  const body = await asked(QBODY, "The last time your grandpa's garden needed work, what did he do?");
+  assert.equal(body.question, "The last time your grandpa's garden needed work, what did he do?");
+  assert.deepEqual(body.ai_fields, ['question']);
+  assert.equal(body.prompt_version, '2026-11-07c');
+  assert.equal(body.server_checks.question.check, 'ok');
+});
+
+test('/question: a broken question goes out as null, with the reason', async () => {
+  const cases = [
+    ['What did he do? And when?', 'question_mark'],
+    ['Tell me what he did.', 'question_mark'],
+    ['The last time your grandpa had to deal with the garden in the middle of summer when everything was overgrown and messy, what exactly did he do first?', 'too_long'],
+    ['The last time the garden needed work - what did he do?', 'dash']
+  ];
+  for (const [question, check] of cases) {
+    const body = await asked(QBODY, question);
+    assert.equal(body.question, null, question);
+    assert.equal(body.server_checks.question.check, check, question);
+    assert.deepEqual(body.ai_fields, []);
+  }
+  const exp = await asked({ path: 'experiment', slot: 'E2', spark: 'A football quiz', answers: [] }, 'What problem should it solve in the first minute?');
+  assert.equal(exp.question, null);
+  assert.equal(exp.server_checks.question.check, 'experiment_word');
+});
+
+test('/question: an unknown slot for the path, or no spark, is a 400', async () => {
+  assert.equal((await replay('/question', { ...QBODY, slot: 'E2' }, [])).status, 400);
+  assert.equal((await replay('/question', { ...QBODY, spark: '' }, [])).status, 400);
+  assert.equal((await replay('/question', { ...QBODY, path: 'other' }, [])).status, 400);
+});
+
+test('/question: the prompt carries the purpose, the idea and every answer word for word', async () => {
+  let sent;
+  const adapter = async ({ content }) => { sent = content; return reply({ question: 'What did he do?' }); };
+  await worker.fetch(request('/question', QBODY), { ...ENV, modelAdapter: adapter });
+  assert.match(sent, /<slot>F2<\/slot>/);
+  assert.match(sent, /What that person actually did/);
+  assert.match(sent, /<idea>A tool to analyse gardens<\/idea>/);
+  assert.match(sent, /<text>My grandpa, 76\.<\/text>/);
+});
