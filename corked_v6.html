@@ -169,6 +169,9 @@ button, input, textarea { font-family:inherit; color:inherit; }
   font-family:var(--sans); font-size:16px; font-weight:500; cursor:pointer;
 }
 .gate-choice::before { content:attr(data-letter); font-family:var(--mono); font-size:13px; font-weight:400; color:var(--wine); }
+.gate-option { display:flex; flex-direction:column; gap:8px; }
+.gate-option .gate-choice { flex:1; }
+.gate-example { font-family:var(--mono); font-size:13px; line-height:1.5; color:var(--ink-3); }
 
 .options { display:flex; flex-direction:column; gap:12px; }
 .opt {
@@ -592,10 +595,10 @@ button, input, textarea { font-family:inherit; color:inherit; }
 .fs-tap.is-selected { border-color:var(--wine); box-shadow:inset 0 0 0 1px var(--wine); color:var(--wine); }
 .fs-extra { margin-top:20px; }
 .fs-small { font-family:var(--sans); font-size:16px; line-height:1.4; padding:10px 12px; box-shadow:none; }
-.fs-counts { display:flex; align-items:center; gap:12px; color:var(--ink-2); }
-.fs-count { width:96px; }
-.fs-row { margin-top:28px; }
-.fs-unsure { display:flex; gap:20px; }
+.fs-row { margin-top:28px; flex-wrap:wrap; }
+.fs-unsure { display:flex; flex-wrap:wrap; gap:0 20px; }
+.fs-start { font-family:var(--mono); font-size:15px; line-height:1.6; color:var(--ink-2); margin-bottom:20px; }
+.fs-example { margin-top:8px; font-family:var(--mono); font-size:13px; line-height:1.5; color:var(--ink-3); }
 .fs-record { display:flex; flex-direction:column; }
 .fs-rec-row { padding:16px 0; border-top:1px solid var(--rule); }
 .fs-rec-row:first-child { border-top:0; padding-top:0; }
@@ -606,22 +609,25 @@ button, input, textarea { font-family:inherit; color:inherit; }
 .fs-rec-date, .fs-rec-tap { font-family:var(--mono); font-size:12px; letter-spacing:.04em; color:var(--ink-3); }
 .fs-rec-link { font-family:var(--mono); font-size:14px; color:var(--ink-2); overflow-wrap:anywhere; }
 .fs-unanswered { font-family:var(--mono); font-size:15px; color:var(--ink-2); }
-.fs-obs { font-family:var(--mono); font-size:15px; line-height:1.6; color:var(--ink-2); }
 .fs-switch { margin-top:8px; padding-top:12px; border-top:1px solid var(--rule); }
 .fs-nobody { font-size:15px; line-height:1.55; color:var(--ink-2); }
 .fs-choices { position:sticky; bottom:0; margin-top:24px; padding:16px 0 20px; background:var(--paper); border-top:1px solid var(--rule); }
 .fs-choices.is-open { position:static; }
+.fs-next-line { font-family:var(--mono); font-size:15px; line-height:1.6; color:var(--ink-2); margin-bottom:14px; }
 .fs-choice-row { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; }
 .fs-choice-row.is-3 { grid-template-columns:repeat(3, minmax(0, 1fr)); }
+.fs-choice-cell { display:flex; flex-direction:column; gap:6px; }
+.fs-choice-cell .fs-choice { flex:1; }
 .fs-choice { padding:10px 16px; line-height:1.3; }
+.fs-choice-note { font-family:var(--mono); font-size:12px; line-height:1.45; color:var(--ink-3); }
 .fs-cellar { margin-top:8px; }
 .fs-planning { font-size:16px; font-weight:500; color:var(--ink); margin-bottom:12px; }
 .fs-when-label { font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); }
 .fs-when-label + .fs-taps { margin-top:8px; }
 .fs-day-row { display:flex; align-items:center; gap:12px; margin-top:12px; }
 .fs-day-row .field { width:auto; }
-.fs-planned-when { font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-2); }
-.fs-planned-step { font-size:17px; font-weight:500; line-height:1.4; color:var(--ink); margin:4px 0 16px; }
+.fs-planned-step { font-size:17px; font-weight:500; line-height:1.4; color:var(--ink); margin-bottom:6px; }
+.fs-planned-when { font-family:var(--mono); font-size:15px; line-height:1.6; color:var(--ink-2); margin-bottom:16px; }
 .bottle-card-step { font-size:14px; line-height:1.45; color:var(--ink-2); margin-top:6px; }
 
 /* ── PHONE ── */
@@ -631,8 +637,11 @@ button, input, textarea { font-family:inherit; color:inherit; }
   .fs-q { font-size:22px; line-height:1.38; letter-spacing:-.015em; margin-bottom:20px; }
   .fs-q-small { font-size:18px; }
   .fs-wrap .fs-field { font-size:19px; padding:14px 16px; }
-  .fs-choice-row, .fs-choice-row.is-3 { grid-template-columns:1fr; gap:8px; }
+  .fs-choice-row, .fs-choice-row.is-3 { grid-template-columns:1fr; gap:10px; }
+  .fs-choice-cell { gap:4px; }
   .fs-choice { min-height:48px; }
+  .fs-start, .fs-next-line { font-size:14px; line-height:1.55; }
+  .fs-next-line { margin-bottom:12px; }
   #screen-phase1 { flex-direction:column; }
   .ph-top {
     display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -2154,10 +2163,7 @@ function renderIntake() {
       </div>
       <div id="spark-gate" style="display:none">
         <div class="step-q" id="gate-q">${escHtml(FSC.gate.question)}</div>
-        <div class="gate-choices">
-          <button type="button" class="gate-choice" data-letter="A" onclick="firstGate('fix')">${escHtml(FSC.gate.fix)}</button>
-          <button type="button" class="gate-choice" data-letter="B" onclick="firstGate('experiment')">${escHtml(FSC.gate.experiment)}</button>
-        </div>
+        ${fsGateChoicesHtml()}
       </div>
       `;
     }
@@ -5410,11 +5416,23 @@ function renderFirstGate() {
       <div class="spark-reminder-text">${escHtml(S.idea)}</div>
     </div>
     <div class="fs-q" id="fs-gate-q"></div>
-    <div class="gate-choices" id="fs-gate">
-      <button type="button" class="gate-choice" data-letter="A" onclick="firstGate('fix')">${escHtml(FSC.gate.fix)}</button>
-      <button type="button" class="gate-choice" data-letter="B" onclick="firstGate('experiment')">${escHtml(FSC.gate.experiment)}</button>
-    </div>`;
+    ${fsGateChoicesHtml('fs-gate')}`;
   showLine(document.getElementById('fs-gate-q'), FSC.gate.question, lineKey('first', 'gate', FSC.gate.question));
+}
+
+// The two choices, each with one example idea under it. On the spark screen and on a bottle left at
+// the gate.
+function fsGateChoicesHtml(id = '') {
+  return `<div class="gate-choices"${id ? ` id="${id}"` : ''}>
+      <div class="gate-option">
+        <button type="button" class="gate-choice" data-letter="A" onclick="firstGate('fix')">${escHtml(FSC.gate.fix)}</button>
+        <p class="gate-example" data-example="fix">${escHtml(FSC.gate.fixExample)}</p>
+      </div>
+      <div class="gate-option">
+        <button type="button" class="gate-choice" data-letter="B" onclick="firstGate('experiment')">${escHtml(FSC.gate.experiment)}</button>
+        <p class="gate-example" data-example="experiment">${escHtml(FSC.gate.experimentExample)}</p>
+      </div>
+    </div>`;
 }
 
 // The next question: a rethink's queue first, then the first question on the path whose answer
@@ -5440,62 +5458,78 @@ function fsSlotWords(text, { firstPart = false } = {}) {
   return t;
 }
 
+// Who the questions and buttons name (B1b). A short label stands in for the builder's answer; the
+// record keeps the answer verbatim. "It was me" at F1 makes the builder the person, and so does the
+// worker reading F1's typed answer as the builder (is_self). A label only counts while the answer
+// it was made from is the one on record. Until it arrives, the copy uses its fallback.
 function fsContext(s = S) {
-  const slots = s.first?.slots || {};
+  const f = s.first || {};
+  const slots = f.slots || {};
+  const labels = f.labels || {};
   const who = slots.who;
+  const tappedMe = who?.value === 'answer' && who.tap === 'me';
+  const named = who?.value === 'answer' && !tappedMe && !!who.text;
+  const pl = named && labels.person?.for_text === who.text ? labels.person : null;
+  const self = tappedMe || pl?.is_self === true;
+  const person = named && !self ? (pl?.text || null) : null;
+  const fp = slots.first_people;
+  const pnamed = fp?.value === 'answer' && !!fp.text;
+  const ppl = pnamed && labels.people?.for_text === fp.text && !labels.people.is_self ? labels.people : null;
+  const people = ppl?.text || null;
+  return { self, person, personPending: named && !self && !person, people, peoplePending: pnamed && !people };
+}
+
+// What the graders read about the person: the builder's own taps and words, as before B1b. A label
+// or is_self never reaches a grader.
+function fsGradeWho(s) {
+  const who = s.first?.slots?.who;
   const self = who?.value === 'answer' && who.tap === 'me';
   const person = who?.value === 'answer' && !self && who.text ? fsSlotWords(who.text, { firstPart: true }) || null : null;
-  const fp = slots.first_people;
-  const people = fp?.value === 'answer' && fp.text ? fsSlotWords(fp.text) || null : null;
-  return { self, person, people };
+  return { self, person };
 }
 
 // ── A question ──
-function fsCountsHtml(def, prefix) {
-  const c = def.counts;
-  return `<div class="fs-extra">
-      <div class="field-label visible">${escHtml(c.label)}</div>
-      <div class="fs-counts">
-        <input type="number" min="0" inputmode="numeric" class="field fs-small fs-count" id="${prefix}how-many" aria-label="${escAttr(c.howManyName)}">
-        <span>${escHtml(c.outOf)}</span>
-        <input type="number" min="1" inputmode="numeric" class="field fs-small fs-count" id="${prefix}out-of" aria-label="${escAttr(c.outOfName)}">
-      </div>
-    </div>`;
+function fsExampleHtml(def) {
+  return def.example ? `<p class="fs-example" id="fs-example">${escHtml(def.example)}</p>` : '';
 }
 
-function fsReadCounts(prefix) {
-  const howMany = (document.getElementById(`${prefix}how-many`)?.value || '').trim();
-  const outOf = (document.getElementById(`${prefix}out-of`)?.value || '').trim();
-  return { ...(howMany ? { how_many: howMany } : {}), ...(outOf ? { out_of: outOf } : {}) };
+// Don't know yet and Skip on every question. The two that set the line offer Not set yet too.
+function fsUnsureHtml(def) {
+  return `<div class="fs-unsure">
+        <button type="button" class="btn-ghost" id="fs-unsure" onclick="fsAnswer('dont_know')">${escHtml(FSC.buttons.dontKnow)}</button>
+        ${def.line ? `<button type="button" class="btn-ghost" id="fs-notset" onclick="fsAnswer('not_set')">${escHtml(FSC.buttons.notSet)}</button>` : ''}
+        <button type="button" class="btn-ghost" id="fs-skip" onclick="fsAnswer('skip')">${escHtml(FSC.buttons.skip)}</button>
+      </div>`;
 }
 
 function renderFirstQuestion(qid) {
   const def = FSC.questions[qid];
-  const text = def.ask(fsContext());
+  const ctx = fsContext();
+  const text = def.ask(ctx);
+  const rethink = !!S.first.queue?.length;
   _fsShown = { qid, text };
-  _fsTap = null;
+  // F2 starts on "It was me" when the builder is the person.
+  _fsTap = def.presetSelf && ctx.self ? def.presetSelf : null;
   // The worker's caps for what it reads: the person goes to M1, the last time to M2.
   const maxlength = qid === 'F1' ? 300 : 4000;
   const taps = (def.taps || []).map(t =>
-    `<button type="button" class="fs-tap" data-tap="${t.id}" onclick="fsPickTap('${t.id}')">${escHtml(t.label)}</button>`).join('');
+    `<button type="button" class="fs-tap${t.id === _fsTap ? ' is-selected' : ''}" data-tap="${t.id}" onclick="fsPickTap('${t.id}')">${escHtml(t.label)}</button>`).join('');
   const link = (def.taps || []).some(t => t.link) ? `
     <div class="fs-extra" id="fs-link-row" style="display:none">
       <label class="field-label visible" for="fs-link">${escHtml(def.linkLabel)}</label>
       <input type="url" class="field fs-small" id="fs-link">
     </div>` : '';
-  // The two questions that set the line take "Not set yet" where the others take "Don't know yet".
-  const unsure = def.line ? { value: 'not_set', label: FSC.buttons.notSet } : { value: 'dont_know', label: FSC.buttons.dontKnow };
+  // Once, above the first question of the path.
+  const start = !rethink && qid === FS_ORDER[S.first.path]?.[0] ? `<p class="fs-start" id="fs-start">${escHtml(FSC.start[S.first.path])}</p>` : '';
   document.getElementById('first-body').innerHTML = `
+    ${start}
     <div class="fs-q" id="fs-q" data-q="${qid}"></div>
     <textarea class="field fs-field" id="fs-inp" rows="3" maxlength="${maxlength}" oninput="this.classList.remove('err')"></textarea>
+    ${fsExampleHtml(def)}
     ${taps ? `<div class="fs-taps">${taps}</div>` : ''}
     ${link}
-    ${def.counts ? fsCountsHtml(def, 'fs-') : ''}
     <div class="row fs-row">
-      <div class="fs-unsure">
-        <button type="button" class="btn-ghost" id="fs-unsure" onclick="fsAnswer('${unsure.value}')">${escHtml(unsure.label)}</button>
-        <button type="button" class="btn-ghost" id="fs-skip" onclick="fsAnswer('skip')">${escHtml(FSC.buttons.skip)}</button>
-      </div>
+      ${fsUnsureHtml(def)}
       <button type="button" class="btn" id="fs-next" onclick="fsAnswer('answer')">${escHtml(FSC.buttons.next)}</button>
     </div>`;
   showLine(document.getElementById('fs-q'), text, lineKey('first', qid, text));
@@ -5534,7 +5568,6 @@ function fsAnswer(value) {
     const link = (document.getElementById('fs-link')?.value || '').trim();
     if (link) entry.link = link;
   }
-  if (def.counts && value === 'answer') Object.assign(entry, fsReadCounts('fs-'));
   const rethink = !!S.first.queue?.length;
   const said = value === 'answer' ? (typed || tap?.label || '')
     : value === 'not_set' ? FSC.buttons.notSet
@@ -5554,10 +5587,12 @@ function fsAnswer(value) {
   if (rethink) S.first.queue.shift();
   saveState();
 
-  // The graders run in the background, on the fix path only. Self at F1 has no M1 call.
+  // The graders run in the background, on the fix path only. Self at F1 has no M1 call. The short
+  // labels come back in the background too: F1's with M1's reply, E4's from its own call.
   const id = activeBottleId;
   if (qid === 'F1' && typed && !tap) fsGradePerson(id, typed, S.idea);
   if (slot === 'last_time' && S.first.path === 'fix' && typed && !rethink) fsGradeLastTime(id);
+  if (qid === 'E4' && typed) fsLabelPeople(id, typed);
   renderFirst();
 }
 
@@ -5568,7 +5603,7 @@ function fsAnswer(value) {
 async function fsGradePerson(id, text, spark) {
   let data;
   try {
-    data = await workerFetch('/m1', { spark_summary: spark, person_name: '', relationship: text, maturity_class: 0 });
+    data = await workerFetch('/m1', { spark_summary: spark, person_name: '', relationship: text, maturity_class: 0, with_label: true });
   } catch (err) {
     fsUpdateBottle(id, s => fsPushLog(s, { type: 'grade_failed', mech: 'M1', step: 'F1', error: String(err?.message || err) }));
     return;
@@ -5580,22 +5615,54 @@ async function fsGradePerson(id, text, spark) {
     s.m1 = data;
     s.first.grades.person = { state, person_kind: kind, one_person: onePerson, for_text: text, at: new Date().toISOString() };
     fsPushLog(s, { type: 'grade', mech: 'M1', step: 'F1', state, person_kind: kind, one_person: onePerson, ...replyVersions(data) });
+    fsKeepLabel(s, 'person', 'F1', text, data);
   });
+  fsLabelLanded(id);
+}
+
+// /label reads E4 for the short label. Nothing waits on it.
+async function fsLabelPeople(id, text) {
+  let data;
+  try {
+    data = await workerFetch('/label', { answer: text, kind: 'people' });
+  } catch (err) {
+    fsUpdateBottle(id, s => fsPushLog(s, { type: 'label_failed', step: 'E4', error: String(err?.message || err) }));
+    return;
+  }
+  fsUpdateBottle(id, s => fsKeepLabel(s, 'people', 'E4', text, data));
+  fsLabelLanded(id);
+}
+
+// The label is kept with the answer it was made from, and logged. It is never a record line.
+function fsKeepLabel(s, who, step, text, data) {
+  const label = typeof data?.label === 'string' && data.label.trim() ? data.label.trim() : null;
+  const isSelf = data?.is_self === true;
+  s.first.labels = { ...(s.first.labels || {}), [who]: { text: label, is_self: isSelf, for_text: text, at: new Date().toISOString() } };
+  fsPushLog(s, { type: 'label', step, label, is_self: isSelf, ...replyVersions(data) });
+}
+
+// A label that lands while the end screen is open, with nothing being planned, shows in its line
+// and buttons. A question already on screen keeps its wording; the next one uses the label.
+function fsLabelLanded(id) {
+  if (id !== activeBottleId || !isFirstSession(S) || _fsPlan) return;
+  if (!document.querySelector('#screen-first.active #fs-record')) return;
+  if (S.first.step) return;
+  renderFsChoices();
 }
 
 // What the worker reads as the person's maturity class: F2's tap, else self or a named person.
 function fsMaturity(s) {
   if (typeof s.first.maturity === 'number') return s.first.maturity;
-  return fsContext(s).self ? 2 : 0;
+  return fsGradeWho(s).self ? 2 : 0;
 }
 
-// /m2 grades the last time with no problem on record. Its one-line observation shows on the end
-// screen once it has arrived.
+// /m2 grades the last time with no problem on record. Its reply, observation included, is stored
+// and never shown (B1b took its line off the end screen; B2 decides what the record shows).
 async function fsGradeLastTime(id) {
   const s0 = S;
   const lt = s0.first.slots.last_time;
   const who = s0.first.slots.who;
-  const ctx = fsContext(s0);
+  const ctx = fsGradeWho(s0);
   const body = {
     flow: FIRST_FLOW,
     user_line: s0.idea,
@@ -5619,7 +5686,6 @@ async function fsGradeLastTime(id) {
     s.first.grades.last_time = { state: data.state, tell: data.tell?.state || null, vintage: data.vintage?.state || null, for_text: lt.text, at: new Date().toISOString() };
     fsPushLog(s, { type: 'grade', mech: 'M2', step: lt.q, state: data.state, tell: data.tell?.state || null, vintage: data.vintage?.state || null, observation, ...replyVersions(data) });
   });
-  if (id === activeBottleId) fsShowObservation();
 }
 
 // ── The end screen ──
@@ -5642,7 +5708,8 @@ function fsSlotHtml(entry) {
   if (entry.text) parts.push(`<span class="fs-rec-text">${escHtml(entry.text)}</span>`);
   if (entry.tap_label) parts.push(`<span class="fs-rec-tap">${escHtml(entry.tap_label)}</span>`);
   if (entry.link) parts.push(`<span class="fs-rec-link">${escHtml(entry.link)}</span>`);
-  const counts = [entry.how_many, entry.out_of && `${FSC.questions.E6.counts.outOf} ${entry.out_of}`].filter(Boolean).join(' ');
+  // Counts from a bottle that answered E6 before B1b took its count field away.
+  const counts = [entry.how_many, entry.out_of && `${FSC.values.outOf} ${entry.out_of}`].filter(Boolean).join(' ');
   if (counts) parts.push(`<span class="fs-rec-tap">${escHtml(counts)}</span>`);
   return parts.join('');
 }
@@ -5658,7 +5725,7 @@ function renderFirstEnd() {
   if (f.path === 'fix') {
     rows.push(
       fsRecRow('person', E.fix.person, fsSlotHtml(sl.who)),
-      fsRecRow('last-time', E.fix.lastTime, fsSlotHtml(sl.last_time) + '<div class="fs-obs" id="fs-obs" style="display:none"></div>'),
+      fsRecRow('last-time', E.fix.lastTime, fsSlotHtml(sl.last_time)),
       fsRecRow('one-thing', E.fix.oneThing, fsSlotHtml(sl.one_thing)),
       fsRecRow('expect', E.fix.expect, fsSlotHtml(sl.expect)),
       fsRecRow('line', E.fix.line, fsSlotHtml(sl.drop)));
@@ -5670,33 +5737,29 @@ function renderFirstEnd() {
       fsRecRow('people', E.experiment.people, fsSlotHtml(sl.first_people)),
       fsRecRow('line', E.experiment.line, fsSlotHtml(sl.line)));
   }
+  // The way to the other path's questions shows in one case only: the fix path, with nobody on
+  // record at F1 and F2.
   const nobody = f.path === 'fix' && sl.who?.value === 'dont_know' && sl.last_time?.value === 'dont_know';
   document.getElementById('first-body').innerHTML = `
     <div class="fs-record" id="fs-record">${rows.join('')}</div>
-    <div class="fs-switch">
-      ${nobody ? `<p class="fs-nobody" id="fs-nobody">${escHtml(E.nobody)}</p>` : ''}
-      <button type="button" class="btn-ghost" id="fs-switch" onclick="fsSwitch()">${escHtml(f.path === 'fix' ? E.toExperiment : E.toFix)}</button>
-    </div>
+    ${nobody ? `<div class="fs-switch">
+      <p class="fs-nobody" id="fs-nobody">${escHtml(E.nobody)}</p>
+      <button type="button" class="btn-ghost" id="fs-switch" onclick="fsSwitch()">${escHtml(E.toExperiment)}</button>
+    </div>` : ''}
     <div class="fs-choices" id="fs-choices"></div>`;
-  fsShowObservation();
   renderFsChoices();
 }
 
-// M2's line about the last time, with the AI tag, once it has arrived and while the answer it read
-// is still the one on record.
-function fsShowObservation() {
-  const el = document.getElementById('fs-obs');
-  if (!el || !isFirstSession(S)) return;
-  const data = S.first.m2;
-  const observation = String(data?.observation?.surface_text || '').trim();
-  const current = S.first.grades?.last_time?.for_text === S.first.slots?.last_time?.text;
-  if (!observation || !current) { el.style.display = 'none'; return; }
-  setAiText(el, observation, aiMark(data, 'observation.surface_text'));
-  el.style.display = '';
+// The step's button and the few words under it.
+function fsChoiceHtml(id, onclick, label, note) {
+  return `<div class="fs-choice-cell">
+          <button type="button" class="btn-second fs-choice" id="${id}" onclick="${onclick}">${escHtml(label)}</button>
+          <div class="fs-choice-note" id="${id}-note">${escHtml(note)}</div>
+        </div>`;
 }
 
-// The three choices, the first two equal in weight, then a quiet way back to the cellar. A step
-// once planned shows in their place.
+// What's next, then the choices, the first two equal in weight, then a quiet way back to the
+// cellar. A step once planned shows in their place.
 function renderFsChoices(mode = 'choose') {
   const box = document.getElementById('fs-choices');
   if (!box) return;
@@ -5710,7 +5773,7 @@ function renderFsChoices(mode = 'choose') {
       <div class="fs-planning">${escHtml(_fsPlan.label)}</div>
       <div class="fs-q fs-q-small" id="fs-line-q" data-q="${q}">${escHtml(def.ask(ctx))}</div>
       <textarea class="field fs-field" id="fs-line-inp" rows="2" oninput="this.classList.remove('err')"></textarea>
-      ${def.counts ? fsCountsHtml(def, 'fs-line-') : ''}
+      ${def.example ? `<p class="fs-example" id="fs-line-example">${escHtml(def.example)}</p>` : ''}
       <div class="row fs-row">
         <button type="button" class="btn-ghost" id="fs-line-back" onclick="fsChoicesBack()">${escHtml(E.back)}</button>
         <button type="button" class="btn" id="fs-line-next" onclick="fsSaveLine()">${escHtml(FSC.buttons.next)}</button>
@@ -5732,8 +5795,8 @@ function renderFsChoices(mode = 'choose') {
   } else if (f.step) {
     box.innerHTML = `
       <div class="fs-planned" id="fs-planned">
-        <div class="fs-planned-when" id="fs-planned-when">${escHtml(FSC.planned(f.step, fsToday()))}</div>
         <div class="fs-planned-step" id="fs-planned-step">${escHtml(f.step.label)}</div>
+        <div class="fs-planned-when" id="fs-planned-when">${escHtml(E.saved(FSC.planned(f.step, fsToday())))}</div>
       </div>
       <button type="button" class="btn" id="fs-cellar" onclick="showCellar()">${escHtml(E.cellar)}</button>`;
   } else {
@@ -5741,9 +5804,10 @@ function renderFsChoices(mode = 'choose') {
       ? [{ kind: 'ask', label: E.ask(ctx) }]
       : [{ kind: 'show', label: E.show(ctx) }, { kind: 'build', label: E.build }];
     box.innerHTML = `
+      <p class="fs-next-line" id="fs-next-line">${escHtml(E.next[f.path](ctx))}</p>
       <div class="fs-choice-row is-${outward.length + 1}">
-        ${outward.map(o => `<button type="button" class="btn-second fs-choice" id="fs-choice-${o.kind}" onclick="fsChoose('${o.kind}')">${escHtml(o.label)}</button>`).join('')}
-        <button type="button" class="btn-second fs-choice" id="fs-rethink" onclick="fsRethink()">${escHtml(E.rethink)}</button>
+        ${outward.map(o => fsChoiceHtml(`fs-choice-${o.kind}`, `fsChoose('${o.kind}')`, o.label, E.notes[o.kind])).join('')}
+        ${fsChoiceHtml('fs-rethink', 'fsRethink()', E.rethink, E.notes.rethink[f.path])}
       </div>
       <button type="button" class="btn-ghost fs-cellar" id="fs-cellar" onclick="showCellar()">${escHtml(E.cellar)}</button>`;
   }
@@ -5751,7 +5815,7 @@ function renderFsChoices(mode = 'choose') {
 }
 
 // A step that puts the idea in front of other people asks for the line first when it isn't set.
-// Building the smallest version doesn't.
+// Building the simplest version doesn't.
 function fsChoose(kind) {
   const ctx = fsContext(), E = FSC.end;
   const label = kind === 'ask' ? E.ask(ctx) : kind === 'show' ? E.show(ctx) : E.build;
@@ -5775,10 +5839,9 @@ function fsSaveLine() {
     return;
   }
   const question = (document.getElementById('fs-line-q')?.textContent || '').trim();
-  const counts = FSC.questions[q].counts ? fsReadCounts('fs-line-') : {};
   const at = new Date().toISOString();
-  S.first.slots[FS_SLOT[q]] = { q, value: 'answer', question, at, text: typed, ...counts, before_step: _fsPlan.kind };
-  appendLog({ type: 'answer', flow: FIRST_FLOW, step: q, slot: FS_SLOT[q], value: 'answer', question, answer: typed, ...counts, before_step: _fsPlan.kind });
+  S.first.slots[FS_SLOT[q]] = { q, value: 'answer', question, at, text: typed, before_step: _fsPlan.kind };
+  appendLog({ type: 'answer', flow: FIRST_FLOW, step: q, slot: FS_SLOT[q], value: 'answer', question, answer: typed, before_step: _fsPlan.kind });
   saveState();
   const plan = _fsPlan;
   renderFirstEnd();

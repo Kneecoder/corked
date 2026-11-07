@@ -75,7 +75,8 @@ The repo is `C:\Users\James\Desktop\ClaudeCodeTest`. GitHub: Kneecoder/corked, b
 ### Worker routes
 All POST, JSON in and out, at https://orked-m1-proxy.kneebonewebdesign.workers.dev
 - `/m0`: spark bottling. User Line, spark parse, digestibility, follow-up, scope gate.
-- `/m1`: grape grading, at intake and on a grape reopen. Not called in self mode.
+- `/m1`: grape grading, at intake and on a grape reopen. Not called in self mode. A new bottle's F1 sends `with_label: true` and also gets back the short label and `is_self`, from a second call beside the grade.
+- `/label`: the short label a new bottle's first session slots into its own questions and buttons. E4 sends `{ answer, kind: "people" }`. Never shown as a record line, never read by a grader.
 - `/m2`: three calls on one route.
   - Phase A (no `user_answer`): outcome `stated`, `self_answer`, `guessed` or `insufficient`.
   - `phase: "scene"`: builds a problem from the builder's scene answer.
@@ -95,7 +96,8 @@ All POST, JSON in and out, at https://orked-m1-proxy.kneebonewebdesign.workers.d
 - `m3_test_bench.html`, `m4-bench.html`, `m5-m6-m7-bench.html`, `cross-mech-bench.html`, `park-rhythm-bench.html`: mechanism and flow benches. Browser pages.
 - `corked-bench-logs/`: notes from a bench run.
 - No Phase A only battery is committed. The 20-spark battery runs Phase A as one step of the chain.
-- `scripts/run-scenario.mjs`: scripted runs. Plays a scenario against the real app at http://localhost:8080/corked_v6.html?rhythmtest=1 in headless Chromium, against the live worker, with a fresh browser profile per run. Example: `node scripts/run-scenario.mjs finding1 --runs 3 --out runs/2026-10-21-finding1`. Per run it saves `run-N-cellar.json` (the app's own Export cellar) and `run-N-observed.json` (screens, checkpoints, what happened against each expected result). Serves the repo on port 8080 itself when Start Corked.bat isn't running. Scenarios live in the script. First time on a machine: `npm install`, then `npx playwright install chromium`.
+- `scripts/run-scenario.mjs`: scripted runs. Plays a scenario against the real app at http://localhost:8080/corked_v6.html?rhythmtest=1 in headless Chromium, against the live worker, with a fresh browser profile per run. Example: `node scripts/run-scenario.mjs finding1 --runs 3 --out runs/2026-10-21-finding1`. Per run it saves `run-N-cellar.json` (the app's own Export cellar) and `run-N-observed.json` (screens, checkpoints, what happened against each expected result). Serves the repo on port 8080 itself when Start Corked.bat isn't running. Scenarios live in the script. `CORKED_WORKER=<url>` plays against a version uploaded with no traffic. The scenarios that played the intake from before B1 (trust-basics, look-and-states, first-minute, architecture-review, finding1) are retired. First time on a machine: `npm install`, then `npx playwright install chromium`.
+- `scripts/run-label-cases.mjs`: the short label's person and label cases against a worker, grades with and without the label side by side.
 - `runs/`: scripted run output, tracked in git. One folder per run date and scenario.
 
 ### Running the app
