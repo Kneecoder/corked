@@ -1,0 +1,133 @@
+{
+  "idx": 4,
+  "cfg": {
+    "raw_spark": "A sourdough bakery subscription for my street.",
+    "maturity": 1,
+    "grapeName": "",
+    "grapeRel": "",
+    "expectHalt": true,
+    "note": "Scope gate, explicit non-software. Expect: out_of_scope, scope_gated true, scope reason present, no followup, no downstream calls. Clean halt."
+  },
+  "outcome": "PASS (halted as expected: Out of scope (non-software spark) — expected worker behaviour.)",
+  "run": {
+    "workerUrl": "https://0eca6b1f-orked-m1-proxy.kneebonewebdesign.workers.dev",
+    "raw_spark": "A sourdough bakery subscription for my street.",
+    "maturity": 1,
+    "grapeName": "",
+    "grapeRel": "",
+    "wordsSource": "real",
+    "m0": null,
+    "userLine": "",
+    "sparkParse": null,
+    "domain": "",
+    "gapInPlay": false,
+    "problem": null,
+    "phaseAOutcome": null,
+    "answers": {},
+    "log": [
+      {
+        "mech": "M0",
+        "endpoint": "/m0",
+        "kind": "main",
+        "request": {
+          "raw_spark": "A sourdough bakery subscription for my street."
+        },
+        "response": {
+          "schema_version": "m0.v1",
+          "mechanism": "M0",
+          "raw_spark": "A sourdough bakery subscription for my street.",
+          "user_line_candidate": "A sourdough bakery subscription for people on the speaker's street.",
+          "spark_parse": {
+            "solution_form": "subscription",
+            "implied_person": "people on the speaker's street",
+            "suspected_problem": null,
+            "triggering_situation": null,
+            "promised_change": null,
+            "domain": "sourdough bakery",
+            "solution_is_software": "non_software"
+          },
+          "digestibility": {
+            "state": "out_of_scope",
+            "missing": [],
+            "reason": "",
+            "can_seal": false,
+            "requires_followup_before_seal": false
+          },
+          "followup": {
+            "needed": false,
+            "question": null
+          },
+          "m1_setup": null,
+          "scope": {
+            "in_scope": false,
+            "reason": "This spark describes something that belongs in a different cellar. Corked ages software products built by solo builders. A non-software idea is not less valid, it ages somewhere else."
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "scope_gated": true
+          },
+          "ai_fields": [
+            "user_line_candidate",
+            "spark_parse.solution_form",
+            "spark_parse.implied_person",
+            "spark_parse.domain"
+          ],
+          "prompt_version": "2026-11-07",
+          "model": "claude-sonnet-4-6"
+        },
+        "summary": "digestibility=out_of_scope · in_scope=false · followup_needed=false",
+        "ts": "2026-11-07T11:37:51.941Z"
+      }
+    ],
+    "anomalies": [
+      "M0: flagged out_of_scope (non_software)."
+    ],
+    "floorNotes": [],
+    "halted": true,
+    "elements": {
+      "grape": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "tell": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "vintage": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "gap": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "echo": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      },
+      "limit": {
+        "state": "inert",
+        "history": [
+          "inert"
+        ],
+        "mech": null
+      }
+    },
+    "haltMsg": "Out of scope (non-software spark) — expected worker behaviour."
+  }
+}
