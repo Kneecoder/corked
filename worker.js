@@ -159,12 +159,14 @@ Return only JSON.`;
 
 const M1_DOCTRINE = `You are the Winemaster — the voice of Corked.
 
-Your job is grading the Grape: confirming that a named individual with a real stated relationship has been identified.
+Your job is grading the Grape: confirming that one specific person with a real stated relationship has been identified.
+
+A name, initials, or a clear description that singles out one person identify that person equally. Never require a full name, and never grade a full name above initials or a description.
 
 GRAPE STATES:
-- settled: A named individual AND a stated real relationship. "Sarah, my sister." "Tom, the café owner downstairs." "My manager Priya." Name plus real tie = settled.
-- clearing: A name without a real tie, or a real tie without a name. "A guy from work." "My friend." "Sarah." Either alone does not settle.
-- turbid: A category with a name pinned on it. "Freelancers I know." "Startup founders like my colleague." The name is incidental, not a specific individual.
+- settled: One specific person AND a stated real relationship. "Sarah, my sister." "M., my sister." "Tom, the café owner downstairs." "A colleague who manages bookings." "My manager Priya." One specific person plus a real tie = settled, however the person is named.
+- clearing: A person without a real tie, or a tie that could be anyone. "Sarah." "M." "My friend." "A guy from work." Either alone does not settle.
+- turbid: A group, or a category with a name pinned on it. "Freelancers I know." "Startup founders like my colleague." No one specific person is identified.
 - none: No usable person identified.
 
 SPECIAL CASE: Self-as-grape (maturity_class 2)
@@ -513,7 +515,7 @@ function buildM1UserMessage(sparkSummary, maturityClass, personName, relationshi
 <relationship>${relationship}</relationship>
 
 You must choose the right framing based on maturity_class:
-- 0/1: Extraction mode. Grade on named individual plus real stated relationship.
+- 0/1: Extraction mode. Grade on one specific person (a name, initials or a clear description, all equal) plus a real stated relationship.
 - 2: Self mode. The user is the grape. Grade on whether a specific past instance was provided.
 
 Return exactly this JSON shape:
@@ -624,12 +626,17 @@ function buildM2FrictionUserMessage(confirmedProblem, grapeName, grapeRel, matur
     "anchor_span": "verbatim from user_answer or null"
   },` : '';
 
+  // A new bottle's first session grades the answer with no problem on record (B1, 7 Nov).
+  const noProblem = confirmedProblem ? '' : `
+No problem is on record. Grade Tell and Vintage on the answer alone.
+`;
+
   return `<confirmed_problem>${confirmedProblem}</confirmed_problem>
 ${grapeBlock}
 <maturity_class>${maturityClass}</maturity_class>
 <gap_in_play>${gapInPlay ? 'true' : 'false'}</gap_in_play>
 <user_answer>${userAnswer}</user_answer>
-
+${noProblem}
 Return exactly this JSON shape:
 {
   "schema_version": "m2.v1",
@@ -2136,12 +2143,14 @@ async function handleM2(request, env, corsHeaders) {
     return jsonResponse(validated, 200, corsHeaders);
   }
 
-  // Phase B: friction grading — the problem on record + user answer both present.
+  // Phase B: friction grading — the problem on record + user answer both present. A new bottle's
+  // first session (flow first_session_v1) has no problem yet and is graded without one.
   const confirmedProblem = problem ? problem.text : '';
   const userAnswer       = String(body.user_answer       || '').trim();
+  const firstSession     = body.flow === 'first_session_v1';
   const gapInPlay        = !!body.gap_in_play;
 
-  if (!confirmedProblem) {
+  if (!confirmedProblem && !firstSession) {
     return jsonResponse({ error: 'Missing problem for friction phase' }, 400, corsHeaders);
   }
 
