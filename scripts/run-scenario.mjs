@@ -880,6 +880,12 @@ function b1Snap(page) {
       next: t('fs-next'),
       number_fields: document.querySelectorAll('#first-body input[type="number"]').length,
       end: !!document.getElementById('fs-record'),
+      // B1c: where the question came from, the say-it-again line, the AI tag, every button.
+      source: q?.dataset.source || null,
+      ready: q ? q.dataset.ready !== '0' : null,
+      first_wrote: t('fs-first-wrote'),
+      ai_tag: !!q?.querySelector('.ai-tag'),
+      all_buttons: [...document.querySelectorAll('#first-body button')].map(b => b.textContent.trim()),
       visible_text: (screen?.innerText || '').trim()
     };
   });
@@ -925,10 +931,22 @@ function b1Driver(app, rec) {
       return snap;
     },
 
+    // B1c: a written question shows three dots until it comes back or falls back. Waits for it, and
+    // notes how long the dots showed.
+    async ready() {
+      const from = Date.now();
+      await page.waitForFunction(() => {
+        const q = document.getElementById('fs-q');
+        return !q || q.dataset.ready !== '0';
+      }, undefined, { timeout: 15000, polling: 50 });
+      return Date.now() - from;
+    },
+
     // a: { text, tap, link }, or 'dont_know', 'not_set' or 'skip'. A tap already picked on screen
     // (F2 starts on "It was me" for the builder) is left as it is.
     async answer(a) {
-      const before = await b1Snap(page);
+      const dots_ms = await fs.ready();
+      const before = { ...(await b1Snap(page)), dots_ms };
       if (!before.qid) throw new Error(`No question on screen (screen ${before.screen}).`);
       if (typeof a === 'string') {
         await page.locator({ skip: '#fs-skip', not_set: '#fs-notset', dont_know: '#fs-unsure' }[a]).click();
@@ -941,7 +959,7 @@ function b1Driver(app, rec) {
       const clickedAt = Date.now();
       await page.waitForFunction(prev => {
         const q = document.getElementById('fs-q');
-        return (q && q.dataset.q !== prev) || !!document.getElementById('fs-record');
+        return (q && q.dataset.q !== prev) || !!document.getElementById('fs-record') || !!document.getElementById('fs-when') || !!document.getElementById('fs-plan');
       }, before.qid, { timeout: 10000, polling: 50 });
       fs.screens.push({ ...before, answered: a, next_screen_after_ms: Date.now() - clickedAt });
       app.step(`answered ${before.qid}`, { note: typeof a === 'string' ? a : (a.text || a.tap || '') });
@@ -949,7 +967,7 @@ function b1Driver(app, rec) {
     },
 
     async readEnd() {
-      await page.locator('#fs-record').waitFor({ timeout: STEP_TIMEOUT });
+      await page.locator('#fs-record, #fs-plan').first().waitFor({ timeout: STEP_TIMEOUT });
       return page.evaluate(() => {
         const t = el => (el?.innerText || '').trim();
         const obs = document.getElementById('fs-obs');
@@ -964,6 +982,13 @@ function b1Driver(app, rec) {
           nobody: document.getElementById('fs-nobody')?.textContent.trim() || null,
           switch_link: document.getElementById('fs-switch')?.textContent.trim() || null,
           next_line: document.getElementById('fs-next-line')?.textContent.trim() || null,
+          // B1c: the plan under the record, or the confirmation.
+          plan: document.getElementById('fs-plan') ? {
+            planned: document.getElementById('fs-planned-when')?.textContent.trim() || null,
+            rows: [...document.querySelectorAll('#fs-plan-record .fs-rec-row')].map(r => ({ row: r.dataset.row, label: t(r.querySelector('.fs-rec-label')), value: t(r.querySelector('.fs-rec-value')) })),
+            on_bottle: document.getElementById('fs-on-bottle')?.textContent.trim() || null,
+            button: document.querySelector('#fs-plan #fs-cellar')?.textContent.trim() || null
+          } : null,
           choices: [...document.querySelectorAll('#fs-choices button')].map(b => ({ id: b.id, text: b.textContent.trim(), cls: b.className, note: document.getElementById(`${b.id}-note`)?.textContent.trim() || null })),
           visible_text: t(document.getElementById('screen-first'))
         };
@@ -1314,6 +1339,156 @@ async function b1bHold(page, routes, ms, notes) {
 
 function b1bSay(x) {
   return x == null ? 'none' : `"${x}"`;
+}
+
+// ── B1c: QUESTIONS WRITTEN FOR EACH IDEA ──
+// T1 to T9. The rules each check reads are the brief's, typed here, not read from the copy file.
+
+// The app as B1b left it: the live d4d011e, plus the docs-only step 0 commit.
+const B1C_BEFORE = 'e129030';
+
+// Jamie's answers from the brief, word for word. Anything marked stand-in is mine.
+const B1C_GARDEN = {
+  spark: 'A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.',
+  answers: [
+    { text: 'My grandpa, 76.' },
+    { text: 'He called me to come fix it, he had no idea what to do.' },
+    { text: 'Gvie im an estiamte of the work to be done to keep it a nice looking garden' },
+    { text: 'An app that maps a garden and tells you how often it needs upkeep and which tools you need.' }   // F4 stand-in
+  ],
+  plan: [
+    { text: 'That he just guesses when it looks messy' },   // F5 stand-in
+    { text: "He doesn't see it as an issue" }               // F6 stand-in
+  ],
+  standIns: ['F4', 'F5', 'F6']
+};
+
+const B1C_RENTAL = {
+  spark: 'An AI tool that helps you when you rent a place to document the current conditions, easily.',
+  answers: [
+    { text: 'Me, when I moved into my flat in March.' },
+    { text: 'I took a lot of pictures of the outlets and sinks, but I did not know what mattered.' },      // F2 stand-in
+    { text: 'Tell me which rooms and fittings to photograph, and keep it all in one report.' },            // F3 stand-in
+    { text: 'An app that walks you through recording the state of a rented flat on move in day.' }       // F4 stand-in
+  ],
+  plan: [
+    { text: 'Sam, my neighbour, who moved into the flat upstairs last month' },   // Who could you ask? stand-in
+    { text: 'That he took a few photos on his phone and hopes for the best' },    // F5 stand-in
+    { text: 'His landlord already gave him a full checklist' }                    // F6 stand-in
+  ],
+  standIns: ['F2', 'F3', 'F4', 'Who could you ask?', 'F5', 'F6']
+};
+
+const B1C_FOOTBALL = {
+  spark: 'A trivia app for football fans to challenge each others ballknowledge.',
+  answers: [
+    { text: 'My friends quiz each other about old match results in our group chat.' },   // E1 stand-in
+    { text: 'Like they want one more round straight away.' },                             // E2 stand-in
+    { text: 'Ten football questions on one page and a score at the end.' },               // E3 stand-in
+    { text: 'A trivia app where you challenge yourself and other people on ball (soccer) trivia information.' }
+  ],
+  plan: [
+    { text: 'Myself of course, and some of my football friends.' },
+    { text: 'They would visibly enjoy using it and are challenged by the questions' }
+  ],
+  standIns: ['E1', 'E2', 'E3']
+};
+
+const B1C_SPARK_COPY = {
+  question: "What's the idea?",
+  note: "An app, a game, a tool you wish existed. Get the rough thought down while it's fresh. It doesn't need to be worked out yet.",
+  label: 'YOUR IDEA',
+  button: 'Next →',
+  fix: 'Like Dropbox, whose founder kept forgetting his USB stick.',
+  experiment: 'Like Wordle, a word game one guy made for his partner.'
+};
+
+const B1C_HINT = /\b(e\.g\.|for example|for instance|such as)\b/i;
+
+// The brief's rules a written question has to pass, as far as a script can read them.
+function b1cRules(question, path) {
+  const s = String(question || '').replace(/\s+/g, ' ').trim();
+  const broke = [];
+  if ((s.match(/\?/g) || []).length !== 1 || !s.endsWith('?')) broke.push('one question mark, at the end');
+  if (s.split(' ').length > 25) broke.push('more than 25 words');
+  if (/[—–]|\s-\s|--/.test(s)) broke.push('a dash');
+  if (path === 'experiment' && /\b(problem|need|wrong|stopped)/i.test(s)) broke.push('a problem word on the experiment path');
+  if (/\bthe last time\s*[,?]/i.test(s)) broke.push('"the last time" without saying of what');
+  if (B1C_HINT.test(s)) broke.push('an example');
+  return broke;
+}
+
+// What a question screen holds that the brief says it mustn't.
+function b1cExtras(snap) {
+  const extras = [];
+  if (snap.example || /e\.g\./.test(snap.visible_text)) extras.push('an example');
+  if (/\bWhy\b/.test(snap.visible_text)) extras.push('a why line');
+  if (snap.all_buttons.some(b => /^Skip$/.test(b))) extras.push('Skip');
+  if (snap.all_buttons.some(b => /^Not set yet$/.test(b))) extras.push('Not set yet');
+  if (snap.taps.length) extras.push(`taps (${snap.taps.join(', ')})`);
+  return extras;
+}
+
+// From the end screen: the step, its questions one per screen, When?, then the confirmation.
+// waitLabel: { before: qid, step } waits on that question for a label to log, as typing would.
+async function b1cPlan(fs, app, kind, answers, when, { day = null, waitLabel = null } = {}) {
+  const page = app.page;
+  await page.locator(`#fs-choice-${kind}`).click();
+  const asked = [];
+  const list = [...answers];
+  for (let k = 0; k < 6; k++) {
+    await fs.ready();
+    if (await page.locator('#fs-when').count()) break;
+    const snap = await b1Snap(page);
+    if (!snap.qid) break;
+    if (waitLabel && waitLabel.before === snap.qid) {
+      const from = Date.now();
+      waitLabel.logged = await fs.waitForLog(b1bLabelLogged(waitLabel.step), 60000);
+      waitLabel.waited_ms = Date.now() - from;
+    }
+    const before = await fs.answer(list.shift() || 'dont_know');
+    asked.push({ qid: before.qid, question: before.question, source: before.source, ai_tag: before.ai_tag, dots_ms: before.dots_ms, extras: b1cExtras(before), buttons: before.all_buttons });
+  }
+  await page.locator('#fs-when').waitFor({ timeout: 10000 });
+  const whenScreen = { heading: await app.text('#fs-planning'), taps: (await page.locator('#fs-when button').allTextContents()).map(s => s.trim()) };
+  if (when === 'today') await page.locator('#fs-when-today').click();
+  else if (when === 'this_week') await page.locator('#fs-when-week').click();
+  else {
+    await page.locator('#fs-when-day').click();
+    await page.locator('#fs-day').fill(day);
+    await page.locator('#fs-day-save').click();
+  }
+  await page.locator('#fs-plan').waitFor({ timeout: 10000 });
+  const confirmation = await fs.readEnd();
+  app.step('planned the step', { note: confirmation.plan?.planned });
+  return { asked, when: whenScreen, confirmation };
+}
+
+function b1cRoutes(rec) {
+  const out = {};
+  for (const r of rec.worker_requests || []) out[r.path] = (out[r.path] || 0) + 1;
+  return out;
+}
+
+// Model calls behind those requests: /m1 with the label makes two (the grade and the label).
+function b1cModelCalls(rec) {
+  return (rec.worker_requests || []).reduce((n, r) => n + (r.path === '/m1' && r.body?.with_label ? 2 : 1), 0);
+}
+
+// What opening a bottle shows, old flow or first session.
+function b1cBottleView(page) {
+  return page.evaluate(() => {
+    const vis = id => { const el = document.getElementById(id); return !!el && el.getClientRects().length > 0 && getComputedStyle(el).display !== 'none'; };
+    const t = id => (document.getElementById(id)?.textContent || '').replace(/\s+/g, ' ').trim();
+    return {
+      screen: document.querySelector('.screen.active')?.id || null,
+      panels: ['question-panel', 'review-panel', 'dormant-panel', 'stalled-panel'].filter(vis),
+      mech_label: t('m-label'),
+      question: t('m-q'),
+      main_button: t('p1-btn'),
+      first_session: (document.querySelector('#screen-first.active #first-body')?.innerText || '').replace(/\s+/g, ' ').trim() || null
+    };
+  });
 }
 
 // ── SCENARIOS ──
@@ -2247,6 +2422,442 @@ const SCENARIOS = {
       if (!bottles.length) return ['Not reached.' + b1Tail(rec)];
       const view = v => `${v.screen}, panels ${v.panels.join('/') || 'none'}, "${v.mech_label}", question "${v.question}", button "${v.main_button}", rhythm panel ${v.rhythm_panel}, first-session screen ${v.first_session_screen}`;
       return [bottles.map(b => `"${b.idea}" (flow ${b.flow || 'old'}, mechIndex ${b.mechIndex}, ${b.status}, ${b.qLifecycle}). Now: ${view(b.app_now.view)}. Before B1b: ${view(b.app_before_b1b.view)}. Same: ${b.same_view}. Stored fields the open changed, now: [${b.app_now.s_fields_changed.join(', ')}], before B1b: [${b.app_before_b1b.s_fields_changed.join(', ')}]. Same changes: ${b.same_changes}.`).join(' ') + ` Export: ${rec.screens.export_file}. App before B1b: ${rec.screens.app_before}.` + b1Tail(rec)];
+    }
+  },
+
+  // ── B1c: questions written for each idea ──
+  'b1c-t1': {
+    title: "B1c T1: fix, Jamie's garden walk-through",
+    expected: [
+      'Every question passes the rules.',
+      'F2 and F3 mention the garden or name him ("your grandpa", "him").',
+      'No screen shows an example, a why line, Skip, Not set yet or a tap row.',
+      'The restate screen shows the spark.',
+      'Every answer is stored with its question.'
+    ],
+    async play(app, rec) {
+      const page = app.page;
+      const fs = b1Driver(app, rec);
+      const requests = rec.worker_requests = [];
+      b1WatchWorker(page, requests);
+      await app.open();
+      await fs.newBottle(B1C_GARDEN.spark);
+      await fs.pick('fix');
+      for (const a of B1C_GARDEN.answers) await fs.answer(a);
+      rec.screens.burst = fs.screens.filter(x => x.qid);
+      rec.screens.order = b1Order(fs.screens);
+      rec.screens.end = await fs.endScreen();
+      await page.waitForTimeout(4000);
+      const b = await app.bottle();
+      rec.checkpoints.bottle = { flow: b?.s?.flow, first: b?.s?.first, log: b?.s?.log };
+      rec.screens.routes = b1cRoutes(rec);
+    },
+    report(rec) {
+      const s = rec.screens;
+      if (!s.end) return ['Not reached.' + b1Tail(rec), '', '', '', ''];
+      const burst = s.burst || [];
+      const q = id => burst.find(x => x.qid === id);
+      const rules = burst.map(x => `${x.qid} [${x.source}${x.ai_tag ? ', AI tag' : ''}, ${x.dots_ms} ms of dots] "${x.question}"${b1cRules(x.question, 'fix').length ? ` BREAKS ${b1cRules(x.question, 'fix').join(', ')}` : ''}`).join('; ');
+      const names = id => /garden|grandpa|\bhim\b|\bhe\b|\bhis\b/i.test(q(id)?.question || '');
+      const slots = rec.checkpoints.bottle?.first?.slots || {};
+      const stored = burst.map(x => {
+        const e = slots[{ F1: 'who', F2: 'last_time', F3: 'one_thing', F4: 'now' }[x.qid]];
+        return `${x.qid}: question as shown ${e?.question === x.question}, answer word for word ${e?.text === x.answered?.text}, source ${e?.question_source}${e?.question_model ? ` (${e.question_model}, ${e.question_prompt_version})` : ''}${e?.question_fallback_reason ? ` (${e.question_fallback_reason})` : ''}`;
+      }).join('; ');
+      return [
+        `Screens in order: ${(s.order || []).join(', ')}. ${rules}. Flow on the bottle: ${rec.checkpoints.bottle?.flow}.`,
+        `F2 names the garden or him: ${names('F2')}. F3: ${names('F3')}.`,
+        `Extras on any question screen: ${burst.map(x => b1cExtras(x).length ? `${x.qid}: ${b1cExtras(x).join(', ')}` : '').filter(Boolean).join('; ') || 'none'}. Buttons on each: ${burst.map(x => `${x.qid} ${x.all_buttons.join(' / ')}`).join('; ')}.`,
+        `F4 screen: "${q('F4')?.first_wrote}", question "${q('F4')?.question}". Holds the spark verbatim: ${!!q('F4')?.first_wrote?.includes(B1C_GARDEN.spark)}.`,
+        `${stored}. Requests: ${JSON.stringify(s.routes)}.` + b1Tail(rec)
+      ];
+    }
+  },
+
+  'b1c-t2': {
+    title: 'B1c T2: the plan step, fix',
+    expected: [
+      '"Ask your grandpa" asks F5 (from the writer), F6, When.',
+      'The confirmation and the reopened bottle show the plan.',
+      'The card says "Planned for [day]".'
+    ],
+    async play(app, rec) {
+      const page = app.page;
+      const fs = b1Driver(app, rec);
+      const requests = rec.worker_requests = [];
+      b1WatchWorker(page, requests);
+      await app.open();
+      await fs.newBottle(B1C_GARDEN.spark);
+      await fs.pick('fix');
+      for (const a of B1C_GARDEN.answers) await fs.answer(a);
+      // The person's label comes back with M1 in the background. A person reads the end screen for a
+      // while; the run waits for the label, up to a minute.
+      rec.checkpoints.label = await fs.waitForLog(b1bLabelLogged('F1'), 60000);
+      rec.screens.end = await fs.endScreen();
+      rec.screens.day = b1DayKey(2);
+      rec.screens.plan = await b1cPlan(fs, app, 'ask', B1C_GARDEN.plan, 'day', { day: rec.screens.day });
+      await fs.backToCellar();
+      rec.screens.card = await app.card().evaluate(el => ({ status: el.querySelector('.bottle-card-status')?.textContent.trim() || null, step: el.querySelector('.bottle-card-step')?.textContent.trim() || null }));
+      await app.card().click();
+      rec.screens.reopened = await fs.readEnd();
+      const b = await app.bottle();
+      rec.checkpoints.bottle = { first: b?.s?.first, log: b?.s?.log };
+      rec.screens.routes = b1cRoutes(rec);
+      rec.screens.model_calls = b1cModelCalls(rec);
+    },
+    report(rec) {
+      const s = rec.screens, p = s.plan;
+      if (!p) return ['Not reached.' + b1Tail(rec), '', ''];
+      const ask = s.end.choices.find(c => c.id === 'fs-choice-ask');
+      const conf = p.confirmation.plan, re = s.reopened;
+      return [
+        `End screen button "${ask?.text}" / "${ask?.note}". Next-step line "${s.end.next_line}". The step asked: ${p.asked.map(x => `${x.qid} [${x.source}${x.ai_tag ? ', AI tag' : ''}, ${x.dots_ms} ms of dots] "${x.question}"${b1cRules(x.question, 'fix').length ? ` BREAKS ${b1cRules(x.question, 'fix').join(', ')}` : ''}${x.extras.length ? ` EXTRAS ${x.extras.join(', ')}` : ''}`).join('; ')}; then When? "${p.when.heading}" with ${p.when.taps.join(', ')}. Label: ${JSON.stringify(rec.checkpoints.label)}.`,
+        `Confirmation: "${conf?.planned}"; ${conf?.rows.map(r => `${r.label} "${r.value}"`).join('; ')}; "${conf?.on_bottle}"; button "${conf?.button}". Typed: F5 "${B1C_GARDEN.plan[0].text}", F6 "${B1C_GARDEN.plan[1].text}". Reopened: record ${re?.rows.map(r => r.label).join(', ')}; plan "${re?.plan?.planned}"; ${re?.plan?.rows.map(r => `${r.label} "${r.value}"`).join('; ')}; "${re?.plan?.on_bottle}".`,
+        `Day picked ${s.day}. Card: "${s.card?.status}", step "${s.card?.step}". Stored step: ${JSON.stringify(rec.checkpoints.bottle?.first?.step)}. Requests in the whole session: ${JSON.stringify(s.routes)}; model calls ${s.model_calls}.` + b1Tail(rec)
+      ];
+    }
+  },
+
+  'b1c-t3': {
+    title: 'B1c T3: fix, the builder is the person (the rental)',
+    expected: [
+      '/m1 marks it as self.',
+      'F2 asks "you".',
+      'The button is "Ask someone".',
+      'The plan step starts with "Who could you ask?".'
+    ],
+    async play(app, rec) {
+      const page = app.page;
+      const fs = b1Driver(app, rec);
+      const requests = rec.worker_requests = [];
+      const replies = rec.screens.m1_replies = [];
+      b1WatchWorker(page, requests);
+      page.on('response', async r => {
+        if (!r.url().startsWith(`${WORKER_URL}/m1`)) return;
+        try { replies.push({ at: new Date().toISOString(), body: await r.json() }); } catch {}
+      });
+      await app.open();
+      await fs.newBottle(B1C_RENTAL.spark);
+      await fs.pick('fix');
+      for (const a of B1C_RENTAL.answers) await fs.answer(a);
+      rec.screens.burst = fs.screens.filter(x => x.qid);
+      rec.checkpoints.label = await fs.waitForLog(b1bLabelLogged('F1'), 60000);
+      rec.screens.end = await fs.endScreen();
+      const waitLabel = { before: 'F5', step: 'F7' };
+      rec.screens.plan = await b1cPlan(fs, app, 'ask', B1C_RENTAL.plan, 'today', { waitLabel });
+      rec.screens.wait_label = waitLabel;
+      rec.checkpoints.m2 = await fs.waitForLog(e => e.mech === 'M2' && (e.type === 'grade' || e.type === 'grade_failed'));
+      const b = await app.bottle();
+      rec.checkpoints.bottle = { first: b?.s?.first, log: b?.s?.log };
+      rec.screens.routes = b1cRoutes(rec);
+      rec.screens.model_calls = b1cModelCalls(rec);
+      rec.screens.m2_request = (rec.worker_requests || []).find(r => r.path === '/m2')?.body || null;
+    },
+    report(rec) {
+      const s = rec.screens, p = s.plan;
+      if (!p) return ['Not reached.' + b1Tail(rec), '', '', ''];
+      const m1 = (s.m1_replies || [])[0]?.body;
+      const f2 = (s.burst || []).find(x => x.qid === 'F2');
+      const ask = s.end.choices.find(c => c.id === 'fs-choice-ask');
+      return [
+        `/m1: is_self ${m1?.is_self}, label "${m1?.label}", grape ${m1?.grape?.state} / ${m1?.grape?.person_kind}. Sent to /m2 for F2: maturity_class ${s.m2_request?.maturity_class}, grape_name "${s.m2_request?.grape_name}"; M2 in the log ${JSON.stringify(rec.checkpoints.m2 ? { type: rec.checkpoints.m2.type, state: rec.checkpoints.m2.state, tell: rec.checkpoints.m2.tell, vintage: rec.checkpoints.m2.vintage } : null)}.`,
+        `F2 [${f2?.source}] "${f2?.question}": says "you" ${/\byou\b/i.test(f2?.question || '')}, says "they" ${/\bthey\b/i.test(f2?.question || '')}. Questions: ${(s.burst || []).map(x => `${x.qid} [${x.source}] "${x.question}"`).join('; ')}.`,
+        `Button "${ask?.text}" / "${ask?.note}". Next-step line "${s.end.next_line}".`,
+        `The step asked: ${p.asked.map(x => `${x.qid} [${x.source}] "${x.question}"`).join('; ')}; When? "${p.when.heading}". The run waited ${s.wait_label?.waited_ms} ms on F5 for the label: ${JSON.stringify(s.wait_label?.logged || null)}. Confirmation "${p.confirmation.plan?.planned}"; ${p.confirmation.plan?.rows.map(r => `${r.label} "${r.value}"`).join('; ')}. Requests in the whole session: ${JSON.stringify(s.routes)}; model calls ${s.model_calls}.` + b1Tail(rec)
+      ];
+    }
+  },
+
+  'b1c-t4': {
+    title: 'B1c T4: experiment, the football quiz',
+    expected: [
+      'E1 to E3 are about football or the quiz, none with "problem", "need", "wrong" or "stopped".',
+      '"Show it to a few people" asks E4, E6, When.',
+      '"Build the simplest version first" asks only When.'
+    ],
+    async play(app, rec) {
+      const page = app.page;
+      const fs = b1Driver(app, rec);
+      const requests = rec.worker_requests = [];
+      b1WatchWorker(page, requests);
+      await app.open();
+      await fs.newBottle(B1C_FOOTBALL.spark);
+      await fs.pick('experiment');
+      for (const a of B1C_FOOTBALL.answers) await fs.answer(a);
+      rec.screens.burst = fs.screens.filter(x => x.qid);
+      rec.screens.end = await fs.endScreen();
+      rec.screens.requests_first_session = b1cRoutes(rec);
+      rec.screens.model_calls_first_session = b1cModelCalls(rec);
+      const waitLabel = { before: 'E6', step: 'E4' };
+      rec.screens.show = await b1cPlan(fs, app, 'show', B1C_FOOTBALL.plan, 'today', { waitLabel });
+      rec.screens.wait_label = waitLabel;
+      rec.screens.requests_with_show = b1cRoutes(rec);
+      rec.screens.model_calls_with_show = b1cModelCalls(rec);
+      await fs.backToCellar();
+      fs.screens.length = 0;
+      const before = (rec.worker_requests || []).length;
+      // A second bottle for Build: a different idea, Don't know yet at each question.
+      await fs.newBottle('A daily game where you describe one picture in a single sentence.', { fromCellar: true });
+      await fs.pick('experiment');
+      for (let k = 0; k < 4; k++) await fs.answer('dont_know');
+      rec.screens.build_end = await fs.endScreen();
+      rec.screens.build = await b1cPlan(fs, app, 'build', [], 'this_week');
+      rec.screens.build_requests = (rec.worker_requests || []).slice(before).map(r => r.path);
+    },
+    report(rec) {
+      const s = rec.screens;
+      if (!s.build) return ['Not reached.' + b1Tail(rec), '', ''];
+      const about = x => /football|quiz|trivia|\bball|question|match|fans?\b/i.test(x.question || '');
+      return [
+        (s.burst || []).filter(x => ['E1', 'E2', 'E3'].includes(x.qid)).map(x => `${x.qid} [${x.source}${x.ai_tag ? ', AI tag' : ''}] "${x.question}": about football or the quiz ${about(x)}; problem words ${/\b(problem|need|wrong|stopped)/i.test(x.question || '') ? x.question.match(/\b(problem|need|wrong|stopped)\w*/i)[0] : 'none'}${b1cRules(x.question, 'experiment').length ? `; BREAKS ${b1cRules(x.question, 'experiment').join(', ')}` : ''}`).join('. ') + `. E5 screen: "${(s.burst || []).find(x => x.qid === 'E5')?.first_wrote}".`,
+        `End screen: ${s.end.choices.map(c => `"${c.text}" / "${c.note || ''}"`).join(', ')}. Show it asked: ${s.show.asked.map(x => `${x.qid} [${x.source}] "${x.question}"`).join('; ')}; When? "${s.show.when.heading}". The run waited ${s.wait_label?.waited_ms} ms on E6 for the label: ${JSON.stringify(s.wait_label?.logged || null)}. Confirmation "${s.show.confirmation.plan?.planned}"; ${s.show.confirmation.plan?.rows.map(r => `${r.label} "${r.value}"`).join('; ')}. Requests, first session: ${JSON.stringify(s.requests_first_session)} (model calls ${s.model_calls_first_session}); with Show it: ${JSON.stringify(s.requests_with_show)} (model calls ${s.model_calls_with_show}).`,
+        `Build asked: ${s.build.asked.length ? s.build.asked.map(x => x.qid).join(', ') : 'nothing before When?'}; When? "${s.build.when.heading}". Confirmation "${s.build.confirmation.plan?.planned}", rows ${s.build.confirmation.plan?.rows.length}. Requests for that bottle: ${s.build_requests.join(', ')}.` + b1Tail(rec)
+      ];
+    }
+  },
+
+  'b1c-t5': {
+    title: 'B1c T5: the writer held for 10 seconds, and the writer returning a broken question',
+    expected: [
+      'Held 10 seconds: the fallback shows within 6 seconds.',
+      'A broken question: the fallback shows within 6 seconds.',
+      'No screen waits longer.'
+    ],
+    async play(app, rec) {
+      const page = app.page;
+      const fs = b1Driver(app, rec);
+      const requests = rec.worker_requests = [];
+      const held = rec.screens.held = [];
+      b1WatchWorker(page, requests);
+      await b1bHold(page, ['/question'], 10000, held);
+      await app.open();
+      await fs.newBottle(B1C_GARDEN.spark);
+      await fs.pick('fix');
+      for (const a of B1C_GARDEN.answers) await fs.answer(a);
+      rec.screens.slow = fs.screens.filter(x => x.qid);
+      await fs.endScreen();
+      await fs.backToCellar();
+      await page.unroute(`${WORKER_URL}/question`);
+      const broken = rec.screens.broken_sent = [];
+      await page.route(`${WORKER_URL}/question`, async route => {
+        const body = JSON.parse(route.request().postData() || '{}');
+        broken.push(body.slot);
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          headers: { 'access-control-allow-origin': APP_URL.split('/corked')[0] },
+          body: JSON.stringify({ schema_version: 'question.v1', path: body.path, slot: body.slot, question: 'Tell me about the garden - and the tools', server_checks: { schema_valid: true, question: { check: 'ok' } }, ai_fields: ['question'], prompt_version: '2026-11-07c', model: 'stub' })
+        });
+      });
+      fs.screens.length = 0;
+      await fs.newBottle(B1C_FOOTBALL.spark, { fromCellar: true });
+      await fs.pick('experiment');
+      for (const a of B1C_FOOTBALL.answers) await fs.answer(a);
+      rec.screens.broken = fs.screens.filter(x => x.qid);
+      await fs.endScreen();
+    },
+    report(rec) {
+      const s = rec.screens;
+      if (!s.broken) return ['Not reached.' + b1Tail(rec), '', ''];
+      const say = list => (list || []).map(x => `${x.qid} [${x.source}] ${x.dots_ms} ms of dots, "${x.question}"`).join('; ');
+      const all = [...(s.slow || []), ...(s.broken || [])];
+      return [
+        `${say(s.slow)}. Held: ${(s.held || []).map(h => `${h.path} ${h.held_from} to ${h.released_at || 'not let go'}`).join('; ')}.`,
+        `${say(s.broken)}. Stubbed slots: ${(s.broken_sent || []).join(', ')}.`,
+        `Longest dots on any screen: ${all.reduce((m, x) => Math.max(m, x.dots_ms || 0), 0)} ms. From Continue to the next screen: ${all.map(x => `${x.qid} ${x.next_screen_after_ms} ms`).join(', ')}.` + b1Tail(rec)
+      ];
+    }
+  },
+
+  'b1c-t7': {
+    title: 'B1c T7: the spark screen and the gate',
+    expected: [
+      'The spark screen shows the new copy, with no "Every bottle starts here." and no "1 / 3" bar.',
+      'The gate shows the Dropbox and Wordle lines.'
+    ],
+    async play(app, rec) {
+      const page = app.page;
+      const fs = b1Driver(app, rec);
+      await app.open();
+      await page.locator('#bottle-cta').click();
+      await page.locator('#screen-intake.active #f-inp').waitFor({ timeout: STEP_TIMEOUT });
+      await page.evaluate(() => typeof finishAllLines === 'function' && finishAllLines());
+      rec.screens.spark = await page.evaluate(() => {
+        const t = sel => (document.querySelector(sel)?.textContent || '').replace(/\s+/g, ' ').trim();
+        const screen = document.getElementById('screen-intake');
+        return {
+          question: t('#intake-q'), note: t('#intake-body .step-note'), label: (document.getElementById('spark-field-label')?.innerText || '').trim(),
+          button: t('#v6-bottle-btn'), bar: !!document.querySelector('#intake-body .intake-prog'), opening: t('#intake-wm'),
+          visible_text: (screen?.innerText || '').trim()
+        };
+      });
+      await page.goto(APP_URL, { waitUntil: 'domcontentloaded' });
+      rec.screens.gate = await fs.newBottle(B1C_FOOTBALL.spark);
+      rec.screens.gate_lines = (await page.locator('#spark-gate .gate-example').allTextContents()).map(s => s.trim());
+    },
+    report(rec) {
+      const s = rec.screens.spark, g = rec.screens.gate_lines || [];
+      if (!s) return ['Not reached.' + b1Tail(rec), ''];
+      const C = B1C_SPARK_COPY;
+      return [
+        `Question "${s.question}" (${s.question === C.question}). Line "${s.note}" (${s.note === C.note}). Label "${s.label}" (${s.label === C.label}). Button "${s.button}" (${s.button === C.button}). "Every bottle starts here." on screen: ${/Every bottle starts here/.test(s.visible_text)}. Bar: ${s.bar}; "1 / 3" on screen: ${/1 \/ 3/.test(s.visible_text)}.`,
+        `Gate lines: ${g.map(x => `"${x}"`).join(', ')} (Dropbox ${g[0] === C.fix}, Wordle ${g[1] === C.experiment}).` + b1Tail(rec)
+      ];
+    }
+  },
+
+  'b1c-t8': {
+    title: 'B1c T8: phone, 390x844',
+    expected: [
+      'The main button is on screen without scrolling on every screen of both paths, including the plan step.'
+    ],
+    async play(app, rec) {
+      const context = await app.browser.newContext({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
+      try {
+        const page = await context.newPage();
+        page.on('pageerror', err => rec.page_errors.push(String(err && err.message || err)));
+        const phone = driver(page, rec);
+        phone.outDir = app.outDir;
+        phone.browser = app.browser;
+        const fs = b1Driver(phone, rec);
+        const looks = rec.screens.phone = [];
+        const measure = async (label, sel) => {
+          await page.waitForTimeout(300);
+          const m = await page.evaluate(sel => {
+            const el = document.querySelector(sel);
+            const r = el?.getBoundingClientRect();
+            return {
+              scroll_y: window.scrollY, viewport_w: window.innerWidth, viewport_h: window.innerHeight,
+              button: el ? { text: el.textContent.trim(), top: Math.round(r.top), bottom: Math.round(r.bottom), left: Math.round(r.left), right: Math.round(r.right) } : null
+            };
+          }, sel);
+          m.label = label;
+          m.on_screen = !!m.button && m.button.top >= 0 && m.button.bottom <= m.viewport_h && m.button.left >= 0 && m.button.right <= m.viewport_w;
+          looks.push(m);
+          await page.screenshot({ path: join(app.outDir, `run-${rec.run}-phone-${String(looks.length).padStart(2, '0')}-${label}.png`) });
+        };
+        const questions = async (path, answers) => {
+          for (const a of answers) {
+            await fs.ready();
+            const snap = await b1Snap(page);
+            await measure(`${path}-${snap.qid}`, '#fs-next');
+            await fs.answer(a);
+          }
+        };
+        const plan = async (path, kind, answers) => {
+          await page.locator(`#fs-choice-${kind}`).click();
+          const list = [...answers];
+          for (let k = 0; k < 6; k++) {
+            await fs.ready();
+            if (await page.locator('#fs-when').count()) break;
+            const snap = await b1Snap(page);
+            await measure(`${path}-plan-${snap.qid}`, '#fs-next');
+            await fs.answer(list.shift() || 'dont_know');
+          }
+          await page.locator('#fs-when').waitFor({ timeout: 10000 });
+          await measure(`${path}-when`, '#fs-when-day');
+          await page.locator('#fs-when-today').click();
+          await page.locator('#fs-plan').waitFor({ timeout: 10000 });
+          await measure(`${path}-confirmation`, '#fs-cellar');
+        };
+
+        await phone.open();
+        phone.spark = B1C_GARDEN.spark;
+        await phone.typeSpark(B1C_GARDEN.spark);
+        await measure('spark', '#v6-bottle-btn');
+        await page.locator('#v6-bottle-btn').click();
+        if (await page.locator('#m0-config').isVisible()) {
+          await page.locator('#v6-worker-url').fill(WORKER_URL);
+          await page.locator('#v6-bottle-btn').click();
+        }
+        await page.locator('#spark-gate').waitFor({ state: 'visible', timeout: STEP_TIMEOUT });
+        await measure('gate', '#spark-gate .gate-option:last-child .gate-choice');
+        await fs.pick('fix');
+        await questions('fix', B1C_GARDEN.answers);
+        await fs.waitForLog(b1bLabelLogged('F1'), 60000);
+        await fs.readEnd();
+        await measure('fix-end', '#fs-choice-ask');
+        await plan('fix', 'ask', B1C_GARDEN.plan);
+        await fs.backToCellar();
+
+        await fs.newBottle(B1C_FOOTBALL.spark, { fromCellar: true });
+        await fs.pick('experiment');
+        await questions('experiment', B1C_FOOTBALL.answers);
+        await fs.readEnd();
+        await measure('experiment-end', '#fs-choice-show');
+        await plan('experiment', 'show', B1C_FOOTBALL.plan);
+        await phone.exportCellar(join(app.outDir, `run-${rec.run}-cellar.json`));
+        rec.exported = true;
+      } finally {
+        await context.close();
+      }
+    },
+    report(rec) {
+      const looks = rec.screens.phone || [];
+      if (!looks.length) return ['Not reached.' + b1Tail(rec)];
+      return [looks.map(m => `${m.label}: "${m.button?.text}" ${m.button?.top} to ${m.button?.bottom} of ${m.viewport_h}, scrolled ${m.scroll_y}, on screen ${m.on_screen}`).join('; ') + `. Screen ${looks[0].viewport_w}x${looks[0].viewport_h}.` + b1Tail(rec)];
+    }
+  },
+
+  'b1c-t9': {
+    title: 'B1c T9: a bottle from B1b and bottles from before B1 open as they do today',
+    expected: [
+      'A bottle from B1b and one from before B1 open as they do today: the same screen and text as the app before B1c shows for each.'
+    ],
+    async play(app, rec) {
+      const exports = rec.screens.exports = ['runs/2026-11-07-b1b-t6/run-1-cellar.json', 'runs/2026-11-07-b1b-t7/run-1-cellar.json', B1_S6_EXPORT];
+      rec.screens.app_before = `${B1C_BEFORE}:corked_v6.html and shared/ on port ${OLD_APP_PORT}`;
+      const server = await b1ServeOldApp(B1C_BEFORE, { withShared: true });
+      const bottles = rec.screens.bottles = [];
+      const oldUrl = `http://localhost:${OLD_APP_PORT}/corked_v6.html?rhythmtest=1`;
+      const oldCtx = await app.browser.newContext({ viewport: { width: 1400, height: 900 } });
+      try {
+        const oldPage = await oldCtx.newPage();
+        oldPage.on('pageerror', err => rec.page_errors.push('app before B1c: ' + String(err?.message || err)));
+        for (const file of exports) {
+          const exportFile = JSON.parse(await readFile(join(REPO, file), 'utf8'));
+          const cellar = JSON.parse(exportFile.keys[CELLAR_KEY]);
+          const load = async (page, url) => {
+            await page.goto(url, { waitUntil: 'domcontentloaded' });
+            await page.evaluate(keys => { localStorage.clear(); for (const [k, v] of Object.entries(keys)) localStorage.setItem(k, v); }, exportFile.keys);
+            await page.goto(url, { waitUntil: 'domcontentloaded' });
+            await page.locator('#screen-cellar.active').waitFor({ timeout: STEP_TIMEOUT });
+          };
+          const openIn = async (page, url, id) => {
+            await load(page, url);
+            const card = await page.locator(`.bottle-card[data-bottle-id="${id}"]`).innerText();
+            const stored = () => page.evaluate(([key, id]) => JSON.parse(localStorage.getItem(key) || '[]').find(b => b.id === id) || null, [CELLAR_KEY, id]);
+            const before = await stored();
+            await page.locator(`.bottle-card[data-bottle-id="${id}"]`).click();
+            await page.waitForTimeout(1500);
+            await page.waitForFunction(() => !/Reading/.test(document.getElementById('p1-btn')?.textContent || ''), undefined, { timeout: STEP_TIMEOUT, polling: 250 }).catch(() => {});
+            await page.evaluate(() => typeof finishAllLines === 'function' && finishAllLines());
+            const view = await b1cBottleView(page);
+            const after = await stored();
+            return { card, view, s_fields_changed: b1Diff(before?.s, after?.s) };
+          };
+          for (const b of cellar) {
+            const now = await openIn(app.page, APP_URL, b.id);
+            const old = await openIn(oldPage, oldUrl, b.id);
+            bottles.push({
+              export: file, id: b.id, idea: b.s?.idea, flow: b.s?.flow || null,
+              app_now: now, app_before_b1c: old,
+              same_card: now.card === old.card,
+              same_view: JSON.stringify(now.view) === JSON.stringify(old.view),
+              same_changes: JSON.stringify(now.s_fields_changed) === JSON.stringify(old.s_fields_changed)
+            });
+            app.step('opened a bottle in both apps', { note: `${b.id}: same view ${bottles[bottles.length - 1].same_view}` });
+          }
+        }
+      } finally {
+        await oldCtx.close();
+        server.close();
+      }
+    },
+    report(rec) {
+      const bottles = rec.screens.bottles || [];
+      if (!bottles.length) return ['Not reached.' + b1Tail(rec)];
+      return [bottles.map(b => `"${String(b.idea).slice(0, 50)}" (${b.flow || 'before B1'}, ${b.export}): opens on ${b.app_now.view.screen}${b.app_now.view.first_session ? `, "${b.app_now.view.first_session.slice(0, 90)}…"` : `, "${b.app_now.view.mech_label}" "${b.app_now.view.main_button}"`}. Same card ${b.same_card}, same view ${b.same_view}, same stored changes ${b.same_changes}.`).join(' ') + ` App before B1c: ${rec.screens.app_before}.` + b1Tail(rec)];
     }
   },
 
@@ -3888,12 +4499,17 @@ const SCENARIOS = {
 // Retired in B1b (7 Nov). These play the intake from before B1: the 5 Nov gate, the maturity
 // questions and the person step. A new bottle has its own first session instead, so they can't
 // reach the screens they test. Their code stays as a record, and their last runs stay in runs/.
+const OLD_INTAKE = 'it plays the intake from before B1, which a new bottle no longer has';
+const OLD_FIRST_SESSION = "it plays a new bottle's first session as B1 and B1b had it; new bottles are first_session_v2 since B1c";
 const RETIRED = {
-  'trust-basics': 'runs/2026-11-07-trust-basics',
-  'look-and-states': 'runs/2026-11-05-look-2',
-  'first-minute': 'runs/2026-11-05-first-minute',
-  'architecture-review': 'runs/2026-11-05-architecture-review',
-  finding1: 'runs/2026-10-21-finding1'
+  'trust-basics': [OLD_INTAKE, 'runs/2026-11-07-trust-basics'],
+  'look-and-states': [OLD_INTAKE, 'runs/2026-11-05-look-2'],
+  'first-minute': [OLD_INTAKE, 'runs/2026-11-05-first-minute'],
+  'architecture-review': [OLD_INTAKE, 'runs/2026-11-05-architecture-review'],
+  finding1: [OLD_INTAKE, 'runs/2026-10-21-finding1'],
+  // Retired in B1c (7 Nov).
+  ...Object.fromEntries(['s1', 's2', 's3', 's4', 's5', 's7', 's8', 's9'].map(n => [`b1-${n}`, [OLD_FIRST_SESSION, n === 's9' ? 'runs/2026-11-07-b1-s9' : `runs/2026-11-07-b1b-rerun-${n}`]])),
+  ...Object.fromEntries(['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8'].map(n => [`b1b-${n}`, [OLD_FIRST_SESSION, `runs/2026-11-07-b1b-${n}`]]))
 };
 for (const name of Object.keys(RETIRED)) delete SCENARIOS[name];
 
@@ -3963,7 +4579,7 @@ async function main() {
   const opt = name => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : null; };
   const scenario = SCENARIOS[scenarioName];
   if (RETIRED[scenarioName]) {
-    console.error(`${scenarioName} is retired: it plays the intake from before B1, which a new bottle no longer has. Its last run is in ${RETIRED[scenarioName]}.`);
+    console.error(`${scenarioName} is retired: ${RETIRED[scenarioName][0]}. Its last run is in ${RETIRED[scenarioName][1]}.`);
     process.exit(1);
   }
   if (!scenario) {
