@@ -252,7 +252,7 @@ test('an API failure comes back as a 502 with the detail', async () => {
     assert.deepEqual(rest, { error: 'Claude API error', detail: 'overloaded' });
     assert.deepEqual(ai_fields, []);
     assert.equal(model, ENV.ANTHROPIC_MODEL);
-    assert.match(prompt_version, /^\d{4}-\d{2}-\d{2}$/);
+    assert.match(prompt_version, /^\d{4}-\d{2}-\d{2}[a-z]?$/);
   } finally {
     globalThis.fetch = real;
     console.error = error;
@@ -386,7 +386,7 @@ test('every JSON reply carries the prompts\' version, the model and ai_fields, e
   const res = await worker.fetch(new Request('https://worker.test/m3', { method: 'GET' }), ENV);
   replies.push({ status: res.status, body: await res.json() });
   for (const { body } of replies) {
-    assert.match(body.prompt_version, /^\d{4}-\d{2}-\d{2}$/);
+    assert.match(body.prompt_version, /^\d{4}-\d{2}-\d{2}[a-z]?$/);
     assert.equal(body.model, 'replay');
     assert.ok(Array.isArray(body.ai_fields));
   }
@@ -540,4 +540,96 @@ test('/m0: the scope gate lists the model\'s line and parse, and a line that is 
   const noLine = await replay('/m0', { raw_spark: 'A bakery on my street' }, [reply({ mechanism: 'M0', spark_parse: parse })]);
   assert.equal(noLine.body.user_line_candidate, 'A bakery on my street');
   assert.deepEqual(fieldsOf(noLine.body), ['spark_parse.domain']);
+});
+
+// ── B1b: the short label ──
+const M1_REPLY = reply({ mechanism: 'M1', grape: { state: 'settled', named_person: null, person_kind: 'described_unnamed' }, observation: { surface_text: 'A reading.', anchor_span: null }, next_question: { should_advance: true, framing: null } });
+const labelOf = async (answer, said) => (await replay('/label', { answer, kind: 'people' }, [reply(said)])).body;
+
+test('/label: the brief\'s four examples pass the check as written', async () => {
+  for (const [answer, label] of [
+    ['Myself of course, and some of my football friends', 'your football friends'],
+    ['M., my sister', 'M.'],
+    ['a colleague who manages bookings', 'your colleague'],
+    ['freelancers I know', 'the freelancers you know']
+  ]) {
+    const body = await labelOf(answer, { label, is_self: false });
+    assert.equal(body.label, label, answer);
+    assert.equal(body.is_self, false);
+    assert.deepEqual(body.ai_fields, ['label']);
+    assert.equal(body.server_checks.label.check, 'ok');
+  }
+});
+
+test('/label: a label that adds a word, runs past five words or says "my" never goes out as written', async () => {
+  const added = await labelOf('freelancers I know', { label: 'your freelance designer friends', is_self: false });
+  assert.equal(added.label, null);
+  assert.equal(added.server_checks.label.check, 'added_words');
+  assert.deepEqual(added.ai_fields, []);
+
+  const name = await labelOf('a colleague who manages bookings', { label: 'Sarah', is_self: false });
+  assert.equal(name.label, null);
+
+  const long = await labelOf('Sam, Priya, Tom, Ali, Jo and Kim', { label: 'Sam, Priya, Tom, Ali, Jo and Kim', is_self: false });
+  assert.equal(long.label, null);
+  assert.equal(long.server_checks.label.check, 'too_long');
+
+  const my = await labelOf('M., my sister', { label: 'my sister', is_self: false });
+  assert.equal(my.label, 'your sister');
+
+  const quoted = await labelOf('Tom, and two friends from my running club', { label: '"Tom and two friends."', is_self: false });
+  assert.equal(quoted.label, 'Tom and two friends');
+
+  const capital = await labelOf('a colleague who manages bookings', { label: 'Your colleague', is_self: false });
+  assert.equal(capital.label, 'your colleague');
+});
+
+test('/label: the builder alone is "you", the worker\'s own word', async () => {
+  const body = await labelOf('Jamie Kneebone, it\'s me', { label: 'Jamie Kneebone', is_self: true });
+  assert.equal(body.label, 'you');
+  assert.equal(body.is_self, true);
+  assert.deepEqual(body.ai_fields, []);
+  assert.equal(body.prompt_version, '2026-11-07b');
+});
+
+test('/label: no answer is a 400, and no person is a null label', async () => {
+  const empty = await replay('/label', { answer: '  ' }, []);
+  assert.equal(empty.status, 400);
+  const none = await labelOf('nobody yet', { label: null, is_self: false });
+  assert.equal(none.label, null);
+  assert.equal(none.server_checks.label.check, 'no_label');
+});
+
+test('/m1 with_label: the grade comes back as it would alone, with the label and is_self beside it', async () => {
+  const body = { spark_summary: 'x', person_name: '', relationship: 'Jamie Kneebone, it\'s me', maturity_class: 0 };
+  const alone = await replay('/m1', body, [M1_REPLY]);
+  const labelled = await replay('/m1', { ...body, with_label: true }, [M1_REPLY, reply({ label: 'Jamie Kneebone', is_self: true })]);
+  assert.deepEqual(labelled.body.grape, alone.body.grape);
+  assert.equal(labelled.body.state, alone.body.state);
+  assert.equal(labelled.body.label, 'you');
+  assert.equal(labelled.body.is_self, true);
+  assert.equal(labelled.body.prompt_version, '2026-11-07b');
+  assert.equal('label' in alone.body, false);
+  assert.equal('is_self' in alone.body, false);
+});
+
+test('/m1 with_label: a label call that fails leaves the grade standing', async () => {
+  const body = { spark_summary: 'x', person_name: '', relationship: 'M., my sister', maturity_class: 0, with_label: true };
+  const res = await replay('/m1', body, [M1_REPLY, 'not json at all']);
+  assert.equal(res.status, 200);
+  assert.equal(res.body.grape.state, 'settled');
+  assert.equal(res.body.label, null);
+  assert.equal(res.body.server_checks.label.check, 'failed');
+  assert.ok(!res.body.ai_fields.includes('label'));
+});
+
+test('/m1 with_label: the grading prompt is the one the old intake gets', async () => {
+  const systems = [];
+  const adapter = async ({ system }) => { systems.push(system); return systems.length === 1 ? M1_REPLY : reply({ label: 'M.', is_self: false }); };
+  await worker.fetch(request('/m1', { spark_summary: 'x', relationship: 'M., my sister', with_label: true }), { ...ENV, modelAdapter: adapter });
+  const oldAdapter = async ({ system }) => { systems.push(system); return M1_REPLY; };
+  await worker.fetch(request('/m1', { spark_summary: 'x', relationship: 'M., my sister' }), { ...ENV, modelAdapter: oldAdapter });
+  assert.equal(systems.length, 3);
+  assert.equal(systems[0], systems[2]);
+  assert.match(systems[1], /short label/);
 });

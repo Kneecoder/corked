@@ -3,8 +3,14 @@ import './shared/provenance.js';
 import './shared/mechanisms.js';
 
 // The prompts' version, as a date. Move it whenever a prompt or a message builder changes. Every
-// JSON reply carries it, and the app stores it with each history log entry.
+// JSON reply carries it, and the app stores it with each history log entry. A letter after the
+// date tells two versions from one day apart ("2026-11-07b"). A route whose prompt changed since
+// PROMPT_VERSION carries its own version in ROUTE_PROMPT_VERSIONS.
 const PROMPT_VERSION = '2026-11-07';
+const ROUTE_PROMPT_VERSIONS = {
+  '/m1': '2026-11-07b',     // B1b: with_label also asks for the short label and is_self
+  '/label': '2026-11-07b'   // B1b: the short label for the first people
+};
 
 const { anchorSpan, verifyAnchor, quotedSpan, unsupportedWords } = globalThis.CorkedProvenance;
 const Mechanisms = globalThis.CorkedMechanisms;
@@ -192,6 +198,41 @@ No contrast formulas like "not X, but Y" or "not just X". Say the finding direct
 Deficiency findings name the answer or the element, never the answerer. "No specific instance is present" not "You did not provide a specific instance." In self mode: "The answer names a pattern" not "You described a pattern."
 
 Return one JSON object only. No text before or after it. Never return two JSON blocks.
+Return only JSON.`;
+
+// The short label a new bottle's first session slots into its own fixed questions and buttons in
+// place of the builder's whole answer. Its own call, on /label and inside /m1 with with_label, so
+// the grading prompts stay as they were and a label can never move a grade.
+const LABEL_DOCTRINE = `You write one short label for Corked, an idea-aging app.
+
+Corked asks the builder fixed questions and slots a short label for the person or people the builder named into them, as in "When you ask [label] about the last time, what do you expect to hear?", "If your idea could do only one thing for [label], what would it be?" and "Show it to [label]". You write that label. Corked keeps the builder's answer word for word elsewhere. The label is only for slotting.
+
+You receive the question the builder answered and their answer, as typed.
+
+LABEL RULES:
+- At most five words.
+- Use the builder's own words where possible.
+- Never add a name, a person, a role or any detail that is not in the answer.
+- Say it back to the builder: their "my" becomes "your", their "I" and "me" become "you".
+- When the answer gives a name or initials for one person, the label is that name or those initials alone.
+- A group stays a group. Corked's questions use "they" for it.
+- Leave the builder out of a group that includes them.
+- Lowercase, unless it is a name or initials.
+- The label has to read right after "ask", "for" and "to".
+
+IS_SELF:
+is_self is true when the answer means the builder alone: "me", "myself", "I did", or a name with "that's me" or "it's me" after it. Then the label is "you".
+When the answer names the builder and other people, is_self is false and the label names the others.
+
+EXAMPLES:
+"Myself of course, and some of my football friends" -> "your football friends"
+"M., my sister" -> "M."
+"a colleague who manages bookings" -> "your colleague"
+"freelancers I know" -> "the freelancers you know"
+
+If the answer names no person or group, label is null and is_self is false.
+
+Return one JSON object only. No text before or after it.
 Return only JSON.`;
 
 // Shared by Phase A and the scene route: when the recovered problem triggers a Gap check.
@@ -537,6 +578,22 @@ Return exactly this JSON shape:
     "should_advance": true|false,
     "framing": "string or null"
   }
+}`;
+}
+
+const LABEL_QUESTIONS = {
+  person: 'Who last ran into this?',
+  people: "Who are the first one to three people you'd show it to?"
+};
+
+function buildLabelUserMessage(answer, kind) {
+  return `<question>${LABEL_QUESTIONS[kind]}</question>
+<answer>${answer}</answer>
+
+Return exactly this JSON shape:
+{
+  "label": "at most five words, or null",
+  "is_self": true|false
 }`;
 }
 
@@ -2499,12 +2556,79 @@ async function handleM0(request, env, corsHeaders) {
   return jsonResponse({ ...validated, ai_fields: m0AiFields(said, validated) }, 200, corsHeaders);
 }
 
+// ── THE SHORT LABEL ──
+// The label is slotted into Corked's fixed copy, never shown as a record line. The worker checks it
+// before it leaves: five words at most, and every word from the answer, apart from "you", "your"
+// and "they" said back to the builder and small function words. A label that fails the check goes
+// out as null, and the app uses its fallback wording.
+const LABEL_MAX_WORDS = 5;
+const LABEL_SAID_BACK = 'you your yours yourself they them their';
+
+function checkLabel(raw, answer) {
+  if (typeof raw !== 'string') return { label: null, check: 'no_label' };
+  let label = cleanVisibleText(raw)
+    .replace(/^["'“”‘’]+|["'“”‘’]+$/g, '')
+    .replace(/[,;:!?]+$/, '')
+    .trim();
+  // A full stop goes unless it closes an initial, as in "M.".
+  if (/\.$/.test(label) && !/(^|[\s.])\p{L}\.$/u.test(label)) label = label.slice(0, -1).trim();
+  // The builder's own words said back to them.
+  label = label
+    .replace(/\bmyself\b/gi, 'yourself')
+    .replace(/\bmy\b/gi, 'your')
+    .replace(/\bme\b/gi, 'you')
+    .replace(/\bI\b/g, 'you');
+  if (!label) return { label: null, check: 'empty' };
+  if (label.split(/\s+/).length > LABEL_MAX_WORDS) return { label: null, check: 'too_long', said: raw };
+  const added = unsupportedWords(label, `${answer} ${LABEL_SAID_BACK}`, { scene: true });
+  if (added.length) return { label: null, check: 'added_words', said: raw, added };
+  if (/^(the|your|you|their|a|an|some)\b/i.test(label)) label = label[0].toLowerCase() + label.slice(1);
+  return { label, check: 'ok' };
+}
+
+// kind: person (the fix path's first question) or people (the experiment path's first people).
+async function readLabel(env, answer, kind) {
+  const parsed = await callClaude(env, LABEL_DOCTRINE, buildLabelUserMessage(answer, kind), 150);
+  if (!parsed || typeof parsed !== 'object') throw new Error('Invalid label response');
+  if (parsed.is_self === true) return { label: 'you', is_self: true, label_check: { check: 'self', said: parsed.label ?? null } };
+  const { label, ...check } = checkLabel(parsed.label, answer);
+  return { label, is_self: false, label_check: check };
+}
+
+// "you" for the builder is the worker's own word, so it stays off ai_fields.
+function labelAiFields(read) {
+  return read && read.label && !read.is_self ? ['label'] : [];
+}
+
+async function handleLabel(request, env, corsHeaders) {
+  const body = await request.json();
+  const answer = String(body.answer || '').trim();
+  const kind = body.kind === 'person' ? 'person' : 'people';
+
+  const capViolation = checkLengthCaps(corsHeaders, [{ value: answer, max: ANSWER_LENGTH_CAP, name: 'answer' }]);
+  if (capViolation) return capViolation;
+  if (!answer) return jsonResponse({ error: 'Missing answer' }, 400, corsHeaders);
+
+  const read = await readLabel(env, answer, kind);
+  return jsonResponse({
+    schema_version: 'label.v1',
+    kind,
+    label: read.label,
+    is_self: read.is_self,
+    server_checks: { schema_valid: true, label: read.label_check },
+    ai_fields: labelAiFields(read)
+  }, 200, corsHeaders);
+}
+
 async function handleM1(request, env, corsHeaders) {
   const body = await request.json();
   const sparkSummary = String(body.spark_summary || '').trim();
   const personName = String(body.person_name || '').trim();
   const relationship = String(body.relationship || '').trim();
   const maturityClass = Number.isInteger(body.maturity_class) ? body.maturity_class : 0;
+  // A new bottle's first session asks for the short label in the same request. The old intake
+  // doesn't send it, and gets exactly the reply it got before.
+  const withLabel = body.with_label === true;
 
   const capViolation = checkLengthCaps(corsHeaders, [
     { value: sparkSummary, max: USER_LINE_LENGTH_CAP, name: 'spark_summary' },
@@ -2518,22 +2642,37 @@ async function handleM1(request, env, corsHeaders) {
   }
 
   const combinedInput = [personName, relationship].filter(Boolean).join(' ');
-  const parsed = await callClaude(
-    env,
-    M1_DOCTRINE,
-    buildM1UserMessage(sparkSummary, maturityClass, personName, relationship)
-  );
-  return jsonResponse(validateM1(parsed, combinedInput), 200, corsHeaders);
+  // The grade and the label are two calls side by side. The grading prompt is the one it was, and
+  // a label that fails leaves the grade as it is.
+  const [parsed, read] = await Promise.all([
+    callClaude(
+      env,
+      M1_DOCTRINE,
+      buildM1UserMessage(sparkSummary, maturityClass, personName, relationship)
+    ),
+    withLabel
+      ? readLabel(env, [personName, relationship].filter(Boolean).join(', '), 'person')
+        .catch(err => ({ label: null, is_self: false, label_check: { check: 'failed', error: err instanceof Response ? 'Parse error' : String(err?.message || err) } }))
+      : null
+  ]);
+  const validated = validateM1(parsed, combinedInput);
+  if (read) {
+    validated.label = read.label;
+    validated.is_self = read.is_self;
+    validated.server_checks.label = read.label_check;
+    validated.ai_fields = [...validated.ai_fields, ...labelAiFields(read)];
+  }
+  return jsonResponse(validated, 200, corsHeaders);
 }
 
 // Every JSON reply leaves through here, errors included, carrying the prompts' version, the model and
 // ai_fields. A reply with no ai_fields of its own has nothing from the model in it.
-async function withVersions(response, env) {
+async function withVersions(response, env, pathname) {
   const body = await response.json();
   return new Response(JSON.stringify({
     ...body,
     ai_fields: Array.isArray(body.ai_fields) ? body.ai_fields : [],
-    prompt_version: PROMPT_VERSION,
+    prompt_version: ROUTE_PROMPT_VERSIONS[pathname] || PROMPT_VERSION,
     model: env.ANTHROPIC_MODEL || null
   }), { status: response.status, headers: response.headers });
 }
@@ -2548,6 +2687,7 @@ async function route(request, env, corsHeaders) {
   try {
     if (url.pathname === '/m0') return await handleM0(request, env, corsHeaders);
     if (url.pathname === '/m1') return await handleM1(request, env, corsHeaders);
+    if (url.pathname === '/label') return await handleLabel(request, env, corsHeaders);
     if (url.pathname === '/m2') return await handleM2(request, env, corsHeaders);
     for (const mechId of Object.keys(EVIDENCE_GRADERS)) {
       if (url.pathname === Mechanisms.get(mechId).route) return await handleEvidence(mechId, request, env, corsHeaders);
@@ -2584,6 +2724,6 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
-    return withVersions(await route(request, env, corsHeaders), env);
+    return withVersions(await route(request, env, corsHeaders), env, new URL(request.url).pathname);
   }
 };
