@@ -87,3 +87,68 @@ test('the planned day reads the same before and after it', () => {
   assert.equal(COPY.planned({ when: 'this_week', day: '2026-11-08' }, '2026-11-10'), 'Planned for the week of 2 Nov');
   assert.equal(COPY.end.saved('Planned for Thursday'), "Planned for Thursday. It's on this bottle in your cellar.");
 });
+
+// ── B1c: first_session_v2 ──
+const V2 = COPY.v2;
+const V2_CONTEXTS = [
+  { self: false, person: 'your grandpa', personPending: false, plan: { label: 'your grandpa', pending: false, none: false }, people: 'your football friends', peoplePending: false },
+  { self: true, person: null, personPending: false, plan: { label: null, pending: false, none: true }, people: null, peoplePending: false },
+  { self: false, person: null, personPending: false, plan: { label: null, pending: false, none: true }, people: null, peoplePending: false },
+  { self: false, person: null, personPending: true, plan: { label: null, pending: true, none: false }, people: null, peoplePending: true }
+];
+
+// Fallbacks are fixed copy and are never checked on the way to the screen. F1's, as the brief words
+// it, is two sentences ("...run into this? It can be you."), so the question-mark rule doesn't fit it.
+test('v2: every fallback but F1 passes the check a written question has to pass', () => {
+  for (const [slot, f] of Object.entries(V2.fallback)) {
+    for (const c of V2_CONTEXTS) {
+      const failed = V2.check(f(c), slot[0] === 'F' ? 'fix' : 'experiment');
+      assert.equal(failed, slot === 'F1' ? 'question_mark' : null, `${slot}: ${f(c)}`);
+    }
+  }
+});
+
+test('v2: the check refuses two questions, no question mark, more than 25 words, a dash, and experiment problem words', () => {
+  assert.equal(V2.check('What did he do? When?', 'fix'), 'question_mark');
+  assert.equal(V2.check('Tell me what he did.', 'fix'), 'question_mark');
+  assert.equal(V2.check(Array(26).fill('word').join(' ') + '?', 'fix'), 'too_long');
+  assert.equal(V2.check('The garden - what did he do?', 'fix'), 'dash');
+  assert.equal(V2.check('What need does the quiz meet?', 'experiment'), 'experiment_word');
+  assert.equal(V2.check('What need does it meet?', 'fix'), null);
+  assert.equal(V2.check("The last time your grandpa's garden needed work, what did he do?", 'fix'), null);
+});
+
+test('v2: fallbacks for the builder say "you", and none names a person nobody named', () => {
+  const [, self, none] = V2_CONTEXTS;
+  assert.match(V2.fallback.F2(self), /\byou\b/);
+  assert.doesNotMatch(V2.fallback.F2(self), /\bthey\b/);
+  assert.equal(V2.fallback.F2(none), 'What did you see go wrong, and when?');
+  assert.match(V2.fallback.F5(none), /someone/);
+  assert.match(V2.plan.F6(none), /someone who has this problem/);
+});
+
+test('v2: the end screen, the plan step and the confirmation use the label, the builder\'s wording or the fallback', () => {
+  const [label, self, none, pending] = V2_CONTEXTS;
+  const E = V2.end;
+  assert.equal(E.ask(label), 'Ask your grandpa');
+  assert.equal(E.ask(pending), 'Ask the person you named');
+  assert.equal(E.ask(self), 'Ask someone');
+  assert.equal(E.ask(none), 'Ask someone');
+  assert.match(E.next.fix(label), /^What's next: ask your grandpa what happened/);
+  assert.match(E.next.fix(self), /^What's next: find someone who has this problem/);
+  assert.equal(V2.plan.F6(label), "Finish the sentence: I'd drop it if your grandpa told me...");
+  assert.equal(V2.plan.F6(pending), "Finish the sentence: I'd drop it if they told me...");
+  assert.match(V2.plan.E6(label), /^What would your football friends have to do/);
+  assert.match(V2.plan.E6(pending), /^What would they have to do/);
+  assert.equal(V2.confirm.planned('Planned for Tuesday', V2.stepWords('ask', label)), 'Planned for Tuesday: ask your grandpa.');
+  assert.equal(V2.stepWords('show', label), 'show it to your football friends');
+  assert.equal(V2.stepWords('show', none), 'show it to a few people');
+  assert.equal(V2.stepWords('build', label), 'build the simplest version');
+});
+
+test('v2: no fixed line carries a dash, and no experiment line mentions a problem', () => {
+  const all = JSON.stringify(V2, (k, v) => typeof v === 'function' ? V2_CONTEXTS.map(c => { try { return v(c); } catch { return ''; } }).join(' ') : v);
+  assert.doesNotMatch(all.replace(/\\s-\\s\|--/g, ''), /[—–]| - /);
+  for (const slot of ['E1', 'E2', 'E3']) for (const c of V2_CONTEXTS) assert.doesNotMatch(V2.fallback[slot](c), /\b(problem|need|wrong|stopped)/i);
+  assert.doesNotMatch(V2.plan.E4 + V2_CONTEXTS.map(c => V2.plan.E6(c)).join(' ') + V2.end.next.experiment(), /\b(problem|need|wrong|stopped)/i);
+});

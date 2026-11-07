@@ -629,6 +629,17 @@ button, input, textarea { font-family:inherit; color:inherit; }
 .fs-planned-step { font-size:17px; font-weight:500; line-height:1.4; color:var(--ink); margin-bottom:6px; }
 .fs-planned-when { font-family:var(--mono); font-size:15px; line-height:1.6; color:var(--ink-2); margin-bottom:16px; }
 .bottle-card-step { font-size:14px; line-height:1.45; color:var(--ink-2); margin-top:6px; }
+/* B1c: a question being written, the say-it-again line, the plan under the record. */
+.fs-dots { font-family:var(--mono); font-size:20px; letter-spacing:.3em; color:var(--ink-3); }
+.fs-first-wrote { margin-bottom:16px; display:flex; flex-direction:column; gap:4px; }
+.fs-first-wrote-label { font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); }
+.fs-first-wrote-text { font-family:var(--serif); font-size:17px; line-height:1.5; color:var(--ink-2); overflow-wrap:anywhere; }
+.fs-plan { margin-top:8px; padding-top:16px; border-top:1px solid var(--rule); }
+.fs-plan:first-child { margin-top:0; padding-top:0; border-top:0; }
+.fs-plan .fs-planned-when { color:var(--ink); }
+.fs-plan-record { margin-bottom:8px; }
+.fs-plan-record .fs-rec-row:first-child { border-top:0; padding-top:4px; }
+.fs-on-bottle { font-family:var(--mono); font-size:15px; line-height:1.6; color:var(--ink-2); margin:8px 0 16px; }
 
 /* ── PHONE ── */
 @media(max-width:700px){
@@ -2068,9 +2079,10 @@ let maturityLeafIdx = null;
 
 const INTAKE = [
   {
+    // A new bottle's spark screen (B1c). Its copy is in shared/first-session-copy.js.
     id:'idea', eyebrow:'The Spark · 1 of 3',
-    q:'What did you bring to the cellar?',
-    note:'Do not polish the spark. Corked only needs enough shape to bottle it.',
+    q: globalThis.CorkedFirstSessionCopy.v2.spark.question,
+    note: globalThis.CorkedFirstSessionCopy.v2.spark.note,
     type:'text', ph:'An app that...',
     ok: v => v.trim().length > 4,
     save: v => { S.idea = v.trim(); }
@@ -2108,11 +2120,12 @@ function renderIntake() {
   const segs = Array.from({length: INTAKE.length}, (_,i) =>
     `<div class="intake-prog-seg${i <= intakeStep ? ' done' : ''}"></div>`
   ).join('');
-  let h = `<div class="intake-prog"><div class="intake-prog-bar">${segs}</div><div class="intake-prog-count">${intakeStep + 1} / ${INTAKE.length}</div></div>`;
+  // The bar counts the old intake's three steps. A new bottle only ever sees the first (B1c), so the
+  // spark screen has no bar.
+  let h = first ? '' : `<div class="intake-prog"><div class="intake-prog-bar">${segs}</div><div class="intake-prog-count">${intakeStep + 1} / ${INTAKE.length}</div></div>`;
 
   if (first) {
-    h += `<div class="wm-line" id="intake-wm"></div>
-          <div class="wm-intake-content" id="wm-content">`;
+    h += `<div class="wm-intake-content" id="wm-content">`;
   }
 
   const displayQ = (step.type === 'person' && S.maturity === 2) ? "You're the person with this problem."
@@ -2132,7 +2145,7 @@ function renderIntake() {
     const doorstep = !intakeSel[step.id] && step.id === 'idea' ? loadDoorstep() : null;
     const v = intakeSel[step.id] || doorstep || '';
     h += `<div class="spark-source-row">
-            <div class="field-label visible" id="spark-field-label">Your spark</div>
+            <div class="field-label visible" id="spark-field-label">${escHtml(FSC.v2.spark.label)}</div>
             <button class="btn-ghost spark-edit-btn" id="m0-rewrite-btn" onclick="v6Rewrite()" aria-label="Edit spark">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                 <path d="M12 20h9"/>
@@ -2224,7 +2237,7 @@ function renderIntake() {
   if (first) {
     h += `<div id="v6-bottom-bar" class="row">
             <span id="v6-bottle-status" class="row-status"></span>
-            <button class="btn" id="v6-bottle-btn" onclick="v6BottleSpark()">Bottle your spark →</button>
+            <button class="btn" id="v6-bottle-btn" onclick="v6BottleSpark()">${escHtml(FSC.v2.spark.next)}</button>
           </div>`;
   } else {
     const btnLabel = (step.type === 'person' && S.maturity === 3) ? 'Save spark →'
@@ -2241,10 +2254,6 @@ function renderIntake() {
   body.classList.toggle('is-spark', first);
   body.innerHTML = h;
 
-  if (first) {
-    const opening = 'Every bottle starts here.';
-    showLine(document.getElementById('intake-wm'), opening, lineKey('intake', 'opening', opening));
-  }
   showLine(document.getElementById('intake-q'), displayQ, lineKey('intake', step.id, displayQ));
   if (first) cyclePlaceholder();
 }
@@ -4679,7 +4688,7 @@ function bottleCardHTML(b) {
             <div class="bottle-card-body">
               <div class="bottle-card-status">${escHtml(waiting)}</div>
               <div class="bottle-card-line">${line}</div>
-              ${isFirstSession(b.s) && b.s.first?.step ? `<div class="bottle-card-step">${escHtml(b.s.first.step.label)}</div>` : ''}
+              ${isFirstSession(b.s) && b.s.first?.step ? `<div class="bottle-card-step">${escHtml(isFirstV2(b.s) ? fs2StepLabel(b.s) : b.s.first.step.label)}</div>` : ''}
               <div class="bottle-card-foot">
                 <span class="bottle-card-date">${date}</span>
                 ${archive}
@@ -5275,7 +5284,7 @@ function v6Rewrite() {
   const intakeWm = document.getElementById('intake-wm');
   if (intakeWm) intakeWm.classList.remove('m0-hidden');
   const sparkLabel = document.getElementById('spark-field-label');
-  if (sparkLabel) sparkLabel.textContent = 'Your spark';
+  if (sparkLabel) sparkLabel.textContent = FSC.v2.spark.label;
   const sparkRow = document.querySelector('.spark-source-row');
   if (sparkRow) sparkRow.classList.remove('active');
   const rewriteBtn = document.getElementById('m0-rewrite-btn');
@@ -5317,8 +5326,9 @@ let _fsShown = null;   // the question on screen: { qid, text }
 let _fsTap = null;     // the tap picked on it
 let _fsPlan = null;    // the step being planned: { kind, label }
 
+// first_session_v1: bottles from B1 and B1b. first_session_v2: new bottles since B1c.
 function isFirstSession(s) {
-  return !!s && s.flow === FIRST_FLOW;
+  return !!s && (s.flow === FIRST_FLOW || s.flow === FIRST_FLOW_V2);
 }
 
 function fsPushLog(s, entry) {
@@ -5354,14 +5364,18 @@ function fsWeekEnd() {
 }
 
 // ── Starting a new bottle ──
+// Since B1c a new bottle is first_session_v2. The writer starts on F1 and E1 here, next to M0,
+// before the gate has picked a path.
 function startFirstSessionBottle(spark) {
-  S.flow = FIRST_FLOW;
+  S.flow = FIRST_FLOW_V2;
   S.idea = spark;
   S.lineIsSpark = true;
-  S.first = { at: new Date().toISOString(), path: null, slots: {}, queue: [], grades: {}, step: null, maturity: null, m0_open: null, m2: null };
-  appendLog({ type: 'answer', flow: FIRST_FLOW, step: 'spark', question: INTAKE[0].q, answer: spark });
+  S.first = { at: new Date().toISOString(), path: null, slots: {}, queue: [], grades: {}, step: null, maturity: null, m0_open: null, m2: null, labels: {}, shown: {} };
+  appendLog({ type: 'answer', flow: S.flow, step: 'spark', question: INTAKE[0].q, answer: spark });
   saveState();
   fsStartM0(activeBottleId, spark);
+  fs2Write(activeBottleId, S, 'F1');
+  fs2Write(activeBottleId, S, 'E1');
 }
 
 // M0 runs in the background. Its reply is kept with the bottle and changes nothing on screen. A
@@ -5386,19 +5400,21 @@ function fsStartM0(id, spark) {
 function firstGate(path) {
   if (!isFirstSession(S) || S.first.path || !FS_ORDER[path]) return;
   S.first.path = path;
-  appendLog({ type: 'answer', flow: FIRST_FLOW, step: 'gate', question: FSC.gate.question, answer: FSC.gate[path], path });
+  appendLog({ type: 'answer', flow: S.flow, step: 'gate', question: FSC.gate.question, answer: FSC.gate[path], path });
   saveState();
   showFirstSession();
 }
 
 function showFirstSession() {
   _fsPlan = null;
+  _fs2Confirm = false;
   showScreen('first');
   renderFirst();
 }
 
 function renderFirst() {
-  if (!S.first?.path) renderFirstGate();
+  if (isFirstV2(S)) fs2Render();
+  else if (!S.first?.path) renderFirstGate();
   else {
     const qid = fsNextQuestion();
     if (qid) renderFirstQuestion(qid);
@@ -5416,21 +5432,21 @@ function renderFirstGate() {
       <div class="spark-reminder-text">${escHtml(S.idea)}</div>
     </div>
     <div class="fs-q" id="fs-gate-q"></div>
-    ${fsGateChoicesHtml('fs-gate')}`;
+    ${fsGateChoicesHtml('fs-gate', isFirstV2(S) ? FSC.v2.gate : FSC.gate)}`;
   showLine(document.getElementById('fs-gate-q'), FSC.gate.question, lineKey('first', 'gate', FSC.gate.question));
 }
 
-// The two choices, each with one example idea under it. On the spark screen and on a bottle left at
-// the gate.
-function fsGateChoicesHtml(id = '') {
+// The two choices, each with one line under it. On the spark screen and on a bottle left at the
+// gate. examples: B1b's (FSC.gate) for its bottles, B1c's (FSC.v2.gate) for new ones.
+function fsGateChoicesHtml(id = '', examples = FSC.v2.gate) {
   return `<div class="gate-choices"${id ? ` id="${id}"` : ''}>
       <div class="gate-option">
         <button type="button" class="gate-choice" data-letter="A" onclick="firstGate('fix')">${escHtml(FSC.gate.fix)}</button>
-        <p class="gate-example" data-example="fix">${escHtml(FSC.gate.fixExample)}</p>
+        <p class="gate-example" data-example="fix">${escHtml(examples.fixExample)}</p>
       </div>
       <div class="gate-option">
         <button type="button" class="gate-choice" data-letter="B" onclick="firstGate('experiment')">${escHtml(FSC.gate.experiment)}</button>
-        <p class="gate-example" data-example="experiment">${escHtml(FSC.gate.experimentExample)}</p>
+        <p class="gate-example" data-example="experiment">${escHtml(examples.experimentExample)}</p>
       </div>
     </div>`;
 }
@@ -5547,6 +5563,7 @@ function fsPickTap(id) {
 // value: answer, dont_know, not_set or skip. Every one is saved as given and moves on. Only an
 // empty Continue stays put: Don't know yet and Skip are beside it.
 function fsAnswer(value) {
+  if (isFirstV2(S)) return fs2Answer(value);
   const shown = _fsShown;
   if (!shown || !isFirstSession(S) || fsNextQuestion() !== shown.qid) return;
   const { qid, text: question } = shown;
@@ -5600,7 +5617,17 @@ function fsAnswer(value) {
 // /m1 reads the person. A name, initials or a description of one person count the same (v48, 7 Nov,
 // call 9). A group is kept and marked as not one person. Nothing waits on this, and the grade is
 // never shown.
-async function fsGradePerson(id, text, spark) {
+// The M1 call each bottle has in flight. A v2 bottle's /m2 grade waits for it in the background, so
+// it knows whether the builder is the person.
+const _fsM1Calls = new Map();
+
+function fsGradePerson(id, text, spark) {
+  const call = fsGradePersonCall(id, text, spark);
+  _fsM1Calls.set(id, call);
+  return call;
+}
+
+async function fsGradePersonCall(id, text, spark) {
   let data;
   try {
     data = await workerFetch('/m1', { spark_summary: spark, person_name: '', relationship: text, maturity_class: 0, with_label: true });
@@ -5644,6 +5671,7 @@ function fsKeepLabel(s, who, step, text, data) {
 // A label that lands while the end screen is open, with nothing being planned, shows in its line
 // and buttons. A question already on screen keeps its wording; the next one uses the label.
 function fsLabelLanded(id) {
+  if (id === activeBottleId && isFirstV2(S)) return fs2LabelLanded();
   if (id !== activeBottleId || !isFirstSession(S) || _fsPlan) return;
   if (!document.querySelector('#screen-first.active #fs-record')) return;
   if (S.first.step) return;
@@ -5659,16 +5687,21 @@ function fsMaturity(s) {
 // /m2 grades the last time with no problem on record. Its reply, observation included, is stored
 // and never shown (B1b took its line off the end screen; B2 decides what the record shows).
 async function fsGradeLastTime(id) {
-  const s0 = S;
+  // A v2 bottle has no source taps: whether the builder is the person comes from M1 (is_self), so the
+  // grade waits for M1's reply in the background. Nothing on screen waits.
+  const v2 = isFirstV2(S);
+  if (v2 && _fsM1Calls.has(id)) await _fsM1Calls.get(id).catch(() => {});
+  const s0 = v2 ? (id === activeBottleId ? S : Cellar.get(id)?.s) : S;
+  if (!s0?.first?.slots?.last_time) return;
   const lt = s0.first.slots.last_time;
   const who = s0.first.slots.who;
-  const ctx = fsGradeWho(s0);
+  const ctx = v2 ? fs2GradeWho(s0) : fsGradeWho(s0);
   const body = {
-    flow: FIRST_FLOW,
+    flow: FIRST_FLOW,   // /m2's mode for a first session with no problem, for v1 and v2 bottles alike
     user_line: s0.idea,
     grape_name: ctx.person || '',
     grape_relationship: who?.value === 'answer' && who.text && !ctx.self ? who.text : '',
-    maturity_class: fsMaturity(s0),
+    maturity_class: v2 ? (ctx.self ? 2 : 0) : fsMaturity(s0),
     user_answer: lt.text,
     gap_in_play: false
   };
@@ -5895,12 +5928,446 @@ function fsSwitch() {
   renderFirst();
 }
 
+// ── FIRST SESSION v2 (B1c, 7 Nov) ──
+// A new bottle since B1c carries S.flow = FIRST_FLOW_V2 (v48, 7 Nov 2026). Four questions per path,
+// then the end screen; asking or showing anyone comes with the plan step, after a step is picked.
+// The AI writes F1, F2, F3, F5, E1, E2 and E3 for this idea and these answers (/question). A
+// question that fails the check, or hasn't come back 6 seconds after it was needed, is replaced by
+// its fixed fallback. Each question is kept as first shown, and each answer is stored word for word
+// with that question and where it came from. Bottles from B1 and B1b (FIRST_FLOW) keep the code
+// above. Every fixed sentence is in shared/first-session-copy.js, under v2.
+const FIRST_FLOW_V2 = 'first_session_v2';
+const FSC2 = FSC.v2;
+const FS2_ORDER = { fix: ['F1', 'F2', 'F3', 'F4'], experiment: ['E1', 'E2', 'E3', 'E5'] };
+// B1's field names, plus "Who could you ask?".
+const FS2_SLOT = { ...FS_SLOT, F7: 'ask_who' };
+const FS2_RETHINK = { fix: ['F4', 'F3'], experiment: ['E5', 'E2', 'E3'] };
+const FS2_SWITCH = ['E1', 'E2', 'E3'];
+const FS2_WAIT_MS = 6000;
+
+const _fsWrites = new Map();   // `${bottle id}:${qid}`: the writer's call for those inputs
+let _fs2Token = 0;             // the screen on display; a reply for an earlier one is dropped
+let _fs2Confirm = false;       // the confirmation, right after a day is picked
+
+function isFirstV2(s) {
+  return !!s && s.flow === FIRST_FLOW_V2;
+}
+
+// Who the fixed lines name. Labels count only while the answer they were made from is on record.
+function fs2Context(s = S) {
+  const f = s.first || {};
+  const slots = f.slots || {};
+  const labels = f.labels || {};
+  const who = slots.who;
+  const named = who?.value === 'answer' && !!who.text;
+  const pl = named && labels.person?.for_text === who.text ? labels.person : null;
+  const self = pl?.is_self === true;
+  const person = named && !self ? (pl?.text || null) : null;
+  const personPending = named && !self && !person;
+  let plan;
+  if (person || personPending) plan = { label: person, pending: personPending, none: false };
+  else {
+    const ask = slots.ask_who;
+    const asked = ask?.value === 'answer' && !!ask.text;
+    const al = asked && labels.ask?.for_text === ask.text ? labels.ask : null;
+    plan = !asked || al?.is_self ? { label: null, pending: false, none: true }
+      : { label: al?.text || null, pending: !al?.text, none: false };
+  }
+  const fp = slots.first_people;
+  const pnamed = fp?.value === 'answer' && !!fp.text;
+  const ppl = pnamed && labels.people?.for_text === fp.text && !labels.people.is_self ? labels.people : null;
+  const people = ppl?.text || null;
+  return { self, person, personPending, plan, people, peoplePending: pnamed && !people };
+}
+
+// What the graders read about the person: F1 as typed, and M1's own reading of it as the builder.
+function fs2GradeWho(s) {
+  const who = s.first?.slots?.who;
+  const named = who?.value === 'answer' && !!who.text;
+  const pl = named && s.first.labels?.person?.for_text === who.text ? s.first.labels.person : null;
+  const self = pl?.is_self === true;
+  return { self, person: named && !self ? fsSlotWords(who.text, { firstPart: true }) || null : null };
+}
+
+function fs2Capital(text) {
+  return text ? text[0].toUpperCase() + text.slice(1) : '';
+}
+
+// The step on the cellar card, from the labels as they are now.
+function fs2StepLabel(s) {
+  const step = s.first?.step;
+  return step ? fs2Capital(FSC2.stepWords(step.kind, fs2Context(s))) : '';
+}
+
+// The next first question: a rethink's or a switch's queue, then the path's first question with no
+// answer kept. Null when the path is done.
+function fs2NextQuestion(s = S) {
+  const f = s.first;
+  if (!f?.path) return null;
+  if (f.queue?.length) return f.queue[0];
+  return FS2_ORDER[f.path].find(q => !f.slots?.[FS2_SLOT[q]]) || null;
+}
+
+// The question the screen is asking now.
+function fs2Current() {
+  return _fsPlan ? _fsPlan.queue[0] || null : fs2NextQuestion();
+}
+
+// ── The writer ──
+// The answers so far in this session, word for word, each with the question it answered.
+function fs2Answers(s) {
+  return Object.values(s.first?.slots || {})
+    .filter(e => e && e.q)
+    .sort((a, b) => String(a.at).localeCompare(String(b.at)))
+    .map(e => ({ slot: e.q, question: e.question || '', answer: e.value === 'answer' ? (e.text || '') : FSC2.buttons.dontKnow }));
+}
+
+// One call per question and inputs. Asking again with the same inputs reuses the call in flight.
+function fs2Write(id, s, qid) {
+  const body = { path: qid[0] === 'F' ? 'fix' : 'experiment', slot: qid, spark: s.idea, answers: fs2Answers(s) };
+  const key = `${id}:${qid}`;
+  const sig = JSON.stringify(body);
+  const known = _fsWrites.get(key);
+  if (known && known.sig === sig) return known.call;
+  const call = workerFetch('/question', body)
+    .then(data => ({ ok: true, data }))
+    .catch(err => ({ ok: false, error: String(err?.message || err) }));
+  _fsWrites.set(key, { sig, call });
+  return call;
+}
+
+// The fixed questions: say it again, and the plan step's own.
+function fs2FixedText(qid, ctx) {
+  if (qid === 'F4' || qid === 'E5') return FSC2.sayAgain.question;
+  if (qid === 'F7') return FSC2.plan.askWho;
+  if (qid === 'F6') return FSC2.plan.F6(ctx);
+  if (qid === 'E4') return FSC2.plan.E4;
+  if (qid === 'E6') return FSC2.plan.E6(ctx);
+  return null;
+}
+
+// ── A question ──
+function fs2RenderQuestion(qid, { plan = false } = {}) {
+  const f = S.first;
+  const ctx = fs2Context();
+  const token = ++_fs2Token;
+  _fsShown = null;
+  _fsTap = null;
+  const start = !plan && !f.queue?.length && qid === FS2_ORDER[f.path][0] ? `<p class="fs-start" id="fs-start">${escHtml(FSC2.start)}</p>` : '';
+  const firstWrote = qid === 'F4' || qid === 'E5'
+    ? `<p class="fs-first-wrote" id="fs-first-wrote"><span class="fs-first-wrote-label">${escHtml(FSC2.sayAgain.firstWrote(''))}</span><span class="fs-first-wrote-text">${escHtml(S.idea)}</span></p>`
+    : '';
+  // The worker's caps for what it reads: the person goes to M1, the last time to M2.
+  const maxlength = qid === 'F1' || qid === 'F7' || qid === 'E4' ? 300 : 4000;
+  document.getElementById('first-body').innerHTML = `
+    ${start}
+    ${firstWrote}
+    <div class="fs-q" id="fs-q" data-q="${qid}" data-ready="0"></div>
+    <textarea class="field fs-field" id="fs-inp" rows="3" maxlength="${maxlength}" oninput="this.classList.remove('err')"></textarea>
+    <div class="row fs-row">
+      <div class="fs-unsure">
+        <button type="button" class="btn-ghost" id="fs-unsure" onclick="fsAnswer('dont_know')">${escHtml(FSC2.buttons.dontKnow)}</button>
+      </div>
+      <button type="button" class="btn" id="fs-next" onclick="fsAnswer('answer')">${escHtml(FSC2.buttons.next)}</button>
+    </div>`;
+
+  const fixed = fs2FixedText(qid, ctx);
+  if (fixed) return fs2Present(qid, { text: fixed, source: 'fixed' }, token);
+  const kept = f.shown?.[qid];
+  if (kept) return fs2Present(qid, kept, token);
+
+  // Written: the three dots until the question comes back, never longer than 6 seconds.
+  const id = activeBottleId;
+  const path = f.path;
+  const fallback = FSC2.fallback[qid](ctx);
+  const asked = Date.now();
+  fs2Dots(true);
+  const late = new Promise(done => setTimeout(() => done({ late: true }), FS2_WAIT_MS));
+  Promise.race([fs2Write(id, S, qid), late]).then(res => {
+    if (token !== _fs2Token || id !== activeBottleId || !isFirstV2(S)) return;
+    const text = res?.data?.question;
+    const failed = res.late ? 'late' : !res.ok ? 'error' : !text ? (res.data?.server_checks?.question?.check || 'no_question') : FSC2.check(text, path);
+    const entry = failed
+      ? { text: fallback, source: 'fallback', reason: failed }
+      : { text, source: 'writer', prompt_version: res.data.prompt_version || null, model: res.data.model || null };
+    entry.at = new Date().toISOString();
+    entry.waited_ms = Date.now() - asked;
+    S.first.shown = { ...(S.first.shown || {}), [qid]: entry };
+    saveState();
+    fs2Present(qid, entry, token);
+  });
+}
+
+function fs2Dots(on) {
+  const q = document.getElementById('fs-q');
+  if (on && q) q.innerHTML = '<span class="fs-dots" role="status" aria-label="Writing the question">· · ·</span>';
+  ['fs-unsure', 'fs-next'].forEach(btn => { const el = document.getElementById(btn); if (el) el.disabled = on; });
+}
+
+// A question on screen. A written one carries the AI tag (A1); a fallback or a fixed line doesn't.
+function fs2Present(qid, entry, token) {
+  if (token !== _fs2Token) return;
+  const q = document.getElementById('fs-q');
+  if (!q) return;
+  _fsShown = { qid, text: entry.text, entry };
+  q.dataset.source = entry.source;
+  q.dataset.ready = '1';
+  fs2Dots(false);
+  showLine(q, entry.text, lineKey('first', qid, entry.text), { ai: entry.source === 'writer' && entry.model ? { model: entry.model } : null });
+}
+
+// value: answer or dont_know. Saved word for word with the question as shown and where it came from.
+function fs2Answer(value) {
+  const shown = _fsShown;
+  if (!shown || !isFirstV2(S) || fs2Current() !== shown.qid) return;
+  const { qid, text: question, entry: asked } = shown;
+  const slot = FS2_SLOT[qid];
+  const inp = document.getElementById('fs-inp');
+  const typed = value === 'answer' ? (inp?.value || '').trim() : '';
+  if (value === 'answer' && !typed) {
+    if (inp) { inp.classList.add('err'); inp.focus(); }
+    return;
+  }
+  const at = new Date().toISOString();
+  const source = {
+    question_source: asked.source,
+    ...(asked.source === 'writer' ? { question_prompt_version: asked.prompt_version, question_model: asked.model } : {}),
+    ...(asked.reason ? { question_fallback_reason: asked.reason } : {})
+  };
+  const entry = { q: qid, value, question, at, ...(typed ? { text: typed } : {}), ...source };
+  const plan = _fsPlan;
+  const queued = !plan && !!S.first.queue?.length;
+  const rethink = queued && S.first.queue_reason !== 'switch';
+  appendLog({ type: 'answer', flow: S.flow, step: qid, slot, value, question, answer: typed || FSC2.buttons.dontKnow, ...source,
+    ...(rethink ? { rethink: true } : {}), ...(plan ? { plan_step: plan.kind } : {}) });
+
+  // Rethinking, Don't know yet leaves the earlier answer where it was.
+  if (!(rethink && value === 'dont_know')) S.first.slots[slot] = entry;
+  // Each sentence is a dated restatement. The first one stays.
+  if (slot === 'now' && typed) S.restatements = [...(S.restatements || []), { at, text: typed, from: qid }];
+  if (queued) {
+    S.first.queue.shift();
+    if (!S.first.queue.length) delete S.first.queue_reason;
+  }
+  if (plan) plan.queue.shift();
+  saveState();
+
+  // In the background: M1 reads F1, M2 grades the last time on the fix path, /label labels the
+  // people named in the plan step.
+  const id = activeBottleId;
+  if (qid === 'F1' && typed) fsGradePerson(id, typed, S.idea);
+  if (slot === 'last_time' && S.first.path === 'fix' && typed && !rethink) fsGradeLastTime(id);
+  if (qid === 'E4' && typed) fsLabelPeople(id, typed);
+  if (qid === 'F7' && typed) fsLabelAsk(id, typed);
+  fs2Render();
+  window.scrollTo(0, 0);
+}
+
+// /label reads "Who could you ask?". Nothing waits on it.
+async function fsLabelAsk(id, text) {
+  let data;
+  try {
+    data = await workerFetch('/label', { answer: text, kind: 'person' });
+  } catch (err) {
+    fsUpdateBottle(id, s => fsPushLog(s, { type: 'label_failed', step: 'F7', error: String(err?.message || err) }));
+    return;
+  }
+  fsUpdateBottle(id, s => fsKeepLabel(s, 'ask', 'F7', text, data));
+  fsLabelLanded(id);
+}
+
+// A label that lands while the end screen or When? is open shows there. A question on screen keeps
+// its wording.
+function fs2LabelLanded() {
+  if (document.getElementById('fs-planning')) {
+    document.getElementById('fs-planning').textContent = fs2Capital(FSC2.stepWords(_fsPlan?.kind, fs2Context()));
+    return;
+  }
+  if (!_fsPlan && !_fs2Confirm && document.querySelector('#screen-first.active #fs-record')) fs2RenderEnd();
+}
+
+// ── The screens, in order ──
+function fs2Render() {
+  const f = S.first;
+  if (!f?.path) return renderFirstGate();
+  if (_fsPlan) {
+    if (_fsPlan.queue.length) return fs2RenderQuestion(_fsPlan.queue[0], { plan: true });
+    return fs2RenderWhen();
+  }
+  const qid = fs2NextQuestion();
+  if (qid) return fs2RenderQuestion(qid);
+  if (_fs2Confirm) return fs2RenderConfirm();
+  return fs2RenderEnd();
+}
+
+// ── The end screen ──
+function fs2RenderEnd() {
+  _fsShown = null;
+  ++_fs2Token;
+  const f = S.first, E = FSC2.end, sl = f.slots, ctx = fs2Context();
+  const nows = (S.restatements || []).filter(r => r && r.text);
+  const rows = [
+    fsRecRow('first', E.first, fsDatedLine(S.idea, f.at)),
+    fsRecRow('now', E.now, nows.length ? nows.map(r => fsDatedLine(r.text, r.at)).join('') : fsSlotHtml(sl.now))
+  ];
+  if (f.path === 'fix') {
+    rows.push(
+      fsRecRow('person', E.fix.person, fsSlotHtml(sl.who)),
+      fsRecRow('last-time', E.fix.lastTime, fsSlotHtml(sl.last_time)),
+      fsRecRow('one-thing', E.fix.oneThing, fsSlotHtml(sl.one_thing)));
+  } else {
+    rows.push(
+      fsRecRow('last-time', E.experiment.lastTime, fsSlotHtml(sl.last_time)),
+      fsRecRow('feel', E.experiment.feel, fsSlotHtml(sl.feel)),
+      fsRecRow('smallest', E.experiment.simplest, fsSlotHtml(sl.smallest)));
+  }
+  // The way to the other path's questions shows in one case only, as B1b.
+  const nobody = f.path === 'fix' && sl.who?.value === 'dont_know' && sl.last_time?.value === 'dont_know';
+  let choices = '';
+  if (!f.step) {
+    const named = (ctx.person || ctx.personPending) && !ctx.self;
+    const outward = f.path === 'fix'
+      ? [{ kind: 'ask', label: E.ask(ctx), note: named ? E.notes.askNamed : E.notes.askSomeone }]
+      : [{ kind: 'show', label: E.show, note: E.notes.show }, { kind: 'build', label: E.build, note: E.notes.build }];
+    choices = `<div class="fs-choices" id="fs-choices">
+      <p class="fs-next-line" id="fs-next-line">${escHtml(E.next[f.path](ctx))}</p>
+      <div class="fs-choice-row is-${outward.length + 1}">
+        ${outward.map(o => fsChoiceHtml(`fs-choice-${o.kind}`, `fs2Choose('${o.kind}')`, o.label, o.note)).join('')}
+        ${fsChoiceHtml('fs-rethink', 'fs2Rethink()', E.rethink, E.notes.rethink[f.path])}
+      </div>
+      <button type="button" class="btn-ghost fs-cellar" id="fs-cellar" onclick="showCellar()">${escHtml(E.cellar)}</button>
+    </div>`;
+  }
+  document.getElementById('first-body').innerHTML = `
+    <div class="fs-record" id="fs-record">${rows.join('')}</div>
+    ${nobody && !f.step ? `<div class="fs-switch">
+      <p class="fs-nobody" id="fs-nobody">${escHtml(E.nobody)}</p>
+      <button type="button" class="btn-ghost" id="fs-switch" onclick="fs2Switch()">${escHtml(E.toExperiment)}</button>
+    </div>` : ''}
+    ${fs2PlanHtml()}
+    ${choices}`;
+}
+
+// The plan: the planned step and its day, the plan answers word for word under their headings, then
+// the way back. Answers kept with no step planned yet show on their own.
+function fs2PlanHtml() {
+  const f = S.first, C = FSC2.confirm;
+  const keys = f.path === 'fix'
+    ? [['expect', C.expect], ['drop', C.drop]]
+    : [['first_people', C.firstPeople], ['line', C.line]];
+  const rows = keys.filter(([k]) => f.slots?.[k]).map(([k, label]) => fsRecRow(k, label, fsSlotHtml(f.slots[k])));
+  if (!f.step && !rows.length) return '';
+  const planned = f.step
+    ? `<div class="fs-planned-when" id="fs-planned-when">${escHtml(C.planned(FSC.planned(f.step, fsToday()), FSC2.stepWords(f.step.kind, fs2Context())))}</div>`
+    : '';
+  const back = f.step
+    ? `<p class="fs-on-bottle" id="fs-on-bottle">${escHtml(C.onBottle)}</p>
+      <button type="button" class="btn" id="fs-cellar" onclick="showCellar()">${escHtml(FSC2.end.cellar)}</button>`
+    : '';
+  return `<div class="fs-plan" id="fs-plan">
+      ${planned}
+      ${rows.length ? `<div class="fs-record fs-plan-record" id="fs-plan-record">${rows.join('')}</div>` : ''}
+      ${back}
+    </div>`;
+}
+
+// ── The plan step ──
+// Ask: "Who could you ask?" when F1 named nobody else, then F5 and F6. Show it: E4 and E6. Build:
+// When? only. A question already answered isn't asked again.
+function fs2Choose(kind) {
+  const f = S.first, ctx = fs2Context();
+  const named = (ctx.person || ctx.personPending) && !ctx.self;
+  const wanted = kind === 'ask' ? [...(named ? [] : ['F7']), 'F5', 'F6'] : kind === 'show' ? ['E4', 'E6'] : [];
+  _fsPlan = { kind, queue: wanted.filter(q => f.slots[FS2_SLOT[q]]?.value !== 'answer') };
+  appendLog({ type: 'plan_step', flow: S.flow, kind, asks: [..._fsPlan.queue] });
+  saveState();
+  fs2Render();
+  window.scrollTo(0, 0);
+}
+
+function fs2RenderWhen() {
+  _fsShown = null;
+  ++_fs2Token;
+  const P = FSC2.plan;
+  document.getElementById('first-body').innerHTML = `
+    <div class="fs-planning" id="fs-planning">${escHtml(fs2Capital(FSC2.stepWords(_fsPlan.kind, fs2Context())))}</div>
+    <div class="fs-when-label">${escHtml(P.when)}</div>
+    <div class="fs-taps" id="fs-when">
+      <button type="button" class="fs-tap" id="fs-when-today" onclick="fs2SaveStep('today')">${escHtml(P.today)}</button>
+      <button type="button" class="fs-tap" id="fs-when-week" onclick="fs2SaveStep('this_week')">${escHtml(P.thisWeek)}</button>
+      <button type="button" class="fs-tap" id="fs-when-day" onclick="fsPickDay()">${escHtml(P.pickDay)}</button>
+    </div>
+    <div class="fs-day-row" id="fs-day-row" style="display:none">
+      <input type="date" class="field fs-small" id="fs-day" min="${fsToday()}" aria-label="${escAttr(P.pickDay)}" oninput="this.classList.remove('err')">
+      <button type="button" class="btn" id="fs-day-save" onclick="fs2SaveStep('day')">${escHtml(P.save)}</button>
+    </div>
+    <button type="button" class="btn-ghost" id="fs-when-back" onclick="fs2PlanBack()">${escHtml(P.back)}</button>`;
+}
+
+function fs2PlanBack() {
+  _fsPlan = null;
+  fs2Render();
+}
+
+// Saves the step and its day. Nothing is sent and nothing is drafted.
+function fs2SaveStep(when) {
+  if (!_fsPlan) return;
+  let day;
+  if (when === 'today') day = fsToday();
+  else if (when === 'this_week') day = fsWeekEnd();
+  else {
+    const input = document.getElementById('fs-day');
+    day = input?.value || '';
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) { input?.classList.add('err'); return; }
+  }
+  const words = FSC2.stepWords(_fsPlan.kind, fs2Context());
+  const step = { kind: _fsPlan.kind, label: fs2Capital(words), words, when, day, at: new Date().toISOString() };
+  S.first.step = step;
+  appendLog({ type: 'next_step', flow: S.flow, ...step });
+  _fsPlan = null;
+  _fs2Confirm = true;
+  saveState();
+  fs2Render();
+  window.scrollTo(0, 0);
+}
+
+// One screen: the plan, then the way back to the cellar.
+function fs2RenderConfirm() {
+  _fsShown = null;
+  ++_fs2Token;
+  document.getElementById('first-body').innerHTML = fs2PlanHtml();
+}
+
+// Rethink it first: the sentence again, then F3 or E2 and E3, each as first shown. No timer.
+function fs2Rethink() {
+  S.first.queue = [...FS2_RETHINK[S.first.path]];
+  S.first.queue_reason = 'rethink';
+  appendLog({ type: 'rethink', flow: S.flow, path: S.first.path });
+  saveState();
+  fs2Render();
+  window.scrollTo(0, 0);
+}
+
+// The switch, as B1b: every answer stays, and E1 to E3 are asked through the writer when they have
+// no answer yet.
+function fs2Switch() {
+  const from = S.first.path;
+  S.first.path = 'experiment';
+  S.first.queue = FS2_SWITCH.filter(q => S.first.slots[FS2_SLOT[q]]?.value !== 'answer');
+  if (S.first.queue.length) S.first.queue_reason = 'switch';
+  appendLog({ type: 'switch', flow: S.flow, from, to: 'experiment' });
+  saveState();
+  fs2Render();
+  window.scrollTo(0, 0);
+}
+
 // ── The cellar card ──
 // The one next step and its day in words. It reads the same after the day.
 function firstSessionCardStatus(s) {
   const f = s.first || {};
   if (f.step) return FSC.planned(f.step, fsToday());
-  return f.path && !fsNextQuestion(s) ? FSC.card.noStep : FSC.card.ready;
+  const next = isFirstV2(s) ? fs2NextQuestion(s) : fsNextQuestion(s);
+  return f.path && !next ? FSC.card.noStep : FSC.card.ready;
 }
 
 // ── INIT ──
