@@ -1,0 +1,660 @@
+{
+  "scenario": "b1c-t4",
+  "title": "B1c T4: experiment, the football quiz",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T15:35:35.257Z",
+  "finished_at": "2026-11-07T15:35:46.896Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T15:35:35.360Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T15:35:35.511Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T15:35:35.590Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T15:35:35.626Z",
+      "step": "picked experiment",
+      "note": "· · ·"
+    },
+    {
+      "at": "2026-11-07T15:35:37.888Z",
+      "step": "answered E1",
+      "note": "My friends quiz each other about old match results in our group chat."
+    },
+    {
+      "at": "2026-11-07T15:35:39.175Z",
+      "step": "answered E2",
+      "note": "Like they want one more round straight away."
+    },
+    {
+      "at": "2026-11-07T15:35:40.622Z",
+      "step": "answered E3",
+      "note": "Ten football questions on one page and a score at the end."
+    },
+    {
+      "at": "2026-11-07T15:35:40.658Z",
+      "step": "answered E5",
+      "note": "A trivia app where you challenge yourself and other people on ball (soccer) trivia information."
+    },
+    {
+      "at": "2026-11-07T15:35:40.724Z",
+      "step": "answered E4",
+      "note": "Myself of course, and some of my football friends."
+    },
+    {
+      "at": "2026-11-07T15:35:42.823Z",
+      "step": "answered E6",
+      "note": "They would visibly enjoy using it and are challenged by the questions"
+    },
+    {
+      "at": "2026-11-07T15:35:42.857Z",
+      "step": "planned the step",
+      "note": "Planned for today: show it to your football friends."
+    },
+    {
+      "at": "2026-11-07T15:35:42.990Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T15:35:43.026Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T15:35:43.056Z",
+      "step": "picked experiment",
+      "note": "· · ·"
+    },
+    {
+      "at": "2026-11-07T15:35:44.238Z",
+      "step": "answered E1",
+      "note": "dont_know"
+    },
+    {
+      "at": "2026-11-07T15:35:45.438Z",
+      "step": "answered E2",
+      "note": "dont_know"
+    },
+    {
+      "at": "2026-11-07T15:35:46.588Z",
+      "step": "answered E3",
+      "note": "dont_know"
+    },
+    {
+      "at": "2026-11-07T15:35:46.622Z",
+      "step": "answered E5",
+      "note": "dont_know"
+    },
+    {
+      "at": "2026-11-07T15:35:46.689Z",
+      "step": "planned the step",
+      "note": "Planned for this week: build the simplest version."
+    },
+    {
+      "at": "2026-11-07T15:35:46.891Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1c-t4\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "burst": [
+      {
+        "screen": "screen-first",
+        "qid": "E1",
+        "question": "Do football fans already challenge each other's knowledge somewhere, in an app or just informally, and when did you last see it happen?",
+        "start": "A few questions to sharpen this idea. Then you pick a next step.",
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "writer",
+        "ready": true,
+        "first_wrote": null,
+        "ai_tag": true,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "A few questions to sharpen this idea. Then you pick a next step.\n\nThe AI can misread an answer. Check anything you act on.\nDon't know yet\nContinue →",
+        "dots_ms": 2224,
+        "answered": {
+          "text": "My friends quiz each other about old match results in our group chat."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E2",
+        "question": "When a football fan opens your app for the first time, what do you want them to feel within that first minute?",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "writer",
+        "ready": true,
+        "first_wrote": null,
+        "ai_tag": true,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "Don't know yet\nContinue →",
+        "dots_ms": 1239,
+        "answered": {
+          "text": "Like they want one more round straight away."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E3",
+        "question": "What is the smallest version you could build so your friends could actually play a round against each other?",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "writer",
+        "ready": true,
+        "first_wrote": null,
+        "ai_tag": true,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "Don't know yet\nContinue →",
+        "dots_ms": 1419,
+        "answered": {
+          "text": "Ten football questions on one page and a score at the end."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E5",
+        "question": "How would you say your idea now, in one sentence?",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "fixed",
+        "ready": true,
+        "first_wrote": "You first wrote: A trivia app for football fans to challenge each others ballknowledge.",
+        "ai_tag": false,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "YOU FIRST WROTE:\nA trivia app for football fans to challenge each others ballknowledge.\n\nDon't know yet\nContinue →",
+        "dots_ms": 1,
+        "answered": {
+          "text": "A trivia app where you challenge yourself and other people on ball (soccer) trivia information."
+        },
+        "next_screen_after_ms": 1
+      }
+    ],
+    "end": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "A trivia app for football fans to challenge each others ballknowledge.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "A trivia app where you challenge yourself and other people on ball (soccer) trivia information.\n7 Nov 2026"
+        },
+        {
+          "row": "last-time",
+          "label": "SOMETHING LIKE IT",
+          "value": "My friends quiz each other about old match results in our group chat."
+        },
+        {
+          "row": "feel",
+          "label": "THE FEELING",
+          "value": "Like they want one more round straight away."
+        },
+        {
+          "row": "smallest",
+          "label": "THE SIMPLEST VERSION",
+          "value": "Ten football questions on one page and a score at the end."
+        }
+      ],
+      "observation": null,
+      "ai_tagged": [],
+      "nobody": null,
+      "switch_link": null,
+      "next_line": "What's next: build the simplest version or show it to a few people, see what they do with it, then decide what to do with the idea.",
+      "plan": null,
+      "choices": [
+        {
+          "id": "fs-choice-show",
+          "text": "Show it to a few people",
+          "cls": "btn-second fs-choice",
+          "note": "Two quick questions, then pick a day. Nothing is sent."
+        },
+        {
+          "id": "fs-choice-build",
+          "text": "Build the simplest version first",
+          "cls": "btn-second fs-choice",
+          "note": "Pick a day."
+        },
+        {
+          "id": "fs-rethink",
+          "text": "Rethink it first",
+          "cls": "btn-second fs-choice",
+          "note": "Go over your sentence, the feeling and the simplest version again."
+        },
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn-ghost fs-cellar",
+          "note": null
+        }
+      ],
+      "visible_text": "FIRST\nA trivia app for football fans to challenge each others ballknowledge.\n7 Nov 2026\nNOW\nA trivia app where you challenge yourself and other people on ball (soccer) trivia information.\n7 Nov 2026\nSOMETHING LIKE IT\nMy friends quiz each other about old match results in our group chat.\nTHE FEELING\nLike they want one more round straight away.\nTHE SIMPLEST VERSION\nTen football questions on one page and a score at the end.\n\nWhat's next: build the simplest version or show it to a few people, see what they do with it, then decide what to do with the idea.\n\nShow it to a few people\nTwo quick questions, then pick a day. Nothing is sent.\nBuild the simplest version first\nPick a day.\nRethink it first\nGo over your sentence, the feeling and the simplest version again.\nBack to the cellar"
+    },
+    "requests_first_session": {
+      "/m0": 1,
+      "/question": 4
+    },
+    "model_calls_first_session": 5,
+    "show": {
+      "asked": [
+        {
+          "qid": "E4",
+          "question": "Who are the first one to three people you'd show it to? Names, initials, or a few words.",
+          "source": "fixed",
+          "ai_tag": false,
+          "dots_ms": 1,
+          "extras": [],
+          "buttons": [
+            "Don't know yet",
+            "Continue →"
+          ]
+        },
+        {
+          "qid": "E6",
+          "question": "What would they have to do for you to keep building it? A rough guess is fine.",
+          "source": "fixed",
+          "ai_tag": false,
+          "dots_ms": 1,
+          "extras": [],
+          "buttons": [
+            "Don't know yet",
+            "Continue →"
+          ]
+        }
+      ],
+      "when": {
+        "heading": "Show it to your football friends",
+        "taps": [
+          "Today",
+          "This week",
+          "Pick a day"
+        ]
+      },
+      "confirmation": {
+        "rows": [],
+        "observation": null,
+        "ai_tagged": [],
+        "nobody": null,
+        "switch_link": null,
+        "next_line": null,
+        "plan": {
+          "planned": "Planned for today: show it to your football friends.",
+          "rows": [
+            {
+              "row": "first_people",
+              "label": "THE FIRST PEOPLE",
+              "value": "Myself of course, and some of my football friends."
+            },
+            {
+              "row": "line",
+              "label": "YOU'D KEEP GOING IF",
+              "value": "They would visibly enjoy using it and are challenged by the questions"
+            }
+          ],
+          "on_bottle": "It's on this bottle in your cellar.",
+          "button": "Back to the cellar"
+        },
+        "choices": [],
+        "visible_text": "Planned for today: show it to your football friends.\nTHE FIRST PEOPLE\nMyself of course, and some of my football friends.\nYOU'D KEEP GOING IF\nThey would visibly enjoy using it and are challenged by the questions\n\nIt's on this bottle in your cellar.\n\nBack to the cellar"
+      }
+    },
+    "wait_label": {
+      "before": "E6",
+      "step": "E4",
+      "logged": {
+        "at": "2026-11-07T15:35:42.363Z",
+        "type": "label",
+        "step": "E4",
+        "label": "your football friends",
+        "is_self": false,
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "label"
+        ]
+      },
+      "waited_ms": 2060
+    },
+    "requests_with_show": {
+      "/m0": 1,
+      "/question": 4,
+      "/label": 1
+    },
+    "model_calls_with_show": 6,
+    "build_end": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "A daily game where you describe one picture in a single sentence.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "Don't know yet"
+        },
+        {
+          "row": "last-time",
+          "label": "SOMETHING LIKE IT",
+          "value": "Don't know yet"
+        },
+        {
+          "row": "feel",
+          "label": "THE FEELING",
+          "value": "Don't know yet"
+        },
+        {
+          "row": "smallest",
+          "label": "THE SIMPLEST VERSION",
+          "value": "Don't know yet"
+        }
+      ],
+      "observation": null,
+      "ai_tagged": [],
+      "nobody": null,
+      "switch_link": null,
+      "next_line": "What's next: build the simplest version or show it to a few people, see what they do with it, then decide what to do with the idea.",
+      "plan": null,
+      "choices": [
+        {
+          "id": "fs-choice-show",
+          "text": "Show it to a few people",
+          "cls": "btn-second fs-choice",
+          "note": "Two quick questions, then pick a day. Nothing is sent."
+        },
+        {
+          "id": "fs-choice-build",
+          "text": "Build the simplest version first",
+          "cls": "btn-second fs-choice",
+          "note": "Pick a day."
+        },
+        {
+          "id": "fs-rethink",
+          "text": "Rethink it first",
+          "cls": "btn-second fs-choice",
+          "note": "Go over your sentence, the feeling and the simplest version again."
+        },
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn-ghost fs-cellar",
+          "note": null
+        }
+      ],
+      "visible_text": "FIRST\nA daily game where you describe one picture in a single sentence.\n7 Nov 2026\nNOW\nDon't know yet\nSOMETHING LIKE IT\nDon't know yet\nTHE FEELING\nDon't know yet\nTHE SIMPLEST VERSION\nDon't know yet\n\nWhat's next: build the simplest version or show it to a few people, see what they do with it, then decide what to do with the idea.\n\nShow it to a few people\nTwo quick questions, then pick a day. Nothing is sent.\nBuild the simplest version first\nPick a day.\nRethink it first\nGo over your sentence, the feeling and the simplest version again.\nBack to the cellar"
+    },
+    "build": {
+      "asked": [],
+      "when": {
+        "heading": "Build the simplest version",
+        "taps": [
+          "Today",
+          "This week",
+          "Pick a day"
+        ]
+      },
+      "confirmation": {
+        "rows": [],
+        "observation": null,
+        "ai_tagged": [],
+        "nobody": null,
+        "switch_link": null,
+        "next_line": null,
+        "plan": {
+          "planned": "Planned for this week: build the simplest version.",
+          "rows": [],
+          "on_bottle": "It's on this bottle in your cellar.",
+          "button": "Back to the cellar"
+        },
+        "choices": [],
+        "visible_text": "Planned for this week: build the simplest version.\n\nIt's on this bottle in your cellar.\n\nBack to the cellar"
+      }
+    },
+    "build_requests": [
+      "/m0",
+      "/question",
+      "/question",
+      "/question",
+      "/question"
+    ]
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "E1 to E3 are about football or the quiz, none with \"problem\", \"need\", \"wrong\" or \"stopped\".",
+      "happened": "E1 [writer, AI tag] \"Do football fans already challenge each other's knowledge somewhere, in an app or just informally, and when did you last see it happen?\": about football or the quiz true; problem words none. E2 [writer, AI tag] \"When a football fan opens your app for the first time, what do you want them to feel within that first minute?\": about football or the quiz true; problem words none. E3 [writer, AI tag] \"What is the smallest version you could build so your friends could actually play a round against each other?\": about football or the quiz false; problem words none. E5 screen: \"You first wrote: A trivia app for football fans to challenge each others ballknowledge.\"."
+    },
+    {
+      "n": 2,
+      "expected": "\"Show it to a few people\" asks E4, E6, When.",
+      "happened": "End screen: \"Show it to a few people\" / \"Two quick questions, then pick a day. Nothing is sent.\", \"Build the simplest version first\" / \"Pick a day.\", \"Rethink it first\" / \"Go over your sentence, the feeling and the simplest version again.\", \"Back to the cellar\" / \"\". Show it asked: E4 [fixed] \"Who are the first one to three people you'd show it to? Names, initials, or a few words.\"; E6 [fixed] \"What would they have to do for you to keep building it? A rough guess is fine.\"; When? \"Show it to your football friends\". The run waited 2060 ms on E6 for the label: {\"at\":\"2026-11-07T15:35:42.363Z\",\"type\":\"label\",\"step\":\"E4\",\"label\":\"your football friends\",\"is_self\":false,\"prompt_version\":\"2026-11-07b\",\"model\":\"claude-sonnet-4-6\",\"ai_fields\":[\"label\"]}. Confirmation \"Planned for today: show it to your football friends.\"; THE FIRST PEOPLE \"Myself of course, and some of my football friends.\"; YOU'D KEEP GOING IF \"They would visibly enjoy using it and are challenged by the questions\". Requests, first session: {\"/m0\":1,\"/question\":4} (model calls 5); with Show it: {\"/m0\":1,\"/question\":4,\"/label\":1} (model calls 6)."
+    },
+    {
+      "n": 3,
+      "expected": "\"Build the simplest version first\" asks only When.",
+      "happened": "Build asked: nothing before When?; When? \"Build the simplest version\". Confirmation \"Planned for this week: build the simplest version.\", rows 0. Requests for that bottle: /m0, /question, /question, /question, /question. Page errors: none."
+    }
+  ],
+  "worker_requests": [
+    {
+      "at": "2026-11-07T15:35:35.574Z",
+      "ms": 1794065735574,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "A trivia app for football fans to challenge each others ballknowledge."
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:35.574Z",
+      "ms": 1794065735574,
+      "path": "/question",
+      "body": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": []
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:35.574Z",
+      "ms": 1794065735574,
+      "path": "/question",
+      "body": {
+        "path": "experiment",
+        "slot": "E1",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": []
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:37.887Z",
+      "ms": 1794065737887,
+      "path": "/question",
+      "body": {
+        "path": "experiment",
+        "slot": "E2",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "Do football fans already challenge each other's knowledge somewhere, in an app or just informally, and when did you last see it happen?",
+            "answer": "My friends quiz each other about old match results in our group chat."
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:39.173Z",
+      "ms": 1794065739173,
+      "path": "/question",
+      "body": {
+        "path": "experiment",
+        "slot": "E3",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "Do football fans already challenge each other's knowledge somewhere, in an app or just informally, and when did you last see it happen?",
+            "answer": "My friends quiz each other about old match results in our group chat."
+          },
+          {
+            "slot": "E2",
+            "question": "When a football fan opens your app for the first time, what do you want them to feel within that first minute?",
+            "answer": "Like they want one more round straight away."
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:40.723Z",
+      "ms": 1794065740723,
+      "path": "/label",
+      "body": {
+        "answer": "Myself of course, and some of my football friends.",
+        "kind": "people"
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:43.020Z",
+      "ms": 1794065743020,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "A daily game where you describe one picture in a single sentence."
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:43.020Z",
+      "ms": 1794065743020,
+      "path": "/question",
+      "body": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "A daily game where you describe one picture in a single sentence.",
+        "answers": []
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:43.020Z",
+      "ms": 1794065743020,
+      "path": "/question",
+      "body": {
+        "path": "experiment",
+        "slot": "E1",
+        "spark": "A daily game where you describe one picture in a single sentence.",
+        "answers": []
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:44.237Z",
+      "ms": 1794065744237,
+      "path": "/question",
+      "body": {
+        "path": "experiment",
+        "slot": "E2",
+        "spark": "A daily game where you describe one picture in a single sentence.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "Do people already play something like this, by hand or in another app, and when did you last see it?",
+            "answer": "Don't know yet"
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:45.436Z",
+      "ms": 1794065745436,
+      "path": "/question",
+      "body": {
+        "path": "experiment",
+        "slot": "E3",
+        "spark": "A daily game where you describe one picture in a single sentence.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "Do people already play something like this, by hand or in another app, and when did you last see it?",
+            "answer": "Don't know yet"
+          },
+          {
+            "slot": "E2",
+            "question": "What should someone feel in their first minute of describing a picture in your game?",
+            "answer": "Don't know yet"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,1007 @@
+{
+  "scenario": "b1c-t3",
+  "title": "B1c T3: fix, the builder is the person (the rental)",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T15:35:24.290Z",
+  "finished_at": "2026-11-07T15:35:34.912Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T15:35:24.387Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T15:35:24.540Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T15:35:24.624Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T15:35:24.659Z",
+      "step": "picked fix",
+      "note": "· · ·"
+    },
+    {
+      "at": "2026-11-07T15:35:26.422Z",
+      "step": "answered F1",
+      "note": "Me, when I moved into my flat in March."
+    },
+    {
+      "at": "2026-11-07T15:35:27.892Z",
+      "step": "answered F2",
+      "note": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered."
+    },
+    {
+      "at": "2026-11-07T15:35:28.974Z",
+      "step": "answered F3",
+      "note": "Tell me which rooms and fittings to photograph, and keep it all in one report."
+    },
+    {
+      "at": "2026-11-07T15:35:29.009Z",
+      "step": "answered F4",
+      "note": "An app that walks you through recording the state of a rented flat on move in day."
+    },
+    {
+      "at": "2026-11-07T15:35:30.606Z",
+      "step": "answered F7",
+      "note": "Sam, my neighbour, who moved into the flat upstairs last month"
+    },
+    {
+      "at": "2026-11-07T15:35:32.071Z",
+      "step": "answered F5",
+      "note": "That he took a few photos on his phone and hopes for the best"
+    },
+    {
+      "at": "2026-11-07T15:35:32.106Z",
+      "step": "answered F6",
+      "note": "His landlord already gave him a full checklist"
+    },
+    {
+      "at": "2026-11-07T15:35:32.140Z",
+      "step": "planned the step",
+      "note": "Planned for today: ask Sam."
+    },
+    {
+      "at": "2026-11-07T15:35:34.907Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1c-t3\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "m1_replies": [
+      {
+        "at": "2026-11-07T15:35:30.237Z",
+        "body": {
+          "schema_version": "m1.v1",
+          "mechanism": "M1",
+          "outcome": "clearing",
+          "grape": {
+            "state": "clearing",
+            "named_person": null,
+            "person_kind": "none",
+            "temporal_grounding": "past_specific"
+          },
+          "observation": {
+            "surface_text": "The relationship field names the self, not another person. Maturity class 0 requires one specific external person with a real stated tie.",
+            "anchor_span": "Me, when I moved into my flat in March."
+          },
+          "next_question": {
+            "should_advance": false,
+            "framing": "Who else was involved in or affected by this situation? A landlord, letting agent, or flatmate with a named or described role would settle the grape."
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "label": {
+              "check": "self",
+              "said": "you"
+            }
+          },
+          "ai_fields": [
+            "observation.surface_text",
+            "next_question.framing"
+          ],
+          "label": "you",
+          "is_self": true,
+          "prompt_version": "2026-11-07b",
+          "model": "claude-sonnet-4-6"
+        }
+      }
+    ],
+    "burst": [
+      {
+        "screen": "screen-first",
+        "qid": "F1",
+        "question": "Who is the last person you saw struggle to document the condition of a rental, or was it you?",
+        "start": "A few questions to sharpen this idea. Then you pick a next step.",
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "writer",
+        "ready": true,
+        "first_wrote": null,
+        "ai_tag": true,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "A few questions to sharpen this idea. Then you pick a next step.\n\nThe AI can misread an answer. Check anything you act on.\nDon't know yet\nContinue →",
+        "dots_ms": 1731,
+        "answered": {
+          "text": "Me, when I moved into my flat in March."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F2",
+        "question": "When you moved into your flat in March, what did you actually do to document its condition?",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "writer",
+        "ready": true,
+        "first_wrote": null,
+        "ai_tag": true,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "Wh\nDon't know yet\nContinue →",
+        "dots_ms": 1435,
+        "answered": {
+          "text": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F3",
+        "question": "When you moved into your flat in March, what is the one thing your idea should have done for you that day?",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "writer",
+        "ready": true,
+        "first_wrote": null,
+        "ai_tag": true,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "Don't know yet\nContinue →",
+        "dots_ms": 1048,
+        "answered": {
+          "text": "Tell me which rooms and fittings to photograph, and keep it all in one report."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F4",
+        "question": "How would you say your idea now, in one sentence?",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "fixed",
+        "ready": true,
+        "first_wrote": "You first wrote: An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "ai_tag": false,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "YOU FIRST WROTE:\nAn AI tool that helps you when you rent a place to document the current conditions, easily.\n\nDon't know yet\nContinue →",
+        "dots_ms": 1,
+        "answered": {
+          "text": "An app that walks you through recording the state of a rented flat on move in day."
+        },
+        "next_screen_after_ms": 2
+      }
+    ],
+    "end": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "An AI tool that helps you when you rent a place to document the current conditions, easily.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "An app that walks you through recording the state of a rented flat on move in day.\n7 Nov 2026"
+        },
+        {
+          "row": "person",
+          "label": "THE PERSON",
+          "value": "Me, when I moved into my flat in March."
+        },
+        {
+          "row": "last-time",
+          "label": "WHAT HAPPENED LAST TIME",
+          "value": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered."
+        },
+        {
+          "row": "one-thing",
+          "label": "THE ONE THING",
+          "value": "Tell me which rooms and fittings to photograph, and keep it all in one report."
+        }
+      ],
+      "observation": null,
+      "ai_tagged": [],
+      "nobody": null,
+      "switch_link": null,
+      "next_line": "What's next: find someone who has this problem, ask them what happened, then decide what to do with the idea.",
+      "plan": null,
+      "choices": [
+        {
+          "id": "fs-choice-ask",
+          "text": "Ask someone",
+          "cls": "btn-second fs-choice",
+          "note": "Three quick questions, then pick a day. Nothing is sent."
+        },
+        {
+          "id": "fs-rethink",
+          "text": "Rethink it first",
+          "cls": "btn-second fs-choice",
+          "note": "Go over your sentence and the one thing again."
+        },
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn-ghost fs-cellar",
+          "note": null
+        }
+      ],
+      "visible_text": "FIRST\nAn AI tool that helps you when you rent a place to document the current conditions, easily.\n7 Nov 2026\nNOW\nAn app that walks you through recording the state of a rented flat on move in day.\n7 Nov 2026\nTHE PERSON\nMe, when I moved into my flat in March.\nWHAT HAPPENED LAST TIME\nI took a lot of pictures of the outlets and sinks, but I did not know what mattered.\nTHE ONE THING\nTell me which rooms and fittings to photograph, and keep it all in one report.\n\nWhat's next: find someone who has this problem, ask them what happened, then decide what to do with the idea.\n\nAsk someone\nThree quick questions, then pick a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar"
+    },
+    "plan": {
+      "asked": [
+        {
+          "qid": "F7",
+          "question": "Who could you ask? Someone who has this problem. A name, initials, or a few words.",
+          "source": "fixed",
+          "ai_tag": false,
+          "dots_ms": 1,
+          "extras": [],
+          "buttons": [
+            "Don't know yet",
+            "Continue →"
+          ]
+        },
+        {
+          "qid": "F5",
+          "question": "If Sam described the moment he realized he hadn't documented his flat properly, what do you think he would say?",
+          "source": "writer",
+          "ai_tag": true,
+          "dots_ms": 1,
+          "extras": [],
+          "buttons": [
+            "Don't know yet",
+            "Continue →"
+          ]
+        },
+        {
+          "qid": "F6",
+          "question": "Finish the sentence: I'd drop it if Sam told me...",
+          "source": "fixed",
+          "ai_tag": false,
+          "dots_ms": 1,
+          "extras": [],
+          "buttons": [
+            "Don't know yet",
+            "Continue →"
+          ]
+        }
+      ],
+      "when": {
+        "heading": "Ask Sam",
+        "taps": [
+          "Today",
+          "This week",
+          "Pick a day"
+        ]
+      },
+      "confirmation": {
+        "rows": [],
+        "observation": null,
+        "ai_tagged": [],
+        "nobody": null,
+        "switch_link": null,
+        "next_line": null,
+        "plan": {
+          "planned": "Planned for today: ask Sam.",
+          "rows": [
+            {
+              "row": "expect",
+              "label": "YOU EXPECT",
+              "value": "That he took a few photos on his phone and hopes for the best"
+            },
+            {
+              "row": "drop",
+              "label": "YOU'D DROP IT IF",
+              "value": "His landlord already gave him a full checklist"
+            }
+          ],
+          "on_bottle": "It's on this bottle in your cellar.",
+          "button": "Back to the cellar"
+        },
+        "choices": [],
+        "visible_text": "Planned for today: ask Sam.\nYOU EXPECT\nThat he took a few photos on his phone and hopes for the best\nYOU'D DROP IT IF\nHis landlord already gave him a full checklist\n\nIt's on this bottle in your cellar.\n\nBack to the cellar"
+      }
+    },
+    "wait_label": {
+      "before": "F5",
+      "step": "F7",
+      "logged": {
+        "at": "2026-11-07T15:35:31.653Z",
+        "type": "label",
+        "step": "F7",
+        "label": "Sam",
+        "is_self": false,
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6",
+        "ai_fields": [
+          "label"
+        ]
+      },
+      "waited_ms": 2
+    },
+    "routes": {
+      "/m0": 1,
+      "/question": 5,
+      "/m1": 1,
+      "/m2": 1,
+      "/label": 1
+    },
+    "model_calls": 10,
+    "m2_request": {
+      "flow": "first_session_v1",
+      "user_line": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+      "grape_name": "",
+      "grape_relationship": "",
+      "maturity_class": 2,
+      "user_answer": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered.",
+      "gap_in_play": false
+    }
+  },
+  "checkpoints": {
+    "label": {
+      "at": "2026-11-07T15:35:30.238Z",
+      "type": "label",
+      "step": "F1",
+      "label": "you",
+      "is_self": true,
+      "prompt_version": "2026-11-07b",
+      "model": "claude-sonnet-4-6",
+      "ai_fields": [
+        "observation.surface_text",
+        "next_question.framing"
+      ]
+    },
+    "m2": {
+      "at": "2026-11-07T15:35:34.332Z",
+      "type": "grade",
+      "mech": "M2",
+      "step": "F2",
+      "state": "clearing",
+      "tell": "settled",
+      "vintage": "clearing",
+      "observation": "The answer names a specific observable action: photographing outlets and sinks. No particular moment, event, or time anchor is present in the answer.",
+      "prompt_version": "2026-11-07",
+      "model": "claude-sonnet-4-6",
+      "ai_fields": [
+        "observation.surface_text",
+        "swirl.question"
+      ]
+    },
+    "bottle": {
+      "first": {
+        "at": "2026-11-07T15:35:24.604Z",
+        "path": "fix",
+        "slots": {
+          "who": {
+            "q": "F1",
+            "value": "answer",
+            "question": "Who is the last person you saw struggle to document the condition of a rental, or was it you?",
+            "at": "2026-11-07T15:35:26.419Z",
+            "text": "Me, when I moved into my flat in March.",
+            "question_source": "writer",
+            "question_prompt_version": "2026-11-07c",
+            "question_model": "claude-sonnet-4-6"
+          },
+          "last_time": {
+            "q": "F2",
+            "value": "answer",
+            "question": "When you moved into your flat in March, what did you actually do to document its condition?",
+            "at": "2026-11-07T15:35:27.886Z",
+            "text": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered.",
+            "question_source": "writer",
+            "question_prompt_version": "2026-11-07c",
+            "question_model": "claude-sonnet-4-6"
+          },
+          "one_thing": {
+            "q": "F3",
+            "value": "answer",
+            "question": "When you moved into your flat in March, what is the one thing your idea should have done for you that day?",
+            "at": "2026-11-07T15:35:28.971Z",
+            "text": "Tell me which rooms and fittings to photograph, and keep it all in one report.",
+            "question_source": "writer",
+            "question_prompt_version": "2026-11-07c",
+            "question_model": "claude-sonnet-4-6"
+          },
+          "now": {
+            "q": "F4",
+            "value": "answer",
+            "question": "How would you say your idea now, in one sentence?",
+            "at": "2026-11-07T15:35:29.004Z",
+            "text": "An app that walks you through recording the state of a rented flat on move in day.",
+            "question_source": "fixed"
+          },
+          "ask_who": {
+            "q": "F7",
+            "value": "answer",
+            "question": "Who could you ask? Someone who has this problem. A name, initials, or a few words.",
+            "at": "2026-11-07T15:35:30.603Z",
+            "text": "Sam, my neighbour, who moved into the flat upstairs last month",
+            "question_source": "fixed"
+          },
+          "expect": {
+            "q": "F5",
+            "value": "answer",
+            "question": "If Sam described the moment he realized he hadn't documented his flat properly, what do you think he would say?",
+            "at": "2026-11-07T15:35:32.069Z",
+            "text": "That he took a few photos on his phone and hopes for the best",
+            "question_source": "writer",
+            "question_prompt_version": "2026-11-07c",
+            "question_model": "claude-sonnet-4-6"
+          },
+          "drop": {
+            "q": "F6",
+            "value": "answer",
+            "question": "Finish the sentence: I'd drop it if Sam told me...",
+            "at": "2026-11-07T15:35:32.103Z",
+            "text": "His landlord already gave him a full checklist",
+            "question_source": "fixed"
+          }
+        },
+        "queue": [],
+        "grades": {
+          "person": {
+            "state": "clearing",
+            "person_kind": "none",
+            "one_person": false,
+            "for_text": "Me, when I moved into my flat in March.",
+            "at": "2026-11-07T15:35:30.238Z"
+          },
+          "last_time": {
+            "state": "clearing",
+            "tell": "settled",
+            "vintage": "clearing",
+            "for_text": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered.",
+            "at": "2026-11-07T15:35:34.332Z"
+          }
+        },
+        "step": {
+          "kind": "ask",
+          "label": "Ask Sam",
+          "words": "ask Sam",
+          "when": "today",
+          "day": "2026-11-07",
+          "at": "2026-11-07T15:35:32.136Z"
+        },
+        "maturity": null,
+        "m0_open": null,
+        "m2": {
+          "schema_version": "m2.v1",
+          "mechanism": "M2",
+          "phase": "friction",
+          "state": "clearing",
+          "tell": {
+            "state": "settled",
+            "anchor_span": "I took a lot of pictures of the outlets and sinks"
+          },
+          "vintage": {
+            "state": "clearing",
+            "anchor_span": null
+          },
+          "observation": {
+            "surface_text": "The answer names a specific observable action: photographing outlets and sinks. No particular moment, event, or time anchor is present in the answer.",
+            "anchor_span": "I took a lot of pictures of the outlets and sinks"
+          },
+          "substitution_detected": false,
+          "swirl": {
+            "kind": "reality",
+            "question": "Which specific space were these pictures taken in, and when did that visit happen?"
+          },
+          "server_checks": {
+            "schema_valid": true,
+            "tell_anchor_verified": true,
+            "vintage_anchor_verified": false,
+            "obs_anchor_verified": true,
+            "visible_style_violations_cleaned": [],
+            "overall_state_is_floor": true,
+            "swirl_included": true
+          },
+          "ai_fields": [
+            "observation.surface_text",
+            "swirl.question"
+          ],
+          "prompt_version": "2026-11-07",
+          "model": "claude-sonnet-4-6"
+        },
+        "labels": {
+          "person": {
+            "text": "you",
+            "is_self": true,
+            "for_text": "Me, when I moved into my flat in March.",
+            "at": "2026-11-07T15:35:30.238Z"
+          },
+          "ask": {
+            "text": "Sam",
+            "is_self": false,
+            "for_text": "Sam, my neighbour, who moved into the flat upstairs last month",
+            "at": "2026-11-07T15:35:31.653Z"
+          }
+        },
+        "shown": {
+          "F1": {
+            "text": "Who is the last person you saw struggle to document the condition of a rental, or was it you?",
+            "source": "writer",
+            "prompt_version": "2026-11-07c",
+            "model": "claude-sonnet-4-6",
+            "at": "2026-11-07T15:35:26.374Z",
+            "waited_ms": 1720
+          },
+          "F2": {
+            "text": "When you moved into your flat in March, what did you actually do to document its condition?",
+            "source": "writer",
+            "prompt_version": "2026-11-07c",
+            "model": "claude-sonnet-4-6",
+            "at": "2026-11-07T15:35:27.792Z",
+            "waited_ms": 1372
+          },
+          "F3": {
+            "text": "When you moved into your flat in March, what is the one thing your idea should have done for you that day?",
+            "source": "writer",
+            "prompt_version": "2026-11-07c",
+            "model": "claude-sonnet-4-6",
+            "at": "2026-11-07T15:35:28.924Z",
+            "waited_ms": 1037
+          },
+          "F5": {
+            "text": "If Sam described the moment he realized he hadn't documented his flat properly, what do you think he would say?",
+            "source": "writer",
+            "prompt_version": "2026-11-07c",
+            "model": "claude-sonnet-4-6",
+            "at": "2026-11-07T15:35:31.999Z",
+            "waited_ms": 1395
+          }
+        }
+      },
+      "log": [
+        {
+          "at": "2026-11-07T15:35:24.604Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "spark",
+          "question": "What's the idea?",
+          "answer": "An AI tool that helps you when you rent a place to document the current conditions, easily."
+        },
+        {
+          "at": "2026-11-07T15:35:24.653Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "gate",
+          "question": "Is this a fix or an experiment?",
+          "answer": "A fix. I saw something go wrong, for someone or for me.",
+          "path": "fix"
+        },
+        {
+          "at": "2026-11-07T15:35:26.419Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "F1",
+          "slot": "who",
+          "value": "answer",
+          "question": "Who is the last person you saw struggle to document the condition of a rental, or was it you?",
+          "answer": "Me, when I moved into my flat in March.",
+          "question_source": "writer",
+          "question_prompt_version": "2026-11-07c",
+          "question_model": "claude-sonnet-4-6"
+        },
+        {
+          "at": "2026-11-07T15:35:27.886Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "F2",
+          "slot": "last_time",
+          "value": "answer",
+          "question": "When you moved into your flat in March, what did you actually do to document its condition?",
+          "answer": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered.",
+          "question_source": "writer",
+          "question_prompt_version": "2026-11-07c",
+          "question_model": "claude-sonnet-4-6"
+        },
+        {
+          "at": "2026-11-07T15:35:28.971Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "F3",
+          "slot": "one_thing",
+          "value": "answer",
+          "question": "When you moved into your flat in March, what is the one thing your idea should have done for you that day?",
+          "answer": "Tell me which rooms and fittings to photograph, and keep it all in one report.",
+          "question_source": "writer",
+          "question_prompt_version": "2026-11-07c",
+          "question_model": "claude-sonnet-4-6"
+        },
+        {
+          "at": "2026-11-07T15:35:29.004Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "F4",
+          "slot": "now",
+          "value": "answer",
+          "question": "How would you say your idea now, in one sentence?",
+          "answer": "An app that walks you through recording the state of a rented flat on move in day.",
+          "question_source": "fixed"
+        },
+        {
+          "at": "2026-11-07T15:35:30.238Z",
+          "type": "grade",
+          "mech": "M1",
+          "step": "F1",
+          "state": "clearing",
+          "person_kind": "none",
+          "one_person": false,
+          "prompt_version": "2026-11-07b",
+          "model": "claude-sonnet-4-6",
+          "ai_fields": [
+            "observation.surface_text",
+            "next_question.framing"
+          ]
+        },
+        {
+          "at": "2026-11-07T15:35:30.238Z",
+          "type": "label",
+          "step": "F1",
+          "label": "you",
+          "is_self": true,
+          "prompt_version": "2026-11-07b",
+          "model": "claude-sonnet-4-6",
+          "ai_fields": [
+            "observation.surface_text",
+            "next_question.framing"
+          ]
+        },
+        {
+          "at": "2026-11-07T15:35:30.569Z",
+          "type": "plan_step",
+          "flow": "first_session_v2",
+          "kind": "ask",
+          "asks": [
+            "F7",
+            "F5",
+            "F6"
+          ]
+        },
+        {
+          "at": "2026-11-07T15:35:30.603Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "F7",
+          "slot": "ask_who",
+          "value": "answer",
+          "question": "Who could you ask? Someone who has this problem. A name, initials, or a few words.",
+          "answer": "Sam, my neighbour, who moved into the flat upstairs last month",
+          "question_source": "fixed",
+          "plan_step": "ask"
+        },
+        {
+          "at": "2026-11-07T15:35:31.653Z",
+          "type": "label",
+          "step": "F7",
+          "label": "Sam",
+          "is_self": false,
+          "prompt_version": "2026-11-07b",
+          "model": "claude-sonnet-4-6",
+          "ai_fields": [
+            "label"
+          ]
+        },
+        {
+          "at": "2026-11-07T15:35:32.069Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "F5",
+          "slot": "expect",
+          "value": "answer",
+          "question": "If Sam described the moment he realized he hadn't documented his flat properly, what do you think he would say?",
+          "answer": "That he took a few photos on his phone and hopes for the best",
+          "question_source": "writer",
+          "question_prompt_version": "2026-11-07c",
+          "question_model": "claude-sonnet-4-6",
+          "plan_step": "ask"
+        },
+        {
+          "at": "2026-11-07T15:35:32.103Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "F6",
+          "slot": "drop",
+          "value": "answer",
+          "question": "Finish the sentence: I'd drop it if Sam told me...",
+          "answer": "His landlord already gave him a full checklist",
+          "question_source": "fixed",
+          "plan_step": "ask"
+        },
+        {
+          "at": "2026-11-07T15:35:32.136Z",
+          "type": "next_step",
+          "flow": "first_session_v2",
+          "kind": "ask",
+          "label": "Ask Sam",
+          "words": "ask Sam",
+          "when": "today",
+          "day": "2026-11-07"
+        },
+        {
+          "at": "2026-11-07T15:35:33.630Z",
+          "type": "m0_result",
+          "state": "bottleable_cloudy",
+          "in_scope": true,
+          "prompt_version": "2026-11-07",
+          "model": "claude-sonnet-4-6",
+          "ai_fields": [
+            "user_line_candidate",
+            "digestibility.reason",
+            "followup.question",
+            "m1_setup.question",
+            "m1_setup.hint",
+            "m1_setup.person_label",
+            "m1_setup.person_placeholder",
+            "m1_setup.when_label",
+            "m1_setup.when_placeholder",
+            "m1_setup.trying_label",
+            "m1_setup.happened_label",
+            "spark_parse.solution_form",
+            "spark_parse.implied_person",
+            "spark_parse.triggering_situation",
+            "spark_parse.promised_change",
+            "spark_parse.domain",
+            "digestibility.missing"
+          ]
+        },
+        {
+          "at": "2026-11-07T15:35:34.332Z",
+          "type": "grade",
+          "mech": "M2",
+          "step": "F2",
+          "state": "clearing",
+          "tell": "settled",
+          "vintage": "clearing",
+          "observation": "The answer names a specific observable action: photographing outlets and sinks. No particular moment, event, or time anchor is present in the answer.",
+          "prompt_version": "2026-11-07",
+          "model": "claude-sonnet-4-6",
+          "ai_fields": [
+            "observation.surface_text",
+            "swirl.question"
+          ]
+        }
+      ]
+    }
+  },
+  "expected": [
+    {
+      "n": 1,
+      "expected": "/m1 marks it as self.",
+      "happened": "/m1: is_self true, label \"you\", grape clearing / none. Sent to /m2 for F2: maturity_class 2, grape_name \"\"; M2 in the log {\"type\":\"grade\",\"state\":\"clearing\",\"tell\":\"settled\",\"vintage\":\"clearing\"}."
+    },
+    {
+      "n": 2,
+      "expected": "F2 asks \"you\".",
+      "happened": "F2 [writer] \"When you moved into your flat in March, what did you actually do to document its condition?\": says \"you\" true, says \"they\" false. Questions: F1 [writer] \"Who is the last person you saw struggle to document the condition of a rental, or was it you?\"; F2 [writer] \"When you moved into your flat in March, what did you actually do to document its condition?\"; F3 [writer] \"When you moved into your flat in March, what is the one thing your idea should have done for you that day?\"; F4 [fixed] \"How would you say your idea now, in one sentence?\"."
+    },
+    {
+      "n": 3,
+      "expected": "The button is \"Ask someone\".",
+      "happened": "Button \"Ask someone\" / \"Three quick questions, then pick a day. Nothing is sent.\". Next-step line \"What's next: find someone who has this problem, ask them what happened, then decide what to do with the idea.\"."
+    },
+    {
+      "n": 4,
+      "expected": "The plan step starts with \"Who could you ask?\".",
+      "happened": "The step asked: F7 [fixed] \"Who could you ask? Someone who has this problem. A name, initials, or a few words.\"; F5 [writer] \"If Sam described the moment he realized he hadn't documented his flat properly, what do you think he would say?\"; F6 [fixed] \"Finish the sentence: I'd drop it if Sam told me...\"; When? \"Ask Sam\". The run waited 2 ms on F5 for the label: {\"at\":\"2026-11-07T15:35:31.653Z\",\"type\":\"label\",\"step\":\"F7\",\"label\":\"Sam\",\"is_self\":false,\"prompt_version\":\"2026-11-07b\",\"model\":\"claude-sonnet-4-6\",\"ai_fields\":[\"label\"]}. Confirmation \"Planned for today: ask Sam.\"; YOU EXPECT \"That he took a few photos on his phone and hopes for the best\"; YOU'D DROP IT IF \"His landlord already gave him a full checklist\". Requests in the whole session: {\"/m0\":1,\"/question\":5,\"/m1\":1,\"/m2\":1,\"/label\":1}; model calls 10. Page errors: none."
+    }
+  ],
+  "worker_requests": [
+    {
+      "at": "2026-11-07T15:35:24.608Z",
+      "ms": 1794065724608,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "An AI tool that helps you when you rent a place to document the current conditions, easily."
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:24.608Z",
+      "ms": 1794065724608,
+      "path": "/question",
+      "body": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": []
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:24.608Z",
+      "ms": 1794065724608,
+      "path": "/question",
+      "body": {
+        "path": "experiment",
+        "slot": "E1",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": []
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:26.421Z",
+      "ms": 1794065726421,
+      "path": "/m1",
+      "body": {
+        "spark_summary": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "person_name": "",
+        "relationship": "Me, when I moved into my flat in March.",
+        "maturity_class": 0,
+        "with_label": true
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:26.421Z",
+      "ms": 1794065726421,
+      "path": "/question",
+      "body": {
+        "path": "fix",
+        "slot": "F2",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who is the last person you saw struggle to document the condition of a rental, or was it you?",
+            "answer": "Me, when I moved into my flat in March."
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:27.891Z",
+      "ms": 1794065727891,
+      "path": "/question",
+      "body": {
+        "path": "fix",
+        "slot": "F3",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who is the last person you saw struggle to document the condition of a rental, or was it you?",
+            "answer": "Me, when I moved into my flat in March."
+          },
+          {
+            "slot": "F2",
+            "question": "When you moved into your flat in March, what did you actually do to document its condition?",
+            "answer": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered."
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:30.239Z",
+      "ms": 1794065730239,
+      "path": "/m2",
+      "body": {
+        "flow": "first_session_v1",
+        "user_line": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "grape_name": "",
+        "grape_relationship": "",
+        "maturity_class": 2,
+        "user_answer": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered.",
+        "gap_in_play": false
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:30.604Z",
+      "ms": 1794065730604,
+      "path": "/label",
+      "body": {
+        "answer": "Sam, my neighbour, who moved into the flat upstairs last month",
+        "kind": "person"
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:30.605Z",
+      "ms": 1794065730605,
+      "path": "/question",
+      "body": {
+        "path": "fix",
+        "slot": "F5",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who is the last person you saw struggle to document the condition of a rental, or was it you?",
+            "answer": "Me, when I moved into my flat in March."
+          },
+          {
+            "slot": "F2",
+            "question": "When you moved into your flat in March, what did you actually do to document its condition?",
+            "answer": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered."
+          },
+          {
+            "slot": "F3",
+            "question": "When you moved into your flat in March, what is the one thing your idea should have done for you that day?",
+            "answer": "Tell me which rooms and fittings to photograph, and keep it all in one report."
+          },
+          {
+            "slot": "F4",
+            "question": "How would you say your idea now, in one sentence?",
+            "answer": "An app that walks you through recording the state of a rented flat on move in day."
+          },
+          {
+            "slot": "F7",
+            "question": "Who could you ask? Someone who has this problem. A name, initials, or a few words.",
+            "answer": "Sam, my neighbour, who moved into the flat upstairs last month"
+          }
+        ]
+      }
+    }
+  ]
+}

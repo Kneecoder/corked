@@ -1,0 +1,565 @@
+{
+  "scenario": "b1c-t5",
+  "title": "B1c T5: the writer held for 10 seconds, and the writer returning a broken question",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T15:35:47.245Z",
+  "finished_at": "2026-11-07T15:36:06.591Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T15:35:47.355Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T15:35:47.497Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T15:35:47.590Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T15:35:47.625Z",
+      "step": "picked fix",
+      "note": "· · ·"
+    },
+    {
+      "at": "2026-11-07T15:35:53.740Z",
+      "step": "answered F1",
+      "note": "My grandpa, 76."
+    },
+    {
+      "at": "2026-11-07T15:35:59.843Z",
+      "step": "answered F2",
+      "note": "He called me to come fix it, he had no idea what to do."
+    },
+    {
+      "at": "2026-11-07T15:36:05.888Z",
+      "step": "answered F3",
+      "note": "Gvie im an estiamte of the work to be done to keep it a nice looking garden"
+    },
+    {
+      "at": "2026-11-07T15:36:05.923Z",
+      "step": "answered F4",
+      "note": "An app that maps a garden and tells you how often it needs upkeep and which tools you need."
+    },
+    {
+      "at": "2026-11-07T15:36:06.059Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T15:36:06.093Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T15:36:06.123Z",
+      "step": "picked experiment",
+      "note": "When did you last see someone do something like your idea, even by hand or in another app?"
+    },
+    {
+      "at": "2026-11-07T15:36:06.155Z",
+      "step": "answered E1",
+      "note": "My friends quiz each other about old match results in our group chat."
+    },
+    {
+      "at": "2026-11-07T15:36:06.254Z",
+      "step": "answered E2",
+      "note": "Like they want one more round straight away."
+    },
+    {
+      "at": "2026-11-07T15:36:06.354Z",
+      "step": "answered E3",
+      "note": "Ten football questions on one page and a score at the end."
+    },
+    {
+      "at": "2026-11-07T15:36:06.387Z",
+      "step": "answered E5",
+      "note": "A trivia app where you challenge yourself and other people on ball (soccer) trivia information."
+    },
+    {
+      "at": "2026-11-07T15:36:06.586Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1c-t5\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "held": [
+      {
+        "path": "/question",
+        "held_from": "2026-11-07T15:35:47.574Z",
+        "released_at": "2026-11-07T15:35:57.574Z"
+      },
+      {
+        "path": "/question",
+        "held_from": "2026-11-07T15:35:47.574Z",
+        "released_at": "2026-11-07T15:35:57.575Z"
+      },
+      {
+        "path": "/question",
+        "held_from": "2026-11-07T15:35:53.738Z",
+        "released_at": "2026-11-07T15:36:03.752Z"
+      },
+      {
+        "path": "/question",
+        "held_from": "2026-11-07T15:35:59.841Z"
+      }
+    ],
+    "slow": [
+      {
+        "screen": "screen-first",
+        "qid": "F1",
+        "question": "Who's the last person you saw run into this? It can be you.",
+        "start": "A few questions to sharpen this idea. Then you pick a next step.",
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "fallback",
+        "ready": true,
+        "first_wrote": null,
+        "ai_tag": false,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "A few questions to sharpen this idea. Then you pick a next step.\n\nWh\nDon't know yet\nContinue →",
+        "dots_ms": 6070,
+        "answered": {
+          "text": "My grandpa, 76."
+        },
+        "next_screen_after_ms": 2
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F2",
+        "question": "The last time they had this problem, what did they do?",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "fallback",
+        "ready": true,
+        "first_wrote": null,
+        "ai_tag": false,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "T\nDon't know yet\nContinue →",
+        "dots_ms": 6061,
+        "answered": {
+          "text": "He called me to come fix it, he had no idea what to do."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F3",
+        "question": "If your idea could do only one thing for them, what would it be?",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "fallback",
+        "ready": true,
+        "first_wrote": null,
+        "ai_tag": false,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "Don't know yet\nContinue →",
+        "dots_ms": 6016,
+        "answered": {
+          "text": "Gvie im an estiamte of the work to be done to keep it a nice looking garden"
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "F4",
+        "question": "How would you say your idea now, in one sentence?",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "fixed",
+        "ready": true,
+        "first_wrote": "You first wrote: A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "ai_tag": false,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "YOU FIRST WROTE:\nA tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.\n\nDon't know yet\nContinue →",
+        "dots_ms": 1,
+        "answered": {
+          "text": "An app that maps a garden and tells you how often it needs upkeep and which tools you need."
+        },
+        "next_screen_after_ms": 2
+      }
+    ],
+    "broken_sent": [
+      "F1",
+      "E1",
+      "E2",
+      "E3"
+    ],
+    "broken": [
+      {
+        "screen": "screen-first",
+        "qid": "E1",
+        "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+        "start": "A few questions to sharpen this idea. Then you pick a next step.",
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "fallback",
+        "ready": true,
+        "first_wrote": null,
+        "ai_tag": false,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "A few questions to sharpen this idea. Then you pick a next step.\n\nDon't know yet\nContinue →",
+        "dots_ms": 1,
+        "answered": {
+          "text": "My friends quiz each other about old match results in our group chat."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E2",
+        "question": "In the first minute of using it, what should someone feel?",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "fallback",
+        "ready": true,
+        "first_wrote": null,
+        "ai_tag": false,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "I\nDon't know yet\nContinue →",
+        "dots_ms": 61,
+        "answered": {
+          "text": "Like they want one more round straight away."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E3",
+        "question": "What's the simplest version you could build quickly, so people can try it?",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "fallback",
+        "ready": true,
+        "first_wrote": null,
+        "ai_tag": false,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "W\nDon't know yet\nContinue →",
+        "dots_ms": 61,
+        "answered": {
+          "text": "Ten football questions on one page and a score at the end."
+        },
+        "next_screen_after_ms": 1
+      },
+      {
+        "screen": "screen-first",
+        "qid": "E5",
+        "question": "How would you say your idea now, in one sentence?",
+        "start": null,
+        "example": null,
+        "taps": [],
+        "tap_selected": null,
+        "buttons": [
+          "Don't know yet"
+        ],
+        "unsure": "Don't know yet",
+        "not_set": null,
+        "skip": null,
+        "next": "Continue →",
+        "number_fields": 0,
+        "end": false,
+        "source": "fixed",
+        "ready": true,
+        "first_wrote": "You first wrote: A trivia app for football fans to challenge each others ballknowledge.",
+        "ai_tag": false,
+        "all_buttons": [
+          "Don't know yet",
+          "Continue →"
+        ],
+        "visible_text": "YOU FIRST WROTE:\nA trivia app for football fans to challenge each others ballknowledge.\n\nDon't know yet\nContinue →",
+        "dots_ms": 1,
+        "answered": {
+          "text": "A trivia app where you challenge yourself and other people on ball (soccer) trivia information."
+        },
+        "next_screen_after_ms": 1
+      }
+    ]
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "Held 10 seconds: the fallback shows within 6 seconds.",
+      "happened": "F1 [fallback] 6070 ms of dots, \"Who's the last person you saw run into this? It can be you.\"; F2 [fallback] 6061 ms of dots, \"The last time they had this problem, what did they do?\"; F3 [fallback] 6016 ms of dots, \"If your idea could do only one thing for them, what would it be?\"; F4 [fixed] 1 ms of dots, \"How would you say your idea now, in one sentence?\". Held: /question 2026-11-07T15:35:47.574Z to 2026-11-07T15:35:57.574Z; /question 2026-11-07T15:35:47.574Z to 2026-11-07T15:35:57.575Z; /question 2026-11-07T15:35:53.738Z to 2026-11-07T15:36:03.752Z; /question 2026-11-07T15:35:59.841Z to not let go."
+    },
+    {
+      "n": 2,
+      "expected": "A broken question: the fallback shows within 6 seconds.",
+      "happened": "E1 [fallback] 1 ms of dots, \"When did you last see someone do something like your idea, even by hand or in another app?\"; E2 [fallback] 61 ms of dots, \"In the first minute of using it, what should someone feel?\"; E3 [fallback] 61 ms of dots, \"What's the simplest version you could build quickly, so people can try it?\"; E5 [fixed] 1 ms of dots, \"How would you say your idea now, in one sentence?\". Stubbed slots: F1, E1, E2, E3."
+    },
+    {
+      "n": 3,
+      "expected": "No screen waits longer.",
+      "happened": "Longest dots on any screen: 6070 ms. From Continue to the next screen: F1 2 ms, F2 1 ms, F3 1 ms, F4 2 ms, E1 1 ms, E2 1 ms, E3 1 ms, E5 1 ms. Page errors: none."
+    }
+  ],
+  "worker_requests": [
+    {
+      "at": "2026-11-07T15:35:47.573Z",
+      "ms": 1794065747573,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need."
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:47.573Z",
+      "ms": 1794065747573,
+      "path": "/question",
+      "body": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": []
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:47.574Z",
+      "ms": 1794065747574,
+      "path": "/question",
+      "body": {
+        "path": "experiment",
+        "slot": "E1",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": []
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:53.738Z",
+      "ms": 1794065753738,
+      "path": "/m1",
+      "body": {
+        "spark_summary": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "person_name": "",
+        "relationship": "My grandpa, 76.",
+        "maturity_class": 0,
+        "with_label": true
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:53.738Z",
+      "ms": 1794065753738,
+      "path": "/question",
+      "body": {
+        "path": "fix",
+        "slot": "F2",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "My grandpa, 76."
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:59.841Z",
+      "ms": 1794065759841,
+      "path": "/question",
+      "body": {
+        "path": "fix",
+        "slot": "F3",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "My grandpa, 76."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "He called me to come fix it, he had no idea what to do."
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:59.842Z",
+      "ms": 1794065759842,
+      "path": "/m2",
+      "body": {
+        "flow": "first_session_v1",
+        "user_line": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "grape_name": "my grandpa",
+        "grape_relationship": "My grandpa, 76.",
+        "maturity_class": 0,
+        "user_answer": "He called me to come fix it, he had no idea what to do.",
+        "gap_in_play": false
+      }
+    },
+    {
+      "at": "2026-11-07T15:36:06.086Z",
+      "ms": 1794065766086,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "A trivia app for football fans to challenge each others ballknowledge."
+      }
+    },
+    {
+      "at": "2026-11-07T15:36:06.086Z",
+      "ms": 1794065766086,
+      "path": "/question",
+      "body": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": []
+      }
+    },
+    {
+      "at": "2026-11-07T15:36:06.087Z",
+      "ms": 1794065766087,
+      "path": "/question",
+      "body": {
+        "path": "experiment",
+        "slot": "E1",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": []
+      }
+    },
+    {
+      "at": "2026-11-07T15:36:06.153Z",
+      "ms": 1794065766153,
+      "path": "/question",
+      "body": {
+        "path": "experiment",
+        "slot": "E2",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+            "answer": "My friends quiz each other about old match results in our group chat."
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-07T15:36:06.252Z",
+      "ms": 1794065766252,
+      "path": "/question",
+      "body": {
+        "path": "experiment",
+        "slot": "E3",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+            "answer": "My friends quiz each other about old match results in our group chat."
+          },
+          {
+            "slot": "E2",
+            "question": "In the first minute of using it, what should someone feel?",
+            "answer": "Like they want one more round straight away."
+          }
+        ]
+      }
+    }
+  ]
+}

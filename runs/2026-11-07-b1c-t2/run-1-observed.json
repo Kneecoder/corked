@@ -1,0 +1,689 @@
+{
+  "scenario": "b1c-t2",
+  "title": "B1c T2: the plan step, fix",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T15:35:16.892Z",
+  "finished_at": "2026-11-07T15:35:23.936Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T15:35:16.989Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T15:35:17.147Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T15:35:17.229Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T15:35:17.260Z",
+      "step": "picked fix",
+      "note": "· · ·"
+    },
+    {
+      "at": "2026-11-07T15:35:19.022Z",
+      "step": "answered F1",
+      "note": "My grandpa, 76."
+    },
+    {
+      "at": "2026-11-07T15:35:20.609Z",
+      "step": "answered F2",
+      "note": "He called me to come fix it, he had no idea what to do."
+    },
+    {
+      "at": "2026-11-07T15:35:21.756Z",
+      "step": "answered F3",
+      "note": "Gvie im an estiamte of the work to be done to keep it a nice looking garden"
+    },
+    {
+      "at": "2026-11-07T15:35:21.791Z",
+      "step": "answered F4",
+      "note": "An app that maps a garden and tells you how often it needs upkeep and which tools you need."
+    },
+    {
+      "at": "2026-11-07T15:35:23.539Z",
+      "step": "answered F5",
+      "note": "That he just guesses when it looks messy"
+    },
+    {
+      "at": "2026-11-07T15:35:23.572Z",
+      "step": "answered F6",
+      "note": "He doesn't see it as an issue"
+    },
+    {
+      "at": "2026-11-07T15:35:23.642Z",
+      "step": "planned the step",
+      "note": "Planned for Monday: ask your grandpa."
+    },
+    {
+      "at": "2026-11-07T15:35:23.931Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1c-t2\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "end": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "An app that maps a garden and tells you how often it needs upkeep and which tools you need.\n7 Nov 2026"
+        },
+        {
+          "row": "person",
+          "label": "THE PERSON",
+          "value": "My grandpa, 76."
+        },
+        {
+          "row": "last-time",
+          "label": "WHAT HAPPENED LAST TIME",
+          "value": "He called me to come fix it, he had no idea what to do."
+        },
+        {
+          "row": "one-thing",
+          "label": "THE ONE THING",
+          "value": "Gvie im an estiamte of the work to be done to keep it a nice looking garden"
+        }
+      ],
+      "observation": null,
+      "ai_tagged": [],
+      "nobody": null,
+      "switch_link": null,
+      "next_line": "What's next: ask your grandpa what happened, see if it matches what you expect, then decide what to do with the idea.",
+      "plan": null,
+      "choices": [
+        {
+          "id": "fs-choice-ask",
+          "text": "Ask your grandpa",
+          "cls": "btn-second fs-choice",
+          "note": "Two quick questions, then pick a day. Nothing is sent."
+        },
+        {
+          "id": "fs-rethink",
+          "text": "Rethink it first",
+          "cls": "btn-second fs-choice",
+          "note": "Go over your sentence and the one thing again."
+        },
+        {
+          "id": "fs-cellar",
+          "text": "Back to the cellar",
+          "cls": "btn-ghost fs-cellar",
+          "note": null
+        }
+      ],
+      "visible_text": "FIRST\nA tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.\n7 Nov 2026\nNOW\nAn app that maps a garden and tells you how often it needs upkeep and which tools you need.\n7 Nov 2026\nTHE PERSON\nMy grandpa, 76.\nWHAT HAPPENED LAST TIME\nHe called me to come fix it, he had no idea what to do.\nTHE ONE THING\nGvie im an estiamte of the work to be done to keep it a nice looking garden\n\nWhat's next: ask your grandpa what happened, see if it matches what you expect, then decide what to do with the idea.\n\nAsk your grandpa\nTwo quick questions, then pick a day. Nothing is sent.\nRethink it first\nGo over your sentence and the one thing again.\nBack to the cellar"
+    },
+    "day": "2026-11-09",
+    "plan": {
+      "asked": [
+        {
+          "qid": "F5",
+          "question": "If you asked your grandpa about that moment he called you, what do you think he would say?",
+          "source": "writer",
+          "ai_tag": true,
+          "dots_ms": 1,
+          "extras": [],
+          "buttons": [
+            "Don't know yet",
+            "Continue →"
+          ]
+        },
+        {
+          "qid": "F6",
+          "question": "Finish the sentence: I'd drop it if your grandpa told me...",
+          "source": "fixed",
+          "ai_tag": false,
+          "dots_ms": 1,
+          "extras": [],
+          "buttons": [
+            "Don't know yet",
+            "Continue →"
+          ]
+        }
+      ],
+      "when": {
+        "heading": "Ask your grandpa",
+        "taps": [
+          "Today",
+          "This week",
+          "Pick a day"
+        ]
+      },
+      "confirmation": {
+        "rows": [],
+        "observation": null,
+        "ai_tagged": [],
+        "nobody": null,
+        "switch_link": null,
+        "next_line": null,
+        "plan": {
+          "planned": "Planned for Monday: ask your grandpa.",
+          "rows": [
+            {
+              "row": "expect",
+              "label": "YOU EXPECT",
+              "value": "That he just guesses when it looks messy"
+            },
+            {
+              "row": "drop",
+              "label": "YOU'D DROP IT IF",
+              "value": "He doesn't see it as an issue"
+            }
+          ],
+          "on_bottle": "It's on this bottle in your cellar.",
+          "button": "Back to the cellar"
+        },
+        "choices": [],
+        "visible_text": "Planned for Monday: ask your grandpa.\nYOU EXPECT\nThat he just guesses when it looks messy\nYOU'D DROP IT IF\nHe doesn't see it as an issue\n\nIt's on this bottle in your cellar.\n\nBack to the cellar"
+      }
+    },
+    "card": {
+      "status": "Planned for Monday",
+      "step": "Ask your grandpa"
+    },
+    "reopened": {
+      "rows": [
+        {
+          "row": "first",
+          "label": "FIRST",
+          "value": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.\n7 Nov 2026"
+        },
+        {
+          "row": "now",
+          "label": "NOW",
+          "value": "An app that maps a garden and tells you how often it needs upkeep and which tools you need.\n7 Nov 2026"
+        },
+        {
+          "row": "person",
+          "label": "THE PERSON",
+          "value": "My grandpa, 76."
+        },
+        {
+          "row": "last-time",
+          "label": "WHAT HAPPENED LAST TIME",
+          "value": "He called me to come fix it, he had no idea what to do."
+        },
+        {
+          "row": "one-thing",
+          "label": "THE ONE THING",
+          "value": "Gvie im an estiamte of the work to be done to keep it a nice looking garden"
+        }
+      ],
+      "observation": null,
+      "ai_tagged": [],
+      "nobody": null,
+      "switch_link": null,
+      "next_line": null,
+      "plan": {
+        "planned": "Planned for Monday: ask your grandpa.",
+        "rows": [
+          {
+            "row": "expect",
+            "label": "YOU EXPECT",
+            "value": "That he just guesses when it looks messy"
+          },
+          {
+            "row": "drop",
+            "label": "YOU'D DROP IT IF",
+            "value": "He doesn't see it as an issue"
+          }
+        ],
+        "on_bottle": "It's on this bottle in your cellar.",
+        "button": "Back to the cellar"
+      },
+      "choices": [],
+      "visible_text": "FIRST\nA tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.\n7 Nov 2026\nNOW\nAn app that maps a garden and tells you how often it needs upkeep and which tools you need.\n7 Nov 2026\nTHE PERSON\nMy grandpa, 76.\nWHAT HAPPENED LAST TIME\nHe called me to come fix it, he had no idea what to do.\nTHE ONE THING\nGvie im an estiamte of the work to be done to keep it a nice looking garden\nPlanned for Monday: ask your grandpa.\nYOU EXPECT\nThat he just guesses when it looks messy\nYOU'D DROP IT IF\nHe doesn't see it as an issue\n\nIt's on this bottle in your cellar.\n\nBack to the cellar"
+    },
+    "routes": {
+      "/m0": 1,
+      "/question": 5,
+      "/m1": 1,
+      "/m2": 1
+    },
+    "model_calls": 9
+  },
+  "checkpoints": {
+    "label": {
+      "at": "2026-11-07T15:35:21.914Z",
+      "type": "label",
+      "step": "F1",
+      "label": "your grandpa",
+      "is_self": false,
+      "prompt_version": "2026-11-07b",
+      "model": "claude-sonnet-4-6",
+      "ai_fields": [
+        "observation.surface_text",
+        "label"
+      ]
+    },
+    "bottle": {
+      "first": {
+        "at": "2026-11-07T15:35:17.204Z",
+        "path": "fix",
+        "slots": {
+          "who": {
+            "q": "F1",
+            "value": "answer",
+            "question": "Who is the last person you saw unsure about how often their garden needed upkeep, or was that you?",
+            "at": "2026-11-07T15:35:19.020Z",
+            "text": "My grandpa, 76.",
+            "question_source": "writer",
+            "question_prompt_version": "2026-11-07c",
+            "question_model": "claude-sonnet-4-6"
+          },
+          "last_time": {
+            "q": "F2",
+            "value": "answer",
+            "question": "The last time your grandpa's garden needed upkeep, what did he do to figure out what had to be done?",
+            "at": "2026-11-07T15:35:20.603Z",
+            "text": "He called me to come fix it, he had no idea what to do.",
+            "question_source": "writer",
+            "question_prompt_version": "2026-11-07c",
+            "question_model": "claude-sonnet-4-6"
+          },
+          "one_thing": {
+            "q": "F3",
+            "value": "answer",
+            "question": "If your idea could have done one thing for your grandpa before he called you, what would it be?",
+            "at": "2026-11-07T15:35:21.753Z",
+            "text": "Gvie im an estiamte of the work to be done to keep it a nice looking garden",
+            "question_source": "writer",
+            "question_prompt_version": "2026-11-07c",
+            "question_model": "claude-sonnet-4-6"
+          },
+          "now": {
+            "q": "F4",
+            "value": "answer",
+            "question": "How would you say your idea now, in one sentence?",
+            "at": "2026-11-07T15:35:21.786Z",
+            "text": "An app that maps a garden and tells you how often it needs upkeep and which tools you need.",
+            "question_source": "fixed"
+          },
+          "expect": {
+            "q": "F5",
+            "value": "answer",
+            "question": "If you asked your grandpa about that moment he called you, what do you think he would say?",
+            "at": "2026-11-07T15:35:23.537Z",
+            "text": "That he just guesses when it looks messy",
+            "question_source": "writer",
+            "question_prompt_version": "2026-11-07c",
+            "question_model": "claude-sonnet-4-6"
+          },
+          "drop": {
+            "q": "F6",
+            "value": "answer",
+            "question": "Finish the sentence: I'd drop it if your grandpa told me...",
+            "at": "2026-11-07T15:35:23.570Z",
+            "text": "He doesn't see it as an issue",
+            "question_source": "fixed"
+          }
+        },
+        "queue": [],
+        "grades": {
+          "person": {
+            "state": "clearing",
+            "person_kind": "described_unnamed",
+            "one_person": true,
+            "for_text": "My grandpa, 76.",
+            "at": "2026-11-07T15:35:21.914Z"
+          }
+        },
+        "step": {
+          "kind": "ask",
+          "label": "Ask your grandpa",
+          "words": "ask your grandpa",
+          "when": "day",
+          "day": "2026-11-09",
+          "at": "2026-11-07T15:35:23.636Z"
+        },
+        "maturity": null,
+        "m0_open": null,
+        "m2": null,
+        "labels": {
+          "person": {
+            "text": "your grandpa",
+            "is_self": false,
+            "for_text": "My grandpa, 76.",
+            "at": "2026-11-07T15:35:21.914Z"
+          }
+        },
+        "shown": {
+          "F1": {
+            "text": "Who is the last person you saw unsure about how often their garden needed upkeep, or was that you?",
+            "source": "writer",
+            "prompt_version": "2026-11-07c",
+            "model": "claude-sonnet-4-6",
+            "at": "2026-11-07T15:35:18.956Z",
+            "waited_ms": 1701
+          },
+          "F2": {
+            "text": "The last time your grandpa's garden needed upkeep, what did he do to figure out what had to be done?",
+            "source": "writer",
+            "prompt_version": "2026-11-07c",
+            "model": "claude-sonnet-4-6",
+            "at": "2026-11-07T15:35:20.514Z",
+            "waited_ms": 1494
+          },
+          "F3": {
+            "text": "If your idea could have done one thing for your grandpa before he called you, what would it be?",
+            "source": "writer",
+            "prompt_version": "2026-11-07c",
+            "model": "claude-sonnet-4-6",
+            "at": "2026-11-07T15:35:21.685Z",
+            "waited_ms": 1081
+          },
+          "F5": {
+            "text": "If you asked your grandpa about that moment he called you, what do you think he would say?",
+            "source": "writer",
+            "prompt_version": "2026-11-07c",
+            "model": "claude-sonnet-4-6",
+            "at": "2026-11-07T15:35:23.431Z",
+            "waited_ms": 1111
+          }
+        }
+      },
+      "log": [
+        {
+          "at": "2026-11-07T15:35:17.204Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "spark",
+          "question": "What's the idea?",
+          "answer": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need."
+        },
+        {
+          "at": "2026-11-07T15:35:17.254Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "gate",
+          "question": "Is this a fix or an experiment?",
+          "answer": "A fix. I saw something go wrong, for someone or for me.",
+          "path": "fix"
+        },
+        {
+          "at": "2026-11-07T15:35:19.020Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "F1",
+          "slot": "who",
+          "value": "answer",
+          "question": "Who is the last person you saw unsure about how often their garden needed upkeep, or was that you?",
+          "answer": "My grandpa, 76.",
+          "question_source": "writer",
+          "question_prompt_version": "2026-11-07c",
+          "question_model": "claude-sonnet-4-6"
+        },
+        {
+          "at": "2026-11-07T15:35:20.603Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "F2",
+          "slot": "last_time",
+          "value": "answer",
+          "question": "The last time your grandpa's garden needed upkeep, what did he do to figure out what had to be done?",
+          "answer": "He called me to come fix it, he had no idea what to do.",
+          "question_source": "writer",
+          "question_prompt_version": "2026-11-07c",
+          "question_model": "claude-sonnet-4-6"
+        },
+        {
+          "at": "2026-11-07T15:35:21.753Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "F3",
+          "slot": "one_thing",
+          "value": "answer",
+          "question": "If your idea could have done one thing for your grandpa before he called you, what would it be?",
+          "answer": "Gvie im an estiamte of the work to be done to keep it a nice looking garden",
+          "question_source": "writer",
+          "question_prompt_version": "2026-11-07c",
+          "question_model": "claude-sonnet-4-6"
+        },
+        {
+          "at": "2026-11-07T15:35:21.786Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "F4",
+          "slot": "now",
+          "value": "answer",
+          "question": "How would you say your idea now, in one sentence?",
+          "answer": "An app that maps a garden and tells you how often it needs upkeep and which tools you need.",
+          "question_source": "fixed"
+        },
+        {
+          "at": "2026-11-07T15:35:21.914Z",
+          "type": "grade",
+          "mech": "M1",
+          "step": "F1",
+          "state": "clearing",
+          "person_kind": "described_unnamed",
+          "one_person": true,
+          "prompt_version": "2026-11-07b",
+          "model": "claude-sonnet-4-6",
+          "ai_fields": [
+            "observation.surface_text",
+            "label"
+          ]
+        },
+        {
+          "at": "2026-11-07T15:35:21.914Z",
+          "type": "label",
+          "step": "F1",
+          "label": "your grandpa",
+          "is_self": false,
+          "prompt_version": "2026-11-07b",
+          "model": "claude-sonnet-4-6",
+          "ai_fields": [
+            "observation.surface_text",
+            "label"
+          ]
+        },
+        {
+          "at": "2026-11-07T15:35:22.319Z",
+          "type": "plan_step",
+          "flow": "first_session_v2",
+          "kind": "ask",
+          "asks": [
+            "F5",
+            "F6"
+          ]
+        },
+        {
+          "at": "2026-11-07T15:35:23.537Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "F5",
+          "slot": "expect",
+          "value": "answer",
+          "question": "If you asked your grandpa about that moment he called you, what do you think he would say?",
+          "answer": "That he just guesses when it looks messy",
+          "question_source": "writer",
+          "question_prompt_version": "2026-11-07c",
+          "question_model": "claude-sonnet-4-6",
+          "plan_step": "ask"
+        },
+        {
+          "at": "2026-11-07T15:35:23.570Z",
+          "type": "answer",
+          "flow": "first_session_v2",
+          "step": "F6",
+          "slot": "drop",
+          "value": "answer",
+          "question": "Finish the sentence: I'd drop it if your grandpa told me...",
+          "answer": "He doesn't see it as an issue",
+          "question_source": "fixed",
+          "plan_step": "ask"
+        },
+        {
+          "at": "2026-11-07T15:35:23.636Z",
+          "type": "next_step",
+          "flow": "first_session_v2",
+          "kind": "ask",
+          "label": "Ask your grandpa",
+          "words": "ask your grandpa",
+          "when": "day",
+          "day": "2026-11-09"
+        }
+      ]
+    }
+  },
+  "expected": [
+    {
+      "n": 1,
+      "expected": "\"Ask your grandpa\" asks F5 (from the writer), F6, When.",
+      "happened": "End screen button \"Ask your grandpa\" / \"Two quick questions, then pick a day. Nothing is sent.\". Next-step line \"What's next: ask your grandpa what happened, see if it matches what you expect, then decide what to do with the idea.\". The step asked: F5 [writer, AI tag, 1 ms of dots] \"If you asked your grandpa about that moment he called you, what do you think he would say?\"; F6 [fixed, 1 ms of dots] \"Finish the sentence: I'd drop it if your grandpa told me...\" BREAKS one question mark, at the end; then When? \"Ask your grandpa\" with Today, This week, Pick a day. Label: {\"at\":\"2026-11-07T15:35:21.914Z\",\"type\":\"label\",\"step\":\"F1\",\"label\":\"your grandpa\",\"is_self\":false,\"prompt_version\":\"2026-11-07b\",\"model\":\"claude-sonnet-4-6\",\"ai_fields\":[\"observation.surface_text\",\"label\"]}."
+    },
+    {
+      "n": 2,
+      "expected": "The confirmation and the reopened bottle show the plan.",
+      "happened": "Confirmation: \"Planned for Monday: ask your grandpa.\"; YOU EXPECT \"That he just guesses when it looks messy\"; YOU'D DROP IT IF \"He doesn't see it as an issue\"; \"It's on this bottle in your cellar.\"; button \"Back to the cellar\". Typed: F5 \"That he just guesses when it looks messy\", F6 \"He doesn't see it as an issue\". Reopened: record FIRST, NOW, THE PERSON, WHAT HAPPENED LAST TIME, THE ONE THING; plan \"Planned for Monday: ask your grandpa.\"; YOU EXPECT \"That he just guesses when it looks messy\"; YOU'D DROP IT IF \"He doesn't see it as an issue\"; \"It's on this bottle in your cellar.\"."
+    },
+    {
+      "n": 3,
+      "expected": "The card says \"Planned for [day]\".",
+      "happened": "Day picked 2026-11-09. Card: \"Planned for Monday\", step \"Ask your grandpa\". Stored step: {\"kind\":\"ask\",\"label\":\"Ask your grandpa\",\"words\":\"ask your grandpa\",\"when\":\"day\",\"day\":\"2026-11-09\",\"at\":\"2026-11-07T15:35:23.636Z\"}. Requests in the whole session: {\"/m0\":1,\"/question\":5,\"/m1\":1,\"/m2\":1}; model calls 9. Page errors: none."
+    }
+  ],
+  "worker_requests": [
+    {
+      "at": "2026-11-07T15:35:17.209Z",
+      "ms": 1794065717209,
+      "path": "/m0",
+      "body": {
+        "raw_spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need."
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:17.209Z",
+      "ms": 1794065717209,
+      "path": "/question",
+      "body": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": []
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:17.209Z",
+      "ms": 1794065717209,
+      "path": "/question",
+      "body": {
+        "path": "experiment",
+        "slot": "E1",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": []
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:19.021Z",
+      "ms": 1794065719021,
+      "path": "/m1",
+      "body": {
+        "spark_summary": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "person_name": "",
+        "relationship": "My grandpa, 76.",
+        "maturity_class": 0,
+        "with_label": true
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:19.021Z",
+      "ms": 1794065719021,
+      "path": "/question",
+      "body": {
+        "path": "fix",
+        "slot": "F2",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who is the last person you saw unsure about how often their garden needed upkeep, or was that you?",
+            "answer": "My grandpa, 76."
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:20.608Z",
+      "ms": 1794065720608,
+      "path": "/question",
+      "body": {
+        "path": "fix",
+        "slot": "F3",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who is the last person you saw unsure about how often their garden needed upkeep, or was that you?",
+            "answer": "My grandpa, 76."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time your grandpa's garden needed upkeep, what did he do to figure out what had to be done?",
+            "answer": "He called me to come fix it, he had no idea what to do."
+          }
+        ]
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:21.915Z",
+      "ms": 1794065721915,
+      "path": "/m2",
+      "body": {
+        "flow": "first_session_v1",
+        "user_line": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "grape_name": "my grandpa",
+        "grape_relationship": "My grandpa, 76.",
+        "maturity_class": 0,
+        "user_answer": "He called me to come fix it, he had no idea what to do.",
+        "gap_in_play": false
+      }
+    },
+    {
+      "at": "2026-11-07T15:35:22.320Z",
+      "ms": 1794065722320,
+      "path": "/question",
+      "body": {
+        "path": "fix",
+        "slot": "F5",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who is the last person you saw unsure about how often their garden needed upkeep, or was that you?",
+            "answer": "My grandpa, 76."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time your grandpa's garden needed upkeep, what did he do to figure out what had to be done?",
+            "answer": "He called me to come fix it, he had no idea what to do."
+          },
+          {
+            "slot": "F3",
+            "question": "If your idea could have done one thing for your grandpa before he called you, what would it be?",
+            "answer": "Gvie im an estiamte of the work to be done to keep it a nice looking garden"
+          },
+          {
+            "slot": "F4",
+            "question": "How would you say your idea now, in one sentence?",
+            "answer": "An app that maps a garden and tells you how often it needs upkeep and which tools you need."
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,352 @@
+{
+  "scenario": "b1c-t9",
+  "title": "B1c T9: a bottle from B1b and bottles from before B1 open as they do today",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T15:36:30.553Z",
+  "finished_at": "2026-11-07T15:36:57.641Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T15:36:34.047Z",
+      "step": "opened a bottle in both apps",
+      "note": "mw6h2cnbfdbjb: same view true"
+    },
+    {
+      "at": "2026-11-07T15:36:37.407Z",
+      "step": "opened a bottle in both apps",
+      "note": "mw6h2ill2305s: same view true"
+    },
+    {
+      "at": "2026-11-07T15:36:40.740Z",
+      "step": "opened a bottle in both apps",
+      "note": "mw6h2iz1zlbn1: same view true"
+    },
+    {
+      "at": "2026-11-07T15:36:44.087Z",
+      "step": "opened a bottle in both apps",
+      "note": "mw6h2jgmxgxut: same view true"
+    },
+    {
+      "at": "2026-11-07T15:36:47.417Z",
+      "step": "opened a bottle in both apps",
+      "note": "mw6h2kastcra0: same view true"
+    },
+    {
+      "at": "2026-11-07T15:36:50.761Z",
+      "step": "opened a bottle in both apps",
+      "note": "mw5o61t4no0y1: same view true"
+    },
+    {
+      "at": "2026-11-07T15:36:54.128Z",
+      "step": "opened a bottle in both apps",
+      "note": "mw5ocstdh5b6y: same view true"
+    },
+    {
+      "at": "2026-11-07T15:36:57.469Z",
+      "step": "opened a bottle in both apps",
+      "note": "mw5odezyi6aob: same view true"
+    },
+    {
+      "at": "2026-11-07T15:36:57.637Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1c-t9\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "exports": [
+      "runs/2026-11-07-b1b-t6/run-1-cellar.json",
+      "runs/2026-11-07-b1b-t7/run-1-cellar.json",
+      "runs/2026-11-07-trust-basics/run-1-cellar.json"
+    ],
+    "app_before": "e129030:corked_v6.html and shared/ on port 5500",
+    "bottles": [
+      {
+        "export": "runs/2026-11-07-b1b-t6/run-1-cellar.json",
+        "id": "mw6h2cnbfdbjb",
+        "idea": "An app for dog walkers who lose track of which owners have paid for the week.",
+        "flow": "first_session_v1",
+        "app_now": {
+          "card": "NO STEP PLANNED\nAn app for dog walkers who lose track of which owners have paid for the week.\nTODAY\nArchive\n×",
+          "view": {
+            "screen": "screen-first",
+            "panels": [],
+            "mech_label": "—",
+            "question": "",
+            "main_button": "Continue →",
+            "first_session": "FIRST An app for dog walkers who lose track of which owners have paid for the week. 7 Nov 2026 NOW A list that tells a dog walker who has paid for the week. 7 Nov 2026 THE PERSON Dana, my neighbour, she walks six dogs for people on our street THE LAST TIME Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later. I saw it THE ONE THING Show her who has paid this week without opening the bank app. WHAT YOU EXPECT TO HEAR That she checks her bank app every Friday and still misses one or two owners. YOU'D DROP IT IF If she says she always knows who owes her and it never costs her anything. What's next: ask Dana about the last time, put what you hear next to what you expected, then decide what to do with the idea. Ask Dana about the last time Saves the step and a day. Nothing is sent. Rethink it first Go over your sentence and the one thing again. Back to the cellar"
+          },
+          "s_fields_changed": []
+        },
+        "app_before_b1c": {
+          "card": "NO STEP PLANNED\nAn app for dog walkers who lose track of which owners have paid for the week.\nTODAY\nArchive\n×",
+          "view": {
+            "screen": "screen-first",
+            "panels": [],
+            "mech_label": "—",
+            "question": "",
+            "main_button": "Continue →",
+            "first_session": "FIRST An app for dog walkers who lose track of which owners have paid for the week. 7 Nov 2026 NOW A list that tells a dog walker who has paid for the week. 7 Nov 2026 THE PERSON Dana, my neighbour, she walks six dogs for people on our street THE LAST TIME Last Friday she stood at my gate scrolling her bank app for ten minutes, then wrote three owners' names on the back of a receipt to chase later. I saw it THE ONE THING Show her who has paid this week without opening the bank app. WHAT YOU EXPECT TO HEAR That she checks her bank app every Friday and still misses one or two owners. YOU'D DROP IT IF If she says she always knows who owes her and it never costs her anything. What's next: ask Dana about the last time, put what you hear next to what you expected, then decide what to do with the idea. Ask Dana about the last time Saves the step and a day. Nothing is sent. Rethink it first Go over your sentence and the one thing again. Back to the cellar"
+          },
+          "s_fields_changed": []
+        },
+        "same_card": true,
+        "same_view": true,
+        "same_changes": true
+      },
+      {
+        "export": "runs/2026-11-07-b1b-t6/run-1-cellar.json",
+        "id": "mw6h2ill2305s",
+        "idea": "A daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it.",
+        "flow": "first_session_v1",
+        "app_now": {
+          "card": "NO STEP PLANNED\nA daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it.\nTODAY\nArchive\n×",
+          "view": {
+            "screen": "screen-first",
+            "panels": [],
+            "mech_label": "—",
+            "question": "",
+            "main_button": "Continue →",
+            "first_session": "FIRST A daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it. 7 Nov 2026 NOW A daily photo where you write one sentence and then read everyone else's. 7 Nov 2026 THE LAST TIME SOMETHING LIKE IT HAPPENED My friends post their Wordle scores in our group chat every morning. THE FEELING Curious to see what the others wrote, and a little proud of their own sentence. THE SMALLEST VERSION One photo, one text box, then every sentence on one page. I already built it https://example.com/one-photo THE FIRST PEOPLE Sam, Priya and my brother Tom YOU'D KEEP GOING IF Two of the three come back on their own the next day and write another sentence. What's next: let the people you named try it, or build the simplest version first, see what happens, then decide what to do with the idea. Show it to the people you named Saves the step and a day. Nothing is sent. Build the simplest version first Saves the step and a day. Rethink it first Go over your sentence, the feeling and the simplest version again. Back to the cellar"
+          },
+          "s_fields_changed": []
+        },
+        "app_before_b1c": {
+          "card": "NO STEP PLANNED\nA daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it.\nTODAY\nArchive\n×",
+          "view": {
+            "screen": "screen-first",
+            "panels": [],
+            "mech_label": "—",
+            "question": "",
+            "main_button": "Continue →",
+            "first_session": "FIRST A daily game where everyone gets the same photo, writes one sentence describing it, then sees how everyone else described it. 7 Nov 2026 NOW A daily photo where you write one sentence and then read everyone else's. 7 Nov 2026 THE LAST TIME SOMETHING LIKE IT HAPPENED My friends post their Wordle scores in our group chat every morning. THE FEELING Curious to see what the others wrote, and a little proud of their own sentence. THE SMALLEST VERSION One photo, one text box, then every sentence on one page. I already built it https://example.com/one-photo THE FIRST PEOPLE Sam, Priya and my brother Tom YOU'D KEEP GOING IF Two of the three come back on their own the next day and write another sentence. What's next: let the people you named try it, or build the simplest version first, see what happens, then decide what to do with the idea. Show it to the people you named Saves the step and a day. Nothing is sent. Build the simplest version first Saves the step and a day. Rethink it first Go over your sentence, the feeling and the simplest version again. Back to the cellar"
+          },
+          "s_fields_changed": []
+        },
+        "same_card": true,
+        "same_view": true,
+        "same_changes": true
+      },
+      {
+        "export": "runs/2026-11-07-b1b-t6/run-1-cellar.json",
+        "id": "mw6h2iz1zlbn1",
+        "idea": "An app for parents to swap school uniform their kids have outgrown.",
+        "flow": "first_session_v1",
+        "app_now": {
+          "card": "NO STEP PLANNED\nAn app for parents to swap school uniform their kids have outgrown.\nTODAY\nArchive\n×",
+          "view": {
+            "screen": "screen-first",
+            "panels": [],
+            "mech_label": "—",
+            "question": "",
+            "main_button": "Continue →",
+            "first_session": "FIRST An app for parents to swap school uniform their kids have outgrown. 7 Nov 2026 NOW Skip THE LAST TIME SOMETHING LIKE IT HAPPENED Don't know yet THE FEELING Skip THE SMALLEST VERSION Skip THE FIRST PEOPLE Skip YOU'D KEEP GOING IF Skip What's next: let someone try it, or build the simplest version first, see what happens, then decide what to do with the idea. Show it to someone Saves the step and a day. Nothing is sent. Build the simplest version first Saves the step and a day. Rethink it first Go over your sentence, the feeling and the simplest version again. Back to the cellar"
+          },
+          "s_fields_changed": []
+        },
+        "app_before_b1c": {
+          "card": "NO STEP PLANNED\nAn app for parents to swap school uniform their kids have outgrown.\nTODAY\nArchive\n×",
+          "view": {
+            "screen": "screen-first",
+            "panels": [],
+            "mech_label": "—",
+            "question": "",
+            "main_button": "Continue →",
+            "first_session": "FIRST An app for parents to swap school uniform their kids have outgrown. 7 Nov 2026 NOW Skip THE LAST TIME SOMETHING LIKE IT HAPPENED Don't know yet THE FEELING Skip THE SMALLEST VERSION Skip THE FIRST PEOPLE Skip YOU'D KEEP GOING IF Skip What's next: let someone try it, or build the simplest version first, see what happens, then decide what to do with the idea. Show it to someone Saves the step and a day. Nothing is sent. Build the simplest version first Saves the step and a day. Rethink it first Go over your sentence, the feeling and the simplest version again. Back to the cellar"
+          },
+          "s_fields_changed": []
+        },
+        "same_card": true,
+        "same_view": true,
+        "same_changes": true
+      },
+      {
+        "export": "runs/2026-11-07-b1b-t6/run-1-cellar.json",
+        "id": "mw6h2jgmxgxut",
+        "idea": "An app for small cleaning businesses that forget to send invoices after a job.",
+        "flow": "first_session_v1",
+        "app_now": {
+          "card": "NO STEP PLANNED\nAn app for small cleaning businesses that forget to send invoices after a job.\nTODAY\nArchive\n×",
+          "view": {
+            "screen": "screen-first",
+            "panels": [],
+            "mech_label": "—",
+            "question": "",
+            "main_button": "Continue →",
+            "first_session": "FIRST An app for small cleaning businesses that forget to send invoices after a job. 7 Nov 2026 NOW Skip THE PERSON Don't know yet THE LAST TIME Last week a cleaner told me she forgot to invoice two jobs. THE ONE THING Skip WHAT YOU EXPECT TO HEAR Skip YOU'D DROP IT IF Skip What's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea. Ask someone who runs into this Saves the step and a day. Nothing is sent. Rethink it first Go over your sentence and the one thing again. Back to the cellar"
+          },
+          "s_fields_changed": []
+        },
+        "app_before_b1c": {
+          "card": "NO STEP PLANNED\nAn app for small cleaning businesses that forget to send invoices after a job.\nTODAY\nArchive\n×",
+          "view": {
+            "screen": "screen-first",
+            "panels": [],
+            "mech_label": "—",
+            "question": "",
+            "main_button": "Continue →",
+            "first_session": "FIRST An app for small cleaning businesses that forget to send invoices after a job. 7 Nov 2026 NOW Skip THE PERSON Don't know yet THE LAST TIME Last week a cleaner told me she forgot to invoice two jobs. THE ONE THING Skip WHAT YOU EXPECT TO HEAR Skip YOU'D DROP IT IF Skip What's next: ask someone who runs into this about the last time, put what you hear next to what you expected, then decide what to do with the idea. Ask someone who runs into this Saves the step and a day. Nothing is sent. Rethink it first Go over your sentence and the one thing again. Back to the cellar"
+          },
+          "s_fields_changed": []
+        },
+        "same_card": true,
+        "same_view": true,
+        "same_changes": true
+      },
+      {
+        "export": "runs/2026-11-07-b1b-t7/run-1-cellar.json",
+        "id": "mw6h2kastcra0",
+        "idea": "A page where a book club votes on next month's book in one tap.",
+        "flow": "first_session_v1",
+        "app_now": {
+          "card": "PLANNED FOR TUESDAY\nA page where a book club votes on next month's book in one tap.\nBuild the simplest version first\nTODAY\nArchive\n×",
+          "view": {
+            "screen": "screen-first",
+            "panels": [],
+            "mech_label": "—",
+            "question": "",
+            "main_button": "Continue →",
+            "first_session": "FIRST A page where a book club votes on next month's book in one tap. 7 Nov 2026 NOW Skip THE LAST TIME SOMETHING LIKE IT HAPPENED Skip THE FEELING Skip THE SMALLEST VERSION Skip THE FIRST PEOPLE Skip YOU'D KEEP GOING IF Skip Build the simplest version first Planned for Tuesday. It's on this bottle in your cellar. Back to the cellar"
+          },
+          "s_fields_changed": []
+        },
+        "app_before_b1c": {
+          "card": "PLANNED FOR TUESDAY\nA page where a book club votes on next month's book in one tap.\nBuild the simplest version first\nTODAY\nArchive\n×",
+          "view": {
+            "screen": "screen-first",
+            "panels": [],
+            "mech_label": "—",
+            "question": "",
+            "main_button": "Continue →",
+            "first_session": "FIRST A page where a book club votes on next month's book in one tap. 7 Nov 2026 NOW Skip THE LAST TIME SOMETHING LIKE IT HAPPENED Skip THE FEELING Skip THE SMALLEST VERSION Skip THE FIRST PEOPLE Skip YOU'D KEEP GOING IF Skip Build the simplest version first Planned for Tuesday. It's on this bottle in your cellar. Back to the cellar"
+          },
+          "s_fields_changed": []
+        },
+        "same_card": true,
+        "same_view": true,
+        "same_changes": true
+      },
+      {
+        "export": "runs/2026-11-07-trust-basics/run-1-cellar.json",
+        "id": "mw5o61t4no0y1",
+        "idea": "An app for wedding photographers who lose their deposit when couples cancel two days before the shoot. zq-canary-0611",
+        "flow": null,
+        "app_now": {
+          "card": "QUESTION READY\nAn app for wedding photographers who lose their deposit when couples cancel two days before the shoot. zq-canary-0611\nYESTERDAY\nArchive\n×",
+          "view": {
+            "screen": "screen-phase1",
+            "panels": [
+              "stalled-panel"
+            ],
+            "mech_label": "—",
+            "question": "",
+            "main_button": "Continue →",
+            "first_session": null
+          },
+          "s_fields_changed": []
+        },
+        "app_before_b1c": {
+          "card": "QUESTION READY\nAn app for wedding photographers who lose their deposit when couples cancel two days before the shoot. zq-canary-0611\nYESTERDAY\nArchive\n×",
+          "view": {
+            "screen": "screen-phase1",
+            "panels": [
+              "stalled-panel"
+            ],
+            "mech_label": "—",
+            "question": "",
+            "main_button": "Continue →",
+            "first_session": null
+          },
+          "s_fields_changed": []
+        },
+        "same_card": true,
+        "same_view": true,
+        "same_changes": true
+      },
+      {
+        "export": "runs/2026-11-07-trust-basics/run-1-cellar.json",
+        "id": "mw5ocstdh5b6y",
+        "idea": "A better scheduling app for gym owners. zq-canary-0611",
+        "flow": null,
+        "app_now": {
+          "card": "QUESTION READY\nA better scheduling app for gym owners. zq-canary-0611\nYESTERDAY\nArchive\n×",
+          "view": {
+            "screen": "screen-phase1",
+            "panels": [
+              "question-panel"
+            ],
+            "mech_label": "The Friction Test",
+            "question": "Have Marco walk you through exactly what happened between the moment the two trainers wrote their classes down and the moment he realized the boxing ring was double booked.",
+            "main_button": "Continue →",
+            "first_session": null
+          },
+          "s_fields_changed": []
+        },
+        "app_before_b1c": {
+          "card": "QUESTION READY\nA better scheduling app for gym owners. zq-canary-0611\nYESTERDAY\nArchive\n×",
+          "view": {
+            "screen": "screen-phase1",
+            "panels": [
+              "question-panel"
+            ],
+            "mech_label": "The Friction Test",
+            "question": "Have Marco walk you through exactly what happened between the moment the two trainers wrote their classes down and the moment he realized the boxing ring was double booked.",
+            "main_button": "Continue →",
+            "first_session": null
+          },
+          "s_fields_changed": []
+        },
+        "same_card": true,
+        "same_view": true,
+        "same_changes": true
+      },
+      {
+        "export": "runs/2026-11-07-trust-basics/run-1-cellar.json",
+        "id": "mw5odezyi6aob",
+        "idea": "A way to stop losing my receipts before tax season. zq-canary-0611",
+        "flow": null,
+        "app_now": {
+          "card": "QUESTION READY\nA way to stop losing my receipts before tax season. zq-canary-0611\nYESTERDAY\nArchive\n×",
+          "view": {
+            "screen": "screen-phase1",
+            "panels": [
+              "question-panel"
+            ],
+            "mech_label": "The Friction Test",
+            "question": "Walk me through the last specific time you lost a receipt before tax season: what were you doing with it right before it disappeared?",
+            "main_button": "Continue →",
+            "first_session": null
+          },
+          "s_fields_changed": []
+        },
+        "app_before_b1c": {
+          "card": "QUESTION READY\nA way to stop losing my receipts before tax season. zq-canary-0611\nYESTERDAY\nArchive\n×",
+          "view": {
+            "screen": "screen-phase1",
+            "panels": [
+              "question-panel"
+            ],
+            "mech_label": "The Friction Test",
+            "question": "Walk me through the last specific time you lost a receipt before tax season: what were you doing with it right before it disappeared?",
+            "main_button": "Continue →",
+            "first_session": null
+          },
+          "s_fields_changed": []
+        },
+        "same_card": true,
+        "same_view": true,
+        "same_changes": true
+      }
+    ]
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "A bottle from B1b and one from before B1 open as they do today: the same screen and text as the app before B1c shows for each.",
+      "happened": "\"An app for dog walkers who lose track of which own\" (first_session_v1, runs/2026-11-07-b1b-t6/run-1-cellar.json): opens on screen-first, \"FIRST An app for dog walkers who lose track of which owners have paid for the week. 7 Nov …\". Same card true, same view true, same stored changes true. \"A daily game where everyone gets the same photo, w\" (first_session_v1, runs/2026-11-07-b1b-t6/run-1-cellar.json): opens on screen-first, \"FIRST A daily game where everyone gets the same photo, writes one sentence describing it, …\". Same card true, same view true, same stored changes true. \"An app for parents to swap school uniform their ki\" (first_session_v1, runs/2026-11-07-b1b-t6/run-1-cellar.json): opens on screen-first, \"FIRST An app for parents to swap school uniform their kids have outgrown. 7 Nov 2026 NOW S…\". Same card true, same view true, same stored changes true. \"An app for small cleaning businesses that forget t\" (first_session_v1, runs/2026-11-07-b1b-t6/run-1-cellar.json): opens on screen-first, \"FIRST An app for small cleaning businesses that forget to send invoices after a job. 7 Nov…\". Same card true, same view true, same stored changes true. \"A page where a book club votes on next month's boo\" (first_session_v1, runs/2026-11-07-b1b-t7/run-1-cellar.json): opens on screen-first, \"FIRST A page where a book club votes on next month's book in one tap. 7 Nov 2026 NOW Skip …\". Same card true, same view true, same stored changes true. \"An app for wedding photographers who lose their de\" (before B1, runs/2026-11-07-trust-basics/run-1-cellar.json): opens on screen-phase1, \"—\" \"Continue →\". Same card true, same view true, same stored changes true. \"A better scheduling app for gym owners. zq-canary-\" (before B1, runs/2026-11-07-trust-basics/run-1-cellar.json): opens on screen-phase1, \"The Friction Test\" \"Continue →\". Same card true, same view true, same stored changes true. \"A way to stop losing my receipts before tax season\" (before B1, runs/2026-11-07-trust-basics/run-1-cellar.json): opens on screen-phase1, \"The Friction Test\" \"Continue →\". Same card true, same view true, same stored changes true. App before B1c: e129030:corked_v6.html and shared/ on port 5500. Page errors: none."
+    }
+  ]
+}

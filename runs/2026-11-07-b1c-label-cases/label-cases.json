@@ -1,0 +1,583 @@
+[
+  {
+    "kind": "person case (B1)",
+    "answer": "M., my sister, she runs a one-woman cleaning business",
+    "worker": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+    "at": "2026-11-07T15:34:30.697Z",
+    "m1_alone": {
+      "status": 200,
+      "body": {
+        "schema_version": "m1.v1",
+        "mechanism": "M1",
+        "outcome": "settled",
+        "grape": {
+          "state": "settled",
+          "named_person": "M.",
+          "person_kind": "named_individual",
+          "temporal_grounding": "present_general"
+        },
+        "observation": {
+          "surface_text": "One specific person is identified by initials with a stated relationship. The grape is settled.",
+          "anchor_span": "M., my sister, she runs a one-woman cleaning business"
+        },
+        "next_question": {
+          "should_advance": true,
+          "framing": null
+        },
+        "server_checks": {
+          "schema_valid": true,
+          "anchor_verified": true,
+          "visible_style_violations_cleaned": []
+        },
+        "ai_fields": [
+          "observation.surface_text",
+          "grape.named_person"
+        ],
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    },
+    "m1_with_label": {
+      "status": 200,
+      "body": {
+        "schema_version": "m1.v1",
+        "mechanism": "M1",
+        "outcome": "settled",
+        "grape": {
+          "state": "settled",
+          "named_person": "M.",
+          "person_kind": "named_individual",
+          "temporal_grounding": "present_general"
+        },
+        "observation": {
+          "surface_text": "M. is identified by initial and by a stated family tie. She runs a one-woman cleaning business, placing her inside the target problem space.",
+          "anchor_span": "M., my sister, she runs a one-woman cleaning business"
+        },
+        "next_question": {
+          "should_advance": true,
+          "framing": null
+        },
+        "server_checks": {
+          "schema_valid": true,
+          "anchor_verified": true,
+          "visible_style_violations_cleaned": [],
+          "label": {
+            "check": "ok"
+          }
+        },
+        "ai_fields": [
+          "observation.surface_text",
+          "grape.named_person",
+          "label"
+        ],
+        "label": "M.",
+        "is_self": false,
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    },
+    "label_people": {
+      "status": 200,
+      "body": {
+        "schema_version": "label.v1",
+        "kind": "people",
+        "label": "M.",
+        "is_self": false,
+        "server_checks": {
+          "schema_valid": true,
+          "label": {
+            "check": "ok"
+          }
+        },
+        "ai_fields": [
+          "label"
+        ],
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    }
+  },
+  {
+    "kind": "person case (B1)",
+    "answer": "a colleague who manages bookings for our plumbing crew",
+    "worker": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+    "at": "2026-11-07T15:34:33.781Z",
+    "m1_alone": {
+      "status": 200,
+      "body": {
+        "schema_version": "m1.v1",
+        "mechanism": "M1",
+        "outcome": "settled",
+        "grape": {
+          "state": "settled",
+          "named_person": "colleague who manages bookings for our plumbing crew",
+          "person_kind": "described_unnamed",
+          "temporal_grounding": "present_general"
+        },
+        "observation": {
+          "surface_text": "One specific person is identified by role and context. A real stated relationship to the respondent is present.",
+          "anchor_span": "a colleague who manages bookings for our plumbing crew"
+        },
+        "next_question": {
+          "should_advance": true,
+          "framing": null
+        },
+        "server_checks": {
+          "schema_valid": true,
+          "anchor_verified": true,
+          "visible_style_violations_cleaned": []
+        },
+        "ai_fields": [
+          "observation.surface_text",
+          "grape.named_person"
+        ],
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    },
+    "m1_with_label": {
+      "status": 200,
+      "body": {
+        "schema_version": "m1.v1",
+        "mechanism": "M1",
+        "outcome": "settled",
+        "grape": {
+          "state": "settled",
+          "named_person": "a colleague who manages bookings for our plumbing crew",
+          "person_kind": "described_unnamed",
+          "temporal_grounding": "present_general"
+        },
+        "observation": {
+          "surface_text": "One specific person is identified by role and work context. The relationship to a shared plumbing operation is stated.",
+          "anchor_span": "a colleague who manages bookings for our plumbing crew"
+        },
+        "next_question": {
+          "should_advance": true,
+          "framing": null
+        },
+        "server_checks": {
+          "schema_valid": true,
+          "anchor_verified": true,
+          "visible_style_violations_cleaned": [],
+          "label": {
+            "check": "ok"
+          }
+        },
+        "ai_fields": [
+          "observation.surface_text",
+          "grape.named_person",
+          "label"
+        ],
+        "label": "your colleague who manages bookings",
+        "is_self": false,
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    },
+    "label_people": {
+      "status": 200,
+      "body": {
+        "schema_version": "label.v1",
+        "kind": "people",
+        "label": "your colleague who manages bookings",
+        "is_self": false,
+        "server_checks": {
+          "schema_valid": true,
+          "label": {
+            "check": "ok"
+          }
+        },
+        "ai_fields": [
+          "label"
+        ],
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    }
+  },
+  {
+    "kind": "person case (B1)",
+    "answer": "freelancers I know",
+    "worker": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+    "at": "2026-11-07T15:34:37.005Z",
+    "m1_alone": {
+      "status": 200,
+      "body": {
+        "schema_version": "m1.v1",
+        "mechanism": "M1",
+        "outcome": "turbid",
+        "grape": {
+          "state": "turbid",
+          "named_person": null,
+          "person_kind": "category_only",
+          "temporal_grounding": "none"
+        },
+        "observation": {
+          "surface_text": "The relationship field names a group, not a person. No single individual is identified.",
+          "anchor_span": "freelancers I know"
+        },
+        "next_question": {
+          "should_advance": false,
+          "framing": null
+        },
+        "server_checks": {
+          "schema_valid": true,
+          "anchor_verified": true,
+          "visible_style_violations_cleaned": []
+        },
+        "ai_fields": [
+          "observation.surface_text"
+        ],
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    },
+    "m1_with_label": {
+      "status": 200,
+      "body": {
+        "schema_version": "m1.v1",
+        "mechanism": "M1",
+        "outcome": "turbid",
+        "grape": {
+          "state": "turbid",
+          "named_person": null,
+          "person_kind": "category_only",
+          "temporal_grounding": "none"
+        },
+        "observation": {
+          "surface_text": "The relationship field names a group, not a person. No single individual is present to settle the grape.",
+          "anchor_span": "freelancers I know"
+        },
+        "next_question": {
+          "should_advance": false,
+          "framing": null
+        },
+        "server_checks": {
+          "schema_valid": true,
+          "anchor_verified": true,
+          "visible_style_violations_cleaned": [],
+          "label": {
+            "check": "ok"
+          }
+        },
+        "ai_fields": [
+          "observation.surface_text",
+          "label"
+        ],
+        "label": "the freelancers you know",
+        "is_self": false,
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    },
+    "label_people": {
+      "status": 200,
+      "body": {
+        "schema_version": "label.v1",
+        "kind": "people",
+        "label": "the freelancers you know",
+        "is_self": false,
+        "server_checks": {
+          "schema_valid": true,
+          "label": {
+            "check": "ok"
+          }
+        },
+        "ai_fields": [
+          "label"
+        ],
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    }
+  },
+  {
+    "kind": "label case (B1b)",
+    "answer": "Jamie Kneebone, it's me",
+    "worker": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+    "at": "2026-11-07T15:34:40.387Z",
+    "m1_alone": {
+      "status": 200,
+      "body": {
+        "schema_version": "m1.v1",
+        "mechanism": "M1",
+        "outcome": "clearing",
+        "grape": {
+          "state": "clearing",
+          "named_person": "Jamie Kneebone",
+          "person_kind": "self",
+          "temporal_grounding": "none"
+        },
+        "observation": {
+          "surface_text": "The relationship field names the person as self, placing this in self mode. No specific past instance of a missed invoice chase is present.",
+          "anchor_span": "Jamie Kneebone, it's me"
+        },
+        "next_question": {
+          "should_advance": false,
+          "framing": null
+        },
+        "server_checks": {
+          "schema_valid": true,
+          "anchor_verified": true,
+          "visible_style_violations_cleaned": []
+        },
+        "ai_fields": [
+          "observation.surface_text",
+          "grape.named_person"
+        ],
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    },
+    "m1_with_label": {
+      "status": 200,
+      "body": {
+        "schema_version": "m1.v1",
+        "mechanism": "M1",
+        "outcome": "clearing",
+        "grape": {
+          "state": "clearing",
+          "named_person": "Jamie Kneebone",
+          "person_kind": "self",
+          "temporal_grounding": "none"
+        },
+        "observation": {
+          "surface_text": "The relationship field reads 'it's me', making this a self-as-grape case under maturity class 0, which requires extraction mode. No specific past instance of the invoice problem is present.",
+          "anchor_span": "it's me"
+        },
+        "next_question": {
+          "should_advance": false,
+          "framing": null
+        },
+        "server_checks": {
+          "schema_valid": true,
+          "anchor_verified": true,
+          "visible_style_violations_cleaned": [],
+          "label": {
+            "check": "self",
+            "said": "you"
+          }
+        },
+        "ai_fields": [
+          "observation.surface_text",
+          "grape.named_person"
+        ],
+        "label": "you",
+        "is_self": true,
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    },
+    "label_people": {
+      "status": 200,
+      "body": {
+        "schema_version": "label.v1",
+        "kind": "people",
+        "label": "you",
+        "is_self": true,
+        "server_checks": {
+          "schema_valid": true,
+          "label": {
+            "check": "self",
+            "said": "you"
+          }
+        },
+        "ai_fields": [],
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    }
+  },
+  {
+    "kind": "label case (B1b)",
+    "answer": "Myself of course, and some of my football friends",
+    "worker": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+    "at": "2026-11-07T15:34:43.516Z",
+    "m1_alone": {
+      "status": 200,
+      "body": {
+        "schema_version": "m1.v1",
+        "mechanism": "M1",
+        "outcome": "turbid",
+        "grape": {
+          "state": "turbid",
+          "named_person": null,
+          "person_kind": "category_only",
+          "temporal_grounding": "none"
+        },
+        "observation": {
+          "surface_text": "Two groups are present: 'Myself' and 'football friends'. No single specific person with a real stated relationship is identified.",
+          "anchor_span": "Myself of course, and some of my football friends"
+        },
+        "next_question": {
+          "should_advance": false,
+          "framing": null
+        },
+        "server_checks": {
+          "schema_valid": true,
+          "anchor_verified": true,
+          "visible_style_violations_cleaned": []
+        },
+        "ai_fields": [
+          "observation.surface_text"
+        ],
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    },
+    "m1_with_label": {
+      "status": 200,
+      "body": {
+        "schema_version": "m1.v1",
+        "mechanism": "M1",
+        "outcome": "turbid",
+        "grape": {
+          "state": "turbid",
+          "named_person": null,
+          "person_kind": "category_only",
+          "temporal_grounding": "none"
+        },
+        "observation": {
+          "surface_text": "Two groups are present: the self and a set of football friends. No single specific person with a stated real relationship is identified.",
+          "anchor_span": "Myself of course, and some of my football friends"
+        },
+        "next_question": {
+          "should_advance": false,
+          "framing": null
+        },
+        "server_checks": {
+          "schema_valid": true,
+          "anchor_verified": true,
+          "visible_style_violations_cleaned": [],
+          "label": {
+            "check": "ok"
+          }
+        },
+        "ai_fields": [
+          "observation.surface_text",
+          "label"
+        ],
+        "label": "your football friends",
+        "is_self": false,
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    },
+    "label_people": {
+      "status": 200,
+      "body": {
+        "schema_version": "label.v1",
+        "kind": "people",
+        "label": "your football friends",
+        "is_self": false,
+        "server_checks": {
+          "schema_valid": true,
+          "label": {
+            "check": "ok"
+          }
+        },
+        "ai_fields": [
+          "label"
+        ],
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    }
+  },
+  {
+    "kind": "label case (B1b)",
+    "answer": "freelancers I know",
+    "worker": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+    "at": "2026-11-07T15:34:46.184Z",
+    "m1_alone": {
+      "status": 200,
+      "body": {
+        "schema_version": "m1.v1",
+        "mechanism": "M1",
+        "outcome": "turbid",
+        "grape": {
+          "state": "turbid",
+          "named_person": null,
+          "person_kind": "category_only",
+          "temporal_grounding": "none"
+        },
+        "observation": {
+          "surface_text": "The relationship field names a group, not one person. No single individual is identified.",
+          "anchor_span": "freelancers I know"
+        },
+        "next_question": {
+          "should_advance": false,
+          "framing": null
+        },
+        "server_checks": {
+          "schema_valid": true,
+          "anchor_verified": true,
+          "visible_style_violations_cleaned": []
+        },
+        "ai_fields": [
+          "observation.surface_text"
+        ],
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    },
+    "m1_with_label": {
+      "status": 200,
+      "body": {
+        "schema_version": "m1.v1",
+        "mechanism": "M1",
+        "outcome": "turbid",
+        "grape": {
+          "state": "turbid",
+          "named_person": null,
+          "person_kind": "category_only",
+          "temporal_grounding": "none"
+        },
+        "observation": {
+          "surface_text": "The relationship field names a group, not a person. No single individual is identified.",
+          "anchor_span": "freelancers I know"
+        },
+        "next_question": {
+          "should_advance": false,
+          "framing": null
+        },
+        "server_checks": {
+          "schema_valid": true,
+          "anchor_verified": true,
+          "visible_style_violations_cleaned": [],
+          "label": {
+            "check": "ok"
+          }
+        },
+        "ai_fields": [
+          "observation.surface_text",
+          "label"
+        ],
+        "label": "the freelancers you know",
+        "is_self": false,
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    },
+    "label_people": {
+      "status": 200,
+      "body": {
+        "schema_version": "label.v1",
+        "kind": "people",
+        "label": "the freelancers you know",
+        "is_self": false,
+        "server_checks": {
+          "schema_valid": true,
+          "label": {
+            "check": "ok"
+          }
+        },
+        "ai_fields": [
+          "label"
+        ],
+        "prompt_version": "2026-11-07b",
+        "model": "claude-sonnet-4-6"
+      }
+    }
+  }
+]

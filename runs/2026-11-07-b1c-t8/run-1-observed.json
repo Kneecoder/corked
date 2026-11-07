@@ -1,0 +1,400 @@
+{
+  "scenario": "b1c-t8",
+  "title": "B1c T8: phone, 390x844",
+  "run": 1,
+  "app_url": "http://localhost:8080/corked_v6.html?rhythmtest=1",
+  "worker_url": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "started_at": "2026-11-07T15:36:11.077Z",
+  "finished_at": "2026-11-07T15:36:30.204Z",
+  "broke_off": null,
+  "page_errors": [],
+  "steps": [
+    {
+      "at": "2026-11-07T15:36:11.221Z",
+      "step": "opened the app on an empty cellar"
+    },
+    {
+      "at": "2026-11-07T15:36:11.345Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T15:36:12.107Z",
+      "step": "picked fix",
+      "note": "· · ·"
+    },
+    {
+      "at": "2026-11-07T15:36:13.971Z",
+      "step": "answered F1",
+      "note": "My grandpa, 76."
+    },
+    {
+      "at": "2026-11-07T15:36:15.692Z",
+      "step": "answered F2",
+      "note": "He called me to come fix it, he had no idea what to do."
+    },
+    {
+      "at": "2026-11-07T15:36:18.238Z",
+      "step": "answered F3",
+      "note": "Gvie im an estiamte of the work to be done to keep it a nice looking garden"
+    },
+    {
+      "at": "2026-11-07T15:36:18.604Z",
+      "step": "answered F4",
+      "note": "An app that maps a garden and tells you how often it needs upkeep and which tools you need."
+    },
+    {
+      "at": "2026-11-07T15:36:20.938Z",
+      "step": "answered F5",
+      "note": "That he just guesses when it looks messy"
+    },
+    {
+      "at": "2026-11-07T15:36:21.305Z",
+      "step": "answered F6",
+      "note": "He doesn't see it as an issue"
+    },
+    {
+      "at": "2026-11-07T15:36:22.125Z",
+      "step": "clicked the spark field once and typed",
+      "note": "focus on f-inp"
+    },
+    {
+      "at": "2026-11-07T15:36:22.160Z",
+      "step": "bottled the spark, the gate shows",
+      "note": "Is this a fix or an experiment?"
+    },
+    {
+      "at": "2026-11-07T15:36:22.187Z",
+      "step": "picked experiment",
+      "note": "· · ·"
+    },
+    {
+      "at": "2026-11-07T15:36:24.070Z",
+      "step": "answered E1",
+      "note": "My friends quiz each other about old match results in our group chat."
+    },
+    {
+      "at": "2026-11-07T15:36:26.036Z",
+      "step": "answered E2",
+      "note": "Like they want one more round straight away."
+    },
+    {
+      "at": "2026-11-07T15:36:27.887Z",
+      "step": "answered E3",
+      "note": "Ten football questions on one page and a score at the end."
+    },
+    {
+      "at": "2026-11-07T15:36:28.253Z",
+      "step": "answered E5",
+      "note": "A trivia app where you challenge yourself and other people on ball (soccer) trivia information."
+    },
+    {
+      "at": "2026-11-07T15:36:28.987Z",
+      "step": "answered E4",
+      "note": "Myself of course, and some of my football friends."
+    },
+    {
+      "at": "2026-11-07T15:36:29.336Z",
+      "step": "answered E6",
+      "note": "They would visibly enjoy using it and are challenged by the questions"
+    },
+    {
+      "at": "2026-11-07T15:36:30.199Z",
+      "step": "exported the cellar",
+      "note": "C:\\Users\\James\\Desktop\\ClaudeCodeTest\\runs\\2026-11-07-b1c-t8\\run-1-cellar.json"
+    }
+  ],
+  "screens": {
+    "phone": [
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Next →",
+          "top": 500,
+          "bottom": 552,
+          "left": 256,
+          "right": 366
+        },
+        "label": "spark",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "An experiment. I want to build it and see what people do with it.",
+          "top": 816,
+          "bottom": 886,
+          "left": 24,
+          "right": 366
+        },
+        "label": "gate",
+        "on_screen": false
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 314,
+          "bottom": 366,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F1",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 324,
+          "bottom": 376,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F2",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 311,
+          "bottom": 363,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F3",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 365,
+          "bottom": 417,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-F4",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Ask your grandpa",
+          "top": 606,
+          "bottom": 654,
+          "left": 20,
+          "right": 370
+        },
+        "label": "fix-end",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 311,
+          "bottom": 363,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-plan-F5",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 251,
+          "bottom": 303,
+          "left": 227,
+          "right": 370
+        },
+        "label": "fix-plan-F6",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Pick a day",
+          "top": 94,
+          "bottom": 138,
+          "left": 209,
+          "right": 307
+        },
+        "label": "fix-when",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Back to the cellar",
+          "top": 278,
+          "bottom": 330,
+          "left": 20,
+          "right": 208
+        },
+        "label": "fix-confirmation",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 375,
+          "bottom": 427,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E1",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 311,
+          "bottom": 363,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E2",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 311,
+          "bottom": 363,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E3",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 340,
+          "bottom": 392,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-E5",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Show it to a few people",
+          "top": 509,
+          "bottom": 557,
+          "left": 20,
+          "right": 370
+        },
+        "label": "experiment-end",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 281,
+          "bottom": 333,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-plan-E4",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Continue →",
+          "top": 281,
+          "bottom": 333,
+          "left": 227,
+          "right": 370
+        },
+        "label": "experiment-plan-E6",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Pick a day",
+          "top": 94,
+          "bottom": 138,
+          "left": 209,
+          "right": 307
+        },
+        "label": "experiment-when",
+        "on_screen": true
+      },
+      {
+        "scroll_y": 0,
+        "viewport_w": 390,
+        "viewport_h": 844,
+        "button": {
+          "text": "Back to the cellar",
+          "top": 359,
+          "bottom": 411,
+          "left": 20,
+          "right": 208
+        },
+        "label": "experiment-confirmation",
+        "on_screen": true
+      }
+    ]
+  },
+  "checkpoints": {},
+  "expected": [
+    {
+      "n": 1,
+      "expected": "The main button is on screen without scrolling on every screen of both paths, including the plan step.",
+      "happened": "spark: \"Next →\" 500 to 552 of 844, scrolled 0, on screen true; gate: \"An experiment. I want to build it and see what people do with it.\" 816 to 886 of 844, scrolled 0, on screen false; fix-F1: \"Continue →\" 314 to 366 of 844, scrolled 0, on screen true; fix-F2: \"Continue →\" 324 to 376 of 844, scrolled 0, on screen true; fix-F3: \"Continue →\" 311 to 363 of 844, scrolled 0, on screen true; fix-F4: \"Continue →\" 365 to 417 of 844, scrolled 0, on screen true; fix-end: \"Ask your grandpa\" 606 to 654 of 844, scrolled 0, on screen true; fix-plan-F5: \"Continue →\" 311 to 363 of 844, scrolled 0, on screen true; fix-plan-F6: \"Continue →\" 251 to 303 of 844, scrolled 0, on screen true; fix-when: \"Pick a day\" 94 to 138 of 844, scrolled 0, on screen true; fix-confirmation: \"Back to the cellar\" 278 to 330 of 844, scrolled 0, on screen true; experiment-E1: \"Continue →\" 375 to 427 of 844, scrolled 0, on screen true; experiment-E2: \"Continue →\" 311 to 363 of 844, scrolled 0, on screen true; experiment-E3: \"Continue →\" 311 to 363 of 844, scrolled 0, on screen true; experiment-E5: \"Continue →\" 340 to 392 of 844, scrolled 0, on screen true; experiment-end: \"Show it to a few people\" 509 to 557 of 844, scrolled 0, on screen true; experiment-plan-E4: \"Continue →\" 281 to 333 of 844, scrolled 0, on screen true; experiment-plan-E6: \"Continue →\" 281 to 333 of 844, scrolled 0, on screen true; experiment-when: \"Pick a day\" 94 to 138 of 844, scrolled 0, on screen true; experiment-confirmation: \"Back to the cellar\" 359 to 411 of 844, scrolled 0, on screen true. Screen 390x844. Page errors: none."
+    }
+  ],
+  "exported": true
+}

@@ -1,0 +1,1499 @@
+{
+  "worker": "https://b18d45dd-orked-m1-proxy.kneebonewebdesign.workers.dev",
+  "at": "2026-11-07T15:35:16.547Z",
+  "results": [
+    {
+      "spark": "The garden",
+      "path": "fix",
+      "slot": "F1",
+      "run": 1,
+      "status": 200,
+      "question": "Who is the last person you saw unsure about how often their garden needed upkeep, or was it you?",
+      "worker_check": "ok",
+      "said": "Who is the last person you saw unsure about how often their garden needed upkeep, or was it you?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The garden",
+      "path": "fix",
+      "slot": "F1",
+      "run": 2,
+      "status": 200,
+      "question": "Who is the last person you saw unsure about how often their garden needed upkeep, or was it you?",
+      "worker_check": "ok",
+      "said": "Who is the last person you saw unsure about how often their garden needed upkeep, or was it you?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The garden",
+      "path": "fix",
+      "slot": "F1",
+      "run": 3,
+      "status": 200,
+      "question": "Who is the last person you saw unsure about how often their garden needed upkeep, even if that person is you?",
+      "worker_check": "ok",
+      "said": "Who is the last person you saw unsure about how often their garden needed upkeep, even if that person is you?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The garden",
+      "path": "fix",
+      "slot": "F2",
+      "run": 1,
+      "status": 200,
+      "question": "The last time your grandpa needed to do upkeep on his garden, what did he actually do?",
+      "worker_check": "ok",
+      "said": "The last time your grandpa needed to do upkeep on his garden, what did he actually do?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F2",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "My grandpa, 76."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The garden",
+      "path": "fix",
+      "slot": "F2",
+      "run": 2,
+      "status": 200,
+      "question": "The last time your grandpa's garden needed upkeep, what did he do?",
+      "worker_check": "ok",
+      "said": "The last time your grandpa's garden needed upkeep, what did he do?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F2",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "My grandpa, 76."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The garden",
+      "path": "fix",
+      "slot": "F2",
+      "run": 3,
+      "status": 200,
+      "question": "The last time your grandpa needed to do upkeep on his garden, what did he actually do?",
+      "worker_check": "ok",
+      "said": "The last time your grandpa needed to do upkeep on his garden, what did he actually do?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F2",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "My grandpa, 76."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The garden",
+      "path": "fix",
+      "slot": "F3",
+      "run": 1,
+      "status": 200,
+      "question": "If your idea had been there when your grandpa called you, what one thing should it have done for him?",
+      "worker_check": "ok",
+      "said": "If your idea had been there when your grandpa called you, what one thing should it have done for him?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F3",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "My grandpa, 76."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "He called me to come fix it, he had no idea what to do."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The garden",
+      "path": "fix",
+      "slot": "F3",
+      "run": 2,
+      "status": 200,
+      "question": "If your idea had been there when your grandpa called you, what one thing should it have done for him?",
+      "worker_check": "ok",
+      "said": "If your idea had been there when your grandpa called you, what one thing should it have done for him?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F3",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "My grandpa, 76."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "He called me to come fix it, he had no idea what to do."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The garden",
+      "path": "fix",
+      "slot": "F3",
+      "run": 3,
+      "status": 200,
+      "question": "If your idea had been there when your grandpa called you, what one thing should it have told him?",
+      "worker_check": "ok",
+      "said": "If your idea had been there when your grandpa called you, what one thing should it have told him?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F3",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "My grandpa, 76."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "He called me to come fix it, he had no idea what to do."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The garden",
+      "path": "fix",
+      "slot": "F5",
+      "run": 1,
+      "status": 200,
+      "question": "If you asked your grandpa about that moment he called you, what do you think he would say?",
+      "worker_check": "ok",
+      "said": "If you asked your grandpa about that moment he called you, what do you think he would say?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F5",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "My grandpa, 76."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "He called me to come fix it, he had no idea what to do."
+          },
+          {
+            "slot": "F3",
+            "question": "If your idea could do only one thing for them, what would it be?",
+            "answer": "Gvie im an estiamte of the work to be done to keep it a nice looking garden"
+          },
+          {
+            "slot": "F4",
+            "question": "How would you say your idea now, in one sentence?",
+            "answer": "An app that maps a garden and tells you how often it needs upkeep and which tools you need."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The garden",
+      "path": "fix",
+      "slot": "F5",
+      "run": 2,
+      "status": 200,
+      "question": "If you asked your grandpa about that moment, what do you think he would say?",
+      "worker_check": "ok",
+      "said": "If you asked your grandpa about that moment, what do you think he would say?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F5",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "My grandpa, 76."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "He called me to come fix it, he had no idea what to do."
+          },
+          {
+            "slot": "F3",
+            "question": "If your idea could do only one thing for them, what would it be?",
+            "answer": "Gvie im an estiamte of the work to be done to keep it a nice looking garden"
+          },
+          {
+            "slot": "F4",
+            "question": "How would you say your idea now, in one sentence?",
+            "answer": "An app that maps a garden and tells you how often it needs upkeep and which tools you need."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The garden",
+      "path": "fix",
+      "slot": "F5",
+      "run": 3,
+      "status": 200,
+      "question": "If you asked your grandpa about that moment, what do you think he would say?",
+      "worker_check": "ok",
+      "said": "If you asked your grandpa about that moment, what do you think he would say?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F5",
+        "spark": "A tool to analyse gardens and it calculates how many times a year you need upkeep and what tools you need.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "My grandpa, 76."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "He called me to come fix it, he had no idea what to do."
+          },
+          {
+            "slot": "F3",
+            "question": "If your idea could do only one thing for them, what would it be?",
+            "answer": "Gvie im an estiamte of the work to be done to keep it a nice looking garden"
+          },
+          {
+            "slot": "F4",
+            "question": "How would you say your idea now, in one sentence?",
+            "answer": "An app that maps a garden and tells you how often it needs upkeep and which tools you need."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The rental",
+      "path": "fix",
+      "slot": "F1",
+      "run": 1,
+      "status": 200,
+      "question": "Who is the last person you saw struggle to document the condition of a rental, or was it you?",
+      "worker_check": "ok",
+      "said": "Who is the last person you saw struggle to document the condition of a rental, or was it you?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The rental",
+      "path": "fix",
+      "slot": "F1",
+      "run": 2,
+      "status": 200,
+      "question": "Who is the last person you saw struggle to document the condition of a rental, or was it you?",
+      "worker_check": "ok",
+      "said": "Who is the last person you saw struggle to document the condition of a rental, or was it you?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The rental",
+      "path": "fix",
+      "slot": "F1",
+      "run": 3,
+      "status": 200,
+      "question": "Who is the last person you saw struggle to document the condition of a rental, or was that you?",
+      "worker_check": "ok",
+      "said": "Who is the last person you saw struggle to document the condition of a rental, or was that you?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The rental",
+      "path": "fix",
+      "slot": "F2",
+      "run": 1,
+      "status": 200,
+      "question": "When you moved into your flat in March, what did you actually do to document its condition?",
+      "worker_check": "ok",
+      "said": "When you moved into your flat in March, what did you actually do to document its condition?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F2",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "Me, when I moved into my flat in March."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The rental",
+      "path": "fix",
+      "slot": "F2",
+      "run": 2,
+      "status": 200,
+      "question": "When you moved into your flat in March, what did you actually do to document the conditions?",
+      "worker_check": "ok",
+      "said": "When you moved into your flat in March, what did you actually do to document the conditions?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F2",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "Me, when I moved into my flat in March."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The rental",
+      "path": "fix",
+      "slot": "F2",
+      "run": 3,
+      "status": 200,
+      "question": "When you moved into your flat in March, what did you actually do to document its condition?",
+      "worker_check": "ok",
+      "said": "When you moved into your flat in March, what did you actually do to document its condition?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F2",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "Me, when I moved into my flat in March."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The rental",
+      "path": "fix",
+      "slot": "F3",
+      "run": 1,
+      "status": 200,
+      "question": "If your idea had been there when you moved into your flat in March, what one thing should it have done for you?",
+      "worker_check": "ok",
+      "said": "If your idea had been there when you moved into your flat in March, what one thing should it have done for you?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F3",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "Me, when I moved into my flat in March."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The rental",
+      "path": "fix",
+      "slot": "F3",
+      "run": 2,
+      "status": 200,
+      "question": "If your idea could have done one thing for you moving into that flat in March, what would it have been?",
+      "worker_check": "ok",
+      "said": "If your idea could have done one thing for you moving into that flat in March, what would it have been?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F3",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "Me, when I moved into my flat in March."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The rental",
+      "path": "fix",
+      "slot": "F3",
+      "run": 3,
+      "status": 200,
+      "question": "If your idea had been there when you moved into your flat in March, what is the one thing it should have done for you?",
+      "worker_check": "ok",
+      "said": "If your idea had been there when you moved into your flat in March, what is the one thing it should have done for you?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F3",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "Me, when I moved into my flat in March."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The rental",
+      "path": "fix",
+      "slot": "F5",
+      "run": 1,
+      "status": 200,
+      "question": "When you think back to photographing your flat without knowing what mattered, what do you imagine you would say about that moment?",
+      "worker_check": "ok",
+      "said": "When you think back to photographing your flat without knowing what mattered, what do you imagine you would say about that moment?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F5",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "Me, when I moved into my flat in March."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered."
+          },
+          {
+            "slot": "F3",
+            "question": "If your idea could do only one thing for them, what would it be?",
+            "answer": "Tell me which rooms and fittings to photograph, and keep it all in one report."
+          },
+          {
+            "slot": "F4",
+            "question": "How would you say your idea now, in one sentence?",
+            "answer": "An app that walks you through recording the state of a rented flat on move in day."
+          },
+          {
+            "slot": "F7",
+            "question": "Who could you ask? Someone who has this problem. A name, initials, or a few words.",
+            "answer": "Sam, my neighbour, who moved into the flat upstairs last month"
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The rental",
+      "path": "fix",
+      "slot": "F5",
+      "run": 2,
+      "status": 200,
+      "question": "If you asked Sam what it felt like to document the flat without guidance, what do you think he would say?",
+      "worker_check": "ok",
+      "said": "If you asked Sam what it felt like to document the flat without guidance, what do you think he would say?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F5",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "Me, when I moved into my flat in March."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered."
+          },
+          {
+            "slot": "F3",
+            "question": "If your idea could do only one thing for them, what would it be?",
+            "answer": "Tell me which rooms and fittings to photograph, and keep it all in one report."
+          },
+          {
+            "slot": "F4",
+            "question": "How would you say your idea now, in one sentence?",
+            "answer": "An app that walks you through recording the state of a rented flat on move in day."
+          },
+          {
+            "slot": "F7",
+            "question": "Who could you ask? Someone who has this problem. A name, initials, or a few words.",
+            "answer": "Sam, my neighbour, who moved into the flat upstairs last month"
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The rental",
+      "path": "fix",
+      "slot": "F5",
+      "run": 3,
+      "status": 200,
+      "question": "If you asked Sam what moving into the flat upstairs was like, what do you think he would say about documenting the conditions?",
+      "worker_check": "ok",
+      "said": "If you asked Sam what moving into the flat upstairs was like, what do you think he would say about documenting the conditions?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F5",
+        "spark": "An AI tool that helps you when you rent a place to document the current conditions, easily.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "Me, when I moved into my flat in March."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "I took a lot of pictures of the outlets and sinks, but I did not know what mattered."
+          },
+          {
+            "slot": "F3",
+            "question": "If your idea could do only one thing for them, what would it be?",
+            "answer": "Tell me which rooms and fittings to photograph, and keep it all in one report."
+          },
+          {
+            "slot": "F4",
+            "question": "How would you say your idea now, in one sentence?",
+            "answer": "An app that walks you through recording the state of a rented flat on move in day."
+          },
+          {
+            "slot": "F7",
+            "question": "Who could you ask? Someone who has this problem. A name, initials, or a few words.",
+            "answer": "Sam, my neighbour, who moved into the flat upstairs last month"
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The football quiz",
+      "path": "experiment",
+      "slot": "E1",
+      "run": 1,
+      "status": 200,
+      "question": "Do football fans already quiz each other on ball knowledge anywhere, and when did you last see it happen?",
+      "worker_check": "ok",
+      "said": "Do football fans already quiz each other on ball knowledge anywhere, and when did you last see it happen?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E1",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The football quiz",
+      "path": "experiment",
+      "slot": "E1",
+      "run": 2,
+      "status": 200,
+      "question": "Do football fans already challenge each other on their knowledge somewhere, and when did you last see it happen?",
+      "worker_check": "ok",
+      "said": "Do football fans already challenge each other on their knowledge somewhere, and when did you last see it happen?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E1",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The football quiz",
+      "path": "experiment",
+      "slot": "E1",
+      "run": 3,
+      "status": 200,
+      "question": "Do football fans already challenge each other's knowledge somewhere, in a group chat or another app, and when did you last see it happen?",
+      "worker_check": "ok",
+      "said": "Do football fans already challenge each other's knowledge somewhere, in a group chat or another app, and when did you last see it happen?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E1",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The football quiz",
+      "path": "experiment",
+      "slot": "E2",
+      "run": 1,
+      "status": 200,
+      "question": "What do you want a football fan to feel in their first minute of playing?",
+      "worker_check": "ok",
+      "said": "What do you want a football fan to feel in their first minute of playing?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E2",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+            "answer": "My friends quiz each other about old match results in our group chat."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The football quiz",
+      "path": "experiment",
+      "slot": "E2",
+      "run": 2,
+      "status": 200,
+      "question": "What do you want a football fan to feel in their first minute of using your app?",
+      "worker_check": "ok",
+      "said": "What do you want a football fan to feel in their first minute of using your app?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E2",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+            "answer": "My friends quiz each other about old match results in our group chat."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The football quiz",
+      "path": "experiment",
+      "slot": "E2",
+      "run": 3,
+      "status": 200,
+      "question": "What do you want a football fan to feel in their first minute of using your app?",
+      "worker_check": "ok",
+      "said": "What do you want a football fan to feel in their first minute of using your app?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E2",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+            "answer": "My friends quiz each other about old match results in our group chat."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The football quiz",
+      "path": "experiment",
+      "slot": "E3",
+      "run": 1,
+      "status": 200,
+      "question": "What is the smallest version of this you could build so your friends could try a round this week?",
+      "worker_check": "ok",
+      "said": "What is the smallest version of this you could build so your friends could try a round this week?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E3",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+            "answer": "My friends quiz each other about old match results in our group chat."
+          },
+          {
+            "slot": "E2",
+            "question": "In the first minute of using it, what should someone feel?",
+            "answer": "Like they want one more round straight away."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The football quiz",
+      "path": "experiment",
+      "slot": "E3",
+      "run": 2,
+      "status": 200,
+      "question": "What is the smallest version you could build this week so your friends could try it in the group chat?",
+      "worker_check": "ok",
+      "said": "What is the smallest version you could build this week so your friends could try it in the group chat?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E3",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+            "answer": "My friends quiz each other about old match results in our group chat."
+          },
+          {
+            "slot": "E2",
+            "question": "In the first minute of using it, what should someone feel?",
+            "answer": "Like they want one more round straight away."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The football quiz",
+      "path": "experiment",
+      "slot": "E3",
+      "run": 3,
+      "status": 200,
+      "question": "What is the smallest version of this you could build so your friends could try a round of it this week?",
+      "worker_check": "ok",
+      "said": "What is the smallest version of this you could build so your friends could try a round of it this week?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E3",
+        "spark": "A trivia app for football fans to challenge each others ballknowledge.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+            "answer": "My friends quiz each other about old match results in our group chat."
+          },
+          {
+            "slot": "E2",
+            "question": "In the first minute of using it, what should someone feel?",
+            "answer": "Like they want one more round straight away."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The daily picture game",
+      "path": "experiment",
+      "slot": "E1",
+      "run": 1,
+      "status": 200,
+      "question": "Do people already play something like this, by hand or in another app, and when did you last see it happen?",
+      "worker_check": "ok",
+      "said": "Do people already play something like this, by hand or in another app, and when did you last see it happen?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E1",
+        "spark": "A daily game where you describe one picture in a single sentence.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The daily picture game",
+      "path": "experiment",
+      "slot": "E1",
+      "run": 2,
+      "status": 200,
+      "question": "Do people already play something like this, in an app or on paper, and when did you last see it happen?",
+      "worker_check": "ok",
+      "said": "Do people already play something like this, in an app or on paper, and when did you last see it happen?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E1",
+        "spark": "A daily game where you describe one picture in a single sentence.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The daily picture game",
+      "path": "experiment",
+      "slot": "E1",
+      "run": 3,
+      "status": 200,
+      "question": "Do people already play something like this, in another app or on paper, and when did you last see it happen?",
+      "worker_check": "ok",
+      "said": "Do people already play something like this, in another app or on paper, and when did you last see it happen?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E1",
+        "spark": "A daily game where you describe one picture in a single sentence.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The daily picture game",
+      "path": "experiment",
+      "slot": "E2",
+      "run": 1,
+      "status": 200,
+      "question": "What should someone feel in their first minute writing their sentence about the picture?",
+      "worker_check": "ok",
+      "said": "What should someone feel in their first minute writing their sentence about the picture?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E2",
+        "spark": "A daily game where you describe one picture in a single sentence.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+            "answer": "My friends post their Wordle scores in our group chat every morning."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The daily picture game",
+      "path": "experiment",
+      "slot": "E2",
+      "run": 2,
+      "status": 200,
+      "question": "What should someone feel in their first minute writing their sentence for the picture?",
+      "worker_check": "ok",
+      "said": "What should someone feel in their first minute writing their sentence for the picture?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E2",
+        "spark": "A daily game where you describe one picture in a single sentence.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+            "answer": "My friends post their Wordle scores in our group chat every morning."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The daily picture game",
+      "path": "experiment",
+      "slot": "E2",
+      "run": 3,
+      "status": 200,
+      "question": "What do you want someone to feel in their first minute of describing a picture?",
+      "worker_check": "ok",
+      "said": "What do you want someone to feel in their first minute of describing a picture?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E2",
+        "spark": "A daily game where you describe one picture in a single sentence.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+            "answer": "My friends post their Wordle scores in our group chat every morning."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The daily picture game",
+      "path": "experiment",
+      "slot": "E3",
+      "run": 1,
+      "status": 200,
+      "question": "What is the smallest version of this you could put in front of your friends this week?",
+      "worker_check": "ok",
+      "said": "What is the smallest version of this you could put in front of your friends this week?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E3",
+        "spark": "A daily game where you describe one picture in a single sentence.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+            "answer": "My friends post their Wordle scores in our group chat every morning."
+          },
+          {
+            "slot": "E2",
+            "question": "In the first minute of using it, what should someone feel?",
+            "answer": "Curious what the others wrote about the same picture."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The daily picture game",
+      "path": "experiment",
+      "slot": "E3",
+      "run": 2,
+      "status": 200,
+      "question": "What is the smallest version of this you could put in front of your friends this week?",
+      "worker_check": "ok",
+      "said": "What is the smallest version of this you could put in front of your friends this week?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E3",
+        "spark": "A daily game where you describe one picture in a single sentence.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+            "answer": "My friends post their Wordle scores in our group chat every morning."
+          },
+          {
+            "slot": "E2",
+            "question": "In the first minute of using it, what should someone feel?",
+            "answer": "Curious what the others wrote about the same picture."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The daily picture game",
+      "path": "experiment",
+      "slot": "E3",
+      "run": 3,
+      "status": 200,
+      "question": "What is the smallest version of this you could put in front of your friends this week?",
+      "worker_check": "ok",
+      "said": "What is the smallest version of this you could put in front of your friends this week?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "experiment",
+        "slot": "E3",
+        "spark": "A daily game where you describe one picture in a single sentence.",
+        "answers": [
+          {
+            "slot": "E1",
+            "question": "When did you last see someone do something like your idea, even by hand or in another app?",
+            "answer": "My friends post their Wordle scores in our group chat every morning."
+          },
+          {
+            "slot": "E2",
+            "question": "In the first minute of using it, what should someone feel?",
+            "answer": "Curious what the others wrote about the same picture."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The Zendesk tool",
+      "path": "fix",
+      "slot": "F1",
+      "run": 1,
+      "status": 200,
+      "question": null,
+      "worker_check": "dash",
+      "said": "Who's the last person you saw struggle to build a custom Zendesk app that fit how their instance was set up — was it you?",
+      "rules_broken": [
+        "a dash"
+      ],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "A tool that views your Zendesk instance and gives instructions on how to build custom applications in it based on how it's setup.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The Zendesk tool",
+      "path": "fix",
+      "slot": "F1",
+      "run": 2,
+      "status": 200,
+      "question": null,
+      "worker_check": "too_long",
+      "said": "Who's the last person you saw struggle to build a custom Zendesk app that fit how their instance was set up — or was that you?",
+      "rules_broken": [
+        "more than 25 words",
+        "a dash"
+      ],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "A tool that views your Zendesk instance and gives instructions on how to build custom applications in it based on how it's setup.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The Zendesk tool",
+      "path": "fix",
+      "slot": "F1",
+      "run": 3,
+      "status": 200,
+      "question": null,
+      "worker_check": "question_mark",
+      "said": "Who's the last person who needed to build a custom Zendesk app but struggled because the setup of their instance was hard to account for? Could be you.",
+      "rules_broken": [
+        "one question mark, at the end",
+        "more than 25 words"
+      ],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F1",
+        "spark": "A tool that views your Zendesk instance and gives instructions on how to build custom applications in it based on how it's setup.",
+        "answers": []
+      }
+    },
+    {
+      "spark": "The Zendesk tool",
+      "path": "fix",
+      "slot": "F2",
+      "run": 1,
+      "status": 200,
+      "question": "The last time that developer had to build a Zendesk app, what did they actually do to figure out how to set it up?",
+      "worker_check": "ok",
+      "said": "The last time that developer had to build a Zendesk app, what did they actually do to figure out how to set it up?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F2",
+        "spark": "A tool that views your Zendesk instance and gives instructions on how to build custom applications in it based on how it's setup.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "A developer at my last job who had to build a Zendesk app for our support team."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The Zendesk tool",
+      "path": "fix",
+      "slot": "F2",
+      "run": 2,
+      "status": 200,
+      "question": "The last time that developer had to build a Zendesk app, what did they actually do to figure out how to set it up?",
+      "worker_check": "ok",
+      "said": "The last time that developer had to build a Zendesk app, what did they actually do to figure out how to set it up?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F2",
+        "spark": "A tool that views your Zendesk instance and gives instructions on how to build custom applications in it based on how it's setup.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "A developer at my last job who had to build a Zendesk app for our support team."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The Zendesk tool",
+      "path": "fix",
+      "slot": "F2",
+      "run": 3,
+      "status": 200,
+      "question": "The last time that developer had to build a Zendesk app, what did they actually do to figure out how to set it up?",
+      "worker_check": "ok",
+      "said": "The last time that developer had to build a Zendesk app, what did they actually do to figure out how to set it up?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F2",
+        "spark": "A tool that views your Zendesk instance and gives instructions on how to build custom applications in it based on how it's setup.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "A developer at my last job who had to build a Zendesk app for our support team."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The Zendesk tool",
+      "path": "fix",
+      "slot": "F3",
+      "run": 1,
+      "status": 200,
+      "question": "If your tool had been there during those two days, what is the one thing it should have done for that developer?",
+      "worker_check": "ok",
+      "said": "If your tool had been there during those two days, what is the one thing it should have done for that developer?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F3",
+        "spark": "A tool that views your Zendesk instance and gives instructions on how to build custom applications in it based on how it's setup.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "A developer at my last job who had to build a Zendesk app for our support team."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "He spent two days reading the Zendesk docs and asked on the developer forum."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The Zendesk tool",
+      "path": "fix",
+      "slot": "F3",
+      "run": 2,
+      "status": 200,
+      "question": "If your tool had been there those two days, what one thing should it have done for that developer?",
+      "worker_check": "ok",
+      "said": "If your tool had been there those two days, what one thing should it have done for that developer?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F3",
+        "spark": "A tool that views your Zendesk instance and gives instructions on how to build custom applications in it based on how it's setup.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "A developer at my last job who had to build a Zendesk app for our support team."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "He spent two days reading the Zendesk docs and asked on the developer forum."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The Zendesk tool",
+      "path": "fix",
+      "slot": "F3",
+      "run": 3,
+      "status": 200,
+      "question": "If your tool had been there during those two days, what one thing should it have done for that developer?",
+      "worker_check": "ok",
+      "said": "If your tool had been there during those two days, what one thing should it have done for that developer?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F3",
+        "spark": "A tool that views your Zendesk instance and gives instructions on how to build custom applications in it based on how it's setup.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "A developer at my last job who had to build a Zendesk app for our support team."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "He spent two days reading the Zendesk docs and asked on the developer forum."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The Zendesk tool",
+      "path": "fix",
+      "slot": "F5",
+      "run": 1,
+      "status": 200,
+      "question": "What do you think that developer would say about those two days if you asked him right now?",
+      "worker_check": "ok",
+      "said": "What do you think that developer would say about those two days if you asked him right now?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F5",
+        "spark": "A tool that views your Zendesk instance and gives instructions on how to build custom applications in it based on how it's setup.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "A developer at my last job who had to build a Zendesk app for our support team."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "He spent two days reading the Zendesk docs and asked on the developer forum."
+          },
+          {
+            "slot": "F3",
+            "question": "If your idea could do only one thing for them, what would it be?",
+            "answer": "Tell him which parts of our setup the app had to fit."
+          },
+          {
+            "slot": "F4",
+            "question": "How would you say your idea now, in one sentence?",
+            "answer": "A tool that reads your Zendesk setup and tells you how to build an app for it."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The Zendesk tool",
+      "path": "fix",
+      "slot": "F5",
+      "run": 2,
+      "status": 200,
+      "question": "What do you think that developer would say about those two days if you asked him right now?",
+      "worker_check": "ok",
+      "said": "What do you think that developer would say about those two days if you asked him right now?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F5",
+        "spark": "A tool that views your Zendesk instance and gives instructions on how to build custom applications in it based on how it's setup.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "A developer at my last job who had to build a Zendesk app for our support team."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "He spent two days reading the Zendesk docs and asked on the developer forum."
+          },
+          {
+            "slot": "F3",
+            "question": "If your idea could do only one thing for them, what would it be?",
+            "answer": "Tell him which parts of our setup the app had to fit."
+          },
+          {
+            "slot": "F4",
+            "question": "How would you say your idea now, in one sentence?",
+            "answer": "A tool that reads your Zendesk setup and tells you how to build an app for it."
+          }
+        ]
+      }
+    },
+    {
+      "spark": "The Zendesk tool",
+      "path": "fix",
+      "slot": "F5",
+      "run": 3,
+      "status": 200,
+      "question": "What do you think that developer would say if you asked him what those two days were actually like?",
+      "worker_check": "ok",
+      "said": "What do you think that developer would say if you asked him what those two days were actually like?",
+      "rules_broken": [],
+      "prompt_version": "2026-11-07c",
+      "model": "claude-sonnet-4-6",
+      "sent": {
+        "path": "fix",
+        "slot": "F5",
+        "spark": "A tool that views your Zendesk instance and gives instructions on how to build custom applications in it based on how it's setup.",
+        "answers": [
+          {
+            "slot": "F1",
+            "question": "Who's the last person you saw run into this? It can be you.",
+            "answer": "A developer at my last job who had to build a Zendesk app for our support team."
+          },
+          {
+            "slot": "F2",
+            "question": "The last time they had this problem, what did they do?",
+            "answer": "He spent two days reading the Zendesk docs and asked on the developer forum."
+          },
+          {
+            "slot": "F3",
+            "question": "If your idea could do only one thing for them, what would it be?",
+            "answer": "Tell him which parts of our setup the app had to fit."
+          },
+          {
+            "slot": "F4",
+            "question": "How would you say your idea now, in one sentence?",
+            "answer": "A tool that reads your Zendesk setup and tells you how to build an app for it."
+          }
+        ]
+      }
+    }
+  ]
+}
